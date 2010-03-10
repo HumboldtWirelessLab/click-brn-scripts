@@ -27,7 +27,7 @@ dnsl::BRN2DHCPSubnetList();
   
 dh::BRN2DHCPServer( ETHERADDRESS deviceaddress, ADDRESSPREFIX 192.168.0.0/24,
                     ROUTER 192.168.0.1, SERVER 192.168.0.1, DNS 192.168.0.1, SERVERNAME "www", DOMAIN ".bloblo.org",
-                    DHCPSUBNETLIST dnsl, VLANTABLE vlt, DHTSTORAGE dhtstorage/dhtstorage );
+                    DHCPSUBNETLIST dnsl, VLANTABLE vlt, DHTSTORAGE dhtstorage/dhtstorage, DEBUG 2 );
 
 arps::BRN2Arp(ROUTERIP 192.168.0.1, ROUTERETHERADDRESS deviceaddress, PREFIX 192.168.0.0/24, DHTSTORAGE dhtstorage/dhtstorage);
 
@@ -152,7 +152,9 @@ Script(
   read device_wifi/ap/wil.info,
   wait 9,
   read device_wifi/ap/assoclist.stations,
-  read  vlt.vlan,
+  read vlt.vlan,
+  wait 10,
+  read dhtstorage/dhtstorage.stats
   //read lt.links
   //read lt.hosts
   

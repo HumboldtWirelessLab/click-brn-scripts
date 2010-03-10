@@ -118,8 +118,8 @@ LL set delay_			1ms
 # and when we'll stop.
 #
 
-set nodecount   16
-set slen	4
+set nodecount   25
+set slen	5
 set stoptime    90.0
 
 #
@@ -225,7 +225,7 @@ for {set i 0} {$i < $nodecount } {incr i} {
     [$node_($i) set classifier_] setnodename "node$i"
 }
 
-for {set i 1} {$i < $nodecount } {incr i} {
+for {set i 0} {$i < [expr $nodecount - 1] } {incr i} {
     #
     # Load the appropriate Click router script for the node.
     # All nodes in this simulation are using the same script,
@@ -235,7 +235,7 @@ for {set i 1} {$i < $nodecount } {incr i} {
 [$node_($i) entry] loadclick "dart_node_out.click"
 }
 
-[$node_(0) entry] loadclick "dart_node_flow_out.click"
+[$node_([expr $nodecount - 1]) entry] loadclick "dart_node_flow_out.click"
 
 for {set i 0} {$i < $nodecount} {incr i} {
    $ns_ at 0.0 "[$node_($i) entry] runclick"

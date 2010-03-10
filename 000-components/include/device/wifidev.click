@@ -47,7 +47,7 @@ elementclass WIFIDEV { DEVNAME $devname, DEVICE $device, ETHERADDRESS $etheraddr
   wififrame_clf[1]
     -> WifiDecap()
     -> nbdetect
-//  -> Print("Data")
+    //-> Print("Data")
     -> brn_ether_clf :: Classifier( 12/8086, - )
     -> lp_clf :: Classifier( 14/06, - )
     -> BRN2EtherDecap()

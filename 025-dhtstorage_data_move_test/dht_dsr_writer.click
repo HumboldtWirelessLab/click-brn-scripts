@@ -88,6 +88,7 @@ Script(
 //read  dhtstoragetest.stats,
 //read  dht/dhtrouting.routing_info,
   read  dhtstoragetest.stats,
+  read  dhtstorage/dhtstorage.stats,  
 //read  dht/dhtrouting.routing_info
 //read dht_r_all.count,
 //read dht_r_all.byte_count,

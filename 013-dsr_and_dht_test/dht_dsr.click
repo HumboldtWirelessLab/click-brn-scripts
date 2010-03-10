@@ -78,8 +78,10 @@ toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 
 Script(
   wait 5,
+  read  dht/dhtrouting.routing_info,
 //read lt.links,
   wait 5,
+  read  dht/dhtrouting.routing_info,
 //read lt.links,
   wait 59, 
 //read  dhtstorage.db_size,
@@ -88,6 +90,7 @@ Script(
   wait 10,
   wait 20,
 //  read  dhtstorage/dhtstorage.db_size,
+  read  dhtstorage/dhtstorage.stats,
   read  dhtstoragetest.stats,
   //read  dht/dhtrouting.routing_info
 //  read dht_r_all.count,

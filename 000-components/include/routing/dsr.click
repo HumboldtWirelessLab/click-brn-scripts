@@ -22,25 +22,27 @@ elementclass DSR {$ID, $LT, $RC |
 #endif
   -> querier[0]
 #ifdef DEBUG_DSR
-  -> Print("DSR: querie")
+  -> Print("DSR: querie",100)
 #endif
   -> [1]output;                                             // rreq packets (broadcast)
   
   querier[1] 
 #ifdef DEBUG_DSR
-  -> Print("DSR: src_forwarder")
+  -> Print("DSR: src_forwarder", 100)
 #endif
   -> [0]src_forwarder;                                      // src routed packets (unicast)
 
   src_forwarder[0]
 #ifdef DEBUG_DSR
-  -> Print("Forward")
+  -> Print("Forward",100)
 #endif
+  -> BRN2EtherEncap(USEANNO true)
+  -> BRN2EtherDecap()
   -> [1]output;
 
   src_forwarder[1]
 #ifdef DEBUG_DSR
-  -> Print("Final dest")
+  -> Print("Final dest", 100)
 #endif
   -> [0]output;
 

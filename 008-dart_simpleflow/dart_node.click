@@ -87,16 +87,16 @@ Script(
 //read  dhtstoragetest.stats,
   read  dht/dhtrouting.routing_info,
   wait 10,
-  read  dhtstorage/dhtstorage.db_size,
-  read  dhtstoragetest.stats,
+  //read  dhtstorage/dhtstorage.db_size,
+  //read  dhtstoragetest.stats,
   //read  dht/dhtrouting.routing_info
 //  read dht_r_all.count,
-  //read dht_r_all.byte_count,
-  //read dht_r_neighbour.count,
-  //read dht_r_neighbour.byte_count,
-  //read dht_s.count,
-  //read dht_s.byte_count,
- read  sf.txflows,
+//  read dht_r_all.byte_count,
+//  read dht_r_neighbour.count,
+//  read dht_r_neighbour.byte_count,
+//  read dht_s.count,
+//  read dht_s.byte_count,
+  read  sf.txflows,
   read  sf.rxflows
 
 );

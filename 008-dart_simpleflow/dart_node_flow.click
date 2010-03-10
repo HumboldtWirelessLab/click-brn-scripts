@@ -61,7 +61,7 @@ dht[1]
 -> [0]device_wifi;
 
 brn_clf[3] -> StripBRNHeader()
--> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:0f:00, RATE 500 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
+-> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:00:00, RATE 500 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
 -> BRN2EtherEncap()
 -> [0]dart;
 
@@ -91,17 +91,17 @@ Script(
   wait 3,
   write  sf.active 1,
   wait 6,
-  read  dhtstorage/dhtstorage.db_size,
-  read  dhtstoragetest.stats,
+  //read  dhtstorage/dhtstorage.db_size,
+  //read  dhtstoragetest.stats,
   
   //read  dht/dhtrouting.routing_info
   
-  //read dht_r_all.count,
-  //read dht_r_all.byte_count,
-  //read dht_r_neighbour.count,
-  //read dht_r_neighbour.byte_count,
-  //read dht_s.count,
-  //read dht_s.byte_count,
+//  read dht_r_all.count,
+//  read dht_r_all.byte_count,
+//  read dht_r_neighbour.count,
+//  read dht_r_neighbour.byte_count,
+//  read dht_s.count,
+//  read dht_s.byte_count,
   
 //  read dht/dhtnws.networksize,
   read  sf.txflows,

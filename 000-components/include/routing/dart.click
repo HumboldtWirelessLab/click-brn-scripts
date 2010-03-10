@@ -5,7 +5,7 @@
 // [1]output - BRN GEOR packets to internal nodes (BRN GEOR protocol)
 
 elementclass DART {$ID, $dhtroutingtable, $dhtstorage, $dhtrouting |
-  DartIDStore( NODEIDENTITY  $ID, DHTSTORAGE $dhtstorage, DRT $dhtroutingtable, STARTTIME 60000, DEBUG 2);
+  DartIDStore( NODEIDENTITY  $ID, DHTSTORAGE $dhtstorage, DRT $dhtroutingtable, DEBUG 2);
   
   dartidcache::DartIDCache();  
   dartroutequerier::DartRouteQuerier( NODEIDENTITY $ID, DHTSTORAGE $dhtstorage, DARTIDCACHE dartidcache, DRT $dhtroutingtable, DEBUG 2);
