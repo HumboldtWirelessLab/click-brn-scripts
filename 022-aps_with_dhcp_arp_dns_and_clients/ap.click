@@ -20,7 +20,7 @@ device_wifi::WIFIDEV_AP(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddres
 dsr::DSR(id,lt,rc);
 
 dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
-dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting);
+dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
 
 dsnl::BRN2DHCPSubnetList();
   
