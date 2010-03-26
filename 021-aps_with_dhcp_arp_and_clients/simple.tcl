@@ -21,33 +21,65 @@ Antenna/OmniAntenna set Gr_ 1.0
 #DSSS (IEEE802.11b)
 
 Phy/WirelessPhy set CPThresh_ 10.0
-#Phy/WirelessPhy set CSThresh_ 5.011872e-12
+
 Phy/WirelessPhy set CSThresh_ 1.559e-11
+#1.559e-11 -> -108db
+
 Phy/WirelessPhy set RXThresh_ 3.28984e-09
-#Phy/WirelessPhy set RXThresh_ 3.652e-10
-#Phy/WirelessPhy set RXThresh_ 5.82587e-09
+#3.28984e-09 -> -85db
+
 #Phy/WirelessPhy set Rb_ 2*1e6
+
 Phy/WirelessPhy set Pt_ 0.281838
 #Phy/WirelessPhy set Pt_ 0.031622777
 
-
 Phy/WirelessPhy set freq_ 2.472e9
 Phy/WirelessPhy set L_ 1.0
-Phy/WirelessPhy set bandwidth_ 11Mb
+Phy/WirelessPhy set bandwidth_ 1Mb
 
 
 Mac/802_11 set SlotTime_          0.000020        ;# 20us
 Mac/802_11 set SIFS_              0.000010        ;# 10us
 Mac/802_11 set PreambleLength_    144             ;# 144 bit
 Mac/802_11 set PLCPHeaderLength_  48              ;# 48 bits
-Mac/802_11 set PLCPDataRate_      11.0e6           ;# 1Mbps
-Mac/802_11 set dataRate_          54.0e6          ;# 11Mbps
-Mac/802_11 set basicRate_         11.0e6           ;# 1Mbps
+Mac/802_11 set PLCPDataRate_      1.0e6           ;# 1Mbps
+Mac/802_11 set dataRate_          11.0e6          ;# 11Mbps
+Mac/802_11 set basicRate_         1.0e6           ;# 1Mbps
 
-Mac/802_11 set RTSThreshold_ 3000
+Mac/802_11 set RTSThreshold_ 100
 Mac/802_11 set ShortRetryLimit_ 7               ;# retransmittions
 Mac/802_11 set LongRetryLimit_  4               ;# retransmissions
 
+################################################################################################
+
+# Propagation model
+# first set values of shadowing model
+Propagation/Shadowing set pathlossExp_ 2.0  ;# path loss exponent
+Propagation/Shadowing set std_db_ 4.0       ;# shadowing deviation (dB)
+Propagation/Shadowing set dist0_ 1.0        ;# reference distance (m)
+Propagation/Shadowing set seed_ 0           ;# seed for RNG
+
+#
+# The network channel, physical layer, MAC, propagation model,
+# and antenna model are all standard ns-2.
+#  
+set netchan	Channel/WirelessChannel
+set netphy	Phy/WirelessPhy
+set netmac	Mac/802_11
+set antenna     Antenna/OmniAntenna
+
+#set netprop Propagation/TwoRayGround
+set netprop Propagation/Shadowing
+
+#
+# Create a network Channel for the nodes to use. One channel
+# per LAN. Also set the propagation model to be used.
+#
+set wiredchan Channel
+set wiredphy Phy/WiredPhy
+set wiredmac Mac/802_3
+
+##################################################################################
 
 #COLLISIONWINDOWS MIN 31
 #MAX 1023
@@ -59,16 +91,6 @@ set xsize  1000
 set ysize  1000
 set wtopo	[new Topography]
 $wtopo load_flatgrid $xsize $ysize
-
-#
-# The network channel, physical layer, MAC, propagation model,
-# and antenna model are all standard ns-2.
-#  
-set netchan	Channel/WirelessChannel
-set netphy	Phy/WirelessPhy
-set netmac	Mac/802_11
-set netprop     Propagation/TwoRayGround
-set antenna     Antenna/OmniAntenna
 
 #
 # We have to use a special queue and link layer. This is so that

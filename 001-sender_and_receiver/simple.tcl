@@ -22,18 +22,16 @@ Antenna/OmniAntenna set Gr_ 1.0
 
 Phy/WirelessPhy set CPThresh_ 10.0
 
-#Phy/WirelessPhy set CSThresh_ 5.011872e-12
 Phy/WirelessPhy set CSThresh_ 1.559e-11
+#1.559e-11 -> -108db
 
 Phy/WirelessPhy set RXThresh_ 3.28984e-09
-#Phy/WirelessPhy set RXThresh_ 3.652e-10
-#Phy/WirelessPhy set RXThresh_ 5.82587e-09
+#3.28984e-09 -> -85db
 
 #Phy/WirelessPhy set Rb_ 2*1e6
 
 Phy/WirelessPhy set Pt_ 0.281838
 #Phy/WirelessPhy set Pt_ 0.031622777
-
 
 Phy/WirelessPhy set freq_ 2.472e9
 Phy/WirelessPhy set L_ 1.0
@@ -68,7 +66,7 @@ Propagation/Shadowing set seed_ 0           ;# seed for RNG
 set netchan	Channel/WirelessChannel
 set netphy	Phy/WirelessPhy
 set netmac	Mac/802_11
-set antenna Antenna/OmniAntenna
+set antenna     Antenna/OmniAntenna
 
 #set netprop Propagation/TwoRayGround
 set netprop Propagation/Shadowing
