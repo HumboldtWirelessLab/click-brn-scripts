@@ -15,7 +15,7 @@ elementclass BATMAN {$ID, $LT |
   br::BatmanRouting(NODEID $ID, BATMANTABLE brt);
   
   input[1]
-  -> StripBRNHeader()
+  -> BRN2Decap()
 //-> Print("BATMAN")
   -> bc::Classifier( 0/01,  //originator
                      0/02   //routingfwd

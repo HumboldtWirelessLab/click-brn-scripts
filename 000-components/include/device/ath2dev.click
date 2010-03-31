@@ -1,6 +1,7 @@
-elementclass RAWDEV { DEVNAME $devname |
+elementclass RAWDEV { DEVNAME $devname, DEVICE $device |
 
   input[0]
+  -> BRN2SetDeviceAnno(DEVICE $device)
   -> AddEtherNsclick()
 //-> Print("To Device")
   -> toDevice::ToSimDevice($devname);

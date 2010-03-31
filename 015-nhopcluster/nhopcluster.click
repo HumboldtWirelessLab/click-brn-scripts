@@ -22,8 +22,8 @@ clu::NHopCluster(NODEIDENTITY id,  DISTANCE 2, LINKSTAT device_wifi/link_stat, S
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/03,  //BrnDSR
-                           0/0d,  //NHopCluster
+-> brn_clf::Classifier(    0/BRN_PORT_DSR,          //BrnDSR
+                           0/BRN_PORT_NHOPCLUSTER,  //NHopCluster
                              -  );//other
                                     
 brn_clf[0]
@@ -43,7 +43,7 @@ Idle         //no error, so Idle as input
   
 brn_clf[1]
 -> Print("Routing-Packet",100)
--> StripBRNHeader()
+-> BRN2Decap()
 -> [0]clu[0]
 -> Print("out Routing-Packet")
 -> BRN2EtherEncap(USEANNO true)

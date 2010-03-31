@@ -106,7 +106,7 @@ LL set delay_			1ms
 # and when we'll stop.
 #
 
-set nodecount   4
+set nodecount   8
 set stoptime    60.0
 
 #

@@ -14,7 +14,7 @@ elementclass BROADCASTFLOODING {$ID, $ADDRESS, $LST |
   -> [0]sfl;
   
   input[1]
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> [1]sfl;
   
   input[2]

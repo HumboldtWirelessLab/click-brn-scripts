@@ -13,7 +13,7 @@ elementclass BROADCASTROUTINGCORE {$ID, $ADDRESS |
 
   input[1]
   //-> Print("In-BCR-Packet")
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> [1]bcr;
 
   input[2]

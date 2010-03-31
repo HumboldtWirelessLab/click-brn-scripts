@@ -15,18 +15,18 @@ lt::Brn2LinkTable(NODEIDENTITIY id, ROUTECACHE rc, STALE 500,  SIMULATE false, C
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dsr::BATMAN(id,lt);
+batman::BATMAN(id,lt);
 
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
-  -> brn_clf::Classifier(    0/0a,  //BrnDSR
-                             0/10,  //SimpleFlow
+  -> brn_clf::Classifier(    0/BRN_PORT_BATMAN,  //BATMAN
+                             0/BRN_PORT_FLOW,    //SimpleFlow
                                -  );//other
                                     
 brn_clf[0]
 //-> Print("DSR-Packet")
-  -> [1]dsr;
+  -> [1]batman;
 
 device_wifi[1]
 //-> Print("BRN-In")
@@ -38,24 +38,24 @@ device_wifi[2]
   -> Discard;
 
 Idle
-  -> [2]dsr;
+  -> [2]batman;
 
 brn_clf[1]
 //-> Print("rx")
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:01:00,
                         RATE 10000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
   -> BRN2EtherEncap()
 //-> Print("Raus damit")
-  -> [0]dsr;
+  -> [0]batman;
 
 brn_clf[2]
   -> Discard;
 
-dsr[0]
+batman[0]
   -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
 
-dsr[1]
+batman[1]
 //-> Print("DSR[1]-out")
   -> BRN2EtherEncap(USEANNO true)
 //-> Print("DSR-Ether-OUT")
@@ -79,7 +79,7 @@ Script(
   wait 5,
   //read lt.links,
   wait 29, 
-  read dsr/brt.nodes,
+  read batman/brt.nodes,
   wait 10,
   read  sf.txflows,
   read  sf.rxflows

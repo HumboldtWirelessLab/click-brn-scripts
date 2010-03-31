@@ -21,8 +21,8 @@ device_wifi[0]
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
 //-> Print("Foo",100)
-  -> brn_clf::Classifier( 0/11,  //SimpleFlooding
-                          0/10,  //SimpleFlow
+  -> brn_clf::Classifier( 0/BRN_PORT_FLOODING,  //SimpleFlooding
+                          0/BRN_PORT_FLOW,      //SimpleFlow
                             -  );//other
                                     
 device_wifi[1]
@@ -39,7 +39,7 @@ brn_clf[0]
 
 brn_clf[1]
 //-> Print("rx")
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:0f:00,
 //-> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS ff:ff:ff:ff:ff:ff,
                         RATE 500 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)

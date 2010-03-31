@@ -10,11 +10,11 @@ wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "
 infra_client :: WIFIDEV_CLIENT( DEVICENAME "eth0", DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn");
 
 infra_client
-  -> brn_ether_clf :: Classifier( 12/8086 14/10, - )
+  -> brn_ether_clf :: Classifier( 12/8086 14/BRN_PORT_FLOW, - )
   -> Print("rx1")
   -> BRN2EtherDecap()
   -> Print("rx")
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:00:00,
                         RATE 1000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
   -> BRN2EtherEncap()

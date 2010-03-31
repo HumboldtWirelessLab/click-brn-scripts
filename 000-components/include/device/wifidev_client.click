@@ -21,7 +21,7 @@ elementclass WIFIDEV_CLIENT { DEVICENAME $devname,
                                          CHANNEL 5, WIFIENCAP infra_wifiencap, WIRELESS_INFO auth_info, ACTIVESCAN $active);
 
  
-  rawdevice::RAWDEV(DEVNAME $devname);
+  rawdevice::RAWDEV(DEVNAME $devname, DEVICE $device);
   
   wifioutq::NotifierQueue(50);
 
@@ -60,7 +60,7 @@ elementclass WIFIDEV_CLIENT { DEVICENAME $devname,
                                          CHANNEL 5, WIFIENCAP infra_wifiencap, WIRELESS_INFO auth_info, ACTIVESCAN false);
 
  
-  rawdevice::RAWDEV(DEVNAME $devname);
+  rawdevice::RAWDEV(DEVNAME $devname, DEVICE $device);
   
   wifioutq::NotifierQueue(50);
 

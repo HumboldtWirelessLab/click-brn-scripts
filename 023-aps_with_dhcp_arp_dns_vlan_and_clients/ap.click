@@ -35,9 +35,9 @@ device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
 //-> Print("Foo",100)
-  -> brn_clf::Classifier(  0/03,  //BrnDSR
-                           0/0e,  //DHT-Routing
-                           0/0f,  //DHT-Storage
+  -> brn_clf::Classifier(  0/BRN_PORT_DSR,  //BrnDSR
+                           0/BRN_PORT_DHTROUTING,  //DHT-Routing
+                           0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
                             -  );//other
   
 brn_clf[0]
@@ -46,7 +46,7 @@ brn_clf[0]
   
 brn_clf[1]
 //-> Print("Routing-Packet",100)
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> [0]dht[0]
   -> dht_r_all::Counter()
 //-> Print("out Routing-Packet")
@@ -59,7 +59,7 @@ dht[1]
 
 brn_clf[2]
 //-> Print("Storage-Packet")
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> dhtstorage
   -> dht_s::Counter()
 //-> Print("Storage-Packet-out")

@@ -6,7 +6,7 @@
 BRNAddressInfo(deviceaddress eth0:eth);
 wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-rawdevice::RAWDEV(DEVNAME eth0);
+rawdevice::RAWDEV(DEVNAME eth0, DEVICE wireless);
 
 rawdevice
   -> Discard;

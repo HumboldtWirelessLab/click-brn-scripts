@@ -32,9 +32,9 @@ brngw::BRNGateway(ETHERADDRESS deviceaddress, UPDATE_GATEWAYS_INTERVAL 3, UPDATE
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/03,  //BrnDSR
-                           0/0e,  //DHT-Routing
-                           0/0f,  //DHT-Storage
+-> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
+                           0/BRN_PORT_DHTROUTING,  //DHT-Routing
+                           0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
                              -  );//other
                                     
 brn_clf[0] /*-> Print("DSR-Packet") */ ->  [1]dsr;
@@ -46,7 +46,7 @@ Idle -> [2]dsr;
 
 brn_clf[1]
 //-> Print("Routing-Packet",100)
--> StripBRNHeader()
+-> BRN2Decap()
 -> [0]dht[0]
 -> dht_r_all::Counter()
 //-> Print("out Routing-Packet")
@@ -54,7 +54,7 @@ brn_clf[1]
 
 brn_clf[2]
 //-> Print("Storage-Packet")
--> StripBRNHeader()
+-> BRN2Decap()
 -> dhtstorage
 -> dht_s::Counter()
 //-> Print("Storage-Packet-out")

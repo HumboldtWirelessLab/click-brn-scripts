@@ -22,8 +22,8 @@ dsr::DSR(id,lt,rc);
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
-  -> brn_clf::Classifier(    0/03,  //BrnDSR
-                             0/10,  //SimpleFlow
+  -> brn_clf::Classifier(    0/BRN_PORT_DSR,   //BrnDSR
+                             0/BRN_PORT_FLOW,  //SimpleFlow
                                -  );//other
                                     
 brn_clf[0]
@@ -43,7 +43,7 @@ Idle
 
 brn_clf[1]
 //-> Print("rx")
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:06:00,
                         RATE 10000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
   -> BRN2EtherEncap()

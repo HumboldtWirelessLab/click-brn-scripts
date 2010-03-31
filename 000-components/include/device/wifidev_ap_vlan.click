@@ -38,7 +38,7 @@ elementclass WIFIDEV_AP_VLAN { DEVNAME $devname, DEVICE $device, ETHERADDRESS $e
   toStation::BRN2ToStations(ASSOCLIST ap/assoclist);               
   toMe::BRN2ToThisNode(NODEIDENTITY id);
 
-  rawdevice::RAWDEV(DEVNAME $devname);
+  rawdevice::RAWDEV(DEVNAME $devname, DEVICE $device);
 
 
   input[0] 
@@ -61,7 +61,7 @@ elementclass WIFIDEV_AP_VLAN { DEVNAME $devname, DEVICE $device, ETHERADDRESS $e
     -> brn_ether_clf :: Classifier( 12/8086, - );
     
   brn_ether_clf[0]
-    -> lp_clf :: Classifier( 14/06, - )
+    -> lp_clf :: Classifier( 14/BRN_PORT_LINK_PROBE, - )
     -> BRN2EtherDecap()
     -> link_stat
     -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)

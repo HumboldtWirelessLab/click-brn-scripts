@@ -20,7 +20,7 @@ dsr::DSR(id,lt,rc);
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/03,  //BrnDSR
+-> brn_clf::Classifier(    0/0a,  //BrnDSR
                              -  );//other
                                     
 brn_clf[0]

@@ -68,8 +68,8 @@ set netphy	Phy/WirelessPhy
 set netmac	Mac/802_11
 set antenna     Antenna/OmniAntenna
 
-#set netprop Propagation/TwoRayGround
-set netprop Propagation/Shadowing
+set netprop Propagation/TwoRayGround
+#set netprop Propagation/Shadowing
 
 #
 # Create a network Channel for the nodes to use. One channel
@@ -106,8 +106,8 @@ LL set delay_			1ms
 # and when we'll stop.
 #
 
-set nodecount   9
-set slen	3
+set nodecount   25
+set slen	5
 set stoptime    50.0
 
 #
@@ -213,7 +213,7 @@ for {set i 0} {$i < $nodecount } {incr i} {
     [$node_($i) set classifier_] setnodename "node$i"
 }
 
-for {set i 1} {$i < $nodecount } {incr i} {
+for {set i 0} {$i < [expr $nodecount - 1] } {incr i} {
     #
     # Load the appropriate Click router script for the node.
     # All nodes in this simulation are using the same script,
@@ -223,7 +223,7 @@ for {set i 1} {$i < $nodecount } {incr i} {
 [$node_($i) entry] loadclick "batman_simpleflow_out.click"
 }
 
-[$node_(0) entry] loadclick "batman_simpleflow_src_out.click"
+[$node_([expr $nodecount - 1]) entry] loadclick "batman_simpleflow_src_out.click"
 
 for {set i 0} {$i < $nodecount} {incr i} {
    $ns_ at 0.0 "[$node_($i) entry] runclick"

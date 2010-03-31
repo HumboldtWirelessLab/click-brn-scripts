@@ -18,7 +18,7 @@ elementclass DART {$ID, $dhtroutingtable, $dhtstorage, $dhtrouting |
   -> [0]output;
   
   input[1]
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> [0]dartfwd;
   
   dartfwd[1]

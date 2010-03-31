@@ -27,12 +27,12 @@ elementclass BROADCASTROUTING {$ID, $ADDRESS, $LST |
   -> [0]bcr;
      
   input[1]
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> [1]sfl;
  
   sfl[0]
 //-> Print("Local Copy")
-  -> bcrouting_clf::Classifier( 12/8086 14/04,  //BrnBroadcastRouting
+  -> bcrouting_clf::Classifier( 12/8086 14/BRN_PORT_BCASTROUTING,  //BrnBroadcastRouting
                                     - );
   
   bcrouting_clf[0]

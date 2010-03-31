@@ -68,8 +68,8 @@ set netphy	Phy/WirelessPhy
 set netmac	Mac/802_11
 set antenna     Antenna/OmniAntenna
 
-#set netprop Propagation/TwoRayGround
-set netprop Propagation/Shadowing
+set netprop Propagation/TwoRayGround
+#set netprop Propagation/Shadowing
 
 #
 # Create a network Channel for the nodes to use. One channel

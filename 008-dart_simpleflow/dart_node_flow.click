@@ -25,10 +25,10 @@ dart::DART(id, dht/dhtroutingtable, dhtstorage/dhtstorage, dht/dhtrouting);
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/0e,  //DHT-Routing
-                           0/0f,  //DHT-Storage
-                           0/15,  //DART
-                           0/10,  //SimpleFlow
+-> brn_clf::Classifier(    0/BRN_PORT_DHTROUTING,  //DHT-Routing
+                           0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
+                           0/BRN_PORT_DART,  //DART
+			                     0/BRN_PORT_FLOW,  //SimpleFlow
                              -  );//other
                                     
 
@@ -37,7 +37,7 @@ device_wifi[2] -> Discard;
 
 brn_clf[0]
 //-> Print("Routing-Packet")
--> StripBRNHeader()
+-> BRN2Decap()
 -> [0]dht[0]
 -> dht_r_all::Counter()
 //-> Print("out Routing-Packet")
@@ -45,7 +45,7 @@ brn_clf[0]
 
 brn_clf[1]
 //-> Print("Storage-Packet")
--> StripBRNHeader()
+-> BRN2Decap()
 -> dhtstorage
 -> dht_s::Counter()
 //-> Print("Storage-Packet-out",100)
@@ -60,7 +60,7 @@ dht[1]
 -> dht_r_neighbour::Counter()
 -> [0]device_wifi;
 
-brn_clf[3] -> StripBRNHeader()
+brn_clf[3] -> BRN2Decap()
 -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:00:00, RATE 500 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
 -> BRN2EtherEncap()
 -> [0]dart;
@@ -104,7 +104,9 @@ Script(
 //  read dht_s.byte_count,
   
 //  read dht/dhtnws.networksize,
-  read  sf.txflows,
-  read  sf.rxflows
+  read sf.txflows,
+  read sf.rxflows,
+  read dht/dhtrouting.debug,
+  read dhtstorage/dhtstorage.debug
 
 );

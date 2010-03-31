@@ -40,10 +40,10 @@ device_wifi
                       12/0800,
                       -)
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/03,  //BrnDSR
-                           0/0e,  //DHT-Routing
-                           0/0f,  //DHT-Storage
-                           0/09,  //Gateway
+-> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
+                           0/BRN_PORT_DHTROUTING,  //DHT-Routing
+                           0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
+                           0/BRN_PORT_GATEWAY,  //Gateway
                              -  );//other
                                     
 brn_clf[0] -> /*Print("DSR-Packet") -> */ [1]dsr;
@@ -55,7 +55,7 @@ Idle -> [2]dsr;
 
 brn_clf[1]
 //-> Print("Routing-Packet")
--> StripBRNHeader()
+-> BRN2Decap()
 -> [0]dht[0]
 -> dht_r_all::Counter()
 //-> Print("out Routing-Packet")
@@ -63,7 +63,7 @@ brn_clf[1]
 
 brn_clf[2]
 //-> Print("Storage-Packet")
--> StripBRNHeader()
+-> BRN2Decap()
 -> dhtstorage
 -> dht_s::Counter()
 //-> Print("Storage-Packet-out",100)
@@ -98,8 +98,7 @@ Idle
 -> BRN2EtherDecap()
 -> StripIPHeader()
 -> Strip(8)
--> Print()
--> StripBRNHeader()
+-> BRN2Decap()
 -> sf_dst::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:00:00, RATE 500 , SIZE 100, MODE 0, DURATION 2000, ACTIVE 0)
 -> Discard;
 

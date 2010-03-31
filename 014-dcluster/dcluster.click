@@ -24,7 +24,7 @@ Idle
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/03,  //BrnDSR
+-> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
                              -  );//other
                                     
 brn_clf[0]

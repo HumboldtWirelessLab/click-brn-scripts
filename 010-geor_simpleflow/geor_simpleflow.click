@@ -22,8 +22,8 @@ device_wifi
   -> BRN2EtherDecap()
 //-> Print("Foo",100)
   -> tothisnode::BRN2ToThisNode(NODEIDENTITY id)
-  -> brn_clf::Classifier(    0/14,  //Geor
-                           0/10,  //SimpleFlow
+  -> brn_clf::Classifier( 0/BRN_PORT_GEOROUTING,  //Geor
+                          0/BRN_PORT_FLOW,        //SimpleFlow
                              -  );//other
 
 tothisnode[1] 
@@ -46,7 +46,7 @@ geor[1]
   -> [0]device_wifi;;
 
 brn_clf[1]
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:03:00,
                         RATE 1000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
   -> BRN2EtherEncap(USEANNO true)

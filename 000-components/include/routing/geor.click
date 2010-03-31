@@ -19,7 +19,7 @@ elementclass GEOR {$ID, $LT, $LS |
   -> Discard;
 
   input[1]
-  -> StripBRNHeader()
+  -> BRN2Decap()
   -> gfwd;
 
   gfwd[0]
