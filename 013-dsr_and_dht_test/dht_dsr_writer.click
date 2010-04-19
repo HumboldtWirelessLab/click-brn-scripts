@@ -108,4 +108,7 @@ Script(
   //read dht_s.byte_count,
   
   read dht/dhtnws.networksize,
+  
+  read dht/dhtrouting.node_id,
+  write dht/dhtrouting.node_id 4cab32f321fc670bf5859c244c790d8b 128
 );
