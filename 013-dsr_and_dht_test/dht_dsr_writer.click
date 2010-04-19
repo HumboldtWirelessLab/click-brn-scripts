@@ -25,11 +25,11 @@ dsr::DSR(id,lt,rc);
 
 //dht::DHT_OMNI(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 //dht::DHT_KLIBS(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
-dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
+dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 2000, DEBUG 2);
 //dht::DHT_DART(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2 );
-dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage , STARTTIME 65000, INTERVAL 1000, COUNTKEYS 10, WRITE true, RETRIES 1, REPLICA 3, DEBUG 2);
+dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage , STARTTIME 65000, INTERVAL 1000, COUNTKEYS 10, WRITE true, RETRIES 1, REPLICA 0, DEBUG 2);
 
 device_wifi
 -> Label_brnether::Null()
@@ -108,4 +108,7 @@ Script(
   //read dht_s.byte_count,
   
   read dht/dhtnws.networksize,
+  
+  read dht/dhtrouting.node_id,
+  write dht/dhtrouting.node_id 4cab32f321fc670bf5859c244c790d8b 128
 );
