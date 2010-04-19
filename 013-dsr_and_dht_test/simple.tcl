@@ -68,8 +68,8 @@ set netphy	Phy/WirelessPhy
 set netmac	Mac/802_11
 set antenna     Antenna/OmniAntenna
 
-#set netprop Propagation/TwoRayGround
-set netprop Propagation/Shadowing
+set netprop Propagation/TwoRayGround
+#set netprop Propagation/Shadowing
 
 #
 # Create a network Channel for the nodes to use. One channel
@@ -106,8 +106,8 @@ LL set delay_			1ms
 # and when we'll stop.
 #
 
-set nodecount   9
-set slen	3
+set nodecount   25
+set slen	5
 set stoptime    100.0
 
 #
