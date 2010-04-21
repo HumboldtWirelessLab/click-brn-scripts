@@ -15,6 +15,7 @@ elementclass DSR {$ID, $LT, $RC |
   rep_forwarder :: BRN2ReplyForwarder(NODEIDENTITY $ID, LINKTABLE $LT, DSRDECAP dsr_decap, ROUTEQUERIER querier, DSRENCAP dsr_encap);
   src_forwarder :: BRN2SrcForwarder(NODEIDENTITY $ID, LINKTABLE $LT, DSRENCAP dsr_encap, DSRDECAP dsr_decap, DEBUG 2);
   err_forwarder :: BRN2ErrorForwarder(NODEIDENTITY $ID, LINKTABLE $LT, DSRENCAP dsr_encap, DSRDECAP dsr_decap, ROUTEQUERIER querier);
+  routing_peek :: DSRPeek(DEBUG 2);
 
   input[0]
 #ifdef DEBUG_DSR
@@ -36,6 +37,7 @@ elementclass DSR {$ID, $LT, $RC |
 #ifdef DEBUG_DSR
   -> Print("Forward",100)
 #endif
+  -> routing_peek
   -> BRN2EtherEncap(USEANNO true)
   -> BRN2EtherDecap()
   -> [1]output;
