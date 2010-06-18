@@ -73,9 +73,7 @@ toMeAfterDsr[2]
 Script(
   wait 10,
   read  sf.txflows,
-  read  sf.rxflows,
-  wait 1,
-//read sfl.stat
+  read  sf.rxflows
 );
 
 Script(

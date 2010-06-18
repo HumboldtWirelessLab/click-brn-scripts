@@ -262,13 +262,13 @@ for {set i 0} {$i < $nodecount} {incr i} {
 }
 
 
-$ns_ at 10.5000000000 "[$node_(0) entry] readhandler sfl stat"
+#$ns_ at 10.5000000000 "[$node_(0) entry] readhandler sfl stat"
 #
 # Stop the simulation
 #
 $ns_ at  $stoptime.000000001 "puts \"NS EXITING...\" ; $ns_ halt;"
 
-$ns_ at  11.0 "puts \"\[\[$node_(1) entry\] readhandler lt links \]\""
+#$ns_ at  11.0 "puts \"\[\[$node_(1) entry\] readhandler lt links \]\""
 #
 # Let nam know that the simulation is done.
 #

@@ -77,10 +77,7 @@ Script(
   write  sf.active 1,
   wait 10,
   read  sf.txflows,
-  read  sf.rxflows,
-  wait 1,
-//  read sfl.stat,
-  stop
+  read  sf.rxflows
 );
 
 Script(
