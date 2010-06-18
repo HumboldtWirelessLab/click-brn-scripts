@@ -263,6 +263,8 @@ for {set i 0} {$i < $nodecount} {incr i} {
     $ns_ initial_node_pos $node_($i) 20
 }
 
+
+#$ns_ at 10.5000000000 "[$node_(0) entry] readhandler sfl stat"
 #
 # Stop the simulation
 #
