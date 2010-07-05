@@ -106,11 +106,9 @@ LL set delay_			1ms
 # and when we'll stop.
 #
 
-#set nodecount   25
-#set slen	5
-set nodecount   16
-set slen	4
-set stoptime    100.0
+set nodecount   4
+set slen	5
+set stoptime    40.0
 
 #
 # With nsclick, we have to worry about details like which network
@@ -215,17 +213,17 @@ for {set i 0} {$i < $nodecount } {incr i} {
     [$node_($i) set classifier_] setnodename "node$i"
 }
 
-for {set i 1} {$i < $nodecount } {incr i} {
+for {set i 0} {$i < [expr $nodecount - 1] } {incr i} {
     #
     # Load the appropriate Click router script for the node.
     # All nodes in this simulation are using the same script,
     # but there's no reason why each node couldn't use a different
     # script.
     #
-[$node_($i) entry] loadclick "dht_dsr_out.click"
+[$node_($i) entry] loadclick "hawk_node_out.click"
 }
 
-[$node_(0) entry] loadclick "dht_dsr_writer_out.click"
+[$node_([expr $nodecount - 1]) entry] loadclick "hawk_node_flow_out.click"
 
 for {set i 0} {$i < $nodecount} {incr i} {
    $ns_ at 0.0 "[$node_($i) entry] runclick"

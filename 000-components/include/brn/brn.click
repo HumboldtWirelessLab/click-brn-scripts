@@ -18,7 +18,7 @@
 #define BRN_PORT_BATMAN               0d
 #define BRN_PORT_GEOROUTING           0e
 #define BRN_PORT_DART                 0f
-#define BRN_PORT_FALCON               10
+#define BRN_PORT_HAWK                 10
 #define BRN_PORT_OLSR                 11
 #define BRN_PORT_AODV                 12
 /*Clustering*/
