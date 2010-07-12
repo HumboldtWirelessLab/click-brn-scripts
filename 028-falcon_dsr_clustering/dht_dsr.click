@@ -82,7 +82,7 @@ Script(
   //read lt.links,
   wait 5,
   read  dht/dhtrouting.routing_info,
-  //read lt.links,
+  read lt.links,
   wait 59, 
   //read  dhtstorage.db_size,
   //read  dhtstoragetest.stats,

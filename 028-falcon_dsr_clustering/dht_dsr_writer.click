@@ -77,7 +77,7 @@ Script(
   //read lt.links,
   wait 5,
   read  dht/dhtrouting.routing_info,
-  //read lt.links,
+  read lt.links,
   write dht/dhtroutemaintenance.activestart true,
   wait 59,
   //read  dhtstorage.db_size,
