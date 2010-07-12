@@ -3,10 +3,7 @@
 #include "brn/brn.click"
 #include "device/simdev.click"
 #include "device/wifidev.click"
-#include "dht/routing/dht_dart.click"
 #include "dht/routing/dht_falcon.click"
-#include "dht/routing/dht_klibs.click"
-#include "dht/routing/dht_omni.click"
 #include "dht/storage/dht_storage.click"
 #include "routing/dart.click"
 #include "routing/dsr.click"
@@ -23,10 +20,7 @@ device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, 
 
 dsr::DSR(id,lt,rc);
 
-//dht::DHT_OMNI(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
-//dht::DHT_KLIBS(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 2000, DEBUG 2);
-//dht::DHT_DART(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2 );
 dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage , STARTTIME 65000, INTERVAL 1000, COUNTKEYS 10, WRITE true, RETRIES 1, REPLICA 0, DEBUG 2);
@@ -80,21 +74,21 @@ toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 Script(
   wait 5,
   read  dht/dhtrouting.routing_info,
-//read lt.links,
+  //read lt.links,
   wait 5,
   read  dht/dhtrouting.routing_info,
-//read lt.links,
+  //read lt.links,
   write dht/dhtroutemaintenance.activestart true,
   wait 59,
-//read  dhtstorage.db_size,
-//read  dhtstoragetest.stats,
+  //read  dhtstorage.db_size,
+  //read  dhtstoragetest.stats,
   read  dht/dhtrouting.routing_info,
   wait 1,
-  write dht/dhtnws.start_request 1,
+  //write dht/dhtnws.start_request 1,
   wait 8,
   wait 1,
   wait 20,
-//  read  dhtstorage/dhtstorage.db_size,
+  //read  dhtstorage/dhtstorage.db_size,
   read  dhtstorage/dhtstorage.stats,
   read  dhtstoragetest.stats,
   
@@ -108,7 +102,6 @@ Script(
   //read dht_s.byte_count,
   
   read dht/dhtnws.networksize,
-  
   read dht/dhtrouting.node_id
 //  write dht/dhtrouting.node_id 4cab32f321fc670bf5859c244c790d8b 128
 );
