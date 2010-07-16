@@ -5,7 +5,6 @@
 #include "device/wifidev.click"
 #include "dht/routing/dht_falcon.click"
 #include "dht/storage/dht_storage.click"
-#include "routing/dart.click"
 #include "routing/dsr.click"
 
 BRNAddressInfo(deviceaddress eth0:eth);
@@ -20,10 +19,10 @@ device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, 
 
 dsr::DSR(id,lt,rc);
 
-dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 2000, DEBUG 2);
+dhtrouting::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 2000, DEBUG 4);
 
-dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2 );
-dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage , STARTTIME 65000, INTERVAL 1000, COUNTKEYS 10, WRITE true, RETRIES 1, REPLICA 0, DEBUG 2);
+dhtstorage :: DHT_STORAGE( DHTROUTING dhtrouting/dhtrouting, DEBUG 4 );
+dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage , STARTTIME 65000, INTERVAL /*1000*/2500, COUNTKEYS 4/*10*/, WRITE true, RETRIES 1, REPLICA 0, DEBUG 2);
 
 device_wifi
 -> Label_brnether::Null()
@@ -43,7 +42,7 @@ Idle -> [2]dsr;
 brn_clf[1]
 //-> Print("Routing-Packet")
 -> BRN2Decap()
--> [0]dht[0]
+-> [0]dhtrouting[0]
 -> dht_r_all::Counter()
 //-> Print("out Routing-Packet")
 -> [0]dsr;
@@ -59,7 +58,7 @@ brn_clf[2]
 
 brn_clf[3] -> Discard;
 
-dht[1]
+dhtrouting[1]
 //-> Print("routing-Packet-out")
 -> dht_r_neighbour::Counter()
 -> [0]device_wifi;
@@ -72,36 +71,24 @@ toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;
 toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 
 Script(
-  wait 5,
-  read  dht/dhtrouting.routing_info,
-  //read lt.links,
-  wait 5,
-  read  dht/dhtrouting.routing_info,
+  wait 10,
   read lt.links,
-  write dht/dhtroutemaintenance.activestart true,
   wait 59,
-  //read  dhtstorage.db_size,
-  //read  dhtstoragetest.stats,
-  read  dht/dhtrouting.routing_info,
+  read  dhtrouting/dhtrouting.routing_info,
   wait 1,
-  //write dht/dhtnws.start_request 1,
-  wait 8,
-  wait 1,
-  wait 20,
-  //read  dhtstorage/dhtstorage.db_size,
+  write dhtrouting/dhtnws.start_request 1,
+  wait 29,
   read  dhtstorage/dhtstorage.stats,
   read  dhtstoragetest.stats,
   
-  //read  dht/dhtrouting.routing_info
-  
   //read dht_r_all.count,
-  //read dht_r_all.byte_count,
+  read dht_r_all.byte_count,
   //read dht_r_neighbour.count,
   //read dht_r_neighbour.byte_count,
   //read dht_s.count,
   //read dht_s.byte_count,
   
-  read dht/dhtnws.networksize,
-  read dht/dhtrouting.node_id
-//  write dht/dhtrouting.node_id 4cab32f321fc670bf5859c244c790d8b 128
+  read dhtrouting/dhtnws.networksize,
+  //read dht/dhtrouting.node_id
+  //write dht/dhtrouting.node_id 4cab32f321fc670bf5859c244c790d8b 128
 );

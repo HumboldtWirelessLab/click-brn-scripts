@@ -1,17 +1,19 @@
 elementclass DHT_FALCON { ETHERADDRESS $etheraddress, LINKSTAT $lt, STARTTIME $starttime, UPDATEINT $updateint, ROUTINGPEEK $routing_peek, DEBUG $debug |
+
   dhtroutingtable :: FalconRoutingTable(ETHERADDRESS $etheraddress, /*USEMD5 false,*/ DEBUG $debug);
 
   dhtroutemaintenance :: FalconRoutingTableMaintenance( FRT dhtroutingtable, STARTTIME $starttime, UPDATEINT $updateint, DEBUG $debug);
   dhtsuccessormaintenance :: FalconSuccessorMaintenance( FRT dhtroutingtable, STARTTIME $starttime, UPDATEINT $updateint, DEBUG $debug, OPTIMIZATION 0);
   dhtleaveorganizer :: FalconLeaveOrganizer(FRT dhtroutingtable, RETRIES 3, DEBUG 4);
-  dhtnws :: FalconNetworkSizeDetermination( FRT dhtroutingtable, DEBUG $debug);
 
+  dhtnws :: FalconNetworkSizeDetermination( FRT dhtroutingtable, DEBUG $debug);
   dhtlprh :: FalconLinkProbeHandler(FRT dhtroutingtable, LINKSTAT $lt, REGISTERHANDLER true, DEBUG $debug, NODESPERLP 0);
+
   dhtrouting :: DHTRoutingFalcon(FRT dhtroutingtable, LEAVEORGANIZER dhtleaveorganizer, RESPONSIBLE 1);
   dhtroutingpeek :: FalconRoutingPeek(FRT dhtroutingtable, ROUTINGPEEK $routing_peek, DEBUG $debug);
 
- input[0] //-> Print("R-in",100)
-  -> frc::FalconRoutingClassifier();
+  input[0] //-> Print("R-in",100)
+    -> frc::FalconRoutingClassifier();
 
   frc[0] //-> Print("R-S-in",100)
     -> dhtsuccessormaintenance 
@@ -44,17 +46,20 @@ elementclass DHT_FALCON { ETHERADDRESS $etheraddress, LINKSTAT $lt, STARTTIME $s
   ||
   
  ETHERADDRESS $etheraddress, LINKSTAT $lt, STARTTIME $starttime, UPDATEINT $updateint, DEBUG $debug |
+
   dhtroutingtable :: FalconRoutingTable(ETHERADDRESS $etheraddress);
 
   dhtroutemaintenance :: FalconRoutingTableMaintenance( FRT dhtroutingtable, STARTTIME $starttime, UPDATEINT $updateint, DEBUG $debug);
   dhtsuccessormaintenance :: FalconSuccessorMaintenance( FRT dhtroutingtable, STARTTIME $starttime, UPDATEINT $updateint, DEBUG $debug, OPTIMIZATION 0);
   dhtleaveorganizer :: FalconLeaveOrganizer(FRT dhtroutingtable, RETRIES 3, DEBUG 4);
+
   dhtnws :: FalconNetworkSizeDetermination( FRT dhtroutingtable, DEBUG $debug);
   dhtlprh :: FalconLinkProbeHandler(FRT dhtroutingtable, LINKSTAT $lt, REGISTERHANDLER true, DEBUG $debug, NODESPERLP 0);
+
   dhtrouting :: DHTRoutingFalcon(FRT dhtroutingtable, LEAVEORGANIZER dhtleaveorganizer, RESPONSIBLE 1);
 
   input[0] //-> Print("R-in",100)
-  -> frc::FalconRoutingClassifier();
+    -> frc::FalconRoutingClassifier();
   
   frc[0] //-> Print("R-S-in",100)
     -> dhtsuccessormaintenance 
@@ -82,8 +87,5 @@ elementclass DHT_FALCON { ETHERADDRESS $etheraddress, LINKSTAT $lt, STARTTIME $s
     // -> Print("R-NWS-out",100)
     -> [0]output;
 
-//||
-// ETHERADDRESS $etheraddress, LINKSTAT $lt, STARTTIME $starttime, UPDATEINT $updateint, DEBUG $debug, REGISTERHANDLER $regh |
-//  dhtroutingtable :: FalconRoutingTable(ETHERADDRESS $etheraddress);
 }
 
