@@ -35,7 +35,7 @@ Phy/WirelessPhy set Pt_ 0.281838
 
 Phy/WirelessPhy set freq_ 2.472e9
 Phy/WirelessPhy set L_ 1.0
-Phy/WirelessPhy set bandwidth_ 1Mb
+Phy/WirelessPhy set bandwidth_ 11Mb
 
 
 Mac/802_11 set SlotTime_          0.000020        ;# 20us

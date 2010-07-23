@@ -1,5 +1,4 @@
-function bridges = find_bridges(filename)
-  r=load(filename);
+function bridges = find_bridges(r)
   nodes=size(r,1);
 
   bridges=zeros(nodes,nodes);
