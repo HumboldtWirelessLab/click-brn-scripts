@@ -11,10 +11,29 @@ rawdevice::RAWDEV(DEVNAME eth0, DEVICE wireless);
 rawdevice
   -> Discard;
 
+wifioutq::NotifierQueue(50)
+-> rawdevice;
+
 BRN2PacketSource(100, 1000, 30000, 14, 2, 16)
   -> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> PrintWifi("Sender", TIMESTAMP true)
   -> SetTXRate(2)
-  -> rawdevice;
+  -> wifioutq;
+
+BRN2PacketSource(100, 1000, 30000, 14, 2, 16)
+  -> SetTimestamp()
+  -> EtherEncap(0x8086, deviceaddress, 00:03:47:70:89:01)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> PrintWifi("Sender", TIMESTAMP true)
+  -> SetTXRate(2)
+  -> wifioutq;
+
+BRN2PacketSource(100, 1000, 30000, 14, 2, 16)
+  -> SetTimestamp()
+  -> EtherEncap(0x8086, deviceaddress, 00:03:47:70:89:03)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> PrintWifi("Sender", TIMESTAMP true)
+  -> SetTXRate(2)
+  -> wifioutq;

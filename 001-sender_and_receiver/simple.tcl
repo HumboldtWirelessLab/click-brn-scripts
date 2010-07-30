@@ -45,8 +45,9 @@ Mac/802_11 set PLCPHeaderLength_  48              ;# 48 bits
 Mac/802_11 set PLCPDataRate_      1.0e6           ;# 1Mbps
 Mac/802_11 set dataRate_          11.0e6          ;# 11Mbps
 Mac/802_11 set basicRate_         1.0e6           ;# 1Mbps
+Mac/802_11 set Promisc_           1               ;# Promisc
 
-Mac/802_11 set RTSThreshold_ 100
+Mac/802_11 set RTSThreshold_ 1500
 Mac/802_11 set ShortRetryLimit_ 7               ;# retransmittions
 Mac/802_11 set LongRetryLimit_  4               ;# retransmissions
 
@@ -68,8 +69,8 @@ set netphy	Phy/WirelessPhy
 set netmac	Mac/802_11
 set antenna     Antenna/OmniAntenna
 
-#set netprop Propagation/TwoRayGround
-set netprop Propagation/Shadowing
+set netprop Propagation/TwoRayGround
+#set netprop Propagation/Shadowing
 
 #
 # Create a network Channel for the nodes to use. One channel
@@ -245,8 +246,8 @@ set packetsize 64
 
 
 for {set i 0} {$i < $nodecount} {incr i} {
-    $node_($i) set X_ [expr $i % 2 * 80 + 40]
-    $node_($i) set Y_ [expr $i / 2 * 80 + 40]
+    $node_($i) set X_ [expr $i % 2 * 20 + 40]
+    $node_($i) set Y_ [expr $i / 2 * 20 + 40]
     $node_($i) set Z_ 0
     $node_($i) label $node_mac($i).brn
 }
