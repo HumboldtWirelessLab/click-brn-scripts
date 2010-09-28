@@ -81,7 +81,9 @@ Script(
   read dht/dhtrouting.routing_info,
   wait 4,
   write sf.active 1,
-  wait 6,
+  wait 15,
+  read dht/dhtrouting.routing_info,
+  wait 1,
   read sf.txflows,
   read sf.rxflows,
   read routing/rt.tableinfo

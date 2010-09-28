@@ -106,9 +106,9 @@ LL set delay_			1ms
 # and when we'll stop.
 #
 
-set nodecount   4
-set slen	5
-set stoptime    40.0
+set nodecount   36
+set slen	6
+set stoptime    50.0
 
 #
 # With nsclick, we have to worry about details like which network

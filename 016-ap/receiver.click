@@ -3,10 +3,10 @@
 #include "brn/brn.click"
 #include "device/simdev.click"
 
-BRNAddressInfo(deviceaddress eth0:eth);
-wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-rawdevice::RAWDEV(DEVNAME eth0, DEVICE wireless);
+rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 rawdevice
  // -> Print("RECEIVE",60)
