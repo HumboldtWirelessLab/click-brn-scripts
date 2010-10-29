@@ -1,8 +1,7 @@
 #define DEBUGLEVEL 2
 
 #include "brn/brn.click"
-#include "device/simdev.click"
-#include "device/wifidev.click"
+#include "device/wifidev_linkstat.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -33,4 +32,5 @@ Idle
 Script(
   wait 10,
   read lt.links,
+  read device_wifi/link_stat.bcast_stats
 );

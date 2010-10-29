@@ -11,8 +11,9 @@ rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 rawdevice
 //  -> PrintWifi("Feedback", TIMESTAMP true)
   -> __WIFIDECAP__
+  -> BRN2PrintWifi("Feedback", TIMESTAMP true)
   -> Print("Feedback",60)
-  -> ate::AirTimeEstimation(DEBUG true)
+  -> cst::ChannelStats(DEBUG true)
   -> Discard;
 
 //rate::SetTXRates(RATE0 11, RATE1 4, RATE2 2, RATE3 2, TRIES0 1, TRIES1 2, TRIES2 1, TRIES3 1)
@@ -50,7 +51,8 @@ BRN2PacketSource(100, 1000, 30000, 14, 2, 16)
 
 Script(
  wait 6,
- read ate.stats
+ read cst.stats,
+ read cst.stats_short
 );
   
   

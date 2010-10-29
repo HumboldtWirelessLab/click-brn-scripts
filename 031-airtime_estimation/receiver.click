@@ -11,10 +11,10 @@ rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 rawdevice
   -> t::Tee()
   -> __WIFIDECAP__
-  -> ate::AirTimeEstimation(DEBUG true)
+  -> cst::ChannelStats(DEBUG true)
   -> Print("RECEIVE",60)
   -> WifiDupeFilter()
-  -> PrintWifi("Receive-Wifi", TIMESTAMP true)
+  -> BRN2PrintWifi("Receive-Wifi", TIMESTAMP true)
   -> Discard;
 
 t[1]
@@ -25,5 +25,7 @@ Idle
 
 Script(
  wait 6,
- read ate.stats
+ read cst.stats,
+ read cst.busy,
+ read cst.stats_short
 );
