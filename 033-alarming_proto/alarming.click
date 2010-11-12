@@ -16,7 +16,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-as::AlarmingState(LINKTABLE lt);
+as::AlarmingState(LINKTABLE lt, HOPLIMIT 10, LOWHOPFWD true, RETRIES 4, MINNEIGHBOURFRACT 70);
 af::AlarmingForwarder(NODEID id, ALARMINGSTATE as, RSSI_DELAY true);
 asrc::AlarmingSource(ALARMINGSTATE as);
 art::AlarmingRetransmit(NODEID id, ALARMINGSTATE as);

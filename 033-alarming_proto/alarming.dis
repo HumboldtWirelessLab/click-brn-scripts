@@ -1,15 +1,15 @@
 NAME=alarming
 SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
+#RADIO=shadowing11b
+RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=1
+TIME=105
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=alarming.mes
-NODEPLACEMENT=grid
-FIELDSIZE=1800
+NODEPLACEMENT=string
+FIELDSIZE=2500
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
