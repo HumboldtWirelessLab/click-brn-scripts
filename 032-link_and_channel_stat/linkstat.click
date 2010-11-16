@@ -1,6 +1,7 @@
 #define DEBUGLEVEL 2
 
 #define CST cst
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -32,13 +33,6 @@ ps::BRN2PacketSource(SIZE 1450, INTERVAL 25, MAXSEQ 500000, BURST 1, ACTIVE fals
   -> EtherEncap(0x8088, deviceaddress, FF:FF:FF:FF:FF:FF )
   -> SetTXRate(2)
   -> power::SetTXPower(15)
-  -> [0]device_wifi;
-
-ps2::BRN2PacketSource(SIZE 10, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE true)
-  -> EtherEncap(0x8088, deviceaddress, 00:00:00:00:00:01 )
-//-> SetTXRate(108)
-  -> power2::SetTXPower(1)
-  -> SetTXRates(RATE0 108, TRIES0 1, RATE1 2, TRIES1 0, RATE2 2, TRIES2 0, RATE3 2, TRIES3 0)
   -> [0]device_wifi;
 
 Idle
