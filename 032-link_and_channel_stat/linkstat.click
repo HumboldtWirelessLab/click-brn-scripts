@@ -17,7 +17,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-//sys_info::SystemInfo(NODEIDENTITY id);
+sys_info::SystemInfo(NODEIDENTITY id);
 
 device_wifi
 -> Discard;
@@ -38,8 +38,8 @@ ps::BRN2PacketSource(SIZE 1450, INTERVAL 25, MAXSEQ 500000, BURST 1, ACTIVE fals
 Idle
 ->[1]device_wifi;
 
-Script(
-  write id.nodename NODENAME,
-  wait 120,
-  read device_wifi/link_stat.bcast_stats
-);
+//Script(
+//  write id.nodename NODENAME,
+//  wait 120,
+//  read device_wifi/link_stat.bcast_stats
+//);
