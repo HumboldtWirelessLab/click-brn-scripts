@@ -4,7 +4,7 @@ SIMULATOR=ns2
 RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=10
+TIME=300
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=dsr.mes
