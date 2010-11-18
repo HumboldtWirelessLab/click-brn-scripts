@@ -1,12 +1,12 @@
 #define DEBUGLEVEL 2
 
 #include "brn/brn.click"
-#include "device/simdev.click"
+#include "device/rawwifidev.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
+rawdevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 rawdevice
  // -> Print("RECEIVE",60)

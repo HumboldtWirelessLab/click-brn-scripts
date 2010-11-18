@@ -1,8 +1,7 @@
 #define DEBUGLEVEL 2
 
 #include "brn/brn.click"
-#include "device/simdev.click"
-#include "device/wifidev.click"
+#include "device/wifidev_linkstat.click"
 #include "routing/dsr.click"
 
 BRNAddressInfo(deviceaddress eth0:eth);
@@ -11,7 +10,7 @@ wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "
 id::BRN2NodeIdentity(wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITIY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
@@ -21,8 +20,8 @@ device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
 //-> Print("Foo",100)
-  -> brn_clf::Classifier(    0/0a,  //BrnDSR
-                             0/34,  //Simpleflow
+  -> brn_clf::Classifier(    0/BRN_PORT_DSR,   //BrnDSR
+                             0/BRN_PORT_FLOW,  //Simpleflow
                                -  );//other
                                     
 brn_clf[0]
@@ -37,7 +36,7 @@ Idle -> [2]dsr;
 brn_clf[1]
 //-> Print("rx")
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:01:00,
+-> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:00:00:00:00:01,
                       RATE 1000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
 -> BRN2EtherEncap()
 -> [0]dsr;

@@ -1,8 +1,7 @@
 #define DEBUGLEVEL 2
 
 #include "brn/brn.click"
-#include "device/simdev.click"
-#include "device/wifidev.click"
+#include "device/wifidev_linkstat.click"
 #include "routing/dsr.click"
 
 BRNAddressInfo(deviceaddress eth0:eth);
@@ -11,7 +10,7 @@ wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "
 id::BRN2NodeIdentity(wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITIY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
@@ -20,8 +19,8 @@ dsr::DSR(id,lt,rc);
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/0a,  //BrnDSR
-                             -  );//other
+-> brn_clf::Classifier( 0/BRN_PORT_DSR,   //BrnDSR
+                                    -  ); //other
                                     
 brn_clf[0]
 //-> Print("DSR-Packet")
@@ -38,13 +37,12 @@ device_wifi[2]
 Idle         //no error, so Idle as input
   -> [2]dsr;
   
-BRN2PacketSource(100, 1000, 30000, 14, 2, 16)
+BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE true, HEADROOM 172)
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:0f)
   -> [0]dsr;
 
 brn_clf[1]
   -> Discard;
-
 
 dsr[0]
   -> Discard;
@@ -58,7 +56,6 @@ dsr[1]
 
 Idle
 -> [1]device_wifi;
-
 
 Script(
   wait 8,
