@@ -37,12 +37,12 @@ device_wifi[2]
 Idle         //no error, so Idle as input
   -> [2]dsr;
   
-Idle
+BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE false, HEADROOM 172)
+  -> ee::EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:0f)
   -> [0]dsr;
 
 brn_clf[1]
   -> Discard;
-
 
 dsr[0]
   -> Discard;
@@ -57,8 +57,9 @@ dsr[1]
 Idle
 -> [1]device_wifi;
 
-
 Script(
   wait 8,
-  read lt.links
+  read lt.links,
+  wait 1,
+  read lt.routes
 );
