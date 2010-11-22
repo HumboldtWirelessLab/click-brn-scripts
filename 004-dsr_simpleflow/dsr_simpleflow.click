@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
 //#define WIFIDEV_LINKSTAT_DEBUG
-//#define ENABLE_DSR_DEBUG
+#define ENABLE_DSR_DEBUG
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
@@ -63,12 +63,8 @@ toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 
 Script(
 #ifdef ENABLE_DSR_DEBUG
+  write dsr/querier.debug 4,
   write dsr/req_forwarder.debug 4,
   write dsr/rep_forwarder.debug 4,
 #endif
-  wait 100,
-//  read lt.links,
-  wait 19, 
-  read  sf.txflows,
-  read  sf.rxflows
 );
