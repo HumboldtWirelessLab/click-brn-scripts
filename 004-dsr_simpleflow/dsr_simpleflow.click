@@ -1,18 +1,21 @@
 #define DEBUGLEVEL 2
 
+//#define WIFIDEV_LINKSTAT_DEBUG
+//#define ENABLE_DSR_DEBUG
+
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
 #include "routing/dsr.click"
 
-BRNAddressInfo(deviceaddress eth0:eth);
-wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 id::BRN2NodeIdentity(wireless);
 
-rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
+rc::Brn2RouteCache(DEBUG 0, ACTIVE true, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 9998);
 
-device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 dsr::DSR(id,lt,rc);
 
@@ -25,7 +28,7 @@ device_wifi
                                -  );//other
                                     
 brn_clf[0]
-  -> Print("DSR-Packet")
+//  -> Print("DSR-Packet")
   ->  [1]dsr;
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
@@ -51,11 +54,13 @@ toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;
 toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 
 Script(
-  wait 5,
-  read lt.links,
-  wait 5,
-  read lt.links,
-  wait 39, 
+#ifdef ENABLE_DSR_DEBUG
+  write dsr/req_forwarder.debug 4,
+  write dsr/rep_forwarder.debug 4,
+#endif
+  wait 100,
+//  read lt.links,
+  wait 19, 
   read  sf.txflows,
   read  sf.rxflows
 );
