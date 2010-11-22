@@ -1,0 +1,31 @@
+NAME=dsr_simpleflow
+SIMULATOR=ns2
+RADIO=shadowing11b
+#RADIO=tworayground01b
+FORGEINNODES=no
+
+TIME=600
+
+NODEPLACEMENTFILE=placement.default
+<<<<<<< HEAD:032-link_and_channel_stat/linkstat_2.dis
+NODETABLE=linkstat.mes
+NODEPLACEMENT=grid
+=======
+NODETABLE=dsr_simpleflow.mes
+NODEPLACEMENT=string
+>>>>>>> de8fe1f738d3a83f3e402dff60e3e07643b9858c:004-dsr_simpleflow/dsr_simpleflow.des
+FIELDSIZE=700
+
+LOGDIR=WORKDIR
+LOGFILE=measurement.log
+
+RESULTDIR=WORKDIR
+EVALUATIONSDIR=WORKDIR
+#EVALUATION="basic"
+
+GPS=no
+NOTICE=no
+LOS=no
+
+CONTROLSOCKET=yes
+CONTROLFILE=dsr_simpleflow.ctl

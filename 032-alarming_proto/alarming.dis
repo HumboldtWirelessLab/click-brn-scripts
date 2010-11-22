@@ -9,7 +9,11 @@ TIME=105
 NODEPLACEMENTFILE=placement.default
 NODETABLE=alarming.mes
 NODEPLACEMENT=grid
+<<<<<<< HEAD:033-alarming_proto/alarming.dis
 FIELDSIZE=3000
+=======
+FIELDSIZE=2500
+>>>>>>> de8fe1f738d3a83f3e402dff60e3e07643b9858c:032-alarming_proto/alarming.dis
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
