@@ -1,3 +1,8 @@
 #NODE	  DEVICE	MODULSDIR					 MODOPTIONS WIFICONFIG		CLICKMODDIR	CLICKSCRIPT	CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
+<<<<<<< HEAD:004-dsr_simpleflow/dsr_simpleflow.mes
+sk1	    ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-	dsr_simpleflow_src.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
+group:nodes.sim ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-	dsr_simpleflow.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
+=======
 #sk1	    ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-	dsr_simpleflow_src.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
 group:nodes ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel.nc	-	dsr_simpleflow.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
+>>>>>>> 48f7ba5a48048bad2f8077047e6e82f04fc45830:004-dsr_simpleflow/dsr_simpleflow.mes
