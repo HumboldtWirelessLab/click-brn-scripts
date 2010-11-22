@@ -64,10 +64,10 @@ dsr[0]
   -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
 
 dsr[1]
-  -> Print("DSR[1]-out")
+//-> Print("DSR[1]-out")
   -> BRN2EtherEncap()
   -> SetEtherAddr(SRC deviceaddress)
-  -> Print("DSR-Ether-OUT")
+//-> Print("DSR-Ether-OUT")
   -> [0]device_wifi;
 
 toMeAfterDsr[0]
