@@ -16,13 +16,17 @@ device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, 
 
 dsr::DSR(id,lt,rc);
 
+#ifndef SIMULATION
+sys_info::SystemInfo(NODEIDENTITY id);
+#endif
+
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
   -> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
                              0/BRN_PORT_FLOW,  //SimpleFlow
                                -  );//other
-                                    
+
 brn_clf[0]
 //-> Print("DSR-Packet")
   -> [1]dsr;

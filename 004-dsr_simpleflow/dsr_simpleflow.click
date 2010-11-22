@@ -20,6 +20,10 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 dsr::DSR(id,lt,rc);
 
+#ifndef SIMULATION
+sys_info::SystemInfo(NODEIDENTITY id);
+#endif
+
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
@@ -27,9 +31,9 @@ device_wifi
   -> brn_clf::Classifier(    0/BRN_PORT_DSR,   //BrnDSR
                              0/BRN_PORT_FLOW,  //Simpleflow
                                -  );//other
-                                    
+
 brn_clf[0]
-  -> Print("DSR-Packet")
+//-> Print("DSR-Packet")
   ->  [1]dsr;
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
