@@ -4,11 +4,7 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-<<<<<<< HEAD:004-dsr_simpleflow/dsr_simpleflow.des
 TIME=120
-=======
-TIME=90000
->>>>>>> 48f7ba5a48048bad2f8077047e6e82f04fc45830:004-dsr_simpleflow/dsr_simpleflow.des
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=dsr_simpleflow.mes
