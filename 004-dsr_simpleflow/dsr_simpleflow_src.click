@@ -3,6 +3,9 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
+#define CST cst
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
 #include "routing/dsr.click"
@@ -23,7 +26,7 @@ device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
   -> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
-                             0/BRN_PORT_FLOW,  //SimpleFlow
+                             0/BRN_PORT_FLOW, //SimpleFlow
                                -  );//other
                                     
 brn_clf[0]

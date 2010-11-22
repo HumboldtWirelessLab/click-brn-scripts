@@ -3,6 +3,10 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
+#define CST cst
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+
+#include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
 #include "routing/dsr.click"
@@ -23,8 +27,8 @@ device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
 //-> Print("Foo",100)
-  -> brn_clf::Classifier(    0/BRN_PORT_DSR,   //BrnDSR
-                             0/BRN_PORT_FLOW,  //Simpleflow
+  -> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
+                             0/BRN_PORT_FLOW, //Simpleflow
                                -  );//other
                                     
 brn_clf[0]
@@ -40,7 +44,7 @@ brn_clf[1]
 //-> Print("rx")
 -> BRN2Decap()
 -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:00:00:00:00:01,
-                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
+                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0)
 -> BRN2EtherEncap()
 -> [0]dsr;
 
