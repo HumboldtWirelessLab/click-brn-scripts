@@ -47,8 +47,8 @@ Idle -> [2]dsr;
 brn_clf[1]
 //-> Print("rx")
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:00:00:00:00:01,
-                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0)
+-> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS deviceaddress,
+                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0, HEADROOM 192)
 -> BRN2EtherEncap()
 -> [0]dsr;
 
@@ -63,12 +63,8 @@ toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 
 Script(
 #ifdef ENABLE_DSR_DEBUG
+  write dsr/querier.debug 4,
   write dsr/req_forwarder.debug 4,
   write dsr/rep_forwarder.debug 4,
 #endif
-  wait 100,
-//  read lt.links,
-  wait 19, 
-  read  sf.txflows,
-  read  sf.rxflows
 );
