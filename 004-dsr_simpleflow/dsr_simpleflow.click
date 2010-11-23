@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
 //#define WIFIDEV_LINKSTAT_DEBUG
-#define ENABLE_DSR_DEBUG
+//#define ENABLE_DSR_DEBUG
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
@@ -47,8 +47,8 @@ Idle -> [2]dsr;
 brn_clf[1]
 //-> Print("rx")
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:00:00:00:00:01,
-                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0)
+-> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS deviceaddress,
+                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0, HEADROOM 192)
 -> BRN2EtherEncap()
 -> [0]dsr;
 
