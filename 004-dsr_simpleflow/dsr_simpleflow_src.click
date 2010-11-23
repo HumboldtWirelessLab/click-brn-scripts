@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
 //#define WIFIDEV_LINKSTAT_DEBUG
-//#define ENABLE_DSR_DEBUG
+#define ENABLE_DSR_DEBUG
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
