@@ -21,7 +21,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dsr::DSR(id,lt,rc);
+dsr::DSR(id,lt,rc/*,device_wifi/etx_metric*/);
 
 #ifndef SIMULATION
 sys_info::SystemInfo(NODEIDENTITY id);
