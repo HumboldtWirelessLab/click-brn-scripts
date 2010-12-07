@@ -4,7 +4,7 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=120
+TIME=6000000
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=dsr_simpleflow.mes
@@ -23,4 +23,4 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
-CONTROLFILE=dsr_simpleflow.ctl
+#CONTROLFILE=dsr_simpleflow.ctl

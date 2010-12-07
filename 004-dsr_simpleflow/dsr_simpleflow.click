@@ -1,7 +1,9 @@
 #define DEBUGLEVEL 2
 
 //#define WIFIDEV_LINKSTAT_DEBUG
-#define ENABLE_DSR_DEBUG
+//#define ENABLE_DSR_DEBUG
+
+#define SETCHANNEL
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
@@ -68,3 +70,51 @@ Script(
   write dsr/rep_forwarder.debug 4,
 #endif
 );
+
+#ifdef SETCHANNEL
+Script(
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 1,
+ write device_wifi/wifidevice/cst.channel 1,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 2,
+ write device_wifi/wifidevice/cst.channel 2,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 3,
+ write device_wifi/wifidevice/cst.channel 3,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 4,
+ write device_wifi/wifidevice/cst.channel 4,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 5,
+ write device_wifi/wifidevice/cst.channel 5,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 6,
+ write device_wifi/wifidevice/cst.channel 6,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 7,
+ write device_wifi/wifidevice/cst.channel 7,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 8,
+ write device_wifi/wifidevice/cst.channel 8,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 9,
+ write device_wifi/wifidevice/cst.channel 9,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 10,
+ write device_wifi/wifidevice/cst.channel 10,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 11,
+ write device_wifi/wifidevice/cst.channel 11,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 12,
+ write device_wifi/wifidevice/cst.channel 12,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 13,
+ write device_wifi/wifidevice/cst.channel 13,
+ wait 60,
+ write device_wifi/wifidevice/sc.set_channel NODEDEVICE 14,
+ write device_wifi/wifidevice/cst.channel 14,
+ wait 60,
+ loop
+);
+#endif
