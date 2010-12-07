@@ -1,10 +1,10 @@
 #define DEBUGLEVEL 2
 
 //#define WIFIDEV_LINKSTAT_DEBUG
-#define ENABLE_BATMAN_DEBUG
+//#define ENABLE_BATMAN_DEBUG
 
-#define CST cst
-#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+//#define CST cst
+//#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -35,7 +35,7 @@ device_wifi
                                -  );//other
                                     
 brn_clf[0]
-//-> Print("DSR-Packet")
+//  -> Print("NODENAME: Batman-Packet", TIMESTAMP true)
   -> [1]batman;
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
@@ -76,6 +76,14 @@ toMeAfterDsr[2]
   -> [1]device_wifi;
 
 Script(
+//  write sf.debug 4,
 #ifdef ENABLE_BATMAN_DEBUG
+//  write batman/bofwd.debug 4,
+  write batman/bf.debug 4,
+  write batman/br.debug 4,
 #endif
+  wait 40,
+  read batman/brt.nodes,
+  wait 40,
+  read batman/brt.nodes
 );

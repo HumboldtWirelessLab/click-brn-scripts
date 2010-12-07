@@ -1,10 +1,11 @@
 #define DEBUGLEVEL 2
 
+#define PRIO_QUEUE
 #define CST cst
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
-#include "device/wifidev_linkstat_prio_queue.click"
+#include "device/wifidev_linkstat.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -17,7 +18,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 as::AlarmingState(LINKTABLE lt, HOPLIMIT 10, LOWHOPFWD false, RETRIES 4, MINNEIGHBOURFRACT 70);
-af::AlarmingForwarder(NODEID id, ALARMINGSTATE as, RSSI_DELAY true);
+af::AlarmingForwarder(NODEID id, ALARMINGSTATE as, RSSI_DELAY true, DEBUG 2);
 asrc::AlarmingSource(ALARMINGSTATE as);
 art::AlarmingRetransmit(NODEID id, ALARMINGSTATE as);
 
