@@ -3,10 +3,10 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
-#define SETCHANNEL
+//#define SETCHANNEL
 
 #define CST cst
-#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+//#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -22,6 +22,8 @@ rc::Brn2RouteCache(DEBUG 0, ACTIVE true, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms 
 lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 9998);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+
+//lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/etx_metric);
 
 dsr::DSR(id,lt,rc,device_wifi/etx_metric);
 
@@ -50,8 +52,8 @@ brn_clf[1]
 //-> Print("rx")
 -> BRN2Decap()
 -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS deviceaddress,
-                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0, HEADROOM 192)
--> BRN2EtherEncap()
+                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0, HEADROOM 192, DEBUG 4)
+-> BRN2EtherEncap(USEANNO true)
 -> [0]dsr;
 
 brn_clf[2] -> Discard;

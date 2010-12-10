@@ -82,8 +82,8 @@ Script(
   write batman/bf.debug 4,
   write batman/br.debug 4,
 #endif
-  wait 40,
-  read batman/brt.nodes,
-  wait 40,
-  read batman/brt.nodes
+//  wait 40,
+//  read batman/brt.nodes,
+//  wait 40,
+//  read batman/brt.nodes
 );
