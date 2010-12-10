@@ -3,7 +3,7 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
-#define SETCHANNEL
+//#define SETCHANNEL
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
@@ -74,7 +74,7 @@ Script(
 #ifdef SETCHANNEL
 Script(
  write device_wifi/wifidevice/sc.set_channel NODEDEVICE 1,
- write device_wifi/wifidevice/cst.channel 1,
+ write device_wifi/wifidevice/cst.channel 1/*,
  wait 60,
  write device_wifi/wifidevice/sc.set_channel NODEDEVICE 2,
  write device_wifi/wifidevice/cst.channel 2,
@@ -115,6 +115,6 @@ Script(
  write device_wifi/wifidevice/sc.set_channel NODEDEVICE 14,
  write device_wifi/wifidevice/cst.channel 14,
  wait 60,
- loop
+ loop */
 );
 #endif
