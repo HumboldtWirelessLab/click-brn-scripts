@@ -6,6 +6,8 @@
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 wifidevice
@@ -15,3 +17,7 @@ wifidevice
 
 Idle
   -> wifidevice;
+
+Script(
+  read id.devinfo
+);

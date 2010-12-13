@@ -6,12 +6,15 @@
 //#define SETCHANNEL
 
 #define CST cst
-//#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#ifdef USERLEVEL 
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#endif
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
 #include "routing/dsr.click"
+#include "routing/broadcastflooding.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -23,9 +26,9 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-//lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/etx_metric);
-
 dsr::DSR(id,lt,rc,device_wifi/etx_metric);
+
+flooding::BROADCASTFLOODING(id, deviceaddress, lt);
 
 #ifndef SIMULATION
 sys_info::SystemInfo(NODEIDENTITY id);
@@ -37,6 +40,8 @@ device_wifi
 //-> Print("Foo",100)
   -> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
                              0/BRN_PORT_FLOW, //Simpleflow
+			     0/BRN_PORT_FLOODING, //Flooding
+			     0/BRN_PORT_EVENTHANDLER, //Event
                                -  );//other
 
 brn_clf[0]
@@ -56,7 +61,7 @@ brn_clf[1]
 -> BRN2EtherEncap(USEANNO true)
 -> [0]dsr;
 
-brn_clf[2] -> Discard;
+brn_clf[4] -> Discard;
 
 dsr[0] -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
 dsr[1] /*-> Print("DSR[1]-out")*/ -> BRN2EtherEncap() -> SetEtherAddr(SRC deviceaddress) /*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
@@ -65,6 +70,32 @@ toMeAfterDsr[0] -> /*Print("DSR-out: For ME",100) ->*/ Label_brnether;
 toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;
 toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 
+
+brn_clf[2]
+-> [1]flooding[1]
+//-> Print("Flood out")
+-> rdq::RandomDelayQueue(MINDELAY 2, MAXDELAY 10, DIFFDELAY 10)
+-> [0]device_wifi;
+
+flooding[0]
+-> Label_brnether;
+
+Idle()
+-> event_notifier::EventNotifier(ETHERADDRESS deviceaddress, EVENTHANDLERADDR ff:ff:ff:ff:ff:ff, DEBUG 2)
+-> Discard;
+
+event_notifier[1]
+-> BRN2EtherEncap(USEANNO true)
+//-> Print("To Flood")
+-> [0]flooding;
+
+Idle
+-> [2]flooding; //route error
+
+brn_clf[3]
+-> BRN2Decap()
+-> eh::EventHandler(DEBUG 2);
+
 Script(
 #ifdef ENABLE_DSR_DEBUG
   write dsr/querier.debug 4,
@@ -72,51 +103,3 @@ Script(
   write dsr/rep_forwarder.debug 4,
 #endif
 );
-
-#ifdef SETCHANNEL
-Script(
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 1,
- write device_wifi/wifidevice/cst.channel 1/*,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 2,
- write device_wifi/wifidevice/cst.channel 2,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 3,
- write device_wifi/wifidevice/cst.channel 3,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 4,
- write device_wifi/wifidevice/cst.channel 4,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 5,
- write device_wifi/wifidevice/cst.channel 5,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 6,
- write device_wifi/wifidevice/cst.channel 6,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 7,
- write device_wifi/wifidevice/cst.channel 7,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 8,
- write device_wifi/wifidevice/cst.channel 8,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 9,
- write device_wifi/wifidevice/cst.channel 9,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 10,
- write device_wifi/wifidevice/cst.channel 10,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 11,
- write device_wifi/wifidevice/cst.channel 11,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 12,
- write device_wifi/wifidevice/cst.channel 12,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 13,
- write device_wifi/wifidevice/cst.channel 13,
- wait 60,
- write device_wifi/wifidevice/sc.set_channel NODEDEVICE 14,
- write device_wifi/wifidevice/cst.channel 14,
- wait 60,
- loop */
-);
-#endif
