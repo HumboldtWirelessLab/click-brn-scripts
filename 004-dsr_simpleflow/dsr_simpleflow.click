@@ -6,7 +6,7 @@
 //#define SETCHANNEL
 
 #define CST cst
-//#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
 #include "brn/helper.inc"
 #include "brn/brn.click"

@@ -38,6 +38,7 @@ device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
 //-> Print("Foo",100)
+  -> Align(2,0)
   -> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
                              0/BRN_PORT_FLOW, //Simpleflow
 			     0/BRN_PORT_FLOODING, //Flooding
