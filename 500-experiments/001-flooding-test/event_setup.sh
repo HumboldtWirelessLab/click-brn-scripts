@@ -41,11 +41,11 @@ else
     for n2 in $NODES; do
       echo "$TIME $n2 ath0 read device_wifi/link_stat bcast_stats flooding_stats.$n1" 
     done
-    
+
     TIME=`expr $TIME + 3`
     echo "$TIME $n1 ath0 write event_notifier payload_size 192"
 
-    for s in `seq 1 1`; do
+    for s in `seq 1 100`; do
       echo "$TIME $n1 ath0 write event_notifier event now"
       TIME=`expr $TIME + 1`
     done
@@ -54,6 +54,7 @@ else
     for n2 in $NODES; do
         echo "$TIME $n2 ath0 read eh stats flooding_stats.$n1"
         echo "$TIME $n2 ath0 write eh reset true"
+        echo "$TIME $n2 ath0 write event_notifier reset true"
         echo "$TIME $n2 ath0 read flooding/fl stats flooding_stats.$n1"	
         echo "$TIME $n2 ath0 write flooding/fl reset true"
         echo "$TIME $n2 ath0 read sys_info systeminfo flooding_stats.$n1"	

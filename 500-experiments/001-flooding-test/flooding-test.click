@@ -33,7 +33,7 @@ device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
 //-> Print("Foo",100)
-  -> Align(2,0)
+//-> Align(4,2)
   -> brn_clf::Classifier(    0/BRN_PORT_FLOW, //Simpleflow
                              0/BRN_PORT_FLOODING, //Flooding
                              0/BRN_PORT_EVENTHANDLER, //Event
@@ -55,7 +55,7 @@ brn_clf[3] -> Discard;
 brn_clf[1]
 -> [1]flooding[1]
 //-> Print("Flood out")
--> rdq::RandomDelayQueue(MINDELAY 2, MAXDELAY 10, DIFFDELAY 10)
+//-> rdq::RandomDelayQueue(MINDELAY 2, MAXDELAY 10, DIFFDELAY 10)
 -> [0]device_wifi;
 
 flooding[0]
