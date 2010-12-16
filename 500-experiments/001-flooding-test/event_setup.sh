@@ -54,6 +54,10 @@ else
     for n2 in $NODES; do
         echo "$TIME $n2 ath0 read eh stats flooding_stats.$n1"
         echo "$TIME $n2 ath0 write eh reset true"
+        echo "$TIME $n2 ath0 read flooding/fl stats flooding_stats.$n1"	
+        echo "$TIME $n2 ath0 write flooding/fl reset true"
+        echo "$TIME $n2 ath0 read sys_info systeminfo flooding_stats.$n1"	
+        echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml flooding_stats.$n1"	
     done
     TIME=`expr $TIME + 5`
   done

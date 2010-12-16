@@ -27,9 +27,7 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 flooding::BROADCASTFLOODING(id, deviceaddress, lt);
 
-#ifndef SIMULATION
 sys_info::SystemInfo(NODEIDENTITY id);
-#endif
 
 device_wifi
   -> Label_brnether::Null()
@@ -67,14 +65,17 @@ Idle()
 -> event_notifier::EventNotifier(ETHERADDRESS deviceaddress, EVENTHANDLERADDR ff:ff:ff:ff:ff:ff, DEBUG 2)
 -> Discard;
 
-event_notifier[1]
--> BRN2EtherEncap(USEANNO true)
-//-> Print("To Flood")
--> [0]flooding;
-
-Idle
--> [2]flooding; //route error
-
 brn_clf[2]
 -> BRN2Decap()
 -> eh::EventHandler(DEBUG 2);
+
+event_notifier[1]
+-> BRN2EtherEncap(USEANNO true)
+//-> Print("To Flood")
+-> event_cpy::Tee()
+-> [0]flooding;
+
+event_cpy[1] -> Label_brnether;
+
+Idle
+-> [2]flooding; //route error
