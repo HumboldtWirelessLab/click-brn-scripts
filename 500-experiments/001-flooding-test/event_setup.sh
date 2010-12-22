@@ -20,15 +20,37 @@ fi
 if [ "$MODE" = "EVENT_LINKTABLE" ]; then
 
   for n1 in $NODES; do
+      echo "$TIME $n1 ath0 write device_wifi/data_suppressor active1 false"
+      echo "$TIME $n1 ath0 write device_wifi/data_suppressor active0 false"
+
+      echo "$TIME $n1 ath0 write eh reset true"
+      echo "$TIME $n1 ath0 write event_notifier reset true"
+      echo "$TIME $n1 ath0 write flooding/fl reset true"
+      echo "$TIME $n1 ath0 write device_wifi/data_queue reset true"
+
+#     echo "$TIME $n1 ath0 write device_wifi/wifidevice/ath_op channel 13"
+      echo "$TIME $n1 ath0 write device_wifi/wifidevice/sc set_channel ath0 14"
+  done
+
+  TIME=`expr $TIME + 30`
+
+  for n1 in $NODES; do
     if [ "x$CHANNEL" != "x" ]; then
-      echo "$TIME $n2 ath0 write device_wifi/wifidevice/ath_op channel $CHANNEL"	
+#     echo "$TIME $n1 ath0 write device_wifi/wifidevice/ath_op channel $CHANNEL"
+      echo "$TIME $n1 ath0 write device_wifi/wifidevice/sc set_channel ath0 $CHANNEL"
     fi
     if [ "x$RATE" != "x" ]; then
-      echo "$TIME $n2 ath0 write device_wifi/data_rate rate $RATE" 
+      echo "$TIME $n1 ath0 write device_wifi/data_rate rate $RATE"
     fi
     if [ "x$TXPOWER" != "x" ]; then
-      echo "$TIME $n2 ath0 write device_wifi/data_power power $TXPOWER" 
+      echo "$TIME $n1 ath0 write device_wifi/data_power power $TXPOWER"
     fi
+
+  done
+
+  for n1 in $NODES; do
+      echo "$TIME $n1 ath0 write device_wifi/data_suppressor active1 true"
+      echo "$TIME $n1 ath0 write device_wifi/data_suppressor active0 true"
   done
 
   if [ "x$CHANNEL" != "x" ]; then
@@ -39,7 +61,7 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
 
   for n1 in $NODES; do
     for n2 in $NODES; do
-      echo "$TIME $n2 ath0 read device_wifi/link_stat bcast_stats flooding_stats.$n1" 
+      echo "$TIME $n2 ath0 read device_wifi/link_stat bcast_stats flooding_stats.$n1"
     done
 
     TIME=`expr $TIME + 1`
@@ -51,7 +73,30 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
       TIME=`expr $TIME + 1`
     done
 
-    TIME=`expr $TIME + 2`
+    TIME=`expr $TIME + 30`
+
+    for n2 in $NODES; do
+      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 false"
+      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 false"
+      echo "$TIME $n2 ath0 write device_wifi/data_queue reset true"
+#      echo "$TIME $n2 ath0 write device_wifi/wifidevice/ath_op channel 13"
+      echo "$TIME $n2 ath0 write device_wifi/wifidevice/sc set_channel ath0 14"
+    done
+
+    TIME=`expr $TIME + 30`
+
+    for n2 in $NODES; do
+      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 true"
+      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 true"
+    done
+
+    TIME=`expr $TIME + 30`
+
+    for n2 in $NODES; do
+      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 false"
+      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 false"
+    done
+
     for n2 in $NODES; do
         echo "$TIME $n2 ath0 read eh stats flooding_stats.$n1"
         echo "$TIME $n2 ath0 write eh reset true"
@@ -60,34 +105,19 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
         echo "$TIME $n2 ath0 write flooding/fl reset true"
         echo "$TIME $n2 ath0 read sys_info systeminfo flooding_stats.$n1"
         echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml flooding_stats.$n1"
-        echo "$TIME $n2 ath0 write device_wifi/data_queue reset true"
     done
-    TIME=`expr $TIME + 2`
+
+    for n2 in $NODES; do
+#     echo "$TIME $n2 ath0 write device_wifi/wifidevice/ath_op channel $CHANNEL"
+      echo "$TIME $n2 ath0 write device_wifi/wifidevice/sc set_channel ath0 $CHANNEL"
+    done
+
+    for n2 in $NODES; do
+      echo "$TIME $n2 ath0 write device_wifi/data_queue reset true"
+      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 true"
+      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 true"
+    done
+    TIME=`expr $TIME + 10`
   done
 
-else
-
-  for n1 in $NODES; do
-    if [ "x$MODE" = "xSIMPLEFLOW" ]; then
-      echo "$TIME $n1 ath0 write sf add_flow $n1:eth ff:ff:ff:ff:ff:ff 470 100 0 50 true"
-      TIME=`expr $TIME + 5`
-      echo "$TIME $n1 ath0 write sf add_flow $n1:eth ff:ff:ff:ff:ff:ff 470 100 0 50 false"
-      TIME=`expr $TIME + 1`
-    else    
-      for s in `seq 1 $PACKETS`; do
-        echo "$TIME $n1 ath0 write event_notifier event now"
-        TIME=`expr $TIME + 1`
-      done
-    fi
-  done
-
-  TIME=`expr $TIME + 5`
-
-  for n1 in $NODES; do
-    if [ "x$MODE" = "xSIMPLEFLOW" ]; then
-      echo "$TIME $n1 ath0 read sf stats"
-    else    
-      echo "$TIME $n1 ath0 read eh stats"
-    fi
-  done
 fi

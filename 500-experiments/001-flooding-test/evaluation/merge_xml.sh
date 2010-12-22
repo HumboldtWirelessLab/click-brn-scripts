@@ -2,6 +2,10 @@
 
 echo "<flooding_experiment>"
 
+if [ -e $2/experiment_info.xml ]; then
+    cat $2/experiment_info.xml
+fi
+
 seq=0;
 for n in `cat $1 | grep -v "#"`; do
 

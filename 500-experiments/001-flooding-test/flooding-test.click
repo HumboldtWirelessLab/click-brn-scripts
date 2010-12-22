@@ -3,7 +3,7 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
-//#define SETCHANNEL
+#define SETCHANNEL
 
 #define CST cst
 #ifdef USERLEVEL 
