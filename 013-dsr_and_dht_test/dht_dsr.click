@@ -1,27 +1,36 @@
 #define DEBUGLEVEL 2
 
+//#define WIFIDEV_LINKSTAT_DEBUG
+//#define ENABLE_DSR_DEBUG
+
+//#define SETCHANNEL
+
+#define CST cst
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+
+#include "brn/helper.inc"
 #include "brn/brn.click"
-#include "device/simdev.click"
-#include "device/wifidev.click"
+#include "device/wifidev_linkstat.click"
 #include "dht/routing/dht_dart.click"
 #include "dht/routing/dht_falcon.click"
 #include "dht/routing/dht_klibs.click"
 #include "dht/routing/dht_omni.click"
 #include "dht/storage/dht_storage.click"
-#include "routing/dart.click"
 #include "routing/dsr.click"
 
-BRNAddressInfo(deviceaddress eth0:eth);
-wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-id::BRN2NodeIdentity(wireless);
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
+rc::Brn2RouteCache(DEBUG 0, ACTIVE true, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 9998);
 
-device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dsr::DSR(id,lt,rc);
+//lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/etx_metric);
+
+dsr::DSR(id,lt,rc,device_wifi/etx_metric);
 
 //dht::DHT_OMNI(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 //dht::DHT_KLIBS(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
@@ -30,6 +39,10 @@ dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STAR
 
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
 dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage, STARTTIME 75000, INTERVAL 1000, COUNTKEYS 10, WRITE false, RETRIES 1, REPLICA 0, DEBUG 2);
+
+#ifndef SIMULATION
+sys_info::SystemInfo(NODEIDENTITY id);
+#endif
 
 device_wifi
 -> Label_brnether::Null()
