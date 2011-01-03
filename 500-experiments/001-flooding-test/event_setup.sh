@@ -30,11 +30,12 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
       echo "$TIME $n1 ath0 write flooding/fl reset true"
       echo "$TIME $n1 ath0 write device_wifi/data_queue reset true"
 
+      echo "$TIME $n1 ath0 write device_wifi/wifidevice/ath_op clear_hw_queues wifi0"
 #     echo "$TIME $n1 ath0 write device_wifi/wifidevice/ath_op channel $RESET_CHANNEL"
-      echo "$TIME $n1 ath0 write device_wifi/wifidevice/sc set_channel ath0 $RESET_CHANNEL"
+#     echo "$TIME $n1 ath0 write device_wifi/wifidevice/sc set_channel ath0 $RESET_CHANNEL"
   done
 
-  TIME=`expr $TIME + 10`
+#  TIME=`expr $TIME + 10`
 
   for n1 in $NODES; do
     if [ "x$CHANNEL" != "x" ]; then
@@ -50,7 +51,7 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
 
   done
 
-  TIME=`expr $TIME + 10`
+#  TIME=`expr $TIME + 10`
 
   for n1 in $NODES; do
       echo "$TIME $n1 ath0 write device_wifi/data_suppressor active1 true"
@@ -104,30 +105,31 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
       echo "$TIME $n2 ath0 write device_wifi/linkprobe_suppressor active0 false"
       echo "$TIME $n2 ath0 write device_wifi/data_queue reset true"
 
+      echo "$TIME $n1 ath0 write device_wifi/wifidevice/ath_op clear_hw_queues wifi0"
 #     echo "$TIME $n2 ath0 write device_wifi/wifidevice/ath_op channel $RESET_CHANNEL"
-      echo "$TIME $n2 ath0 write device_wifi/wifidevice/sc set_channel ath0 $RESET_CHANNEL"
+#     echo "$TIME $n2 ath0 write device_wifi/wifidevice/sc set_channel ath0 $RESET_CHANNEL"
 
       echo "$TIME $n2 ath0 read device_wifi/wifidevice/ath_op pkt_count /dev/null"
     done
 
-    TIME=`expr $TIME + 10`
+#    TIME=`expr $TIME + 10`
 
-    for n2 in $NODES; do
-      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 true"
-      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 true"
-    done
+#    for n2 in $NODES; do
+#      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 true"
+#      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 true"
+#    done
 
-    TIME=`expr $TIME + 10`
+#    TIME=`expr $TIME + 10`
 
-    for n2 in $NODES; do
-      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 false"
-      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 false"
-    done
+#    for n2 in $NODES; do
+#      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 false"
+#      echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 false"
+#    done
 
-    for n2 in $NODES; do
+#    for n2 in $NODES; do
 #     echo "$TIME $n2 ath0 write device_wifi/wifidevice/ath_op channel $CHANNEL"
-      echo "$TIME $n2 ath0 write device_wifi/wifidevice/sc set_channel ath0 $CHANNEL"
-    done
+#      echo "$TIME $n2 ath0 write device_wifi/wifidevice/sc set_channel ath0 $CHANNEL"
+#    done
 
     ################################################################################
     ################################ READ STATS ####################################
