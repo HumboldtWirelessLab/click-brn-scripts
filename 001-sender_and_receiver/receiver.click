@@ -19,5 +19,6 @@ Idle
   -> wifidevice;
 
 Script(
-  read id.devinfo
+  read id.devinfo,
+  read wireless.deviceinfo
 );
