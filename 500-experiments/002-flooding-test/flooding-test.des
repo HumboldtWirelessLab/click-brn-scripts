@@ -4,7 +4,7 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=210
+TIME=5000000
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=flooding-test.mes
