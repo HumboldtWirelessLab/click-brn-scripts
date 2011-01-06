@@ -1,0 +1,7 @@
+BRNAddressInfo(my_wlan NODEDEVICE:eth);
+
+FROMRAWDEVICE(NODEDEVICE)
+  -> tdraw :: TODUMP("RESULTDIR/NODENAME.NODEDEVICE.dump");
+
+SYNC
+  -> tdraw;
