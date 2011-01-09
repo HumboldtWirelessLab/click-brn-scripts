@@ -10,7 +10,7 @@
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-id::BRN2NodeIdentity(wireless);
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 rc::Brn2RouteCache(ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
 lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
@@ -60,7 +60,7 @@ Idle
 Script(
  wait 100,
  write asrc.state 0,
- wait 3,
+ wait 1,
  read c_out.byte_count,
  read c_out.count,
  read as.state,
