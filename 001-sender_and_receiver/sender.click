@@ -8,36 +8,40 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
+Idle
+-> ath_op::Ath2Operation(DEVICE wireless, READCONFIG false, DEBUG 2)
+-> Discard;
+
 wifidevice
   -> PrintWifi("Feedback", TIMESTAMP true)
-//  -> Print("Feedback")
   -> Discard;
 
 rate::SetTXRates(RATE0 22, RATE1 11, RATE2 4, RATE3 2, TRIES0 3, TRIES1 2, TRIES2 3, TRIES3 2)
--> wifioutq::NotifierQueue(50)
+  -> SetTXPower(1)
+  -> wifioutq::NotifierQueue(50)
   -> PrintWifi("Sender", TIMESTAMP true)
--> wifidevice;
+  -> wifidevice;
 
 BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE true)
   -> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-//  -> PrintWifi("Sender", TIMESTAMP true)
-//  -> rate;
--> Discard;
+  //-> PrintWifi("Sender", TIMESTAMP true)
+  -> rate;
+  //-> Discard;
 
 BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE true)
   -> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:02)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-//  -> PrintWifi("Sender", TIMESTAMP true)
-//  -> rate;
--> Discard;
+  //-> PrintWifi("Sender", TIMESTAMP true)
+  //-> rate;
+  -> Discard;
 
 BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE true)
   -> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:03)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-//  -> PrintWifi("Sender", TIMESTAMP true)
-  -> rate;
-//-> Discard;
+  //-> PrintWifi("Sender", TIMESTAMP true)
+  //-> rate;
+  -> Discard;

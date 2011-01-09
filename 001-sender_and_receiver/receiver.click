@@ -9,9 +9,20 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
-
+  
 wifidevice
-//  -> Print("RECEIVE",60)
+  -> t :: Tee()
+  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump");
+
+/*
+  FROMRAWDEVICE(NODEDEVICE)
+  -> t :: Tee()
+  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump");
+*/
+
+  t[1]
+  //-> __WIFIDECAP__  
+  //-> Print("RECEIVE",60)
   -> PrintWifi("Receive-Wifi", TIMESTAMP true)
   -> Discard;
 

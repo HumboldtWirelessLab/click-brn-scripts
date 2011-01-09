@@ -1,19 +1,15 @@
-NAME=alarming
+NAME=dsr_simpleflow
 SIMULATOR=ns2
 RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=105
+TIME=6000000
 
 NODEPLACEMENTFILE=placement.default
-NODETABLE=alarming.mes
+NODETABLE=dsr_simpleflow.mes
 NODEPLACEMENT=grid
-#FIELDSIZE=3000
-#25
-#FIELDSIZE=400
-#50
-FIELDSIZE=600
+FIELDSIZE=550
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
@@ -27,3 +23,4 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
+#CONTROLFILE=dsr_simpleflow.ctl
