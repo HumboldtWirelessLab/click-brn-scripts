@@ -23,7 +23,7 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
   for n1 in $NODES; do
       echo "$TIME $n1 ath0 write device_wifi/data_suppressor active1 false"
       echo "$TIME $n1 ath0 write device_wifi/data_suppressor active0 false"
-      echo "$TIME $n1 ath0 write device_wifi/linkprobe_suppressor active0 false"
+      echo "$TIME $n1 ath0 write device_wifi/lp_suppressor active0 false"
 
       echo "$TIME $n1 ath0 write eh reset true"
       echo "$TIME $n1 ath0 write event_notifier reset true"
@@ -50,7 +50,7 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
   for n1 in $NODES; do
       echo "$TIME $n1 ath0 write device_wifi/data_suppressor active1 true"
       echo "$TIME $n1 ath0 write device_wifi/data_suppressor active0 true"
-      echo "$TIME $n1 ath0 write device_wifi/linkprobe_suppressor active0 true"
+      echo "$TIME $n1 ath0 write device_wifi/lp_suppressor active0 true"
   done
 
   if [ "x$CHANNEL" != "x" ]; then
@@ -94,7 +94,7 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
     for n2 in $NODES; do
       echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 false"
       echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 false"
-      echo "$TIME $n2 ath0 write device_wifi/linkprobe_suppressor active0 false"
+      echo "$TIME $n2 ath0 write device_wifi/lp_suppressor active0 false"
       echo "$TIME $n2 ath0 write device_wifi/data_queue reset true"
 
       echo "$TIME $n2 ath0 write device_wifi/wifidevice/ath_op clear_hw_queues wifi0"
@@ -111,6 +111,7 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
         echo "$TIME $n2 ath0 write eh reset true"
         echo "$TIME $n2 ath0 write event_notifier reset true"
         echo "$TIME $n2 ath0 read flooding/fl stats flooding_stats.$n1"
+	echo "$TIME $n2 ath0 read flooding/fl forward_table flooding_stats.$n1"
         echo "$TIME $n2 ath0 write flooding/fl reset true"
         echo "$TIME $n2 ath0 read device_wifi/wifidevice/ath_op pkt_count packet_stats.$n1"
     done
@@ -119,7 +120,7 @@ if [ "$MODE" = "EVENT_LINKTABLE" ]; then
       echo "$TIME $n2 ath0 write device_wifi/data_queue reset true"
       echo "$TIME $n2 ath0 write device_wifi/data_suppressor active0 true"
       echo "$TIME $n2 ath0 write device_wifi/data_suppressor active1 true"
-      echo "$TIME $n2 ath0 write device_wifi/linkprobe_suppressor active0 true"
+      echo "$TIME $n2 ath0 write device_wifi/lp_suppressor active0 true"
     done
 
     TIME=`expr $TIME + 2`
