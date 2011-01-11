@@ -8,26 +8,25 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
-  
-wifidevice
-  -> t :: Tee()
-  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump");
+//wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
-/*
-  FROMRAWDEVICE(NODEDEVICE)
+/*wifidevice
   -> t :: Tee()
   -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump");
 */
 
+  FROMRAWDEVICE(NODEDEVICE)
+  -> t :: Tee()
+  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump");
+
   t[1]
   //-> __WIFIDECAP__  
   //-> Print("RECEIVE",60)
-  -> PrintWifi("Receive-Wifi", TIMESTAMP true)
+  //-> PrintWifi("Receive-Wifi", TIMESTAMP true)
   -> Discard;
 
-Idle
-  -> wifidevice;
+//Idle
+//  -> wifidevice;
 
 Script(
   read id.devinfo,
