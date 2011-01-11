@@ -1,3 +1,5 @@
 #NODE	  DEVICE	MODULSDIR					 MODOPTIONS WIFICONFIG			CLICKMODDIR	CLICKSCRIPT			CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
 #group:nodes ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel		-		flooding-test.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
-group:nodes.sim ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel		-		flooding-test.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
+#group:nodes.sim ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel		-		flooding-test.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
+sk110          ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel		-		sniffer.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
+group:nodes.small ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel		-		flooding-test.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-

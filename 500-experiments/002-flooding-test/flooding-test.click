@@ -34,8 +34,6 @@ sys_info::SystemInfo(NODEIDENTITY id);
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
-//-> Print("Foo",100)
-//-> Align(4,2)
   -> brn_clf::Classifier(    0/BRN_PORT_FLOW,         //Simpleflow
                              0/BRN_PORT_FLOODING,     //Flooding
                              0/BRN_PORT_EVENTHANDLER, //Event
@@ -90,10 +88,10 @@ device_wifi[2]
   -> BRN2EtherDecap()
   -> overhear_brn_clf::Classifier( 0/BRN_PORT_FLOODING,  //SimpleFlooding
                                               -       ); //other
-				
+
 overhear_brn_clf[0]
     -> [3]flooding; //passive
-					    
+
 overhear_brn_clf[1]
     -> Discard;
 

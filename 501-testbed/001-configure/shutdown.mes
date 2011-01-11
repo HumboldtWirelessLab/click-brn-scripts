@@ -1,0 +1,4 @@
+#NODE	    DEVICE MODULSDIR                                        MODOPTIONS WIFICONFIG         CLICKMODDIR CLICKSCRIPT	LOGFILE			             APP	           APPLOGFILE
+#group:nodes ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.b.channel  -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -
+group:wrt   eth1   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.wrt        -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -
+#group:wndr  wlan0  BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.wndr       -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -

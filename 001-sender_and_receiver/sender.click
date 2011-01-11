@@ -16,7 +16,7 @@ wifidevice
   -> PrintWifi("Feedback", TIMESTAMP true)
   -> Discard;
 
-rate::SetTXRates(RATE0 22, RATE1 11, RATE2 4, RATE3 2, TRIES0 3, TRIES1 2, TRIES2 3, TRIES3 2)
+rate::SetTXRates(RATE0 108, RATE1 11, RATE2 4, RATE3 2, TRIES0 12, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(1)
   -> wifioutq::NotifierQueue(50)
   -> PrintWifi("Sender", TIMESTAMP true)
@@ -28,20 +28,17 @@ BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   //-> PrintWifi("Sender", TIMESTAMP true)
   -> rate;
-  //-> Discard;
 
-BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE true)
+BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE false)
   -> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:02)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-  //-> PrintWifi("Sender", TIMESTAMP true)
-  //-> rate;
-  -> Discard;
+  -> PrintWifi("Sender", TIMESTAMP true)
+  -> rate;
 
-BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE true)
+BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE false)
   -> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:03)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-  //-> PrintWifi("Sender", TIMESTAMP true)
-  //-> rate;
-  -> Discard;
+  -> PrintWifi("Sender", TIMESTAMP true)
+  -> rate;

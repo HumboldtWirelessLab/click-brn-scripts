@@ -23,3 +23,12 @@ for n1 in $NODES; do
       TIME=`expr $TIME + 1`
     done
 done
+
+
+for n1 in $NODES; do
+    echo "$TIME $n1 ath0 read eh stats flooding_stats.$n1"
+#    echo "$TIME $n2 ath0 write eh reset true"
+ #   echo "$TIME $n2 ath0 write event_notifier reset true"
+    echo "$TIME $n1 ath0 read flooding/fl stats flooding_stats.$n1"
+    echo "$TIME $n1 ath0 read flooding/fl forward_table flooding_stats.$n1"
+done
