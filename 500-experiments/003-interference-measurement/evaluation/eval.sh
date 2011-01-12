@@ -37,9 +37,17 @@ case "$SIGN" in
         ;;
 esac
 
-echo $RESULTDIR
-echo $PWD
-echo $DIR
+#echo $RESULTDIR
+#echo $PWD
+#echo $DIR
 
 $DIR/merge_xml.sh $RESULTDIR/ > $PWD/interference_exp.xml
-xsltproc $DIR/interference2mat.xslt $PWD/interference_exp.xml > $PWD/interference_exp.mat
+xsltproc $DIR/interference2mat.xslt $PWD/interference_exp.xml > $PWD/interference_exp.mat.tmp
+
+SEDARG=`cat $PWD/interference_exp.mat.tmp | sed "s#,# #g" | awk '{print $2}' | uniq | awk '{print "-e s#"$1"#"NR"#g"}' | tr '\012' ' '`
+
+cat $PWD/interference_exp.mat.tmp | sed $SEDARG -e "s#none#0#g" > $PWD/interference_exp.mat
+
+rm -rf $PWD/interference_exp.mat.tmp
+
+

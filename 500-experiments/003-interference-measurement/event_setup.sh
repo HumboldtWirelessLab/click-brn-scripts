@@ -61,8 +61,16 @@ for n1 in $NODES; do
     ################################## MEASUREMENT #################################
     ################################################################################
 
-    for n2 in $NODES; do
-      echo "$TIME $n2 ath0 read device_wifi/link_stat bcast_stats ig_stats.$n1"
+#    for n2 in $NODES; do
+#      echo "$TIME $n2 ath0 read device_wifi/link_stat bcast_stats ig_stats.$n1"
+#    done
+
+    for t in `seq 1 10`; do
+      for n2 in $NODES; do
+        echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml ig_stats.$n1"
+      done
+
+      TIME=`expr $TIME + 1`
     done
 
     echo "$TIME $n1 ath0 write device_wifi/qc flow_insert 5000 15000 1500 2"
@@ -81,6 +89,16 @@ for n1 in $NODES; do
     TIME=`expr $TIME + 1`
 
     echo "$TIME $n1 ath0 read device_wifi/qc flow_stats ig_stats.$n1"
+
+
+    for t in `seq 1 10`; do
+
+      for n2 in $NODES; do
+        echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml ig_stats.$n1"
+      done
+
+      TIME=`expr $TIME + 1`
+    done
 
     ################################################################################
     ##################################### RESET ####################################

@@ -34,12 +34,16 @@
 	<xsl:value-of select="../@id" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../../interferencegraphflow/@rate" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../../interferencegraphflow/@queue_empty_cnt" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="@channel" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="@hwbusy" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="@hwrx" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="@hwtx" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../mac/@busy" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../mac/@rx" /><xsl:text>,</xsl:text>
-	<xsl:value-of select="../mac/@tx" /><xsl:value-of select="$newline" />
+	<xsl:value-of select="../mac/@tx" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../@pre_stats" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../@dur_stats" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../@post_stats" /><xsl:value-of select="$newline" />
     </xsl:template>
     
 

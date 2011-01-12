@@ -4,7 +4,7 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=2100
+TIME=7200
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=interference-measurement.mes
