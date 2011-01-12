@@ -12,7 +12,7 @@ for n in `cat $1 | grep -v "#"`; do
 echo "<source node=\"$n\" seq=\"$seq\">"
 seq=`expr $seq + 1`
 
-cat $2/flooding_stats.$n
+cat $2/flooding_stats.$n | human_readable.sh
 
 echo "</source>"
 done
