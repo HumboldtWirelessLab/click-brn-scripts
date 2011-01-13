@@ -1,5 +1,11 @@
 function interference_eval(matfile)
 
+% seq node_a node_b rx_node ID_of_chan_stats
+% flow_rate flow_queue_empty channel hw_busy hwrx
+% hwtx mac_busy mac_rx mac_tx mode_id
+
+STAGE=15;
+
 %scrsz = get(0,'ScreenSize');
 scrsz = [ 1 1 800 600 ];
 figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
@@ -10,109 +16,75 @@ result=load(matfile,'-ASCII');
 
 nodes=unique(result(:,2));
 
+%Stats of tx node
 prestats_mac=zeros(size(nodes,1),3); %busy rx tx 
 prestats_hw=zeros(size(nodes,1),3);
+
 rates=zeros(size(nodes,1),1);
+
 durstats_mac=zeros(size(nodes,1),3);
 durstats_hw=zeros(size(nodes,1),3);
+
 poststats_mac=zeros(size(nodes,1),3);
 poststats_hw=zeros(size(nodes,1),3);
 
-dur_rx_nodes_hw = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
-dur_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
+%stats of rx node
 
 pre_rx_nodes_hw = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
 pre_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
 
-rx_nodes_index=1;
+dur_rx_nodes_hw = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
+dur_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
+
+post_rx_nodes_hw = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
+post_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
+
+rx_nodes_index=0;
 
 for i = 1:size(nodes,1)
    node=nodes(i);
 
    nodes_result=result(find((result(:,2) == node) & (result(:,4) == node)),:);
    rx_nodes_result=result(find((result(:,2) == node) & (result(:,4) ~= node)),:);
-   
-   stats=nodes_result(1,15) + nodes_result(1,16) + nodes_result(1,17);
-   
-   if ( stats ~= size(nodes_result,1) )
-       disp('Error size')
-   end
-   
-   prestats_hw(i,1) = mean(nodes_result(1:nodes_result(1,15),9));
-   prestats_hw(i,2) = mean(nodes_result(1:nodes_result(1,15),10));
-   prestats_hw(i,3) = mean(nodes_result(1:nodes_result(1,15),11));
-   prestats_mac(i,1) = mean(nodes_result(1:nodes_result(1,15),12));
-   prestats_mac(i,2) = mean(nodes_result(1:nodes_result(1,15),13));
-   prestats_mac(i,3) = mean(nodes_result(1:nodes_result(1,15),14));
+      
+   prestats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[9 10 11]));
+   prestats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[ 12 13 14]));
 
-   durstats_hw(i,1) = mean(nodes_result((nodes_result(1,15)+1):(nodes_result(1,15)+nodes_result(1,16)),9));
-   durstats_hw(i,2) = mean(nodes_result((nodes_result(1,15)+1):(nodes_result(1,15)+nodes_result(1,16)),10));
-   durstats_hw(i,3) = mean(nodes_result((nodes_result(1,15)+1):(nodes_result(1,15)+nodes_result(1,16)),11));   
-   durstats_mac(i,:) = mean(nodes_result((nodes_result(1,15)+1):(nodes_result(1,15)+nodes_result(1,16)),[12 13 14]));
-  
-   poststats_hw(i,:) = mean(nodes_result((nodes_result(1,15)+nodes_result(1,16)+1):end,[ 9 10 11 ]));
-   poststats_mac(i,:) = mean(nodes_result((nodes_result(1,15)+nodes_result(1,16)+1):end,[ 12 13 14 ]));
-   
-   rates(i,1) = nodes_result(1,6)/1024;
+   durstats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[9 10 11]));
+   durstats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[ 12 13 14]));
 
-   start_i = ((size(nodes,1)-1)*nodes_result(1,15))+1;
-   end_i = ((size(nodes,1)-1)*(nodes_result(1,15)+nodes_result(1,16)));
- 
-%   start_i
-%   end_i
-%   rx_nodes_result(start_i:end_i,9)
-   
-   dur_rx_nodes_hw(rx_nodes_index:rx_nodes_index+size(nodes,1)-2,1) = rx_nodes_result(start_i:end_i,9);
-   dur_rx_nodes_hw(rx_nodes_index:rx_nodes_index+size(nodes,1)-2,2) = rx_nodes_result(start_i:end_i,10);
-   dur_rx_nodes_hw(rx_nodes_index:rx_nodes_index+size(nodes,1)-2,3) = rx_nodes_result(start_i:end_i,11);   
-   dur_rx_nodes_mac(rx_nodes_index:rx_nodes_index+size(nodes,1)-2,1) = rx_nodes_result(start_i:end_i,12);
-   dur_rx_nodes_mac(rx_nodes_index:rx_nodes_index+size(nodes,1)-2,2) = rx_nodes_result(start_i:end_i,13);
-   dur_rx_nodes_mac(rx_nodes_index:rx_nodes_index+size(nodes,1)-2,3) = rx_nodes_result(start_i:end_i,14);
-   
-   pre_rx_nodes_hw_all= rx_nodes_result(1:start_i-1,[ 4 9 10 11 ]);
-   pre_rx_nodes_mac_all = rx_nodes_result(1:start_i-1,[ 4 12 13 14 ]);
-     
-%   size(pre_rx_nodes_hw_all)   
-%   size(pre_rx_nodes_mac_all)   
-%
-%   nodes_result(1,15)
+   rates(i,1) = mean(nodes_result(find(nodes_result(:,STAGE)==4),6))/1024;
   
+   poststats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[9 10 11]));
+   poststats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[ 12 13 14]));
+
    rx_nodes = unique(rx_nodes_result(:,4));
-         
+
    for r = 1:size(rx_nodes,1)
-      rx_node = rx_nodes(r);
-      pre_rx_node_hw=pre_rx_nodes_hw_all(find(pre_rx_nodes_hw_all(:,1) == rx_node),:); 
-      pre_rx_node_mac=pre_rx_nodes_mac_all(find(pre_rx_nodes_mac_all(:,1) == rx_node),:); 
-      
-%      size(pre_rx_node_hw)
-%      size(pre_rx_node_mac)
-      
-      if ( nodes_result(1,15) ~= size(pre_rx_node_hw,1) )
-        disp('Error size rx')
-        pre_rx_nodes_mac
-      end
-      
-      pre_rx_nodes_hw(rx_nodes_index+r-1,1)=mean(pre_rx_node_hw(:,2));
-      pre_rx_nodes_hw(rx_nodes_index+r-1,2)=mean(pre_rx_node_hw(:,3));
-      pre_rx_nodes_hw(rx_nodes_index+r-1,3)=mean(pre_rx_node_hw(:,4));
-      
-      pre_rx_nodes_mac(rx_nodes_index+r-1,1)=mean(pre_rx_node_mac(:,2));
-      pre_rx_nodes_mac(rx_nodes_index+r-1,2)=mean(pre_rx_node_mac(:,3));
-      pre_rx_nodes_mac(rx_nodes_index+r-1,3)=mean(pre_rx_node_mac(:,4));
+     rx_node = rx_nodes(r);
+   
+     rx_node_result = rx_nodes_result(find(rx_nodes_result(:,4) == rx_node),:);
+     pre_rx_node_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[9 10 11])); 
+     pre_rx_node_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[ 12 13 14]));
+     
+     dur_rx_nodes_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[9 10 11]));
+     dur_rx_nodes_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[ 12 13 14]));
+         
+     post_rx_node_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[9 10 11])); 
+     post_rx_node_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[ 12 13 14]));
       
    end
 
-   rx_nodes_index = rx_nodes_index + (size(nodes,1)-1);
+   rx_nodes_index = rx_nodes_index + size(rx_nodes,1);
 
 end
+size(post_rx_nodes_hw )
+rx_nodes_index
 
- size(pre_rx_nodes_hw)
- size(pre_rx_nodes_mac)
+prestats_diff = prestats_hw - prestats_mac;
+durstats_diff = durstats_hw - durstats_mac;
+poststats_diff = poststats_hw - poststats_mac;
 
-
-prestats_diff=prestats_hw - prestats_mac;
-durstats_diff=durstats_hw - durstats_mac;
-poststats_diff=poststats_hw - poststats_mac;
 
 subplot(3,2,1);
 plot(prestats_hw(:,1),rates(:,1),'o');

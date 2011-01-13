@@ -67,7 +67,7 @@ for n1 in $NODES; do
 
     for t in `seq 1 10`; do
       for n2 in $NODES; do
-        echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml ig_stats.$n1"
+        echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml ig_stats_pre.$n1"
       done
 
       TIME=`expr $TIME + 1`
@@ -79,8 +79,8 @@ for n1 in $NODES; do
 
     #get system and channel load during measurement
     for n2 in $NODES; do
-      echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml ig_stats.$n1"
-      echo "$TIME $n2 ath0 read sys_info systeminfo ig_stats.$n1"
+      echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml ig_stats_dur.$n1"
+      echo "$TIME $n2 ath0 read sys_info systeminfo ig_stats_dur.$n1"
     done
 
     TIME=`expr $TIME + 5`
@@ -88,13 +88,13 @@ for n1 in $NODES; do
 
     TIME=`expr $TIME + 1`
 
-    echo "$TIME $n1 ath0 read device_wifi/qc flow_stats ig_stats.$n1"
+    echo "$TIME $n1 ath0 read device_wifi/qc flow_stats ig_stats_dur_flow.$n1"
 
 
     for t in `seq 1 10`; do
 
       for n2 in $NODES; do
-        echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml ig_stats.$n1"
+        echo "$TIME $n2 ath0 read device_wifi/wifidevice/cst stats_xml ig_stats_post.$n1"
       done
 
       TIME=`expr $TIME + 1`
