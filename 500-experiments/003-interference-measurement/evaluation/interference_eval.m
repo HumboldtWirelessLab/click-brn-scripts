@@ -39,52 +39,64 @@ dur_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
 post_rx_nodes_hw = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
 post_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
 
+pre_all_nodes_hw = zeros(size(nodes,1) ,3);
+pre_all_nodes_mac = zeros(size(nodes,1) ,3);
+
 rx_nodes_index=0;
 
 for i = 1:size(nodes,1)
-   node=nodes(i);
+  node=nodes(i);
 
-   nodes_result=result(find((result(:,2) == node) & (result(:,4) == node)),:);
-   rx_nodes_result=result(find((result(:,2) == node) & (result(:,4) ~= node)),:);
+  nodes_result=result(find((result(:,2) == node) & (result(:,4) == node)),:);
+  rx_nodes_result=result(find((result(:,2) == node) & (result(:,4) ~= node)),:);
+  all_nodes_result=result(find(result(:,2) == node),:);
       
-   prestats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[9 10 11]));
-   prestats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[ 12 13 14]));
+  prestats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[9 10 11]));
+  prestats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[ 12 13 14]));
 
-   durstats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[9 10 11]));
-   durstats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[ 12 13 14]));
+  durstats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[9 10 11]));
+  durstats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[ 12 13 14]));
 
-   rates(i,1) = mean(nodes_result(find(nodes_result(:,STAGE)==4),6))/1024;
+  rates(i,1) = mean(nodes_result(find(nodes_result(:,STAGE)==4),6))/1024;
   
-   poststats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[9 10 11]));
-   poststats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[ 12 13 14]));
+  poststats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[9 10 11]));
+  poststats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[ 12 13 14]));
 
-   rx_nodes = unique(rx_nodes_result(:,4));
+  rx_nodes = unique(rx_nodes_result(:,4));
 
-   for r = 1:size(rx_nodes,1)
-     rx_node = rx_nodes(r);
+  for r = 1:size(rx_nodes,1)
+    rx_node = rx_nodes(r);
    
-     rx_node_result = rx_nodes_result(find(rx_nodes_result(:,4) == rx_node),:);
-     pre_rx_node_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[9 10 11])); 
-     pre_rx_node_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[ 12 13 14]));
+    rx_node_result = rx_nodes_result(find(rx_nodes_result(:,4) == rx_node),:);
+    pre_rx_nodes_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[9 10 11])); 
+    pre_rx_nodes_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[ 12 13 14]));
      
-     dur_rx_nodes_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[9 10 11]));
-     dur_rx_nodes_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[ 12 13 14]));
+    dur_rx_nodes_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[9 10 11]));
+    dur_rx_nodes_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[ 12 13 14]));
          
-     post_rx_node_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[9 10 11])); 
-     post_rx_node_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[ 12 13 14]));
+    post_rx_node_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[9 10 11])); 
+    post_rx_node_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[ 12 13 14]));
       
-   end
+  end
 
-   rx_nodes_index = rx_nodes_index + size(rx_nodes,1);
+  rx_nodes_index = rx_nodes_index + size(rx_nodes,1);
 
+  for pre_n = 1:size(nodes,1)
+    pre_node = nodes(pre_n);
+      
+    pre_node_result = all_nodes_result(find((all_nodes_result(:,STAGE)==1) & (all_nodes_result(:,4)==pre_node)),:);
+    pre_all_nodes_hw(pre_node,:) = pre_all_nodes_hw(pre_node,:) + mean(pre_node_result(:,[9 10 11]));
+    pre_all_nodes_mac(pre_node,:) = pre_all_nodes_mac(pre_node,:) + mean(pre_node_result(:,[12 13 14]));
+  end
+      
 end
-size(post_rx_nodes_hw )
-rx_nodes_index
+
+pre_all_nodes_hw = pre_all_nodes_hw / size(nodes,1);
+pre_all_nodes_mac = pre_all_nodes_mac / size(nodes,1);
 
 prestats_diff = prestats_hw - prestats_mac;
 durstats_diff = durstats_hw - durstats_mac;
 poststats_diff = poststats_hw - poststats_mac;
-
 
 subplot(3,2,1);
 plot(prestats_hw(:,1),rates(:,1),'o');
@@ -128,34 +140,38 @@ line([0 max_value],[0 max_value],'LineStyle','-');
 xlim([0 max_value]);
 ylim([0 max_value]);
 
-
-subplot(3,2,5);
-max_value=(ceil(max(max(dur_rx_nodes_mac(:,1)),max(dur_rx_nodes_hw(:,1)))/10) + 1) *10;
-scatter(dur_rx_nodes_mac(:,1),dur_rx_nodes_hw(:,1));
-grid on;
-xlabel('mac-busy');
-ylabel('hw-busy');
-title('rx nodes measurement');
-
-hold on;
-line([0 max_value],[0 max_value],'LineStyle','-');
-xlim([0 max_value]);
-ylim([0 max_value]);
-
-
 %all nodes before measurement
 
 subplot(3,2,5);
-max_value=(ceil(max(max(pre_rx_nodes_mac(:,1)),max(pre_rx_nodes_hw(:,1)))/10) + 1) *10;
-scatter(pre_rx_nodes_mac(:,1),pre_rx_nodes_hw(:,1));
+max_value=(ceil(max(max(pre_all_nodes_mac(:,1)),max(pre_all_nodes_hw(:,1)))/10) + 1) *10;
+scatter(pre_all_nodes_mac(:,1),pre_all_nodes_hw(:,1));
+
 grid on;
 xlabel('mac-busy');
 ylabel('hw-busy');
-title('pre rx nodes measurement');
+title('pre all nodes measurement');
 
 hold on;
 line([0 max_value],[0 max_value],'LineStyle','-');
 xlim([0 max_value]);
 ylim([0 max_value]);
+
+
+%all nodes during measurement
+
+subplot(3,2,6);
+max_value=(ceil(max(max(dur_rx_nodes_mac(:,1)),max(dur_rx_nodes_hw(:,1)))/10) + 1) *10;
+scatter(dur_rx_nodes_mac(:,1),dur_rx_nodes_hw(:,1));
+
+grid on;
+xlabel('mac-busy');
+ylabel('hw-busy');
+title('rx nodes during measurement');
+
+hold on;
+line([0 max_value],[0 max_value],'LineStyle','-');
+xlim([0 max_value]);
+ylim([0 max_value]);
+
 
 end
