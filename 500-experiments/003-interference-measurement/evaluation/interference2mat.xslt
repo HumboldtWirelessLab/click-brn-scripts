@@ -53,7 +53,11 @@
 	<xsl:value-of select="../mac/@busy" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../mac/@rx" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../mac/@tx" /><xsl:text>,</xsl:text>
-	<xsl:value-of select="../../@id" /><xsl:value-of select="$newline" />
+	<xsl:value-of select="../../@id" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="@avg_noise" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../mac/@crc_rx" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../mac/@noerr_rx" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../mac/@phy_rx" /><xsl:value-of select="$newline" />
     </xsl:template>
     
 

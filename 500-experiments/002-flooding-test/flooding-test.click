@@ -3,7 +3,9 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 
 //#define PRO_FL
-#define BCAST2UNIC
+//#define BCAST2UNIC
+#define DISABLE_WIFIDUBFILTER
+#define RAWDUMP
 
 #define SETCHANNEL
 

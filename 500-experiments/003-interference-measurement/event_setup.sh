@@ -8,6 +8,13 @@ if [ "x$DURATION" = "x" ]; then
   DURATION=1000
 fi
 
+if [ "x$RATE" = "x" ]; then
+  RATE=2
+fi
+
+if [ "x$POWER" = "x" ]; then
+  POWER=15
+fi
 
 for n1 in $NODES; do
     echo "$TIME $n1 ath0 write device_wifi/data_suppressor active1 false"
@@ -73,9 +80,11 @@ for n1 in $NODES; do
       TIME=`expr $TIME + 1`
     done
 
-    echo "$TIME $n1 ath0 write device_wifi/qc flow_insert 5000 15000 1500 2"
+    echo "$TIME $n1 ath0 write device_wifi/qc_rate rate $RATE"
+    echo "$TIME $n1 ath0 write device_wifi/qc_power power $POWER"
+    echo "$TIME $n1 ath0 write device_wifi/qc flow_insert 5000 20000 1500 2"
 
-    TIME=`expr $TIME + 10`
+    TIME=`expr $TIME + 7`
 
     #get system and channel load during measurement
     for n2 in $NODES; do
@@ -83,7 +92,7 @@ for n1 in $NODES; do
       echo "$TIME $n2 ath0 read sys_info systeminfo ig_stats_dur.$n1"
     done
 
-    TIME=`expr $TIME + 5`
+    TIME=`expr $TIME + 13`
 
 
     TIME=`expr $TIME + 1`

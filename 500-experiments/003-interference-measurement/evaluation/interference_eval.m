@@ -16,6 +16,14 @@ result=load(matfile,'-ASCII');
 
 nodes=unique(result(:,2));
 
+%some checks
+channels=unique(result(:,8));
+
+if ( size(channels,1) ~= 1 )
+   disp('more than one channel. Not good.'); 
+end
+
+
 %Stats of tx node
 prestats_mac=zeros(size(nodes,1),3); %busy rx tx 
 prestats_hw=zeros(size(nodes,1),3);
@@ -34,7 +42,10 @@ pre_rx_nodes_hw = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
 pre_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
 
 dur_rx_nodes_hw = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
-dur_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
+dur_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,4);
+dur_rx_nodes_noise = zeros((size(nodes,1)-1)*size(nodes,1) ,1);
+dur_rx_nodes_crc = zeros((size(nodes,1)-1)*size(nodes,1) ,1);
+dur_rx_nodes_phy = zeros((size(nodes,1)-1)*size(nodes,1) ,1);
 
 post_rx_nodes_hw = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
 post_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
@@ -51,16 +62,16 @@ for i = 1:size(nodes,1)
   rx_nodes_result=result(find((result(:,2) == node) & (result(:,4) ~= node)),:);
   all_nodes_result=result(find(result(:,2) == node),:);
       
-  prestats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[9 10 11]));
-  prestats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[ 12 13 14]));
+  prestats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[9 10 11]),1);
+  prestats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==1),[ 12 13 14]),1);
 
-  durstats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[9 10 11]));
-  durstats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[ 12 13 14]));
+  durstats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[9 10 11]),1);
+  durstats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==2),[ 12 13 14]),1);
 
-  rates(i,1) = mean(nodes_result(find(nodes_result(:,STAGE)==4),6))/1024;
+  rates(i,1) = mean(nodes_result(find(nodes_result(:,STAGE)==4),6),1)/1024;
   
-  poststats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[9 10 11]));
-  poststats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[ 12 13 14]));
+  poststats_hw(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[9 10 11]),1);
+  poststats_mac(i,:) = mean(nodes_result(find(nodes_result(:,STAGE)==4),[ 12 13 14]),1);
 
   rx_nodes = unique(rx_nodes_result(:,4));
 
@@ -68,14 +79,20 @@ for i = 1:size(nodes,1)
     rx_node = rx_nodes(r);
    
     rx_node_result = rx_nodes_result(find(rx_nodes_result(:,4) == rx_node),:);
-    pre_rx_nodes_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[9 10 11])); 
-    pre_rx_nodes_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[ 12 13 14]));
+    
+    %mean(x,1) -> number of col will be the same; mean only over cols
+    pre_rx_nodes_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[9 10 11]),1); 
+    pre_rx_nodes_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==1),[ 12 13 14]),1);
      
-    dur_rx_nodes_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[9 10 11]));
-    dur_rx_nodes_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[ 12 13 14]));
+    dur_rx_nodes_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[9 10 11]),1);
+    dur_rx_nodes_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[ 12 13 14 18]),1);
+    
+    dur_rx_nodes_noise(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[16]),1);
+    dur_rx_nodes_crc(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[17]),1);
+    dur_rx_nodes_phy(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[19]),1);
          
-    post_rx_node_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[9 10 11])); 
-    post_rx_node_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[ 12 13 14]));
+    post_rx_node_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[9 10 11]),1); 
+    post_rx_node_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[ 12 13 14]),1);
       
   end
 
@@ -85,8 +102,8 @@ for i = 1:size(nodes,1)
     pre_node = nodes(pre_n);
       
     pre_node_result = all_nodes_result(find((all_nodes_result(:,STAGE)==1) & (all_nodes_result(:,4)==pre_node)),:);
-    pre_all_nodes_hw(pre_node,:) = pre_all_nodes_hw(pre_node,:) + mean(pre_node_result(:,[9 10 11]));
-    pre_all_nodes_mac(pre_node,:) = pre_all_nodes_mac(pre_node,:) + mean(pre_node_result(:,[12 13 14]));
+    pre_all_nodes_hw(pre_node,:) = pre_all_nodes_hw(pre_node,:) + mean(pre_node_result(:,[9 10 11]),1);
+    pre_all_nodes_mac(pre_node,:) = pre_all_nodes_mac(pre_node,:) + mean(pre_node_result(:,[12 13 14]),1);
   end
       
 end
@@ -98,22 +115,28 @@ prestats_diff = prestats_hw - prestats_mac;
 durstats_diff = durstats_hw - durstats_mac;
 poststats_diff = poststats_hw - poststats_mac;
 
-subplot(3,2,1);
+dur_rx_nodes_mac_hw_diff = dur_rx_nodes_hw -  dur_rx_nodes_mac(:,[1 2 3]);
+
+X_PLOT_SIZE=3;
+Y_PLOT_SIZE=4;
+
+
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
 plot(prestats_hw(:,1),rates(:,1),'o');
 grid on;
 xlabel('HW-Busy');
 ylabel('Throughtput kbits/s');
-title('HW-Busy vs max. Throughput');
+title(strcat('HW-Busy vs max. Throughput (',num2str(channels(1)),')'));
 
 
-subplot(3,2,2);
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
 plot(prestats_mac(:,1),rates(:,1),'o');
 grid on;
 xlabel('MAC-Busy');
 ylabel('Throughtput kbits/s');
 title('MAC-Busy vs max. Throughput');
 
-subplot(3,2,3);
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,3);
 max_value=(ceil(max(max(prestats_hw(:,1)),max(poststats_hw(:,1)))/10) + 1) *10;
 scatter(prestats_hw(:,1),poststats_hw(:,1)); 
 grid on;
@@ -127,7 +150,7 @@ xlim([0 max_value]);
 ylim([0 max_value]);
 
 
-subplot(3,2,4);
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,4);
 max_value=(ceil(max(max(prestats_mac(:,1)),max(prestats_hw(:,1)))/10) + 1) *10;
 scatter(prestats_mac(:,1),prestats_hw(:,1));
 grid on;
@@ -142,7 +165,7 @@ ylim([0 max_value]);
 
 %all nodes before measurement
 
-subplot(3,2,5);
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,5);
 max_value=(ceil(max(max(pre_all_nodes_mac(:,1)),max(pre_all_nodes_hw(:,1)))/10) + 1) *10;
 scatter(pre_all_nodes_mac(:,1),pre_all_nodes_hw(:,1));
 
@@ -159,12 +182,90 @@ ylim([0 max_value]);
 
 %all nodes during measurement
 
-subplot(3,2,6);
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,6);
+max_value=(ceil(max(max(dur_rx_nodes_mac(:,2)),max(dur_rx_nodes_hw(:,2)))/10) + 1) *10;
+scatter(dur_rx_nodes_hw(:,2),dur_rx_nodes_hw(:,1));
+
+grid on;
+xlabel('hw-rx');
+ylabel('hw-busy');
+title('hw-rx vs. hw-busy');
+
+hold on;
+line([0 max_value],[0 max_value],'LineStyle','-');
+xlim([0 max_value]);
+ylim([0 max_value]);
+
+
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,7);
+scatter(dur_rx_nodes_mac_hw_diff(:,1),dur_rx_nodes_noise(:,1));
+
+grid on;
+xlabel('mac-hw-diff (busy)');
+ylabel('noise');
+title('noise vs. hw');
+
+hold on;
+
+
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,8);
+scatter(dur_rx_nodes_mac_hw_diff(:,1),dur_rx_nodes_crc(:,1));
+
+grid on;
+xlabel('mac-hw-diff (busy)');
+ylabel('crc');
+title('crc vs. hw');
+
+hold on;
+
+
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,9);
+scatter(dur_rx_nodes_mac_hw_diff(:,1),dur_rx_nodes_phy(:,1));
+
+grid on;
+xlabel('mac-hw-diff (busy)');
+ylabel('phy');
+title('phy vs. hw');
+
+hold on;
+
+
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,10);
 max_value=(ceil(max(max(dur_rx_nodes_mac(:,1)),max(dur_rx_nodes_hw(:,1)))/10) + 1) *10;
 scatter(dur_rx_nodes_mac(:,1),dur_rx_nodes_hw(:,1));
 
 grid on;
 xlabel('mac-busy');
+ylabel('hw-busy');
+title('rx nodes during measurement');
+
+hold on;
+line([0 max_value],[0 max_value],'LineStyle','-');
+xlim([0 max_value]);
+ylim([0 max_value]);
+
+
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,11);
+max_value=(ceil(max(max(dur_rx_nodes_mac(:,2)),max(dur_rx_nodes_hw(:,2)))/10) + 1) *10;
+scatter(dur_rx_nodes_mac(:,2),dur_rx_nodes_hw(:,2));
+
+grid on;
+xlabel('mac-rx');
+ylabel('hw-rx');
+title('rx nodes during measurement');
+
+hold on;
+line([0 max_value],[0 max_value],'LineStyle','-');
+xlim([0 max_value]);
+ylim([0 max_value]);
+
+
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,12);
+max_value=(ceil(max(max(dur_rx_nodes_mac(:,4)),max(dur_rx_nodes_hw(:,1)))/10) + 1) *10;
+scatter(dur_rx_nodes_mac(:,4),dur_rx_nodes_hw(:,1));
+
+grid on;
+xlabel('mac-rx_no_err');
 ylabel('hw-busy');
 title('rx nodes during measurement');
 
