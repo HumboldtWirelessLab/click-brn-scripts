@@ -17,11 +17,6 @@
         <xsl:apply-templates />
     </xsl:template>
 
-<!--    <xsl:template match="interferencegraphflow">
-        <xsl:variable name="header">
-        </xsl:variable>
-    </xsl:template>
--->
     <xsl:template match="pre_flow">
         <xsl:apply-templates />
     </xsl:template>
@@ -37,6 +32,7 @@
     <xsl:template match="channelstats">
         <xsl:apply-templates />
     </xsl:template>
+
 
     <xsl:template match="phy">
 	<xsl:value-of select="../../../@seq" /><xsl:text>,</xsl:text>
@@ -57,7 +53,10 @@
 	<xsl:value-of select="@avg_noise" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../mac/@crc_rx" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../mac/@noerr_rx" /><xsl:text>,</xsl:text>
-	<xsl:value-of select="../mac/@phy_rx" /><xsl:value-of select="$newline" />
+	<xsl:value-of select="../mac/@phy_rx" /><xsl:text>,</xsl:text>
+        <xsl:variable name="node_id"><xsl:value-of select="../@node" />
+        </xsl:variable>
+	<xsl:value-of select="../../../during_flow/system[@id = $node_id]/loadavg/@onemin" /><xsl:value-of select="$newline" />
     </xsl:template>
     
 
