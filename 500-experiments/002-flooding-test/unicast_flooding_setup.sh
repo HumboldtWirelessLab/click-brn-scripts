@@ -4,7 +4,7 @@ NODES=`cat $1 | grep -v "#" | uniq`
 
 TIME=$2
 
-if [ "x$UNNICAST" = "x1" ]; then
+if [ "x$UNICAST" = "x1" ]; then
   for n1 in $NODES; do
     echo "$TIME $n1 ath0 write device_wifi/lp_suppressor active0 false"
     echo "$TIME $n1 ath0 write device_wifi/wifidevice/ath_op set_macclone true"
@@ -18,7 +18,7 @@ fi
 
 
 #for n1 in $NODES; do
-for n1 in sk110; do
+for n1 in sk111 wgt80; do
 
     echo "$TIME $n1 ath0 write event_notifier payload_size 192"
 

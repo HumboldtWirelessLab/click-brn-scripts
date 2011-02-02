@@ -27,7 +27,7 @@ done
 #remove last combination (all zeros), this would results in no node has target mac
 COMB=`expr $COMB - 1`
 
-echo "$CNODES $COMB"
+#echo "$CNODES $COMB"
 
 STARTMAC="00-0a-0a-0a-0a-0a"
 
