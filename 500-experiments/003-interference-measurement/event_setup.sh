@@ -35,9 +35,9 @@ for n1 in $NODES; do
 #       echo "$TIME $n1 ath0 write device_wifi/wifidevice/ath_op channel $CHANNEL"
         echo "$TIME $n1 ath0 write device_wifi/wifidevice/sc set_channel ath0 $CHANNEL"
     fi
-    if [ "x$RATE" != "x" ]; then
-      echo "$TIME $n1 ath0 write device_wifi/data_rate rate $RATE"
-    fi
+#    if [ "x$RATE" != "x" ]; then
+#      echo "$TIME $n1 ath0 write device_wifi/data_rate rate $RATE"
+#    fi
     if [ "x$TXPOWER" != "x" ]; then
       echo "$TIME $n1 ath0 write device_wifi/data_power power $TXPOWER"
     fi
@@ -82,7 +82,7 @@ for n1 in $NODES; do
 
     echo "$TIME $n1 ath0 write device_wifi/qc_rate rate $RATE"
     echo "$TIME $n1 ath0 write device_wifi/qc_power power $POWER"
-    echo "$TIME $n1 ath0 write device_wifi/qc flow_insert 5000 20000 1500 2"
+    echo "$TIME $n1 ath0 write device_wifi/qc flow_insert 5000 20000 1500 $RATE"
 
     TIME=`expr $TIME + 7`
 

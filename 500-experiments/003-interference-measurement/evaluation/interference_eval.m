@@ -1,4 +1,4 @@
-function interference_eval(matfile)
+function interference_eval(matfile,prefix_name)
 
 % seq node_a node_b rx_node ID_of_chan_stats
 % flow_rate flow_queue_empty channel hw_busy hwrx
@@ -46,6 +46,7 @@ dur_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,4);
 dur_rx_nodes_noise = zeros((size(nodes,1)-1)*size(nodes,1) ,1);
 dur_rx_nodes_crc = zeros((size(nodes,1)-1)*size(nodes,1) ,1);
 dur_rx_nodes_phy = zeros((size(nodes,1)-1)*size(nodes,1) ,1);
+dur_rx_nodes_sysload = zeros((size(nodes,1)-1)*size(nodes,1) ,1);
 
 post_rx_nodes_hw = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
 post_rx_nodes_mac = zeros((size(nodes,1)-1)*size(nodes,1) ,3);
@@ -90,6 +91,7 @@ for i = 1:size(nodes,1)
     dur_rx_nodes_noise(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[16]),1);
     dur_rx_nodes_crc(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[17]),1);
     dur_rx_nodes_phy(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[19]),1);
+    dur_rx_nodes_sysload(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==2),[20]),1);
          
     post_rx_node_hw(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[9 10 11]),1); 
     post_rx_node_mac(rx_nodes_index+r,:) = mean(rx_node_result(find(rx_node_result(:,STAGE)==4),[ 12 13 14]),1);
@@ -118,7 +120,83 @@ poststats_diff = poststats_hw - poststats_mac;
 dur_rx_nodes_mac_hw_diff = dur_rx_nodes_hw -  dur_rx_nodes_mac(:,[1 2 3]);
 
 X_PLOT_SIZE=3;
-Y_PLOT_SIZE=4;
+Y_PLOT_SIZE=5;
+
+%--------------------------------------------------------------------------
+
+clf;
+plot(prestats_hw(:,1),rates(:,1),'o');
+grid on;
+title('Channel busy (NIC-based) vs. max. Throughput','FontSize',18);
+ylabel('Throughtput (kbits/s)','FontSize',18);
+xlabel('Channel busy (NIC-based)','FontSize',18);
+set(gca,'FontSize',14);
+
+print('-deps2c', strcat( prefix_name, '_nic_vs_tp.eps'));
+
+clf;
+plot(prestats_mac(:,1),rates(:,1),'o');
+grid on;
+title('Channel busy (trace-based) vs. max. Throughput','FontSize',18);
+ylabel('Throughtput (kbits/s)','FontSize',18);
+xlabel('Channel busy (trace-based)','FontSize',18);
+set(gca,'FontSize',14);
+
+print('-deps2c', strcat( prefix_name, '_mac_vs_tp.eps'));
+
+clf;
+max_value=min(100,(ceil(max(max(pre_all_nodes_mac(:,1)),max(pre_all_nodes_hw(:,1)))/10) + 1) *10);
+scatter(pre_all_nodes_mac(:,1),pre_all_nodes_hw(:,1));
+
+grid on;
+xlabel('Channel busy (trace-based)','FontSize',18);
+ylabel('Channel busy (NIC-based)','FontSize',18);
+title('Channel busy (Trace-based vs. NIC-based)','FontSize',18);
+
+hold on;
+line([0 max_value],[0 max_value],'LineStyle','-');
+xlim([0 max_value]);
+ylim([0 max_value]);
+set(gca,'FontSize',14);
+
+print('-deps2c', strcat( prefix_name, '_mac_vs_nic.eps'));
+
+clf;
+max_value=min(100,(ceil(max(max(dur_rx_nodes_mac(:,1)),max(dur_rx_nodes_hw(:,1)))/10) + 1) *10);
+scatter(dur_rx_nodes_mac(:,1),dur_rx_nodes_hw(:,1));
+
+grid on;
+xlabel('Channel busy (trace-based)','FontSize',18);
+ylabel('Channel busy (NIC-based)','FontSize',18);
+title('Channel busy (Trace-based vs. NIC-based)','FontSize',18);
+
+hold on;
+line([0 max_value],[0 max_value],'LineStyle','-');
+xlim([0 max_value]);
+ylim([0 max_value]);
+set(gca,'FontSize',14);
+
+print('-deps2c', strcat( prefix_name, '_mac_vs_nic_meas.eps'));
+
+clf;
+max_value=min(100,(ceil(max(max(dur_rx_nodes_mac(:,4)),max(dur_rx_nodes_hw(:,1)))/10) + 1) *10);
+scatter(dur_rx_nodes_mac(:,4),dur_rx_nodes_hw(:,1));
+
+grid on;
+xlabel('Channel busy w/o erroneous packets (trace-based)','FontSize',18);
+ylabel('Channel busy (NIC-based)','FontSize',18);
+title('Channel busy (Trace-based (w/o errors) vs. NIC-based)','FontSize',18);
+
+hold on;
+line([0 max_value],[0 max_value],'LineStyle','-');
+xlim([0 max_value]);
+ylim([0 max_value]);
+set(gca,'FontSize',14);
+
+print('-deps2c', strcat( prefix_name, '_mac_no_err_vs_nic_meas.eps'));
+
+
+%--------------------------------------------------------------------------
 
 
 subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
@@ -274,5 +352,15 @@ line([0 max_value],[0 max_value],'LineStyle','-');
 xlim([0 max_value]);
 ylim([0 max_value]);
 
+
+subplot(Y_PLOT_SIZE,X_PLOT_SIZE,13);
+scatter(dur_rx_nodes_mac(:,1),dur_rx_nodes_sysload(:,1));
+
+grid on;
+xlabel('mac-busy');
+ylabel('load');
+title('mac-busy vs. load');
+
+hold on;
 
 end
