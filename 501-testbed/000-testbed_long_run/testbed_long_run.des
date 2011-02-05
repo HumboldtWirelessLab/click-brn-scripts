@@ -1,13 +1,13 @@
-NAME=dsr_simpleflow
+NAME=testbed_long_run
 SIMULATOR=ns2
 RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=6000000
+TIME=600000
 
 NODEPLACEMENTFILE=placement.default
-NODETABLE=dsr_simpleflow.mes
+NODETABLE=testbed_long_run.mes
 NODEPLACEMENT=grid
 FIELDSIZE=550
 

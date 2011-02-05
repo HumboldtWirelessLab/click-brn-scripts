@@ -1,4 +1,0 @@
-#NODE			DEVICE	MODULSDIR					 MODOPTIONS WIFICONFIG			CLICKMODDIR	CLICKSCRIPT			CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
-group:nodes		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel		-		dsr_simpleflow.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
-#group:nodes.sim	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel		-		dsr_simpleflow.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
-wndr210			wlan0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel.802	-		dsr_simpleflow.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-

@@ -4,7 +4,7 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=1200
+TIME=120
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=dht_dsr.mes
