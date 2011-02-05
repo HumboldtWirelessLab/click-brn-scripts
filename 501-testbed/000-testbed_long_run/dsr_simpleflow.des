@@ -22,7 +22,7 @@ GPS=no
 NOTICE=no
 LOS=no
 
-LOCALPROCESS=CONFIGDIR/network_stats.sh
+#LOCALPROCESS=CONFIGDIR/network_stats.sh
 
 CONTROLSOCKET=yes
 #CONTROLFILE=dsr_simpleflow.ctl
