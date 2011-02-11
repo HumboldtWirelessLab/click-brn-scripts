@@ -35,10 +35,11 @@ CHECKFILE=/tmp/wlan_rssi
 case "$1" in
     "start")
       echo "Start RSSI check (loop )"
+      echo "" > $FINALRESULTDIR/rssi.values 2>&1
       rm -rf $CHECKFILE
       touch $CHECKFILE
       while [ -f $CHECKFILE ]; do
-        ${WLANCONFIG} ath0 list > $FINALRESULTDIR/rssi.values 2>&1
+        ${WLANCONFIG} ath0 list >> $FINALRESULTDIR/rssi.values 2>&1
         sleep 1
       done
       echo "Loop finished"

@@ -1,4 +1,4 @@
 #NODE		DEVICE MODULSDIR                                        MODOPTIONS WIFICONFIG      CLICKMODDIR CLICKSCRIPT    LOGFILE                        APP                   APPLOGFILE
-sk110		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.default -           sender.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
+sk110		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           receiver.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
 #sk110		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.adhoc      -           -              -                              CONFIGDIR/get_rssi.sh LOGDIR/NODENAME.NODEDEVICE.log
-foobar103	ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor	   -           receiver.click LOGDIR/NODENAME.NODEDEVICE.log -                     -
+foobar103	ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.adhoc      -           -              -                              -                     -

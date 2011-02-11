@@ -1,11 +1,11 @@
-NAME=txpower
+NAME=rxpower
 SIMULATOR=ns2
 RADIO=shadowing11b
 FORGEINNODES=no
 
 TIME=60
 
-NODETABLE=txpower.mes
+NODETABLE=rxpower.mes
 NODEPLACEMENTFILE=placement.default
 
 LOGDIR=WORKDIR
