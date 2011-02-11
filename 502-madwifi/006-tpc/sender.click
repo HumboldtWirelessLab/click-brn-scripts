@@ -6,7 +6,7 @@ BRN2PacketSource(SIZE 150, INTERVAL 50, MAXSEQ 500000, BURST 1, ACTIVE true)
  -> WifiEncap(0x00, 0:0:0:0:0:0)
  -> SetTXRate(RATE 12)
  -> rrs :: RoundRobinSwitch()
- -> SetTXPower(15)
+ -> SetTXPower(61)
  -> __WIFIENCAP__
  -> wlan_out_queue :: NotifierQueue(100);
 
