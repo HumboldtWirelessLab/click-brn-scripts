@@ -26,7 +26,13 @@ SENDERMAC=`(cd $RESULTDIR; cat nodes.mac | grep $SENDER | awk '{print $3}' | sed
 echo $SENDERMAC
 
 if [ $ADHOC -eq 0 ]; then
-  (cd $RESULTDIR; fromdump.sh $RECEIVER.ath0.dump) | grep "$SENDERMAC" | sed "s#/# #g" | awk '{print $6}' | sed "s#+##g" > $RESULTDIR/$DATA_MAT
+  echo "CLICK"
+#  (cd $RESULTDIR; WIFITYPE=804 WIFI=804 fromdump.sh $RECEIVER.ath0.dump)
+#  (cd $RESULTDIR; WIFITYPE=802 WIFI=802 fromdump.sh $RECEIVER.wlan0.dump) | grep "$SENDERMAC $SENDERMAC" | sed "s#/# #g" | awk '{print $6-255-$7" "$7}' | sed "s#+##g" > $RESULTDIR/$DATA_MAT
+#  (cd $RESULTDIR; fromdump.sh $RECEIVER.ath0.dump) | grep "$SENDERMAC $SENDERMAC" | sed "s#/# #g" | awk '{print $6" "$7}' | sed "s#+##g" > $RESULTDIR/$DATA_MAT
+  (cd $RESULTDIR; fromdump.sh $RECEIVER.ath0.dump) | grep "$SENDERMAC" | sed "s#/# #g" | awk '{print $6" "$7}' | sed "s#+##g" > $RESULTDIR/$DATA_MAT
 else
-  (cd $RESULTDIR; cat rssi.values) | sed "s#:#-#g" | tr '[:lower:]' '[:upper:]' | grep "$SENDERMAC" | awk '{print $5}' > $RESULTDIR/$DATA_MAT
+  echo "ADHOC"
+  SENDERMAC=`echo $SENDERMAC | sed "s#-# #g" | awk '{print $3"-"$4"-"$5"-"$6}'`
+  (cd $RESULTDIR; cat rssi.values) | sed "s#:#-#g" | tr '[:lower:]' '[:upper:]' | grep "$SENDERMAC" | awk '{print $5" "$6-$5}' > $RESULTDIR/$DATA_MAT
 fi
