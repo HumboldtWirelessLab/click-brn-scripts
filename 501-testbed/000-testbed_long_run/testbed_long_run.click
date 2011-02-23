@@ -44,6 +44,15 @@ dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
 sys_info::SystemInfo(NODEIDENTITY id);
 #endif
 
+gps::GPS();
+
+#ifndef SIMULATION
+FromSocket(127.0.0.1, 8087)
+#else
+Idle()
+#fi
+-> seismo::Seismo(GPS gps, CALCSTATS true, PRINT false);
+
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
