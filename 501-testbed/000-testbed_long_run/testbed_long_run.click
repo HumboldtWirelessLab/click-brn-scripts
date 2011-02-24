@@ -47,10 +47,10 @@ sys_info::SystemInfo(NODEIDENTITY id);
 gps::GPS();
 
 #ifndef SIMULATION
-FromSocket(127.0.0.1, 8087)
+FromSocket("UDP", 127.0.0.1, 8087)
 #else
 Idle()
-#fi
+#endif
 -> seismo::Seismo(GPS gps, CALCSTATS true, PRINT false);
 
 device_wifi
