@@ -1,0 +1,20 @@
+NAME=rxpower_mesh
+SIMULATOR=ns2
+RADIO=shadowing11b
+FORGEINNODES=no
+
+TIME=180
+
+NODETABLE=rxpower_mesh.mes
+NODEPLACEMENTFILE=placement.default
+
+LOGDIR=WORKDIR
+LOGFILE=measurement.log
+
+RESULTDIR=WORKDIR
+EVALUATIONSDIR=WORKDIR
+#EVALUATION="basic standard"
+
+GPS=no
+NOTICE=no
+LOS=no
