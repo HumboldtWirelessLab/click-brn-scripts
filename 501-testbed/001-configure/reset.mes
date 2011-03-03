@@ -7,4 +7,6 @@
 #pc113     ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.b.channel  -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -
 #wndr210    wlan0  BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.wndr       -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -
 #pc114      ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.b.channel  -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -
-wrt14      eth1   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.wrt        -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -
+#wrt14      eth1   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.wrt        -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -
+wgt23      ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          adhoc.seismo        -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -
+wgt25      ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          adhoc.seismo        -	    -		LOGDIR/reset_NODENAME.NODEDEVICE.log -                     -

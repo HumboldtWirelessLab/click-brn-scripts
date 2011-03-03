@@ -24,8 +24,8 @@ CHANNELS="1 2 3 4 5 6 7 8 9 10 11"
 
 NUM=1
 
-SENDER=wgt76
-RECEIVER=wgt79
+SENDER=wgt80
+RECEIVER=wgt82
 
 
 mv ./rxpower.mes ./rxpower.mes.save
