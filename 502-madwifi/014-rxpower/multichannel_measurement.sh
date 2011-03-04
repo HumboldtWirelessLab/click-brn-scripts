@@ -56,8 +56,8 @@ cat ./tmpl/rxpower.mes.monitor | sed "s#SENDER#$SENDER#g" | sed "s#RECEIVER#$REC
 
 for p in $POSITIONS; do
   for c in $CHANNELS; do
-#   for m in modoptions.default modoptions.default.395; do
-     for m in modoptions.default; do
+    #for m in modoptions.default modoptions.default.395; do
+    for m in modoptions.default; do
 
       cat ./tmpl/mode.monitor | sed "s#VAR_CHANNEL#$c#g" | sed "s#VAR_MODOPTIONS#$m#g" > ./mode.monitor
 
@@ -74,6 +74,11 @@ for p in $POSITIONS; do
         #echo "$FINALPATH"
 
         NUM=`expr $NUM + 1`
+
+        if [ "$p" != "none" ]; then
+          ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
+        fi
+
       done
     done
   done
@@ -81,6 +86,13 @@ for p in $POSITIONS; do
   if [ "$p" != "none" ]; then
     ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh forward 100000"
   fi
+
+  sleep 1;
+
+  if [ "$p" != "none" ]; then
+     ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
+  fi
+
 done
 
 mv ./rxpower.mes.save ./rxpower.mes
