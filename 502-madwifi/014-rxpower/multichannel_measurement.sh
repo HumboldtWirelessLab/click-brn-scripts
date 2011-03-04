@@ -19,13 +19,14 @@ case "$SIGN" in
 esac
 
 
-CHANNELS="1 2 3 4 5 6 7 8 9 10 11"
-
+CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13 14"
+POSITIONS=`seq 1 20`
+#POSITIONS="none"
 
 NUM=1
 
-SENDER=wgt80
-RECEIVER=wgt82
+SENDER=wgt76
+RECEIVER=wgt79
 
 
 mv ./rxpower.mes ./rxpower.mes.save
@@ -53,16 +54,33 @@ mv ./mode.monitor ./mode.monitor.save
 rm -f ./rxpower.mes
 cat ./tmpl/rxpower.mes.monitor | sed "s#SENDER#$SENDER#g" | sed "s#RECEIVER#$RECEIVER#g" > ./rxpower.mes
 
-for c in $CHANNELS; do
-#  for m in modoptions.default modoptions.default.395; do
-   for m in modoptions.default; do
-    cat ./tmpl/mode.monitor | sed "s#VAR_CHANNEL#$c#g" | sed "s#VAR_MODOPTIONS#$m#g" > ./mode.monitor
-    for r in `seq 1 1`; do
-     RUNMODE=REBOOT run_measurement.sh rxpower.des $NUM\_channel_$c\_modoption_$m\_monitor
+for p in $POSITIONS; do
+  for c in $CHANNELS; do
+#   for m in modoptions.default modoptions.default.395; do
+     for m in modoptions.default; do
 
-     NUM=`expr $NUM + 1`
+      cat ./tmpl/mode.monitor | sed "s#VAR_CHANNEL#$c#g" | sed "s#VAR_MODOPTIONS#$m#g" > ./mode.monitor
+
+      for r in `seq 1 1`; do
+
+        FINALPATH=$NUM\_channel_$c\_modoption_$m\_monitor
+
+        if [ "$p" != "none" ]; then
+          FINALPATH=$FINALPATH\_position_$p
+        fi
+
+        RUNMODE=REBOOT run_measurement.sh rxpower.des $FINALPATH
+
+        #echo "$FINALPATH"
+
+        NUM=`expr $NUM + 1`
+      done
     done
   done
+
+  if [ "$p" != "none" ]; then
+    ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh forward 100000"
+  fi
 done
 
 mv ./rxpower.mes.save ./rxpower.mes
