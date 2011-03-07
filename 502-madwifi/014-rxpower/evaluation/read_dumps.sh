@@ -27,9 +27,9 @@ echo $SENDERMAC
 
 if [ $ADHOC -eq 0 ]; then
   echo "CLICK"
-#  (cd $RESULTDIR; WIFITYPE=804 WIFI=804 fromdump.sh $RECEIVER.ath0.dump)
-#  (cd $RESULTDIR; WIFITYPE=802 WIFI=802 fromdump.sh $RECEIVER.wlan0.dump) | grep "$SENDERMAC $SENDERMAC" | sed "s#/# #g" | awk '{print $6-255-$7" "$7}' | sed "s#+##g" > $RESULTDIR/$DATA_MAT
-#  (cd $RESULTDIR; fromdump.sh $RECEIVER.ath0.dump) | grep "$SENDERMAC $SENDERMAC" | sed "s#/# #g" | awk '{print $6" "$7}' | sed "s#+##g" > $RESULTDIR/$DATA_MAT
+# (cd $RESULTDIR; WIFITYPE=804 WIFI=804 fromdump.sh $RECEIVER.ath0.dump)
+# (cd $RESULTDIR; WIFITYPE=802 WIFI=802 fromdump.sh $RECEIVER.wlan0.dump) | grep "$SENDERMAC $SENDERMAC" | sed "s#/# #g" | awk '{print $6-255-$7" "$7}' | sed "s#+##g" > $RESULTDIR/$DATA_MAT
+# (cd $RESULTDIR; fromdump.sh $RECEIVER.ath0.dump) | grep "$SENDERMAC $SENDERMAC" | sed "s#/# #g" | awk '{print $6" "$7}' | sed "s#+##g" > $RESULTDIR/$DATA_MAT
   (cd $RESULTDIR; fromdump.sh $RECEIVER.ath0.dump) | grep "$SENDERMAC" | sed "s#/# #g" | awk '{print $6" "$7}' | sed "s#+##g" > $RESULTDIR/$DATA_MAT
 else
   echo "ADHOC"

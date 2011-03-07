@@ -1,0 +1,12 @@
+eval_matlab.sh:
+- call matlab for eval_all_rssi
+
+eval_measurement_set.sh:
+- generates matlab-file for multiple measurement (each measurement has his own number)
+
+eval_multichannel_measurement_set.sh:
+-  generates matlab-file for multiple measurement on different channels (matlab file includes number of measurement and channel)
+  if the position is included:
+  -  generates matlab-file for multiple measurement on different channels and different channels (matlab file includes number of measurement, channel and position)
+
+read_dumps.sh:

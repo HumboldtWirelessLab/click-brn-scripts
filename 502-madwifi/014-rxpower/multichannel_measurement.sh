@@ -19,13 +19,14 @@ case "$SIGN" in
 esac
 
 
-CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13 14"
-POSITIONS=`seq 1 20`
+CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13"
+POSITIONS=`seq 1 40`
 #POSITIONS="none"
 
 NUM=1
 
-SENDER=wgt76
+#SENDER=wgt76
+SENDER=wgt81
 RECEIVER=wgt79
 
 
@@ -53,6 +54,8 @@ mv ./mode.monitor ./mode.monitor.save
 
 rm -f ./rxpower.mes
 cat ./tmpl/rxpower.mes.monitor | sed "s#SENDER#$SENDER#g" | sed "s#RECEIVER#$RECEIVER#g" > ./rxpower.mes
+
+ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
 
 for p in $POSITIONS; do
   for c in $CHANNELS; do
