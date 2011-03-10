@@ -1,7 +1,11 @@
 #define DEBUGLEVEL 2
 
 #define CST cst
+#ifndef SIMULATION
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#else
+#define CST_PROCFILE "RESULTDIR/../cst"
+#endif
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -41,10 +45,8 @@ Idle
 ->[1]device_wifi;
 
 Script(
-  wait 10,
+  wait 11,
   read lt.links,
   read device_wifi/link_stat.bcast_stats,
-  read device_wifi/wifidevice/cst.stats,
-  read device_wifi/wifidevice/cst.src_rssi,
   read device_wifi/wifidevice/cst.stats_xml	
 );
