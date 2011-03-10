@@ -1,3 +1,4 @@
+RECOMMENDMODOPTIONS=modoptions.cc_debug
 #RECOMMENDMODOPTIONS=modoptions.nocountry
 MODE=monitor
 CHANNEL=1

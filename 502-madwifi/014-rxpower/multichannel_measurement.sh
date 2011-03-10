@@ -19,15 +19,20 @@ case "$SIGN" in
 esac
 
 
-CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13"
-POSITIONS=`seq 1 40`
+#CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13"
+CHANNELS="100 104 108 112 116 120 124 128 132 136 140"
+POSITIONS=`seq 1 30`
 #POSITIONS="none"
+#MODOPTIONS="modoptions.default modoptions.default.395"
+MODOPTIONS="modoptions.germany"
 
 NUM=1
 
 #SENDER=wgt76
-SENDER=wgt81
-RECEIVER=wgt79
+#SENDER=wgt81
+#RECEIVER=wgt79
+SENDER=sk110
+RECEIVER=sk112
 
 
 mv ./rxpower.mes ./rxpower.mes.save
@@ -59,8 +64,7 @@ ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bi
 
 for p in $POSITIONS; do
   for c in $CHANNELS; do
-    #for m in modoptions.default modoptions.default.395; do
-    for m in modoptions.default; do
+    for m in $MODOPTIONS; do
 
       cat ./tmpl/mode.monitor | sed "s#VAR_CHANNEL#$c#g" | sed "s#VAR_MODOPTIONS#$m#g" > ./mode.monitor
 

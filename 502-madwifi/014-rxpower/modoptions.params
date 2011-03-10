@@ -1,9 +1,0 @@
-ATH_PCI_1="autocreate=none"
-ATH_PCI_2="autocreate=none countrycode=276"
-ATH_PCI_3="autocreate=none countrycode=395"
-ATH_PCI_4="autocreate=none countrycode=376 hal_tpc=1"
-ATH_PCI_5="autocreate=none countrycode=395 hal_tpc=1"
-ATH_PCI_6="autocreate=none xchanmode=1 countrycode=395 hal_tpc=1"
-ATH_PCI_7="autocreate=none outdoor=1 countrycode=395 hal_tpc=1"
-ATH_PCI_8="autocreate=none outdoor=1 xchanmode=1 countrycode=395 hal_tpc=1"
-ATH_PCI=$ATH_PCI_PARAMS
