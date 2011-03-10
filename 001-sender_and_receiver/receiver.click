@@ -29,6 +29,8 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 //  -> wifidevice;
 
 Script(
+  write id.version 000102030405060708090a0b0c0d0e0f 0f0e0d0c0b0a09080706050403020100,
   read id.devinfo,
+  read id.version,
   read wireless.deviceinfo
 );
