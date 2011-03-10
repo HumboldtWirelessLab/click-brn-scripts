@@ -1,3 +1,9 @@
-#NODE		DEVICE MODULSDIR                                        MODOPTIONS WIFICONFIG      CLICKMODDIR CLICKSCRIPT    LOGFILE                        APP                   APPLOGFILE
-RECEIVER	ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           receiver.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
-SENDER		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           sender.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
+#NODE		DEVICE MODULSDIR                                        MODOPTIONS WIFICONFIG      CLICKMODDIR CLICKSCRIPT                 LOGFILE                        APP                   APPLOGFILE
+#RECEIVER	ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           receiver.click              LOGDIR/NODENAME.NODEDEVICE.log -                     -
+#SENDER		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           sender.click                LOGDIR/NODENAME.NODEDEVICE.log -                     -
+#RECEIVER	ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           sender_and_receiver.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
+#SENDER		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           sender_and_receiver.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
+RECEIVER	ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           sender_and_receiver_2_devices.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
+RECEIVER	ath1   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           -                           -                              -                     -
+SENDER		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           sender_and_receiver_2_devices.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
+SENDER		ath1   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           -                           -                              -                     -

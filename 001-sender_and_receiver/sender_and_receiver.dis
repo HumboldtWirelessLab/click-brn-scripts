@@ -4,7 +4,7 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=60
+TIME=30
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=sender_and_receiver.mes

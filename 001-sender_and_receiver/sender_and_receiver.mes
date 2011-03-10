@@ -10,4 +10,5 @@
 #seismo184	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-               sender.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
 #wgt41	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel1	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
 #wgt54	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel1	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
-foobar103	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel13	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+sk110	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+sk111	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-		sender.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-

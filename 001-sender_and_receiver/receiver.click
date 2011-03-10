@@ -1,5 +1,8 @@
 #define DEBUGLEVEL 2
 
+//#define USE_PCAP
+
+#include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
 
