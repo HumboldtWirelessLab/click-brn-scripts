@@ -15,6 +15,9 @@ for i in `(cd ..;ls)`; do
     MODOPTIONS=`echo $i | sed "s#_# #g" | awk '{print $5}' | sed "s#modoptions\.default\.395#1#g" |  sed "s#modoptions\.default#2#g" | sed "s#modoptions\.germany#3#g"`
     POSITION=`echo $i | sed "s#_# #g" | awk '{print $8}'`
   fi
+  if [ "x$POSITION" = "x" ]; then
+    POSITION=0
+  fi
   echo $i
   if [ ! -f ../$i ]; then
     echo "eval $i"
