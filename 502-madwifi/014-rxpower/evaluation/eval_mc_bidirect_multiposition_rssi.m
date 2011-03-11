@@ -1,10 +1,5 @@
 function eval_multichannel_multiposition_rssi(filename)
 
-scrsz = [ 1 1 800 600 ];
-figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
-set(gcf,'paperpositionmode','auto');
-set(gca,'fontsize',16);
-
   raw_res = load(filename,'-ASCII');
   
   meas = unique(raw_res(:,1));
@@ -55,7 +50,7 @@ set(gca,'fontsize',16);
                 pos = positions(p);
 
                 for c = 1:no_channel
-                  ch = channels(c)
+                  ch = channels(c);
                   snr_data = data(find((data(:,4) == ch) & (data(:,5) == pos)),6);
                   noise_data = data(find((data(:,4) == ch) & (data(:,5) == pos)),7);
                   noise_data(snr_data > 100) = [];
@@ -67,16 +62,30 @@ set(gca,'fontsize',16);
                   noise_data_back(snr_data_back > 100) = [];
                   snr_data_back(snr_data_back > 100) = [];
                   rssi_data_back=noise_data_back + snr_data_back;
+                  
+                  if size(rssi_data) ~= 0
+                    mesh_res(p,c)=mean(rssi_data);
+                    mesh_res_std(p,c)=std(rssi_data);
+                    mesh_res_max(p,c)=max(rssi_data);
+                    mesh_res_noise(p,c)=mean(noise_data);
+                  else
+                    mesh_res(p,c)=-60;
+                    mesh_res_std(p,c)=0;
+                    mesh_res_max(p,c)=-60;
+                    mesh_res_noise(p,c)=-95;
+                  end
 
-                  mesh_res(p,c)=mean(rssi_data);
-                  mesh_res_std(p,c)=std(rssi_data);
-                  mesh_res_max(p,c)=max(rssi_data);
-                  mesh_res_noise(p,c)=mean(noise_data);
-
-                  mesh_res_back(p,c)=mean(rssi_data_back);
-                  mesh_res_std_back(p,c)=std(rssi_data_back);
-                  mesh_res_max_back(p,c)=max(rssi_data_back);
-                  mesh_res_noise_back(p,c)=mean(noise_data_back);
+                  if size(rssi_data) ~= 0
+                    mesh_res_back(p,c)=mean(rssi_data_back);
+                    mesh_res_std_back(p,c)=std(rssi_data_back);
+                    mesh_res_max_back(p,c)=max(rssi_data_back);
+                    mesh_res_noise_back(p,c)=mean(noise_data_back);
+                  else
+                    mesh_res_back(p,c)=-60;
+                    mesh_res_std_back(p,c)=0;
+                    mesh_res_max_back(p,c)=-60;
+                    mesh_res_noise_back(p,c)=-95;
+                  end
 
                 end
               end

@@ -27,7 +27,7 @@ case "$1" in
       echo $$ > $CHECKFILE
       while [ -f $CHECKFILE ]; do
         sleep 55
-	$DIR/evaluation/system/grabsysinfo.pl 2>/dev/null | xsltproc $DIR/systomat.xslt - >> $FINALRESULTDIR/loadavg.values
+	$DIR/evaluation/system/grabsysinfo.pl 2> /dev/null | xsltproc $DIR/evaluation/system/systomat.xslt - >> $FINALRESULTDIR/loadavg.values
       done
       ;;
     "stop")
