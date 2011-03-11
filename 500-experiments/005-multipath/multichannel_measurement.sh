@@ -91,7 +91,7 @@ for p in $POSITIONS; do
   done
 
   if [ "$p" != "none" ]; then
-    ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh forward 100000"
+    ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh forward 75000"
   fi
 
   sleep 1;
