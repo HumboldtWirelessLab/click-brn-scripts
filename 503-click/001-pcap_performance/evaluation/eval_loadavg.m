@@ -1,32 +1,31 @@
 function eval_loadavg(filename)
 
   res = load(filename,'-ASCII');
-  mes = unique(res(:,1));
+  mes = sort(unique(res(:,1)));
   no_mes = size(mes,1);
   
   count_m = [];
   
   for i = 1:no_mes
-    count_m = [ count_m ; size(
-  boxplot_res = zeros(1000,no_m);
+    count_m = [ count_m ; size(res(find(res(:,1)==mes(i)),:),1)]
+  end
   
-  for i = 1:size(mes,1)
-    m = res(find(res(:,1)==i),2);
-    m(m>150)=[];
+  %count_m
+  
+  min_res=min(count_m);
+  
+  boxplot_res = zeros(min_res,no_mes);
+  
+  for i = 1:no_mes
+    m = res(find(res(:,1)==mes(i)),3);
     %size(m)
-    if ( size(m,1) == 0 )
-        m = zeros(1500,1);
-    end
-    boxplot_res(:,i) = m(1:1000);
-    plot_res(i,1)=i;
-    plot_res(i,2)=mean(m);
-    plot_res(i,3)=std(m);
-    plot_res(i,4)=size(m,1);
+
+    boxplot_res(:,i) = m(1:min_res);
   end
 
-  plot_res
-  mean(plot_res(:,2))
-%  boxplot(boxplot_res);
-
-%  print('-dpng', 'rssi.png');
+  boxplot(boxplot_res);
+  xlabel('Mode: PCAP(odd) noPCAP(even)');
+  ylabel('loadavg (one min)');
+  ylim([0 1.0]);
+  print('-dpng', 'loadavg.png');
 end
