@@ -4,7 +4,7 @@
 //#define ENABLE_DSR_DEBUG
 
 //#define SETCHANNEL
-#define USE_PCAP
+#define NOPCAP
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
