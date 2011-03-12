@@ -89,32 +89,40 @@ function eval_multichannel_multiposition_rssi(filename)
 
                 end
               end
-                
-              scrsz = [ 1 1 500 1000 ];
-              figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
-              set(gcf,'paperpositionmode','auto');
-              set(gca,'fontsize',16);
+              
+              if ( no_positions > 1 )
+                  scrsz = [ 1 1 500 1000 ];
+                  figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
+                  set(gcf,'paperpositionmode','auto');
+                  set(gca,'fontsize',16);
 
-              X_PLOT_SIZE=1;
-              Y_PLOT_SIZE=2;
-              
-              subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
-              
-              [X,Y]=meshgrid(positions,channels);
-              Z=mesh_res;
-              surf(X,Y,Z');
-              
-              title(strcat('Node1: ', num2str(floor((node1-1)/2)), ' ath', num2str(rem(node1+1,2)), ' Node2: ', num2str(floor((node2-1)/2)), ' ath', num2str(rem(node2+1,2))));
-              
-              hold on;
-              
-              subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
-              
-              [X,Y]=meshgrid(positions,channels);
-              Z=mesh_res_back;
-              surf(X,Y,Z');
-              
-              title(strcat('Node1: ', num2str(floor((node2-1)/2)), ' ath', num2str(rem(node2+1,2)), ' Node2: ', num2str(floor((node1-1)/2)), ' ath', num2str(rem(node1+1,2))));
+                  X_PLOT_SIZE=1;
+                  Y_PLOT_SIZE=2;
+
+                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
+
+                  [X,Y]=meshgrid(positions,channels);
+                  Z=mesh_res;
+                  surf(X,Y,Z');
+
+                  title(strcat('Node1: ', num2str(floor((node1-1)/2)), ' ath', num2str(rem(node1+1,2)), ' Node2: ', num2str(floor((node2-1)/2)), ' ath', num2str(rem(node2+1,2))));
+
+                  hold on;
+
+                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
+
+                  [X,Y]=meshgrid(positions,channels);
+                  Z=mesh_res_back;
+                  surf(X,Y,Z');
+
+                  title(strcat('Node1: ', num2str(floor((node2-1)/2)), ' ath', num2str(rem(node2+1,2)), ' Node2: ', num2str(floor((node1-1)/2)), ' ath', num2str(rem(node1+1,2))));
+              else
+                  figure
+                  scatter(mesh_res,mesh_res_back);
+                  limits=[ min([mesh_res';mesh_res_back']) max([mesh_res';mesh_res_back']) ]
+                  xlim(limits);
+                  ylim(limits);
+              end
 
               %print('-dpng', strcat('rssi_', num2str(modes(mod)) , '_',  num2str(modopts(opt)), '.png'));
             end
