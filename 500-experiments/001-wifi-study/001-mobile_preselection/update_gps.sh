@@ -21,7 +21,7 @@ esac
 ERRORCOUNT=0
 
 while [ true ]; do
-  POS=`MAXTRY=$MAXGPSTRY GPSTIME=yes $DIR/../../../../helper/host/bin/gps.sh getgpspos`
+  POS=`MAXTRY=$MAXGPSTRY GPSTIME=yes $DIR/../../../../helper/host/bin/gps.sh getgpsposraw`
   echo "$POS"
   GPSPOS=`echo $POS | awk '{print $1" "$2" "$3}'`
   if [ "x$GPSPOS" != "x0.0 0.0 0.0" ]; then
