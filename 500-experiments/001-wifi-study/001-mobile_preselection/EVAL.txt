@@ -1,0 +1,3 @@
+To evaluate for matlab:
+
+./evaluation/eval.sh 1/
