@@ -106,10 +106,7 @@ function eval_multichannel_multiposition_rssi(filename)
                   surf(X,Y,Z');
 
                   title(strcat('Node1: ', num2str(floor((node1-1)/2)), ' ath', num2str(rem(node1+1,2)), ' Node2: ', num2str(floor((node2-1)/2)), ' ath', num2str(rem(node2+1,2))));
-                  xlabel('Position (0.8 cm/step)');
-                  ylabel('Channel');
-                  zlabel('Rssi');
-                  
+
                   hold on;
 
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
@@ -119,24 +116,6 @@ function eval_multichannel_multiposition_rssi(filename)
                   surf(X,Y,Z');
 
                   title(strcat('Node1: ', num2str(floor((node2-1)/2)), ' ath', num2str(rem(node2+1,2)), ' Node2: ', num2str(floor((node1-1)/2)), ' ath', num2str(rem(node1+1,2))));
-                  xlabel('Position (0.8 cm/step)');
-                  ylabel('Channel');
-                  zlabel('Rssi');
-                  
-                  scrsz = [ 1 1 800 1000 ];
-                  figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
-                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
-                  boxplot(Z);
-                  title('RSSI vs Channel');
-                  ylabel('Rssi');
-                  xlabel('Channel');
-                  
-                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
-                  boxplot(Z');
-                  title('RSSI vs Position');
-                  ylabel('Rssi');
-                  xlabel('Position');
-                  
               else
                   figure
                   scatter(mesh_res,mesh_res_back);

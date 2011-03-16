@@ -19,21 +19,23 @@ case "$SIGN" in
 esac
 
 
-#CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13"
-CHANNELS="100 104 108 112 116 120 124 128 132 136 140"
-POSITIONS=`seq 1 30`
+CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13"
+#CHANNELS="100 104 108 112 116 120 124 128 132 136 140"
+POSITIONS=`seq 1 25`
 #POSITIONS="none"
 #MODOPTIONS="modoptions.default modoptions.default.395"
 MODOPTIONS="modoptions.germany"
 
 NUM=1
 
+SENDER=group:nodes
 #SENDER=wgt76
 #SENDER=wgt81
-#RECEIVER=wgt79
-SENDER=sk110
-RECEIVER=sk112
-
+RECEIVER=wgt79
+#SENDER=sk110
+#RECEIVER=sk112
+#SENDER=wgt80
+#RECEIVER=wgt82
 
 mv ./rxpower.mes ./rxpower.mes.save
 mv ./mode.adhoc ./mode.adhoc.save
@@ -60,14 +62,18 @@ mv ./mode.monitor ./mode.monitor.save
 rm -f ./rxpower.mes
 cat ./tmpl/rxpower.mes.monitor | sed "s#SENDER#$SENDER#g" | sed "s#RECEIVER#$RECEIVER#g" > ./rxpower.mes
 
-ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
+MODE=REBOOT
+REPEATMODE=DRIVER
+
+if [ "$p" != "none" ]; then
+  ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
+fi
+
+MEASUREMENT_COUNT=0
 
 for p in $POSITIONS; do
   for c in $CHANNELS; do
     for m in $MODOPTIONS; do
-
-      cat ./tmpl/mode.monitor | sed "s#VAR_CHANNEL#$c#g" | sed "s#VAR_MODOPTIONS#$m#g" > ./mode.monitor
-
       for r in `seq 1 1`; do
 
         FINALPATH=$NUM\_channel_$c\_modoption_$m\_monitor
@@ -76,28 +82,37 @@ for p in $POSITIONS; do
           FINALPATH=$FINALPATH\_position_$p
         fi
 
-        RUNMODE=REBOOT run_measurement.sh rxpower.des $FINALPATH
+        if [ ! -d $FINALPATH ]; then
+          cat ./tmpl/mode.monitor | sed "s#VAR_CHANNEL#$c#g" | sed "s#VAR_MODOPTIONS#$m#g" > ./mode.monitor
 
-        #echo "$FINALPATH"
+          RUNMODE=$MODE run_measurement.sh rxpower.des $FINALPATH
+          MODE=$REPEATMODE
+
+          (cd $FINALPATH; wget http://www2.informatik.hu-berlin.de/~sombrutz/pub/labs/webcam.jpeg )
+
+          MEASUREMENT_COUNT=`expr $MEASUREMENT_COUNT + 1`
+
+          if [ "$p" != "none" ]; then
+            ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
+          fi
+        fi
 
         NUM=`expr $NUM + 1`
-
-        if [ "$p" != "none" ]; then
-          ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
-        fi
 
       done
     done
   done
 
-  if [ "$p" != "none" ]; then
-    ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh forward 75000"
-  fi
+  if [ $MEASUREMENT_COUNT -gt 0 ]; then
+    if [ "$p" != "none" ]; then
+      ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh forward 75000"
+    fi
 
-  sleep 1;
+    sleep 1;
 
-  if [ "$p" != "none" ]; then
-     ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
+    if [ "$p" != "none" ]; then
+      ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
+    fi
   fi
 
 done
