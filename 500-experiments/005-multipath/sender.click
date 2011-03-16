@@ -1,3 +1,7 @@
+#define NOPCAP
+
+#include "brn/helper.inc"
+
 BRNAddressInfo(my_wlan NODEDEVICE:eth);
 
 BRN2PacketSource(SIZE 150, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE true)

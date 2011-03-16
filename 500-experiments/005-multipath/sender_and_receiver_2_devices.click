@@ -1,3 +1,7 @@
+#define NOPCAP
+
+#include "brn/helper.inc"
+
 BRNAddressInfo(my_wlan NODEDEVICE:eth);
 BRNAddressInfo(my_wlan_2 ath1:eth);
 

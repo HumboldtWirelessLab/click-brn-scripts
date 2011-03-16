@@ -9,6 +9,22 @@
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
+/* Standard */
+//#define LINKPROBE_PERIOD             1000
+//#define LINKPROBE_TAU              100000
+//#define LINKPROBE_PROBES   "2 100 2 1400"
+
+/* Test RSSI */
+#define LINKPROBE_PERIOD               100
+#define LINKPROBE_TAU                10000
+//#define LINKPROBE_PROBES     "2 100 4 100 11 100 12 100 22 100 18 100 24 100 36 100 48 100 72 100 96 100 108 100"
+#define LINKPROBE_PROBES           "2 100"
+
+/* Test PER */
+//#define LINKPROBE_PERIOD                100
+//#define LINKPROBE_TAU                100000
+//#define LINKPROBE_PROBES       "2 100 12 100 72 100"
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
@@ -18,6 +34,8 @@
 #include "dht/routing/dht_klibs.click"
 #include "dht/routing/dht_omni.click"
 #include "dht/storage/dht_storage.click"
+
+/* MAIN CLICK CONFIG */
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -48,7 +66,7 @@ sys_info::SystemInfo(NODEIDENTITY id);
 gps::GPS();
 
 #ifndef SIMULATION
-FromSocket("UDP", 127.0.0.1, 8087)
+FromSocket("UDP", 127.0.0.1, 8086)
 #else
 Idle()
 #endif
@@ -104,8 +122,3 @@ routing[1] /*-> Print("Routing[1]-out")*/ -> BRN2EtherEncap() -> SetEtherAddr(SR
 toMeAfterRouting[0] -> /*Print("Routing-out: For ME",100) ->*/ Label_brnether; 
 toMeAfterRouting[1] -> /*Print("Routing-out: Broadcast") ->*/ Discard;
 toMeAfterRouting[2] -> /*Print("Routing-out: Foreign/Client") ->*/ [1]device_wifi;
-
-/*Script(
- wait 120,
- read  dht/dhtrouting.routing_info
-);*/
