@@ -21,14 +21,15 @@ esac
 
 CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13"
 #CHANNELS="100 104 108 112 116 120 124 128 132 136 140"
-POSITIONS=`seq 1 150`
+POSITIONS=`seq 1 25`
 #POSITIONS="none"
 #MODOPTIONS="modoptions.default modoptions.default.395"
 MODOPTIONS="modoptions.germany"
 
 NUM=1
 
-SENDER=wgt76
+SENDER=group:nodes
+#SENDER=wgt76
 #SENDER=wgt81
 RECEIVER=wgt79
 #SENDER=sk110
