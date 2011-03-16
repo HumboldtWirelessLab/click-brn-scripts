@@ -23,8 +23,10 @@ case "$1" in
 	SYNCPID=`pidof send_sync`
 	echo "Stop old Sync"
 	kill -9 $SYNCPID
-        echo "Start Sync"
-	$DIR/send_sync 60000 192.168.3.2 30 &
+	if [ -f $DIR/send_sync ]; then
+	    echo "Start Sync"
+	    $DIR/send_sync 60000 192.168.3.2 30 &
+	fi
 	;;
     stop)
 	SYNCPID=`pidof send_sync`

@@ -31,11 +31,15 @@ case "$1" in
   "start")
     echo "Start"
     MAXGPSTRY=$MAXGPSTRY $DIR/update_gps.sh &
+    FINALRESULTDIR=$FINALRESULTDIR $DIR/get_channelstats.sh &
+    $DIR/measurement_monitor.sh &
     #$DIR/channel_hopping.sh &
     ;;
   "stop")
     echo "stop"
     killall update_gps.sh 2>&1
+    killall get_channelstats.sh 2>&1
+    killall measurement_monitor.sh 2>&1
     #killall channel_hopping.sh 2>&1
     ;;
   "poststop")
