@@ -9,11 +9,25 @@
       <!--<xsl:value-of select="."/>-->
     </xsl:template>
 
+    <xsl:template match="mobilemeasurement">
+        <xsl:apply-templates />
+    </xsl:template>
+
+    <xsl:template match="mobilestats">
+        <xsl:apply-templates />
+    </xsl:template>
+
     <xsl:template match="channelstats">
         <xsl:apply-templates />
     </xsl:template>
 
     <xsl:template match="rssi">
+	<xsl:value-of select="../../gps/@id" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../gps/@time" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../gps/@lat" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../gps/@long" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../gps/@alt" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../gps/@speed" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../@node" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../@time" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../@id" /><xsl:text>,</xsl:text>
@@ -35,8 +49,14 @@
     </xsl:template>
 
     <xsl:template match="nb">
+	<xsl:value-of select="../../../gps/@id" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../../gps/@time" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../../gps/@lat" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../../gps/@long" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../../gps/@alt" /><xsl:text>,</xsl:text>
+	<xsl:value-of select="../../../gps/@speed" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../../@node" /><xsl:text>,</xsl:text>
-	<xsl:value-of select="../../@time" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="../../@time" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../../@id" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../../mac/@rx_pkt" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="../../mac/@no_err_pkt" /><xsl:text>,</xsl:text>
@@ -60,5 +80,4 @@
         <xsl:value-of select="$newline" />
     </xsl:template>
     
-
 </xsl:stylesheet>
