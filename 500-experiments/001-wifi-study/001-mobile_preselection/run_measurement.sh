@@ -41,6 +41,8 @@ NODELIST=$TARGETHOST $DIR/../../../../helper/host/bin/run_on_nodes.sh "/etc/init
 
 NODELIST=$TARGETHOST $DIR/../../../../helper/host/bin/run_on_nodes.sh "rmmod ath5k" > /dev/null 2>&1
 
+NODELIST=$TARGETHOST $DIR/../../../../helper/host/bin/run_on_nodes.sh "chmod 666 /dev/ttyACM0" > /dev/null 2>&1
+
 echo "Wenn warnung, dann messung mit strg+c abbrechen und ./restart_gps.sh aufrufen und messung erneut starten"
 
 RUNMODE=REBOOT ../../../../helper/measurement/bin/run_measurement.sh receiver.dis $1
