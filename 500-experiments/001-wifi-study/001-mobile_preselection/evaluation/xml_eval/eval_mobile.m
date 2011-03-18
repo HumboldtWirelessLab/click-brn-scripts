@@ -53,8 +53,8 @@ function eval_mobile(filename)
           mac_busy(slat,slong)=mean(latlongdata(find(latlongdata(:,23) == 0),14)); %MAC=0 is mainstats 
           crc_pkt=latlongdata(find(latlongdata(:,23) == 0),12);
           all_pkt=max(1,latlongdata(find(latlongdata(:,23) == 0),10));
-          size(crc_pkt)
-          size(all_pkt)
+%          size(crc_pkt)
+%          size(all_pkt)
           mac_crc(slat,slong)=mean(crc_pkt./all_pkt);                               %MAC=0 is mainstats 
           
         end
