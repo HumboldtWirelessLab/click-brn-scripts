@@ -1,20 +1,33 @@
 #!/bin/sh
 
-echo "<mobilemeasurement>" > mobilemeasurement.xml
-cat channelstats.xml >> mobilemeasurement.xml
-echo "</mobilemeasurement>" >> mobilemeasurement.xml
+dir=$(dirname "$0")
+pwd=$(pwd)
 
-echo "<mobilegps>" > mobilegps.xml
-cat gps.xml >> mobilegps.xml
-echo "</mobilegps>" >> mobilegps.xml
+SIGN=`echo $dir | cut -b 1`
 
+case "$SIGN" in
+  "/")
+	DIR=$dir
+        ;;
+  ".")
+	DIR=$pwd/$dir
+	;;
+   *)
+	echo "Error while getting directory"
+	exit -1
+	;;
+esac
 
-xsltproc channelstats.xslt mobilemeasurement.xml | sed "s#,# #g" > mobilemeasurement.mat.tmp
-xsltproc gps.xslt mobilegps.xml | sed "s#,# #g" > mobilegps.mat.tmp
+if [ "x$1" = "x" ]; then
+  FILENAME=mobilemeasurement.xml
+else
+  FILENAME=$1
+fi
 
-sh ./mac2id.sh mobilemeasurement.mat.tmp
+xsltproc $DIR/mobilemeasurement.xslt mobilemeasurement.xml | sed "s#,# #g" > mobilemeasurement.mat.tmp
 
-cat mobilemeasurement.mat.tmp | ./mac2id_replace.sh > mobilemeasurement.mat
-cat mobilegps.mat.tmp | ./mac2id_replace.sh > mobilegps.mat
+sh $DIR/mac2id.sh mobilemeasurement.mat.tmp
+
+cat mobilemeasurement.mat.tmp | $DIR/mac2id_replace.sh > mobilemeasurement.mat
 
 rm -rf mobilemeasurement.mat.tmp mobilegps.mat.tmp  mobilemeasurement.xml mobilegps.xml macs.dat
