@@ -22,9 +22,9 @@ for i in `(cd ..;ls)`; do
   if [ ! -f ../$i ]; then
     echo "eval $i"
     if [ -e ../$i/nodes.mac ]; then
-      if [ ! -f ../$i/txpower_data.mat ]; then
-        RESULTDIR=../$i/ ./read_bidirect_dumps.sh
-      fi
+      #if [ ! -f ../$i/txpower_data.mat ]; then
+        WANTEDDEVICE=$WANTEDDEVICE WANTEDNODE=$WANTEDNODE RESULTDIR=../$i/ ./read_bidirect_dumps.sh
+      #fi
       if [ -f ../$i/txpower_data.mat ]; then
         cat ../$i/txpower_data.mat | awk -v NUM=$NUM -v CHANNEL=$CHANNEL -v MODE=$MODE -v MODOPTIONS=$MODOPTIONS -v POSITION=$POSITION '{print NUM" "MODE" "MODOPTIONS" "CHANNEL" "POSITION" "$0}' >> all_results.mat
       fi

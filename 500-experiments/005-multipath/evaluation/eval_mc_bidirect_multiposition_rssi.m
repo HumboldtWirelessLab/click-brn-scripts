@@ -17,6 +17,12 @@ function eval_multichannel_multiposition_rssi(filename)
   nodes = sort(unique(raw_res(:,9)));
   no_nodes = size(nodes,1)
   
+  links=unique(raw_res(:,[8 9]),'rows');
+  size(links)
+  if size(links,1) < 30
+    links
+  end
+  
   for n1 = 1:no_nodes-1
     for n2 = n1:no_nodes
       node1 = nodes(n1);
@@ -24,8 +30,8 @@ function eval_multichannel_multiposition_rssi(filename)
       
       res=raw_res(find((raw_res(:,8)==node1) & (raw_res(:,9)==node2)),:);
       res_back=raw_res(find((raw_res(:,8)==node2) & (raw_res(:,9)==node1)),:);
-      
-      if n1 ~= n2
+
+      if (n1 ~= n2) & (~isempty(res)) & (~isempty(res_back))
           mesh_res = zeros(no_positions,no_channel);
           mesh_res_std = zeros(no_positions,no_channel);
           mesh_res_max = zeros(no_positions,no_channel);
@@ -63,27 +69,27 @@ function eval_multichannel_multiposition_rssi(filename)
                   snr_data_back(snr_data_back > 100) = [];
                   rssi_data_back=noise_data_back + snr_data_back;
                   
-                  if size(rssi_data) ~= 0
+                  if ~isempty(rssi_data)
                     mesh_res(p,c)=mean(rssi_data);
                     mesh_res_std(p,c)=std(rssi_data);
                     mesh_res_max(p,c)=max(rssi_data);
                     mesh_res_noise(p,c)=mean(noise_data);
                   else
-                    mesh_res(p,c)=-60;
+                    mesh_res(p,c)=-95;
                     mesh_res_std(p,c)=0;
-                    mesh_res_max(p,c)=-60;
+                    mesh_res_max(p,c)=-95;
                     mesh_res_noise(p,c)=-95;
                   end
 
-                  if size(rssi_data) ~= 0
+                  if ~isempty(rssi_data_back)
                     mesh_res_back(p,c)=mean(rssi_data_back);
                     mesh_res_std_back(p,c)=std(rssi_data_back);
                     mesh_res_max_back(p,c)=max(rssi_data_back);
                     mesh_res_noise_back(p,c)=mean(noise_data_back);
                   else
-                    mesh_res_back(p,c)=-60;
+                    mesh_res_back(p,c)=-95;
                     mesh_res_std_back(p,c)=0;
-                    mesh_res_max_back(p,c)=-60;
+                    mesh_res_max_back(p,c)=-95;
                     mesh_res_noise_back(p,c)=-95;
                   end
 
@@ -96,6 +102,7 @@ function eval_multichannel_multiposition_rssi(filename)
                   set(gcf,'paperpositionmode','auto');
                   set(gca,'fontsize',16);
 
+                  %FORWARD
                   X_PLOT_SIZE=1;
                   Y_PLOT_SIZE=2;
 
@@ -112,30 +119,84 @@ function eval_multichannel_multiposition_rssi(filename)
                   
                   hold on;
 
+                  %BACKWARD
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
 
                   [X,Y]=meshgrid(positions,channels);
                   Z=mesh_res_back;
                   surf(X,Y,Z');
-
+                  
                   title(strcat('Node1: ', num2str(floor((node2-1)/2)), ' ath', num2str(rem(node2+1,2)), ' Node2: ', num2str(floor((node1-1)/2)), ' ath', num2str(rem(node1+1,2))));
                   xlabel('Position (0.8 cm/step)');
                   ylabel('Channel');
                   zlabel('Rssi');
                   
-                  scrsz = [ 1 1 800 1000 ];
+                  %FORWARD
+                  X_PLOT_SIZE=2;
+                  Y_PLOT_SIZE=2;
+                  scrsz = [ 1 1 1000 500 ];
                   figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
-                  boxplot(Z);
+                  boxplot(mesh_res);
                   title('RSSI vs Channel');
                   ylabel('Rssi');
                   xlabel('Channel');
                   
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
-                  boxplot(Z');
+                  boxplot(mesh_res');
                   title('RSSI vs Position');
                   ylabel('Rssi');
                   xlabel('Position');
+
+                  %BACKWARD
+                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,3);
+                  boxplot(mesh_res_back);
+                  title('RSSI vs Channel');
+                  ylabel('Rssi');
+                  xlabel('Channel');
+                  
+                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,4);
+                  boxplot(mesh_res_back');
+                  title('RSSI vs Position');
+                  ylabel('Rssi');
+                  xlabel('Position');
+                  
+                  %Correlation
+                  
+                  channel_corr=corrcoef(mesh_res);
+                  position_corr=corrcoef(mesh_res');
+                  
+                  scrsz = [ 1 1 500 1000 ];
+                  figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
+                  
+                  %FORWARD
+                  X_PLOT_SIZE=1;
+                  Y_PLOT_SIZE=2;
+
+                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
+
+                  [X,Y]=meshgrid(channels,channels);
+                  Z=channel_corr;
+                  surf(X,Y,Z');
+
+                  title('Channel correlation');
+                  xlabel('Channel');
+                  ylabel('Channel');
+                  zlabel('corr');
+                  
+                  hold on;
+
+                  %BACKWARD
+                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
+
+                  [X,Y]=meshgrid(positions,positions);
+                  Z=position_corr;
+                  surf(X,Y,Z');
+                  
+                  title('Position correlation');
+                  xlabel('Position');
+                  ylabel('Position');
+                  zlabel('corr');
                   
               else
                   figure
