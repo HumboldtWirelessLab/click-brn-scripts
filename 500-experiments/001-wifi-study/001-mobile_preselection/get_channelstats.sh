@@ -18,14 +18,27 @@ case "$SIGN" in
 	  ;;
 esac
 
-echo -n "" >  $FINALRESULTDIR/channelstats.xml
-echo -n "" >  $FINALRESULTDIR/gps.xml
+
+MASTERFILE=$FINALRESULTDIR/mobilemeasurement.xml
+GPSFILE=$MASTERFILE
+CSFILE=$MASTERFILE
+
+#MASTERFILE=/dev/null
+#GPSFILE=$FINALRESULTDIR/gps.xml
+#CSFILE=$FINALRESULTDIR/channelstats.xml
+
+echo -n "" > $GPSFILE
+echo -n "" > $CSFILE
+echo -n "" > $MASTERFILE
 
 sleep 2;
 
 while [ true ]; do
-  echo "" | $DIR/../../../../helper/host/bin/clickctrl.sh write localhost 7777 cst stats_xml >> $FINALRESULTDIR/channelstats.xml
-  echo "" | $DIR/../../../../helper/host/bin/clickctrl.sh write localhost 7777 gps gps_coord >> $FINALRESULTDIR/gps.xml
+  echo "<mobilestats>" >> $MASTERFILE
+  echo "" | $DIR/../../../../helper/host/bin/clickctrl.sh write localhost 7777 cst stats_xml >> $CSFILE
+  echo "" | $DIR/../../../../helper/host/bin/clickctrl.sh write localhost 7777 gps gps_coord >> $GPSFILE
+  echo "</mobilestats>" >> $MASTERFILE
+
   sleep 1
 done
 
