@@ -2,6 +2,8 @@
 
 echo -n "" > all_results.mat
 
+GEN_NODENAME_MAT=0
+
 for i in `(cd ..;ls)`; do
   NUM=`echo $i | sed "s#_# #g" | awk '{print $1}'`
   CHANNEL=`echo $i | sed "s#_# #g" | awk '{print $3}'`
@@ -22,12 +24,17 @@ for i in `(cd ..;ls)`; do
   if [ ! -f ../$i ]; then
     echo "eval $i"
     if [ -e ../$i/nodes.mac ]; then
-      #if [ ! -f ../$i/txpower_data.mat ]; then
+      if [ ! -f ../$i/txpower_data.mat ]; then
         WANTEDDEVICE=$WANTEDDEVICE WANTEDNODE=$WANTEDNODE RESULTDIR=../$i/ ./read_bidirect_dumps.sh
-      #fi
+      fi
       if [ -f ../$i/txpower_data.mat ]; then
         cat ../$i/txpower_data.mat | awk -v NUM=$NUM -v CHANNEL=$CHANNEL -v MODE=$MODE -v MODOPTIONS=$MODOPTIONS -v POSITION=$POSITION '{print NUM" "MODE" "MODOPTIONS" "CHANNEL" "POSITION" "$0}' >> all_results.mat
       fi
     fi
+  fi
+
+  if [ $GEN_NODENAME_MAT -eq 0 ]; then
+    cat ../$i/nodes.mac | awk '{print $1" "$2" "$3" "$4}' > all_nodes.mat
+    GEN_NODENAME_MAT=1
   fi
 done
