@@ -76,7 +76,7 @@
         <xsl:value-of select="@std_rssi" /><xsl:text>,</xsl:text>
         <xsl:value-of select="@max_rssi" /><xsl:text>,</xsl:text>
         <xsl:value-of select="@min_rssi" /><xsl:text>,</xsl:text>
-        <xsl:value-of select="@pkt_count" />
+        <xsl:value-of select="@pkt_cnt" />
         <xsl:value-of select="$newline" />
     </xsl:template>
     
