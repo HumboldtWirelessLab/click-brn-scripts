@@ -12,10 +12,12 @@ for i in `(cd ..;ls)`; do
     MODE=1
     MODOPTIONS=0
     POSITION=`echo $i | sed "s#_# #g" | awk '{print $6}'`
+    POWER=`echo $i | sed "s#_# #g" | awk '{print $8}'`
   else
     MODE=0
     MODOPTIONS=`echo $i | sed "s#_# #g" | awk '{print $5}' | sed "s#modoptions\.default\.395#1#g" |  sed "s#modoptions\.default#2#g" | sed "s#modoptions\.germany#3#g"`
     POSITION=`echo $i | sed "s#_# #g" | awk '{print $8}'`
+    POWER=`echo $i | sed "s#_# #g" | awk '{print $10}'`
   fi
   if [ "x$POSITION" = "x" ]; then
     POSITION=0
@@ -28,7 +30,11 @@ for i in `(cd ..;ls)`; do
         WANTEDDEVICE=$WANTEDDEVICE WANTEDNODE=$WANTEDNODE RESULTDIR=../$i/ ./read_bidirect_dumps.sh
       fi
       if [ -f ../$i/txpower_data.mat ]; then
-        cat ../$i/txpower_data.mat | awk -v NUM=$NUM -v CHANNEL=$CHANNEL -v MODE=$MODE -v MODOPTIONS=$MODOPTIONS -v POSITION=$POSITION '{print NUM" "MODE" "MODOPTIONS" "CHANNEL" "POSITION" "$0}' >> all_results.mat
+        if [ "x$POWER" = "x" ]; then
+          cat ../$i/txpower_data.mat | awk -v NUM=$NUM -v CHANNEL=$CHANNEL -v MODE=$MODE -v MODOPTIONS=$MODOPTIONS -v POSITION=$POSITION '{print NUM" "MODE" "MODOPTIONS" "CHANNEL" "POSITION" "$0}' >> all_results.mat
+        else
+          cat ../$i/txpower_data.mat | awk -v NUM=$NUM -v CHANNEL=$CHANNEL -v MODE=$MODE -v MODOPTIONS=$MODOPTIONS -v POSITION=$POSITION -v POWER=$POWER '{print NUM" "MODE" "MODOPTIONS" "CHANNEL" "POSITION" "POWER" "$0}' >> all_results.mat
+        fi
       fi
     fi
   fi

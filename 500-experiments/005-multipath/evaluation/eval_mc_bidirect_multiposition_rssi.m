@@ -1,4 +1,8 @@
-function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_count)
+function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_count, node_dist)
+
+  PLOTGRAPH=0;
+  
+  CHANNEL_CORRELATION_TRESHOLD=0.7;
 
   raw_res = load(filename,'-ASCII');
   
@@ -28,9 +32,14 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
   VIEWX=0;
   VIEWY=90;
   
+  ch_corr_bp = [];
+  link_ch_psr = [];
+  node_label = [];
   
-  for n1 = 1:no_nodes-1
-    for n2 = n1:no_nodes
+  
+  
+  for n1 = 1:no_nodes-1  %src
+    for n2 = n1:no_nodes %dst
       node1 = nodes(n1);
       node2 = nodes(n2);
       
@@ -108,14 +117,20 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
               end
               
               if ( no_positions > 1 )
-                  scrsz = [ 1 1 1200 900 ];
+
+                %Correlation
+                channel_corr=corrcoef(mesh_res);
+                position_corr=corrcoef(mesh_res');
+
+                if PLOTGRAPH == 1 
+                  %FORWARD
+                  scrsz = [ 1 1 1200 1200 ];
                   figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
                   set(gcf,'paperpositionmode','auto');
                   set(gca,'fontsize',16);
 
-                  %FORWARD
                   X_PLOT_SIZE=4;
-                  Y_PLOT_SIZE=3;
+                  Y_PLOT_SIZE=4;
 
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
                   [X,Y]=meshgrid(positions,channels);
@@ -170,10 +185,6 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
 
                   
                   %Correlation
-                  
-                  channel_corr=corrcoef(mesh_res);
-                  position_corr=corrcoef(mesh_res');
-                  
                   %FORWARD
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,3);
                   [X,Y]=meshgrid(channels,channels);
@@ -225,7 +236,8 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   xlim([0 no_positions+1]);
                   ylim([0 no_channel+1]);
 
-
+                
+                  %PSR vs position
                   %FORWARD
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,11);
                   boxplot(mesh_res_psr');
@@ -239,7 +251,53 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   title(strcat('PSR (Src: ',nodenames(node2),' Dst: ',nodenames(node1), ')'));
                   ylabel('PSR');
                   xlabel('Position');
-
+                  
+                  
+                  %PSR vs Channel
+                  %FORWARD
+                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,13);
+                  boxplot(mesh_res_psr);
+                  title(strcat('PSR (Src: ',nodenames(node1),' Dst: ',nodenames(node2), ')'));
+                  ylabel('PSR');
+                  xlabel('channel');
+                  
+                  %BACKWARD
+                  subplot(Y_PLOT_SIZE,X_PLOT_SIZE,14);
+                  boxplot(mesh_res_psr_back);
+                  title(strcat('PSR (Src: ',nodenames(node2),' Dst: ',nodenames(node1), ')'));
+                  ylabel('PSR');
+                  xlabel('channel');
+                else
+                  %just handle coorelation
+                  %idea: use boxplots
+                 
+                  cur_ch_bw = [];
+                  cur_ch_psr = [];
+                  node_label = [ node_label; nodenames(node2) ];
+              
+                  for c = (1+3):(no_channel-3)
+                    
+                      c_up = c;
+                      while ( (c_up <= no_channel) & (channel_corr(c,c_up) >= CHANNEL_CORRELATION_TRESHOLD))
+                          c_up = c_up + 1;
+                      end
+                      c_up = c_up - 1;
+                      
+                      
+                      c_down = c;
+                      while ( (c_down >= 1) & (channel_corr(c,c_down) >= CHANNEL_CORRELATION_TRESHOLD) )
+                          c_down = c_down - 1;
+                      end
+                      c_down = c_down + 1;
+                      
+                      cur_ch_bw = [ cur_ch_bw ((c_up - c_down) + 1) ];
+                      cur_ch_psr = [ cur_ch_psr mean(mesh_res_psr(:,c))];
+                      
+                  end
+                  ch_corr_bp = [ ch_corr_bp; cur_ch_bw]
+                  link_ch_psr = [ link_ch_psr; cur_ch_psr]
+                  
+                end
               else
                   figure
                   scatter(mesh_res,mesh_res_back);
@@ -255,4 +313,50 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
       end
     end
   end
+  
+  node_label
+  
+  if PLOTGRAPH == 0
+    ch_corr_bp_trans = ch_corr_bp';
+    link_ch_psr_trans = link_ch_psr';
+    
+    min(link_ch_psr') 
+    max(link_ch_psr')
+    mean(link_ch_psr')
+    
+    ch_corr_bp_trans(:,find(mean(link_ch_psr') < 0.6 )) = [];
+    link_ch_psr_trans(:,find(mean(link_ch_psr') < 0.6 )) = [];    
+    node_label(find(mean(link_ch_psr') < 0.6 )) = []; 
+    node_dist(find(mean(link_ch_psr') < 0.6 )) = []; 
+    
+    size(node_label)
+    scrsz = [ 1 1 300 900 ];
+    figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
+    set(gcf,'paperpositionmode','auto');
+    set(gca,'fontsize',16);
+    
+    X_PLOT_SIZE=1;
+    Y_PLOT_SIZE=3;
+    
+    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
+    boxplot(ch_corr_bp_trans);
+    title(strcat('Channel Correlation Bandwidth (corr:', num2str(CHANNEL_CORRELATION_TRESHOLD),')'));
+    ylabel('Correlation');
+    xlabel('link');
+    %b=get(gca,'XTick')
+    set(gca,'xtick',1:size(node_label), 'xticklabel',node_label) 
+    %set(gca,'XTickLabel',node_label(b),'XTickMode','auto') 
+ 
+    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
+    boxplot(link_ch_psr_trans);
+    title('PSR');
+    ylabel('psr');
+    xlabel('link');
+    %b=get(gca,'XTick')
+    %set(gca,'XTickLabel',node_label(b),'XTickMode','auto') 
+    set(gca,'xtick',1:size(node_label,1), 'xticklabel',node_label) 
+
+    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
+    scatter(node_dist,mean(ch_corr_bp_trans));
+
 end
