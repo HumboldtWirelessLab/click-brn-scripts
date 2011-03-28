@@ -28,8 +28,10 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
     [nodenames nodedevices nodemacs nodeids node_dist]=textread(nodefilename,'%s %s %s %d %d')
   else
     [nodenames nodedevices nodemacs nodeids]=textread(nodefilename,'%s %s %s %d')
-  fi
+  end
 
+  node_dist(node_dist == 0) = [];
+  
   links=unique(raw_res(:,[8 9]),'rows');
   size(links)
   if size(links,1) < 30
@@ -123,16 +125,17 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
 
                 end
               end
-              
+              no_positions
               if ( no_positions > 1 )
 
                 %Correlation
                 channel_corr=corrcoef(mesh_res);
                 position_corr=corrcoef(mesh_res');
 
+                PLOTMAIN
                 if PLOTMAIN == 1 
                   %FORWARD
-                  scrsz = [ 1 1 1200 1200 ];
+                  scrsz = [ 1 1 1200 1200 ]
                   figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
                   set(gcf,'paperpositionmode','auto');
                   set(gca,'fontsize',16);
@@ -280,7 +283,8 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   saveas(gcf, epsfilename, 'eps')
                 end
                 
-                if PLOTCOHERENCEBW== 1
+                PLOTCOHERENCEBW
+                if PLOTCOHERENCEBW == 1
                   %just handle coorelation
                   %idea: use boxplots
                  
@@ -358,19 +362,25 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
     ch_corr_bp_trans = ch_corr_bp';
     link_ch_psr_trans = link_ch_psr';
     ch_corr_rssi_bp_trans = ch_corr_rssi_bp';
-     
-    size(ch_corr_rssi_bp_trans)
+         
+    size(node_dist)
     
-    min(link_ch_psr') 
-    max(link_ch_psr')
-    mean(link_ch_psr')
+    min(link_ch_psr');
+    max(link_ch_psr');
+    mean(link_ch_psr');
     
     ch_corr_bp_trans(:,find(mean(link_ch_psr') < 0.6 )) = [];
     ch_corr_rssi_bp_trans(:,find(mean(link_ch_psr') < 0.6 )) = [];
     link_ch_psr_trans(:,find(mean(link_ch_psr') < 0.6 )) = [];    
     node_label(find(mean(link_ch_psr') < 0.6 )) = []; 
     node_dist(find(mean(link_ch_psr') < 0.6 )) = []; 
-    
+
+    size(ch_corr_rssi_bp_trans)
+    size(ch_corr_bp_trans)
+    size(node_dist)
+    size(mean(ch_corr_rssi_bp_trans))
+    size(mean(ch_corr_bp_trans))
+
     size(node_label)
     scrsz = [ 1 1 600 900 ];
     figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
