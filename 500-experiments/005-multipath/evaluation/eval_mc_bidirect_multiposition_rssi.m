@@ -1,9 +1,11 @@
 function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_count, node_dist)
 
-  PLOTGRAPH=0;
-  
+  PLOTMAIN=1;
+  PLOTCOHERENCEBW=1;
+
+ 
   CHANNEL_CORRELATION_TRESHOLD=0.7;
-  CHANNEL_CORRELATION_RSSI_TRESHOLD=3;
+  CHANNEL_CORRELATION_RSSI_TRESHOLD=1;
 
   raw_res = load(filename,'-ASCII');
   
@@ -22,8 +24,12 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
   nodes = sort(unique(raw_res(:,9)));
   no_nodes = size(nodes,1)
   
-  [nodenames nodedevices nodemacs nodeids]=textread(nodefilename,'%s %s %s %d')
-  
+  if isempty(node_dist)
+    [nodenames nodedevices nodemacs nodeids node_dist]=textread(nodefilename,'%s %s %s %d %d')
+  else
+    [nodenames nodedevices nodemacs nodeids]=textread(nodefilename,'%s %s %s %d')
+  fi
+
   links=unique(raw_res(:,[8 9]),'rows');
   size(links)
   if size(links,1) < 30
@@ -124,7 +130,7 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                 channel_corr=corrcoef(mesh_res);
                 position_corr=corrcoef(mesh_res');
 
-                if PLOTGRAPH == 1 
+                if PLOTMAIN == 1 
                   %FORWARD
                   scrsz = [ 1 1 1200 1200 ];
                   figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
@@ -269,7 +275,12 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   title(strcat('PSR (Src: ',nodenames(node2),' Dst: ',nodenames(node1), ')'));
                   ylabel('PSR');
                   xlabel('channel');
-                else
+                  
+                  epsfilename=strcat('./',strcat('multipath_', nodenames{node1}, '_', nodenames{node2}))
+                  saveas(gcf, epsfilename, 'eps')
+                end
+                
+                if PLOTCOHERENCEBW== 1
                   %just handle coorelation
                   %idea: use boxplots
                  
@@ -297,25 +308,27 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                       cur_ch_bw = [ cur_ch_bw ((c_up - c_down) + 1) ];
                       cur_ch_psr = [ cur_ch_psr mean(mesh_res_psr(:,c))];
                    
-                      %Correlation single position
-                      %mesh_res = zeros(no_positions,no_channel);
-                      for p = 1:no_positions
+                      if ( c == 6 )
+                          %Correlation single position
+                          %mesh_res = zeros(no_positions,no_channel);
+                          for p = 1:no_positions
 
-                        c_up = c;
-                        while ( (c_up <= no_channel) & (abs(mesh_res(p,c_up) - mesh_res(p,c)) <= CHANNEL_CORRELATION_RSSI_TRESHOLD))
-                            c_up = c_up + 1;
-                        end
-                        c_up = c_up - 1;
-                        
-                        
-                        c_down = c;
-                        while ( (c_down >= 1) & (abs(mesh_res(p,c_down) - mesh_res(p,c)) <= CHANNEL_CORRELATION_RSSI_TRESHOLD)) )
-                            c_down = c_down - 1;
-                        end
-                        c_down = c_down + 1;
-                        
-                        cur_ch_bw_rssi = [ cur_ch_bw_rssi ((c_up - c_down) + 1) ];
-                        
+                            c_up = c;
+                            while ( (c_up <= no_channel) & (abs(mesh_res(p,c_up) - mesh_res(p,c)) <= CHANNEL_CORRELATION_RSSI_TRESHOLD))
+                                c_up = c_up + 1;
+                            end
+                            c_up = c_up - 1;
+
+
+                            c_down = c;
+                            while ( (c_down >= 1) & (abs(mesh_res(p,c_down) - mesh_res(p,c)) <= CHANNEL_CORRELATION_RSSI_TRESHOLD))
+                                c_down = c_down - 1;
+                            end
+                            c_down = c_down + 1;
+
+                            cur_ch_bw_rssi = [ cur_ch_bw_rssi ((c_up - c_down) + 1) ];
+
+                          end
                       end
                       
                   end
@@ -325,50 +338,52 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   ch_corr_rssi_bp = [ ch_corr_rssi_bp; cur_ch_bw_rssi];
                   
                 end
+                
               else
                   figure
                   scatter(mesh_res,mesh_res_back);
                   limits=[ min([mesh_res';mesh_res_back']) max([mesh_res';mesh_res_back']) ]
                   xlim(limits);
                   ylim(limits);
+                  epsfilename=strcat('./',strcat('multipath_small_', nodenames{node1}, '_', nodenames{node2}))
+                  saveas(gcf, epsfilename, 'eps')
               end
-              epsfilename=strcat('./',strcat('multipath_', nodenames{node1}, '_', nodenames{node2}))
-              saveas(gcf, epsfilename, 'eps')
-              %print('-dpng', strcat(epsfilename, '.png'));
             end
           end
       end
     end
   end
   
-  node_label
-  
-  if PLOTGRAPH == 0
+  if PLOTCOHERENCEBW == 1
     ch_corr_bp_trans = ch_corr_bp';
     link_ch_psr_trans = link_ch_psr';
+    ch_corr_rssi_bp_trans = ch_corr_rssi_bp';
+     
+    size(ch_corr_rssi_bp_trans)
     
     min(link_ch_psr') 
     max(link_ch_psr')
     mean(link_ch_psr')
     
     ch_corr_bp_trans(:,find(mean(link_ch_psr') < 0.6 )) = [];
+    ch_corr_rssi_bp_trans(:,find(mean(link_ch_psr') < 0.6 )) = [];
     link_ch_psr_trans(:,find(mean(link_ch_psr') < 0.6 )) = [];    
     node_label(find(mean(link_ch_psr') < 0.6 )) = []; 
     node_dist(find(mean(link_ch_psr') < 0.6 )) = []; 
     
     size(node_label)
-    scrsz = [ 1 1 300 900 ];
+    scrsz = [ 1 1 600 900 ];
     figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
     set(gcf,'paperpositionmode','auto');
     set(gca,'fontsize',16);
     
     X_PLOT_SIZE=2;
-    Y_PLOT_SIZE=2;
+    Y_PLOT_SIZE=3;
     
     subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
     boxplot(ch_corr_bp_trans);
-    title(strcat('Channel Correlation Bandwidth (corr:', num2str(CHANNEL_CORRELATION_TRESHOLD),')'));
-    ylabel('Correlation');
+    title(strcat('Channel coherence Bandwidth (corr:', num2str(CHANNEL_CORRELATION_TRESHOLD),')'));
+    ylabel('coherence');
     xlabel('link');
     %b=get(gca,'XTick')
     set(gca,'xtick',1:size(node_label), 'xticklabel',node_label) 
@@ -388,12 +403,19 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
 
 %TODO
     subplot(Y_PLOT_SIZE,X_PLOT_SIZE,4);
-    boxplot(ch_corr_bp_trans);
-    title(strcat('Channel Correlation Bandwidth (corr:', num2str(CHANNEL_CORRELATION_TRESHOLD),')'));
-    ylabel('Correlation');
+    boxplot(ch_corr_rssi_bp_trans);
+    title(strcat('Channel coherence Bandwidth (RSSI:', num2str(CHANNEL_CORRELATION_RSSI_TRESHOLD),')'));
+    ylabel('coherence');
     xlabel('link');
     %b=get(gca,'XTick')
     set(gca,'xtick',1:size(node_label), 'xticklabel',node_label) 
     %set(gca,'XTickLabel',node_label(b),'XTickMode','auto') 
+
+    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,5);
+    scatter(node_dist,mean(ch_corr_rssi_bp_trans));
+    
+    epsfilename=strcat('./multipath_coherence_bw')
+    saveas(gcf, epsfilename, 'eps')
+  end
 
 end

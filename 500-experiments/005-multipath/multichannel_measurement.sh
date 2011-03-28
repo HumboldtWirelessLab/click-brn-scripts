@@ -33,7 +33,7 @@ POWER_LEVELS="none"
 
 NUM=1
 
-SENDER=group:nodes
+SENDER=group:nodes_2
 #SENDER=wgt76
 #SENDER=wgt81
 RECEIVER=wgt79
