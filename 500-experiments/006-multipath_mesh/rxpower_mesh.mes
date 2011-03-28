@@ -1,2 +1,0 @@
-#NODE		DEVICE MODULSDIR                                        MODOPTIONS WIFICONFIG      CLICKMODDIR CLICKSCRIPT    LOGFILE                        APP                   APPLOGFILE
-group:nodes	ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           rxpower.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
