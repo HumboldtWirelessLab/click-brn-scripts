@@ -1,14 +1,13 @@
 function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_count, node_dist)
 
-  PLOTMAIN=1;
+  PLOTMAIN=0;
   PLOTCOHERENCEBW=1;
 
- 
-  CHANNEL_CORRELATION_TRESHOLD=0.7;
-  CHANNEL_CORRELATION_RSSI_TRESHOLD=1;
+  CHANNEL_CORRELATION_TRESHOLD=0.8;
+  CHANNEL_CORRELATION_RSSI_TRESHOLD=0.5;
 
   raw_res = load(filename,'-ASCII');
-  
+
   meas = unique(raw_res(:,1));
   no_meas = size(meas,1)
 
@@ -386,10 +385,10 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
     figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
     set(gcf,'paperpositionmode','auto');
     set(gca,'fontsize',16);
-    
+
     X_PLOT_SIZE=2;
     Y_PLOT_SIZE=3;
-    
+
     subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
     boxplot(ch_corr_bp_trans);
     title(strcat('Channel coherence Bandwidth (corr:', num2str(CHANNEL_CORRELATION_TRESHOLD),')'));
@@ -400,6 +399,31 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
     %set(gca,'XTickLabel',node_label(b),'XTickMode','auto') 
  
     subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
+    scatter(node_dist,mean(ch_corr_bp_trans));
+    title(strcat('coherence bw (Correlation based: ',num2str(CHANNEL_CORRELATION_TRESHOLD),' )'));
+    ylabel('coherence bw');
+    xlabel('distance');
+
+    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,3);
+    boxplot(ch_corr_rssi_bp_trans);
+    title(strcat('Channel coherence Bandwidth (RSSI:', num2str(CHANNEL_CORRELATION_RSSI_TRESHOLD),')'));
+    ylabel('coherence');
+    xlabel('link');
+    set(gca,'xtick',1:size(node_label), 'xticklabel',node_label) 
+
+    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,4);
+    scatter(node_dist,max(ch_corr_rssi_bp_trans));
+    title(strcat('coherence bw (RSSI based: ',num2str(CHANNEL_CORRELATION_RSSI_TRESHOLD),' db)'));
+    ylabel('coherence bw');
+    xlabel('distance');
+
+    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,5);
+    scatter(node_dist,min(ch_corr_rssi_bp_trans));
+    title(strcat('coherence bw (RSSI based: ',num2str(CHANNEL_CORRELATION_RSSI_TRESHOLD),' db)'));
+    ylabel('coherence bw');
+    xlabel('distance');
+
+    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,6);
     boxplot(link_ch_psr_trans);
     title('PSR');
     ylabel('psr');
@@ -408,23 +432,7 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
     %set(gca,'XTickLabel',node_label(b),'XTickMode','auto') 
     set(gca,'xtick',1:size(node_label,1), 'xticklabel',node_label) 
 
-    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,3);
-    scatter(node_dist,mean(ch_corr_bp_trans));
-
-%TODO
-    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,4);
-    boxplot(ch_corr_rssi_bp_trans);
-    title(strcat('Channel coherence Bandwidth (RSSI:', num2str(CHANNEL_CORRELATION_RSSI_TRESHOLD),')'));
-    ylabel('coherence');
-    xlabel('link');
-    %b=get(gca,'XTick')
-    set(gca,'xtick',1:size(node_label), 'xticklabel',node_label) 
-    %set(gca,'XTickLabel',node_label(b),'XTickMode','auto') 
-
-    subplot(Y_PLOT_SIZE,X_PLOT_SIZE,5);
-    scatter(node_dist,mean(ch_corr_rssi_bp_trans));
-    
-    epsfilename=strcat('./multipath_coherence_bw')
+    epsfilename=strcat('./multipath_coherence_bw_rssi_thresh_',num2str(CHANNEL_CORRELATION_RSSI_TRESHOLD),'_corr_tresh_',num2str(CHANNEL_CORRELATION_TRESHOLD),'.eps')
     saveas(gcf, epsfilename, 'eps')
   end
 
