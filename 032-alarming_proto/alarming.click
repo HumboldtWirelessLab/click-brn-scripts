@@ -114,9 +114,7 @@ overhear_brn_clf[1]
   -> Discard;
 
 Script(
- wait 5,
-// read nhopinfo.state,
- wait 94,
+ wait 99,
  read nhopinfo.state,
  wait 1,
  write asrc.state 0,
