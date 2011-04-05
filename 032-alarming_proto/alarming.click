@@ -49,6 +49,7 @@ af
   //-> Print ("Out",TIMESTAMP true)
   -> BRN2EtherEncap(USEANNO true)
   -> c_out::Counter()
+  -> SetTXRate(RATE 2, TRIES 1)
   -> [2]device_wifi;
 
 art
