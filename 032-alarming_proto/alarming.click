@@ -49,6 +49,7 @@ af
   //-> Print ("Out",TIMESTAMP true)
   -> BRN2EtherEncap(USEANNO true)
   -> c_out::Counter()
+  -> SetTXRate(RATE 2, TRIES 1)
   -> [2]device_wifi;
 
 art
@@ -114,9 +115,7 @@ overhear_brn_clf[1]
   -> Discard;
 
 Script(
- wait 5,
-// read nhopinfo.state,
- wait 94,
+ wait 99,
  read nhopinfo.state,
  wait 1,
  write asrc.state 0,
