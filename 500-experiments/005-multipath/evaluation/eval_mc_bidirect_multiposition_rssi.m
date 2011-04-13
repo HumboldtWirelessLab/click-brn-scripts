@@ -1,6 +1,6 @@
 function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_count, node_dist)
 
-  PLOTMAIN=0;
+  PLOTMAIN=1;
   PLOTCOHERENCEBW=1;
 
   CHANNEL_CORRELATION_TRESHOLD=0.8;
@@ -143,7 +143,7 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   Y_PLOT_SIZE=4;
 
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,1);
-                  [X,Y]=meshgrid(positions,channels);
+                  [X,Y]=meshgrid(positions,1:size(channels,1));
                   surf(X,Y,mesh_res');
                   title(strcat('Src: ', nodenames(node1), ' (', nodedevices(node1), ')  Dst: ', nodenames(node2), ' (', nodedevices(node2),')'));
                   xlabel('Position (0.8 cm/step)');
@@ -155,7 +155,7 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   
                   %BACKWARD
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,2);
-                  [X,Y]=meshgrid(positions,channels);
+                  [X,Y]=meshgrid(positions,1:size(channels,1));
                   surf(X,Y,mesh_res_back');
                   title(strcat('Src: ', nodenames(node2), ' (', nodedevices(node2), ')  Dst: ', nodenames(node1), ' (', nodedevices(node1),')'));
                   xlabel('Position (0.8 cm/step)');
@@ -197,7 +197,7 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   %Correlation
                   %FORWARD
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,3);
-                  [X,Y]=meshgrid(channels,channels);
+                  [X,Y]=meshgrid(1:size(channels,1),1:size(channels,1));
                   surf(X,Y,channel_corr');
                   title(strcat('Channel correlation (Node: ',nodenames(node1),')'));
                   xlabel('Channel');
@@ -223,7 +223,7 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   %PSR
                   %FORWARD
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,9);
-                  [X,Y]=meshgrid(positions,channels);
+                  [X,Y]=meshgrid(positions,1:size(channels,1));
                   surf(X,Y,mesh_res_psr');
                   title(strcat('PSR (Src: ',nodenames(node1),' Dst: ',nodenames(node2), ')'));
                   xlabel('Position');
@@ -236,7 +236,7 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
 
                   %BACKWARD
                   subplot(Y_PLOT_SIZE,X_PLOT_SIZE,10);
-                  [X,Y]=meshgrid(positions,channels);
+                  [X,Y]=meshgrid(positions,1:size(channels,1));
                   surf(X,Y,mesh_res_psr_back');
                   title(strcat('PSR (Src: ',nodenames(node2),' Dst: ',nodenames(node1), ')'));
                   xlabel('Position');
@@ -348,7 +348,7 @@ function eval_multichannel_multiposition_rssi(filename,nodefilename, packet_coun
                   limits=[ min([mesh_res';mesh_res_back']) max([mesh_res';mesh_res_back']) ]
                   xlim(limits);
                   ylim(limits);
-                  epsfilename=strcat('./',strcat('multipath_small_', nodenames{node1}, '_', nodenames{node2}))
+                  epsfilename=strcat('./',strcat('multipath_small_', nodenames{node1}, '_', nodenames{node2}, '.eps'))
                   saveas(gcf, epsfilename, 'eps')
               end
             end
