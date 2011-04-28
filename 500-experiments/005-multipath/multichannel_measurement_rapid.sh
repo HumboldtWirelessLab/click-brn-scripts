@@ -19,45 +19,32 @@ case "$SIGN" in
 esac
 
 
-#CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13"
-CHANNELS="100 104 108 112 116 120 124 128 132 136 140"
-#CHANNELS="183 184 185 187 188 189 192 196 34 38 42 46"
+CHANNELS="1 2 3 4 5 6 7 8 9 10 11 12 13"
+#CHANNELS="100 104 108 112 116 120 124 128 132 136 140"
 
 POSITIONS=`seq 1 150`
 #POSITIONS="none"
 
 #MODOPTIONS="modoptions.default modoptions.default.395"
 MODOPTIONS="modoptions.germany"
-#MODOPTIONS="modoptions.default.395"
 
 POWER_LEVELS="none"
 #POWER_LEVELS="5 10 15 20"
 
 NUM=1
 
-SENDER=group:seismo
-#SENDER=group:nodes_2
+SENDER=group:nodes
 #SENDER=wgt76
 #SENDER=wgt81
-RECEIVER=192.168.3.192
-#RECEIVER=wgt79
+RECEIVER=wgt79
 #SENDER=sk110
 #RECEIVER=sk112
 #SENDER=wgt80
 #RECEIVER=wgt82
 
-
-if [ ! -f ./rxpower.mes.save ]; then
-  mv ./rxpower.mes ./rxpower.mes.save
-fi
-
-if [ ! -f ./mode.adhoc.save ]; then
+mv ./rxpower.mes ./rxpower.mes.save
 mv ./mode.adhoc ./mode.adhoc.save
-fi
-
-if [ ! -f ./mode.monitor.save ]; then
 mv ./mode.monitor ./mode.monitor.save
-fi
 
 
 #ADHOC
@@ -81,7 +68,7 @@ rm -f ./rxpower.mes
 cat ./tmpl/rxpower.mes.monitor | sed "s#SENDER#$SENDER#g" | sed "s#RECEIVER#$RECEIVER#g" > ./rxpower.mes
 
 MODE=REBOOT
-REPEATMODE=REBOOT
+REPEATMODE=DRIVER
 #REPEATMODE=REBOOT
 #POSITIONREPEATMODE=DRIVER
 POSITIONREPEATMODE=REBOOT
