@@ -1,0 +1,9 @@
+#NODE		DEVICE MODULSDIR                                        MODOPTIONS WIFICONFIG      CLICKMODDIR CLICKSCRIPT    LOGFILE                        APP                   APPLOGFILE
+wgt80		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           receiver.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
+#wgt80		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.adhoc      -           -              -                              CONFIGDIR/get_rssi.sh LOGDIR/NODENAME.NODEDEVICE.log
+#wgt80		wlan0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION-athxk -          mode.monitor.802    -           receiver.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
+#wgt80		wlan0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION-athxk -          mode.adhoc      -           -              -                              CONFIGDIR/get_rssi.sh LOGDIR/NODENAME.NODEDEVICE.log
+#wgt80		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION-org -          mode.monitor    -           receiver.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -
+#wgt80		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION-org -          mode.adhoc      -           -              -                              CONFIGDIR/get_rssi.sh LOGDIR/NODENAME.NODEDEVICE.log
+#wgt82		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.adhoc      -           -              -                              -                     -
+wgt82		ath0   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          mode.monitor    -           sender.click   LOGDIR/NODENAME.NODEDEVICE.log -                     -

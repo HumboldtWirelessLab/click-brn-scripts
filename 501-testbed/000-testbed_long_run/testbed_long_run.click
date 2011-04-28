@@ -1,24 +1,30 @@
 #define DEBUGLEVEL 2
 
+//#define RAWDUMP
+
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
 //#define SETCHANNEL
-//#define NOPCAP
+
+#if WIFITYPE == 802
+#define NOPCAP
+#endif
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
 /* Standard */
-//#define LINKPROBE_PERIOD             1000
-//#define LINKPROBE_TAU              100000
-//#define LINKPROBE_PROBES   "2 100 2 1400"
+#define LINKPROBE_PERIOD               1000
+#define LINKPROBE_TAU                100000
+#define LINKPROBE_PROBES     "2 300 12 300"
 
 /* Test RSSI */
-#define LINKPROBE_PERIOD               100
-#define LINKPROBE_TAU                10000
+//#define LINKPROBE_PERIOD               100
+//#define LINKPROBE_TAU                10000
 //#define LINKPROBE_PROBES     "2 100 4 100 11 100 12 100 22 100 18 100 24 100 36 100 48 100 72 100 96 100 108 100"
-#define LINKPROBE_PROBES           "2 100"
+//#define LINKPROBE_PROBES     "2 500 4 500 11 500 12 500 22 500 18 500 24 500 36 500 48 500 72 500 96 500 108 500"
+//#define LINKPROBE_PROBES     "2 100 12 100"
 
 /* Test PER */
 //#define LINKPROBE_PERIOD                100

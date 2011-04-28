@@ -5,10 +5,11 @@
 #pc114	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
 #wgt76	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
 #wgt76	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-               sender.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
-#wndr210 wlan0  BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -           monitor.802        -               sender.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wndr210 wlan0  BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -           monitor.802        -               sender.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
 #wrt14   eth1   BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -          monitor.803         -               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
-#seismo184	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-               sender.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
 #wgt41	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel1	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
 #wgt54	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel1	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
-sk110	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
-sk111	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-		sender.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+#sk110	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+#sk111	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel11	-		sender.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+#group:seismo	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		sender.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+#group:seismotest	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		receiver.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
