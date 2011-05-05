@@ -4,7 +4,7 @@ SIMULATOR=ns2
 RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=30
+TIME=25
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=sender_and_receiver.mes
@@ -23,7 +23,7 @@ GPS=no
 NOTICE=no
 LOS=no
 
-CONTROLSOCKET=no
+CONTROLSOCKET=yes
 
 MULTIREPEAT="3"
 MULTIWAIT=0

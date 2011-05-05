@@ -1,6 +1,6 @@
 #define DEBUGLEVEL 2
 
-//#define USE_PCAP
+//#define NOPCAP
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -19,10 +19,11 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 */
 
   FROMRAWDEVICE(NODEDEVICE)
-  -> t :: Tee()
-  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump");
+  -> cnt::Counter()
+//  -> t :: Tee()
+//  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump", SNAPLEN 7500);
 
-  t[1]
+  //t[1]
   //-> __WIFIDECAP__  
   //-> Print("RECEIVE",60)
   //-> PrintWifi("Receive-Wifi", TIMESTAMP true)
@@ -32,8 +33,14 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 //  -> wifidevice;
 
 Script(
-  write id.version 000102030405060708090a0b0c0d0e0f 0f0e0d0c0b0a09080706050403020100,
+/*  write id.version 000102030405060708090a0b0c0d0e0f 0f0e0d0c0b0a09080706050403020100,
   read id.devinfo,
   read id.version,
-  read wireless.deviceinfo
+  read wireless.deviceinfo,*/
+  wait 10,
+  write cnt.reset,
+  wait 10,
+  read cnt.bit_rate,
+  read cnt.count,
+  read cnt.byte_count
 );

@@ -12,7 +12,12 @@
 #endif
 
 #define CST cst
+
+#if WIFITYPE == 802
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#endif
 
 /* Standard */
 #define LINKPROBE_PERIOD               1000
