@@ -26,8 +26,28 @@ device_wifi::WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS device
 
 tunnel_q::NotifierQueue(1000);
 
-device_wifi[0] -> tunnel_q;
-device_wifi[1] -> tunnel_q;
+filter::Null()
+-> Print()
+//-> BRN2EtherDecap()
+/*-> MarkIPHeader(OFFSET 14)
+-> CheckIPHeader(OFFSET 14)
+-> IPPrint()
+-> ipf::IPClassifier( dst port 53,
+                      dst 141.20.37.97 and tcp port 80,
+                      icmp type >=0,
+                     - );
+
+*/
+//ipf[0] -> /*BRN2EtherEncap() ->*/ tunnel_q;
+//ipf[1] -> /*BRN2EtherEncap() ->*/ tunnel_q;
+//ipf[2] -> /*BRN2EtherEncap() ->*/ tunnel_q;
+//ipf[3] -> IPPrint()
+//-> Discard;
+
+-> tunnel_q;
+
+device_wifi[0] -> filter;
+device_wifi[1] -> filter;
 
 from_tunnel::Null()
   //-> Print("To Client")
@@ -42,11 +62,16 @@ tunnel_q
 FromRawSocket(UDP, 10000)
   //-> Print("To Client (From socket)")
   -> CheckIPHeader()
-  -> IPClassifier(dst udp port 10000)
+  -> ipc::IPClassifier(dst udp port 10000,
+     - )
   //-> IPPrint("FromDev")
   -> StripIPHeader() //remove tunnel ip
   -> Strip(8)        //remove tunnel udp
   -> from_tunnel;
+
+ipc[1]
+-> IPPrint("Foreign")
+-> Discard;
 
 /*
 FromSocket(UDP, 0.0.0.0, 10001) //0.0.0.0 -> my_ip
