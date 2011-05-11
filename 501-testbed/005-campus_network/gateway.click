@@ -1,52 +1,68 @@
+#include "dht/storage/dht_storage.click"
+
 BRNAddressInfo(my_ip eth0:ip);
+BRNAddressInfo(server_eth 00-01-02-03-04-05);
+BRNAddressInfo(server_ip 192.168.100.1);
+
 
 arp_tab :: ARPTable();
 rev_arp_tap :: ReverseARPTable();
 toTunnel::Null();
 toResolvTunnel::Null();
 
+Idle -> dhtstorage::DHT_STORAGE(DEBUG 2) -> Discard;
+dsnl::BRN2DHCPSubnetList();
+lease_tab::BRN2DHCPLeaseTable(DEBUG 2);
+
+dh::BRN2DHCPServer( ETHERADDRESS server_eth, ADDRESSPREFIX 192.168.100.0/24,
+                    ROUTER server_ip, SERVER server_ip, DNS 192.168.4.188,
+                    SERVERNAME hwl, DOMAIN hwl, DHCPSUBNETLIST dsnl, DHTSTORAGE dhtstorage/dhtstorage,
+                    LEASETABLE lease_tab, DEBUG 2);
+
+  dhcp::Null()
+  -> BRN2EtherDecap()
+  -> CheckIPHeader()
+  -> StripIPHeader()
+  -> Strip(8)
+  -> dh;
+
 raws::RawSocket(TYPE UDP, PORT 10000 )
--> IPClassifier(dst udp port 10000)
+  -> IPClassifier(dst udp port 10000)
 //-> IPClassifier(src udp port 10000)
--> Print("------------------Receive packet from ap")
+  -> Print("------------------Receive packet from ap")
 
-
--> CheckIPHeader()
--> IPPrint("From Tunnel")
--> StripIPHeader()
--> Strip(8)
--> Print("Store tunnel endpoint")
--> StoreTunnelEndpoint(REVERSEARPTABLE rev_arp_tap, DEBUG 4)
-
-
-
--> Print("Store SRC Client IP-MAC")
--> StoreIPEthernet(arp_tab)
--> bc_clf::Classifier( 0/ffffffffffff,
-                       0/000102030405,
+  -> CheckIPHeader()
+  -> IPPrint("From Tunnel")
+  -> StripIPHeader()
+  -> Strip(8)
+  -> Print("Store tunnel endpoint")
+  -> StoreTunnelEndpoint(REVERSEARPTABLE rev_arp_tap, DEBUG 4)
+  -> Print("Store SRC Client IP-MAC")
+  -> StoreIPEthernet(arp_tab)
+  -> bc_clf::Classifier( 0/ffffffffffff,
+                         0/000102030405,
                               - );
 
 bc_clf[0]
 -> service_clf::Classifier( 12/0806,
-                             12/0800 23/11 36/0043,
+                            12/0800 23/11 36/0043,
                              - );
 
 
 service_clf[0]
 -> Print("ARP-Request (Gateway)")
--> ar::ARPResponder(192.168.100.1 00-01-02-03-04-05)
+-> ar::ARPResponder(server_ip server_eth)
 -> Print("ARP-Replay (Gateway)")
 -> toTunnel;
 
 service_clf[1]
--> Print("DHCP-Request")
--> Discard;
+-> dhcp;
 
 service_clf[2]
 -> Discard;
 
 
-FromHost(tap0, DST 192.168.100.0/24, ETHER 00-01-02-03-04-05)
+FromHost(tap0, DST 192.168.100.0/24, ETHER server_eth)
  -> fh_bc_clf::Classifier( 0/ffffffffffff,  - )
  -> fh_service_clf::Classifier( 12/0806,   - )
  -> parp::Print("ARP-Request (Kernel) -> Fake reply")
@@ -67,16 +83,19 @@ FromHost(tap0, DST 192.168.100.0/24, ETHER 00-01-02-03-04-05)
  -> IPPrint("Unicast from tap")
  -> toResolvTunnel;
 
-
-
  bc_clf[1]
  -> Print("For the Gateway (Net)")
- -> ip_clf::Classifier(12/0800)
-// -> SetPacketType(HOST)
+ -> ip_clf::Classifier(12/0800,
+                       12/0800 23/11 36/0043)
+//-> SetPacketType(HOST)
  -> th;
 
+ ip_clf[1]
+ -> dhcp;
+ 
  bc_clf[2]
  -> Discard();
+
 
 
 toResolvTunnel
@@ -84,6 +103,7 @@ toResolvTunnel
 -> resolve :: ResolveEthernet( 00:01:02:03:04:05, arp_tab)
 -> valid_clf::Classifier( 0/ffffffffffff, - )
 -> Discard;
+
 valid_clf[1]
 -> Print("Send Ethernetframe to tunnel")
 
@@ -98,6 +118,12 @@ valid_clf[1]
 -> wifioutq::NotifierQueue(1000)
 -> Print("push send")
 -> raws;
+
+
+dh[0]
+-> UDPIPEncap(server_ip, 67, 255.255.255.255, 68)
+-> BRN2EtherEncap(USEANNO true)
+-> toTunnel;
 
 
 Script (
