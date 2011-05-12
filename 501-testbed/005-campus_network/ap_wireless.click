@@ -1,4 +1,4 @@
-BRNAddressInfo(my_ip eth0:ip);
+BRNAddressInfo(my_ip ath1:ip);
 BRNAddressInfo(gateway_ip 192.168.3.1);
 
 #define CST cst
@@ -48,7 +48,6 @@ service_clf[1]
   -> ipf::IPClassifier( dst 141.20.21.20 and tcp port 1194,
                         dst 141.20.21.20 and udp port 1194,
                         dst 141.20.37.97 and tcp port 80,
-                        dst 192.168.100.1 and tcp port 80,
                         dst port 53,
                         dst udp port 67,
                         icmp type >=0,
@@ -61,18 +60,8 @@ service_clf[1]
   ipf[3] -> tunnel_q;
   ipf[4] -> tunnel_q;
   ipf[5] -> tunnel_q;
-  ipf[6] -> tunnel_q;
-  ipf[7] -> Discard; //->tunnel_q;
+  ipf[6] -> Discard; //->tunnel_q;
 
-
-/*  f[3]
-  -> StripIPHeader()
-  -> Strip(8)
-  -> bind::BRN2DNSServer(SERVERNAME ".hwl", DOMAIN ".hu-berlin.de", SERVER 141.20.37.97, SERVERREDIRECT true, DEBUG 2)
-  -> UDPIPEncap()
-
-  tunnel_q;
-*/
 
 gps::GPS();
 
