@@ -25,9 +25,9 @@ device_wifi::WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS device
 
 tunnel_q::NotifierQueue(1000)
   //-> Print("From Client")
- // -> cnt_from_client::Counter()
+  -> cnt_from_client::Counter()
 
-  -> tun_socket::Socket(TYPE UDP, ADDR gateway_ip, PORT 10000, LOCAL_ADDR my_ip, LOCAL_PORT 10000, CLIENT true )
+  -> tun_socket::Socket(TYPE UDP, ADDR gateway_ip, PORT 10000, LOCAL_ADDR my_ip, LOCAL_PORT 10000, CLIENT true, HEADROOM 128 )
 
   -> cnt_to_client::Counter()
   //-> Print("To Client")
@@ -44,7 +44,7 @@ device_wifi[1]
 service_clf[1]
   -> MarkIPHeader(OFFSET 14)
   -> CheckIPHeader(OFFSET 14, VERBOSE true)
-  //-> IPPRint()
+  //-> IPPrint()
   -> ipf::IPClassifier( dst 141.20.21.20 and tcp port 1194,
                         dst 141.20.21.20 and udp port 1194,
                         dst 141.20.37.97 and tcp port 80,
@@ -64,16 +64,6 @@ service_clf[1]
   ipf[6] -> tunnel_q;
   ipf[7] -> Discard; //->tunnel_q;
 
-
-/*  f[3]
-  -> StripIPHeader()
-  -> Strip(8)
-  -> bind::BRN2DNSServer(SERVERNAME ".hwl", DOMAIN ".hu-berlin.de", SERVER 141.20.37.97, SERVERREDIRECT true, DEBUG 2)
-  -> UDPIPEncap()
-
-  tunnel_q;
-*/
-
 gps::GPS();
 
 #ifndef SIMULATION
@@ -82,3 +72,19 @@ FromSocket("UDP", 127.0.0.1, 8086)
 Idle()
 #endif
 -> seismo::Seismo(GPS gps, CALCSTATS true, PRINT false);
+
+/* DNS Redirect
+  f[3]
+  -> StripIPHeader()
+  -> Strip(8)
+  -> bind::BRN2DNSServer(SERVERNAME ".hwl", DOMAIN ".hu-berlin.de", SERVER 141.20.37.97, SERVERREDIRECT true, DEBUG 2)
+  -> UDPIPEncap()
+  tunnel_q;
+*/
+
+/* Tunnel test
+RatedSource(\<0800010203040506070809>, 100, 10000)
+-> UDPIPEncap(SRC 192.168.100.3, SPORT 20000, DST 192.168.100.1, DPORT 88)
+-> EtherEncap(0x0800, 00-02-04-01-01-09,00-01-02-03-04-05)
+-> tunnel_q;
+*/

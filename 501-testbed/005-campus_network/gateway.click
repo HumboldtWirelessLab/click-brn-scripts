@@ -10,9 +10,9 @@ rev_arp_tap :: ReverseARPTable();
 toTunnel::Null();
 toResolvTunnel::Null();
 
-Idle -> dhtstorage::DHT_STORAGE(DEBUG 2) -> Discard;
+Idle -> dhtstorage::DHT_STORAGE(DEBUG 4) -> Discard;
 dsnl::BRN2DHCPSubnetList();
-lease_tab::BRN2DHCPLeaseTable(DEBUG 2);
+lease_tab::BRN2DHCPLeaseTable(DEBUG 4);
 
 dh::BRN2DHCPServer( ETHERADDRESS server_eth, ADDRESSPREFIX 192.168.100.0/24,
                     ROUTER server_ip, SERVER server_ip, DNS 141.20.20.50, //DNS 192.168.4.188,
@@ -77,7 +77,14 @@ FromHost(tap0, DST 192.168.100.1/24, ETHER server_eth)
  -> BRN2EtherDecap()
  -> MarkIPHeader(OFFSET 0)
 // -> IPPrint("Unicast from tap")
+ -> ipfr::IPFragmenter(MTU 1400, HONOR_DF false, HEADROOM 64)
  -> toResolvTunnel;
+
+
+ ipfr[1]
+  -> IPPrint("DF is set. (Too big)")
+  -> ICMPError(192.168.100.1, 3, 4)
+  -> th;
 
  bc_clf[1]
 // -> Print("For the Gateway (Net)")
