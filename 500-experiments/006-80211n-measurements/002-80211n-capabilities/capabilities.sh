@@ -15,14 +15,14 @@ CURRENT_RUNMODE=REBOOT
 
 MEASUREMENT_NUM=1
 
-for p_c in $CHANNEL; do 
- 
+for p_c in $CHANNEL; do
+
  for p_bw in $BANDWIDTH; do
- 
+
   for p_ri in $RATEINDEX; do
- 
+
    for p_sg in $SGI; do
- 
+
     for p_gf in $GF; do 
 
      for p_fec in $FEC; do
@@ -31,11 +31,11 @@ for p_c in $CHANNEL; do
 
        for p_stbc in $STBC; do
 
-        if [ "x$p_stbc" = "false"] || [ $p_ri -lt 8 ]; then
+        if [ "x$p_stbc" = "xfalse" ] || [ $p_ri -lt 8 ]; then
 
          SEDARG=" -e s#PARAMS_RATEINDEX#$p_ri#g -e s#PARAMS_BANDWIDTH#$p_bw#g -e s#PARAMS_SGI#$p_sg#g -e s#PARAMS_GF#$p_gf#g -e s#PARAMS_FEC#$p_fec#g -e s#PARAMS_SHORTPREAMBLE#$p_sp#g -e s#PARAMS_STBC#$p_stbc#g "
 
-         if [ $CHANNEL -lt 15 ]; then
+         if [ $p_c -lt 15 ]; then
            cat monitor.802.tmpl |  sed -e "s#PARAMS_CHANNEL#6#g" -e "s#PARAMS_POWER#27#g" > monitor.802
 	   cat sender_and_receiver.mes.tmpl | sed -e "s#PARAMS_DEVICE#wlan0#g" > sender_and_receiver.mes
 	 else
@@ -65,20 +65,17 @@ for p_c in $CHANNEL; do
 	
 	 CURRENT_RUNMODE=CLICK
 
-       done	
+        fi
 
+       done
       done
-    
      done
-
     done
-
    done
-   
   done
 
   CURRENT_RUNMODE=REBOOT
 
  done
- 
+
 done
