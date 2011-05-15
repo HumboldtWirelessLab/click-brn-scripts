@@ -30,13 +30,12 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 wifidevice
   -> Discard;
 
-ps::BRN2PacketSource(SIZE 100, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE false)
+ps::BRN2PacketSource(SIZE 100, INTERVAL 50, MAXSEQ 500000, BURST 1, ACTIVE false)
   -> cnt2::Counter()
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
 
-
-  rate::SetTXRates( RATE0 PARAMS_RATEINDEX, TRIES0 1, MCS0 true, BW0 PARAMS_BANDWIDTH, SGI0 PARAMS_SGI, GF0 PARAMS_GF, FEC0 PARAMS_FEC, SP0 PARAMS_SHORTPREAMBLE, STBC0 PARAMS_STBC, DEBUG false )
+  -> rate::SetTXRates( RATE0 PARAMS_RATEINDEX, TRIES0 1, MCS0 true, BW0 PARAMS_BANDWIDTH, SGI0 PARAMS_SGI, GF0 PARAMS_GF, FEC0 PARAMS_FEC, SP0 PARAMS_SHORTPREAMBLE, STBC0 PARAMS_STBC, DEBUG false )
 
   -> wifioutq::NotifierQueue(1000)
   -> cnt::Counter()
@@ -49,7 +48,7 @@ Script(
 );
 
 Script(
- wait 10,
+ wait 1,
  read cnt.count,
  loop
 );
