@@ -17,7 +17,7 @@ lease_tab::BRN2DHCPLeaseTable(DEBUG 4);
 dh::BRN2DHCPServer( ETHERADDRESS server_eth, ADDRESSPREFIX 192.168.100.0/24,
                     ROUTER server_ip, SERVER server_ip, DNS 141.20.20.50, //DNS 192.168.4.188,
                     SERVERNAME hwl, DOMAIN hwl, DHCPSUBNETLIST dsnl, DHTSTORAGE dhtstorage/dhtstorage,
-                    LEASETABLE lease_tab, DEBUG 2);
+                    LEASETABLE lease_tab, DEBUG 4);
 
   dhcp::Null()
   -> BRN2EtherDecap()
@@ -28,6 +28,8 @@ dh::BRN2DHCPServer( ETHERADDRESS server_eth, ADDRESSPREFIX 192.168.100.0/24,
 
 raws::RawSocket(TYPE UDP, PORT 10000 )
   -> CheckIPHeader()
+//  -> IPPrint()
+
   -> sock_clf::IPClassifier(dst udp port 10000)
 //  -> CheckIPHeader()
 //  -> IPPrint()

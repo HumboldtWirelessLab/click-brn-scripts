@@ -3,7 +3,7 @@ SIMULATOR=ns2
 RADIO=shadowing11b
 FORGEINNODES=no
 
-TIME=6000
+TIME=600000
 
 NODETABLE=campus_network.mes
 NODEPLACEMENTFILE=placement.default

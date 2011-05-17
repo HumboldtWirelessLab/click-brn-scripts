@@ -1,5 +1,10 @@
-BRNAddressInfo(my_ip eth0:ip);
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+BRNAddressInfo(deviceip 192.168.100.1);
+BRNAddressInfo(backbone_ip eth0:ip);
+BRNAddressInfo(backbone_eth eth0:eth);
 BRNAddressInfo(gateway_ip 192.168.3.1);
+BRNAddressInfo(server_eth 00-01-02-03-04-05);
+BRNAddressInfo(server_ip 192.168.100.1);
 
 #define CST cst
 
@@ -13,22 +18,25 @@ BRNAddressInfo(gateway_ip 192.168.3.1);
 #include "brn/brn.click"
 #include "device/simple_ap.click"
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", IPADDRESS deviceip, SERVICEDEVICE true, MASTERDEVICE true);
+backbone::BRN2Device(DEVICENAME "eth0", ETHERADDRESS backbone_eth, DEVICETYPE "WIRED", IPADDRESS backbone_ip);
 
-id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES "wireless backbone" );
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE true, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
 lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 9998);
 
 device_wifi::WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "HWL", CHANNEL 11, LT lt);
 
+arp_tab :: ARPTable();
+
 tunnel_q::NotifierQueue(1000)
   //-> Print("From Client")
   -> cnt_from_client::Counter()
+  -> ToSocket(TYPE UDP, ADDR gateway_ip, PORT 10000, HEADROOM 128 );
+  //-> tun_socket::Socket(TYPE UDP, ADDR gateway_ip, PORT 10000, LOCAL_ADDR backbone_ip, LOCAL_PORT 10000, CLIENT true, HEADROOM 128 );
 
-  -> tun_socket::Socket(TYPE UDP, ADDR gateway_ip, PORT 10000, LOCAL_ADDR my_ip, LOCAL_PORT 10000, CLIENT true, HEADROOM 128 )
-
+  FromSocket(UDP, 0.0.0.0, 10000)
   -> cnt_to_client::Counter()
   //-> Print("To Client")
   -> [0]device_wifi;
@@ -36,14 +44,17 @@ tunnel_q::NotifierQueue(1000)
 device_wifi[0]
   -> service_clf::Classifier( 12/0806, //arp tunnel
                               12/0800)
-  -> tunnel_q;
+  //-> tunnel_q;
+  -> ar::ARPResponder(server_ip server_eth, 192.168.100.2 deviceaddress )
+  -> [0]device_wifi;
 
 device_wifi[1] 
   -> service_clf;
 
 service_clf[1]
-  -> MarkIPHeader(OFFSET 14)
+//-> MarkIPHeader(OFFSET 14)
   -> CheckIPHeader(OFFSET 14, VERBOSE true)
+  -> MarkIPHeader(OFFSET 14)
   //-> IPPrint()
   -> ipf::IPClassifier( dst 141.20.21.20 and tcp port 1194,
                         dst 141.20.21.20 and udp port 1194,
@@ -51,6 +62,7 @@ service_clf[1]
                         dst 192.168.100.1 and tcp port 80,
                         dst port 53,
                         dst udp port 67,
+                        dst 192.168.100.2,
                         icmp type >=0,
                         - );
 
@@ -61,8 +73,26 @@ service_clf[1]
   ipf[3] -> tunnel_q;
   ipf[4] -> tunnel_q;
   ipf[5] -> tunnel_q;
-  ipf[6] -> tunnel_q;
-  ipf[7] -> Discard; //->tunnel_q;
+  ipf[6]
+    -> IPClassifier(icmp echo)
+    -> StoreIPEthernet(arp_tab)
+    -> Strip(14)
+    -> CheckIPHeader(OFFSET 0)
+    -> ICMPPingResponder()
+    -> CheckIPHeader(0)
+    -> resolve :: ResolveEthernet(deviceaddress, arp_tab)
+    -> [0]device_wifi;
+
+  ipf[7] -> tunnel_q;
+  ipf[8] -> Discard;
+
+
+device_wifi[2]
+-> tt::BRN2ToThisNode(id)
+-> service_clf;
+
+tt[1] -> Discard;
+tt[2] -> Discard;
 
 gps::GPS();
 
