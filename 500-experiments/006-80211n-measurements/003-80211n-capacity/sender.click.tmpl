@@ -1,0 +1,44 @@
+#define DEBUGLEVEL 2
+
+//#define CST cst
+
+#if WIFITYPE == 802
+
+#if NODEDEVICE == wlan1
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:10.0/stats/channel_utility"
+#endif
+
+#else
+
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+
+#endif
+
+#include "brn/helper.inc"
+#include "brn/brn.click"
+#include "device/rawwifidev.click"
+
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+
+wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
+
+wifidevice
+  -> Discard;
+
+ps::BRN2PacketSource(SIZE PARAMS_PACKETSIZE, INTERVAL 10, MAXSEQ 500000, BURST PARAMS_BURST, ACTIVE false)
+  -> EtherEncap(0x8086, deviceaddress, PARAMS_DST)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+
+  -> rate::SetTXRates( RATE0 PARAMS_RATEINDEX, TRIES0 PARAMS_RETRIES, MCS0 PARAMS_MCS, BW0 PARAMS_BANDWIDTH, SGI0 PARAMS_SGI, GF0 PARAMS_GF, FEC0 0, SP0 true, STBC0 false, DEBUG false )
+
+  -> wifioutq::NotifierQueue(1000)
+  -> wifidevice;
+
+
+Script(
+  wait 1,
+  write ps.active true
+);
