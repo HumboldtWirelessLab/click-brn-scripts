@@ -5,9 +5,9 @@
 #if WIFITYPE == 802
 
 #if NODEDEVICE == wlan0
-#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:10.0/stats/channel_utility"
-#else
 #define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
 #endif
 
 #else
