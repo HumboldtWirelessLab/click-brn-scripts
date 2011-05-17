@@ -26,10 +26,13 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
-wifidevice
+Idle()
+  -> wifidevice
   -> cnt::Counter()
   //-> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump", SNAPLEN 7500);
   -> Discard;
+
+sys_info::SystemInfo(NODEIDENTITY id);
 
 Script(
   wait 10,
@@ -38,5 +41,7 @@ Script(
   read cnt.bit_rate,
   read cnt.count,
   read cnt.byte_count,
-  read wifidevice/cst stats_xml
+  read wifidevice/cst.stats_xml,
+  wait 4,
+  read sys_info.systeminfo
 );
