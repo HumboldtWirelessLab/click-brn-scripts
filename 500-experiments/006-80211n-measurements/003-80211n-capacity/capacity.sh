@@ -38,26 +38,26 @@ MEASUREMENT_NUM=1
 
 for p_c in $CHANNEL; do
 
- for p_dst in $DST; do
+ for p_s in $SENDER; do
 
-  for p_r in $RETRIES; do
+  for p_dst in $DST; do
 
-   for p_s in $SENDER; do
+   for p_r in $RETRIES; do
 
     for p_bw in $BANDWIDTH; do
 
      for p_ri in $RATEINDEX; do
 
       for p_sg in $SGI; do
- 
-       for p_gf in $GF; do 
+
+       for p_gf in $GF; do
 
         for p_ps in $PACKET_SIZE; do
 
         # don't use sg with ht40
         if [ "x$p_sg" == "xfalse" ] || [ "x$p_bw" == "x0" ]; then
          if [ "x$p_dst" != "xff-ff-ff-ff-ff-ff" ] || [ "x$p_r" == "x1" ]; then
-       
+
           if [ ! -e $MEASUREMENT_NUM ]; then
 
            SHIFT=4
@@ -135,10 +135,10 @@ for p_c in $CHANNEL; do
     done
    done
   done
+
+  CURRENT_RUNMODE=REBOOT
+
  done
-
- CURRENT_RUNMODE=REBOOT
-
 done
 
 
