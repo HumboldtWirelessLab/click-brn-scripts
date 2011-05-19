@@ -7,6 +7,12 @@ function get_rate() {
  echo $1
 }
 
+
+if [ "x$1" == "xclean" ]; then
+  rm -f monitor.802 sender_and_receiver.mes sender sender.click
+  exit 0
+fi
+
 #DST="ff-ff-ff-ff-ff-ff"
 #RETRIES="1"
 #SENDER="1 3 5"
@@ -17,14 +23,16 @@ function get_rate() {
 #GF="false true"
 #PACKET_SIZE="1500 2200 3800"
 
+#DST="C4-3D-C7-90-C9-F9"
+#RETRIES="7"
 DST="ff-ff-ff-ff-ff-ff"
 RETRIES="1"
-SENDER="1 3 5"
-CHANNEL="153"
+SENDER="1 2 3 4"
+CHANNEL="153 6"
 BANDWIDTH="0 1"
 RATEINDEX="0 3 7 8 11 15"
 SGI="false true"
-GF="true"
+GF="false true"
 PACKET_SIZE="500 1500 2200 3800"
 
 MCS="true"
@@ -70,7 +78,8 @@ for p_c in $CHANNEL; do
            fi
 
            p_datarate=`get_rate $SHIFT $baserate`
-           p_burst=`calc "round($p_datarate * 1250 / ( $p_ps * $p_s * $p_r ) )" | awk '{print $1}'`
+           #p_burst=`calc "round($p_datarate * 1250 / ( $p_ps * $p_s * $p_r ) )" | awk '{print $1}'`
+           p_burst=`calc "round($p_datarate * 1250 / ( $p_ps * $p_s ) )" | awk '{print $1}'`
 
            #echo "$baserate $p_datarate $p_ps $p_burst"
 
@@ -92,8 +101,8 @@ for p_c in $CHANNEL; do
 
 	   cat sender.click.tmpl | sed $SEDARG > sender.click
 
-           RECEIVER=`cat receiver`
-	   
+           RECEIVER=`cat receiver | grep -v "#" | tail -n 1`
+
 	   cat all_nodes | grep -v "#" | grep -v $RECEIVER | head -n $p_s > sender
 
            #rm -rf $MEASUREMENT_NUM
@@ -138,4 +147,4 @@ for p_c in $CHANNEL; do
  done
 done
 
-
+rm -f monitor.802 sender_and_receiver.mes sender sender.click

@@ -41,7 +41,7 @@ dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
 //dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage, STARTTIME 175000, INTERVAL 1000, COUNTKEYS 10, WRITE false, RETRIES 1, REPLICA 0, DEBUG 2);
 
 #ifndef SIMULATION
-sys_info::SystemInfo(NODEIDENTITY id);
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 #endif
 
 device_wifi

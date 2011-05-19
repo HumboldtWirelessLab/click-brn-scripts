@@ -28,7 +28,7 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 dsr::DSR(id,lt,rc,device_wifi/etx_metric);
 
 #ifndef SIMULATION
-sys_info::SystemInfo(NODEIDENTITY id);
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 #endif
 
 device_wifi
