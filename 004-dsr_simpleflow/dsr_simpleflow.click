@@ -65,6 +65,11 @@ toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;
 toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 
 Script(
+  wait 100,
+  read lt.links
+);
+
+Script(
 #ifdef ENABLE_DSR_DEBUG
   write dsr/querier.debug 4,
   write dsr/req_forwarder.debug 4,
