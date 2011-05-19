@@ -24,7 +24,7 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 batman::BATMAN(id,lt);
 
 #ifndef SIMULATION
-sys_info::SystemInfo(NODEIDENTITY id);
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 #endif
 
 device_wifi

@@ -70,6 +70,8 @@ BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE false)
   -> rate;
 */
 
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000); 
+
 Script(
   wait 1,
   write ps.active true

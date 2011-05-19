@@ -42,7 +42,7 @@ routing::DSR(id,lt,rc,device_wifi/etx_metric);
 //dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage, STARTTIME 0, INTERVAL 1000, COUNTKEYS 0, WRITE false, RETRIES 3, REPLICA 0, DEBUG 4);
 
 #ifndef SIMULATION
-sys_info::SystemInfo(NODEIDENTITY id);
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 #endif
 
 gps::GPS();

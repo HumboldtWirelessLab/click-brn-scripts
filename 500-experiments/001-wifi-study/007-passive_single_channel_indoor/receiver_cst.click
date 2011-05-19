@@ -24,7 +24,7 @@ Idle
     -> Discard;
 
 #ifndef SIMULATION
-sys_info::SystemInfo(NODEIDENTITY id);
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 #endif
 
 

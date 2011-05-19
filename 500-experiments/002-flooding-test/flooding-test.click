@@ -31,7 +31,7 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 flooding::BROADCASTFLOODING(ID id, LT lt);
 
-sys_info::SystemInfo(NODEIDENTITY id);
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 device_wifi
   -> Label_brnether::Null()
