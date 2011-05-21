@@ -52,25 +52,32 @@ function mac_to_num() {
 
 DIRNUM=1
 
-echo "TIME SIZE SRC DST STATE RATE HT RATEINDEX HT40 SGI SEQ" > $RESULTDIR/result.txt 
+echo "TIME SIZE SRC DST STATE RATE HT RATEINDEX HT40 SGI SEQ NOISE RSSI" > $RESULTDIR/result.txt 
 
 while [ -e $RESULTDIR/$DIRNUM ]; do
 
   if [ -f $RESULTDIR/$DIRNUM/params ]; then
-    if [ ! -f $RESULTDIR/$DIRNUM/dump_raw.out ]; then
-      if [ -f $RESULTDIR/$DIRNUM/wndr231.wlan0.raw.dump ]; then
-        ( cd $RESULTDIR/$DIRNUM; WIFI=802 fromdump.sh wndr231.wlan0.raw.dump > dump_raw.out )
-      else
-        ( cd $RESULTDIR/$DIRNUM; WIFI=802 fromdump.sh wndr231.wlan1.raw.dump > dump_raw.out )
-      fi
+    
+    NODES=`cat $RESULTDIR/$DIRNUM/nodes.mac | awk '{print $1}'`
+  
+    for n in $NODES; do
+    
+      DEVICES=`cat $RESULTDIR/$DIRNUM/nodes.mac | grep "$n " | awk '{print $2}'`    
+    
+      for d in $DEVICES; do
+      
+        if [ ! -f $RESULTDIR/$DIRNUM/$n.$d.raw.out ]; then
+        
+	  if [ -f $RESULTDIR/$DIRNUM/$n.$d.raw.dump ]; then
+            ( cd $RESULTDIR/$DIRNUM; WIFI=802 fromdump.sh $n.$d.raw.dump | grep "OKPack" | grep -v "err" | grep 1032 | grep FF-FF-FF-FF-FF-FF | sed -e "s#Mb##g" -e "s#+##g" -e "s#/# #g" > $n.$d.raw.out )
+          else
+	    echo "Missing Dump for $n $d"
+          fi
+	fi
+	
+	cat $n.$d.raw.dump | awk -v NODE=$n {print $2" "$3" "$16" "NODE" 1 "$5" "$6" "$7" "$8" "$9" "$10" "$11 } >> $RESULTDIR/result_$DIRNUM\.txt
     fi
-    RX_NUM=`cat $RESULTDIR/$DIRNUM/dump_raw.out | grep -e ":[[:space:]]*132[[:space:]]|" | egrep "13.0Mb|14.4Mb|27.0Mb|30.0Mb|65.0Mb|72.2Mb|135.0Mb|150.0Mb|130.0Mb|144.4Mb|270.0Mb|300.0Mb" | wc -l`
-    RX_OK=`cat $RESULTDIR/$DIRNUM/dump_raw.out | grep -e ":[[:space:]]*132[[:space:]]|" | egrep "13.0Mb|14.4Mb|27.0Mb|30.0Mb|65.0Mb|72.2Mb|135.0Mb|150.0Mb|130.0Mb|144.4Mb|270.0Mb|300.0Mb" | grep OKPacket | grep -v err | wc -l`
-    RX_ERR=`cat $RESULTDIR/$DIRNUM/dump_raw.out | grep -e ":[[:space:]]*132[[:space:]]|" | egrep "13.0Mb|14.4Mb|27.0Mb|30.0Mb|65.0Mb|72.2Mb|135.0Mb|150.0Mb|130.0Mb|144.4Mb|270.0Mb|300.0Mb" | grep err | wc -l`
 
-    . $RESULTDIR/$DIRNUM/params
-
-    echo "$DIRNUM $PARAMS_RATEINDEX $PARAMS_BANDWIDTH $PARAMS_SGI $PARAMS_GF $PARAMS_FEC $PARAMS_SHORTPREAMBLE $PARAMS_STBC $PARAMS_CHANNEL $RX_NUM $RX_OK $RX_ERR" >> $RESULTDIR/result.txt
   fi
 
   DIRNUM=`expr $DIRNUM + 1`
