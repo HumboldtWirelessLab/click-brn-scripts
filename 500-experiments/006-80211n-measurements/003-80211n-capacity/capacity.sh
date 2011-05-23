@@ -61,7 +61,7 @@ for p_c in $CHANNEL; do
 
         for p_ps in $PACKET_SIZE; do
 
-         for r_un in `seq 1 $RUNS`; do
+         for p_run in `seq 1 $RUNS`; do
 
           # don't use sg with ht40
           if [ "x$p_sg" == "xfalse" ] || [ "x$p_bw" == "x1" ]; then
@@ -125,6 +125,7 @@ for p_c in $CHANNEL; do
 	     echo "PARAMS_RETRIES=$p_r" >> $MEASUREMENT_NUM/params
 	     echo "PARAMS_DST=$p_dst" >> $MEASUREMENT_NUM/params
 	     echo "PARAMS_MCS=$MCS" >> $MEASUREMENT_NUM/params
+	     echo "PARAMS_RUN=$p_run" >> $MEASUREMENT_NUM/params
 
 	     CURRENT_RUNMODE=CLICK
 	    fi
