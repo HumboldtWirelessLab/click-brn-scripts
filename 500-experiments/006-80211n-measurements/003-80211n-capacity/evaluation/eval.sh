@@ -37,7 +37,7 @@ fi
 
 DIRNUM=1
 
-echo "INDEX DST RETRIES SENDER CHANNEL BANDWIDTH RATEINDEX SGI GF PACKETSIZE MCS DATARATE BURST RXRATE RXPACKETS RXBYTES RXLOAD RXHWBUSY RXHWRX RXHWTX TXLOAD" > $RESULTDIR/result.txt 
+echo "INDEX DST RETRIES SENDER CHANNEL BANDWIDTH RATEINDEX SGI GF PACKETSIZE MCS DATARATE BURST RXRATE RXPACKETS RXBYTES RXLOAD RXHWBUSY RXHWRX RXHWTX TXLOAD RXPACKET_CST RXCRCP NO_NEIGHBOURS" > $RESULTDIR/result.txt 
 
 while [ -e $RESULTDIR/$DIRNUM ]; do
 
@@ -50,42 +50,45 @@ while [ -e $RESULTDIR/$DIRNUM ]; do
   else
     echo "no params"
   fi
-  
+
+
   SENDERFILES=`(cd $RESULTDIR/$DIRNUM; ls sender.click.*)`
   RECEIVERFILES=`(cd $RESULTDIR/$DIRNUM; ls receiver.click.*)`
-  
+
   SENDERLOADALL="0.0"
   SENDERCOUNT=0
+
 
   for s in $SENDERFILES; do
     SENDER=`echo $s | sed -e "s#\.# #g" | awk '{print $3}'`
     SENDERDEV=`echo $s | sed -e "s#\.# #g" | awk '{print $4}'`
-    
-    SENDERLOAD=`cat $RESULTDIR/$DIRNUM/$SENDER.$SENDERDEV.log | grep "loadavg" | sed -e "s#=# #g" -e "s#'# #g" | awk '{print $3}'`
+
+
+    SENDERLOAD=`cat $RESULTDIR/$DIRNUM/$SENDER.$SENDERDEV.log | grep "cpu_usage" | sed -e "s#=# #g" -e "s#'# #g" -e "s#\"# #g" | awk '{print $3}'`
 
     SENDERCOUNT=`expr $SENDERCOUNT + 1`
     SENDERLOADALL=`calc "$SENDERLOADALL + $SENDERLOAD" | awk '{print $1}'`
-#    echo $SENDERLOADALL
-  done  
+  done
 
   TXLOAD=`calc "round((100 * $SENDERLOADALL) / $SENDERCOUNT) / 100" | awk '{print $1}'`
-  
+
   RECEIVER=`echo $RECEIVERFILES | sed "s#\.# #g" | awk '{print $3}'`
   RECEIVERDEV=`echo $RECEIVERFILES | sed "s#\.# #g" | awk '{print $4}'`
-    
-    
-  RXLOAD=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "loadavg" | sed -e "s#=# #g" -e "s#'# #g" | awk '{print $3}'`
 
+
+  RXLOAD=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "cpu_usage" | sed -e "s#=# #g" -e "s#'# #g" -e "s#\"# #g" | awk '{print $3}'`
   RXRATE=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep -v "Overflow" | head -n 2 | tail -n 1` 
   RXPACKETS=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep -v "Overflow" | head -n 4 | tail -n 1`
   RXBYTES=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep -v "Overflow" | head -n 6 | tail -n 1`
-  RXLOAD=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "loadavg" | sed -e "s#=# #g" -e "s#'# #g" | awk '{print $3}'`
   RXHWBUSY=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "hwbusy" | sed -e "s#=# #g" -e "s#\"# #g" | awk '{print $3}'`
   RXHWRX=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "hwbusy" | sed -e "s#=# #g" -e "s#\"# #g" | awk '{print $5}'`
   RXHWTX=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "hwbusy" | sed -e "s#=# #g" -e "s#\"# #g" | awk '{print $7}'`
-  
-  echo " $RXRATE $RXPACKETS $RXBYTES $RXLOAD $RXHWBUSY $RXHWRX $RXHWTX $TXLOAD" >> $RESULTDIR/result.txt
-  
+  RXPACKETS=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "<mac packets" | sed -e "s#=# #g" -e "s#\"# #g" | awk '{print $5}'`
+  RXCRCPACKETS=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "<mac packets" | sed -e "s#=# #g" -e "s#\"# #g" | awk '{print $9}'`
+  NO_NEIGHBOURS=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "<mac packets" | sed -e "s#=# #g" -e "s#\"# #g" | awk '{print $33}'`
+
+  echo " $RXRATE $RXPACKETS $RXBYTES $RXLOAD $RXHWBUSY $RXHWRX $RXHWTX $TXLOAD $RXPACKETS $RXCRCPACKETS $NO_NEIGHBOURS" >> $RESULTDIR/result.txt
+
   DIRNUM=`expr $DIRNUM + 1`
 done
 

@@ -39,7 +39,7 @@ ps::BRN2PacketSource(SIZE PARAMS_PACKETSIZE, INTERVAL 10, MAXSEQ 500000, BURST P
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice;
 
-sys_info::SystemInfo(NODEIDENTITY id);
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
   wait 1,
