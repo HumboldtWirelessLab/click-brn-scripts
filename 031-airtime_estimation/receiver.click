@@ -1,31 +1,24 @@
 #define DEBUGLEVEL 2
+#define CST 1
 
 #include "brn/brn.click"
-#include "device/rawdev.click"
+#include "device/rawwifidev.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
+rawdevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 rawdevice
-  -> t::Tee()
-  -> __WIFIDECAP__
-  -> cst::ChannelStats(DEBUG true)
-  -> Print("RECEIVE",60)
-  -> WifiDupeFilter()
   -> BRN2PrintWifi("Receive-Wifi", TIMESTAMP true)
   -> Discard;
-
-t[1]
- -> ToDump("NODENAME.NODEDEVICE.dump");
 
 Idle
   -> rawdevice;
 
 Script(
- wait 6,
- read cst.stats,
- read cst.busy,
- read cst.stats_short
+ wait 3,
+ read rawdevice/cst.stats,
+ wait 3,
+ read rawdevice/cst.stats
 );

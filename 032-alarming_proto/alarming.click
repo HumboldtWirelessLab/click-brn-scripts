@@ -1,5 +1,7 @@
 #define DEBUGLEVEL 2
 
+//#define RAWDUMP
+
 #define PRIO_QUEUE
 #define CST cst
 
@@ -68,7 +70,7 @@ brn_clf[1]
   //-> Print("rx")
   -> BRN2Decap()
   //-> Print("rx_nhop")
-  -> nhop_sink::NHopNeighbouringSink(NHOPN_INFO nhopinfo, DEBUG 3);
+  -> nhop_sink::NHopNeighbouringSink(NHOPN_INFO nhopinfo, LINKTABLE lt, DEBUG 3);
   
 brn_clf[2]
   -> BRN2Decap()
