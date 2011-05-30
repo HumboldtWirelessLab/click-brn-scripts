@@ -1,13 +1,13 @@
-NAME=80211n_coverage
+NAME=power_curve
 SIMULATOR=ns2
 #RADIO=shadowing11b
 RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=6100
+TIME=10
 
 NODEPLACEMENTFILE=placement.default
-NODETABLE=sender_and_receiver.mes
+NODETABLE=power_curve.mes
 NODEPLACEMENT=string
 #NODEPLACEMENT=grid
 FIELDSIZE=30
@@ -23,4 +23,4 @@ GPS=no
 NOTICE=no
 LOS=no
 
-CONTROLSOCKET=yes
+CONTROLSOCKET=no

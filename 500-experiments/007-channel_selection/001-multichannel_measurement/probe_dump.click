@@ -2,7 +2,7 @@
 
 #define RAWDUMP 1
 
-//#define CST cst
+#define CST cst
 
 #if WIFITYPE == 802
 

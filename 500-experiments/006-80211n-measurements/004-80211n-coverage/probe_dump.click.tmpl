@@ -34,7 +34,7 @@ wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> Discard;
 
-ps::BRN2PacketSource(SIZE 1000, INTERVAL 100, MAXSEQ 500000, BURST 1, PACKETCOUNT 60000, ACTIVE false)
+ps::BRN2PacketSource(SIZE PARAMS_PACKETSIZE, INTERVAL PARAMS_INTERVAL, MAXSEQ 500000, BURST 1, PACKETCOUNT PARAMS_PACKETCOUNT, ACTIVE false)
   -> EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> rrs::RoundRobinSwitch();
@@ -45,22 +45,26 @@ ps::BRN2PacketSource(SIZE 1000, INTERVAL 100, MAXSEQ 500000, BURST 1, PACKETCOUN
 
   rrs[0]
   -> SetTXRates( RATE0 2, TRIES0 1, MCS0 false )
-  -> Discard;
+  -> PARAMS_B_ELEMENT;
+//  -> Discard;
 //  -> wifioutq;
 
   rrs[1]
   -> SetTXRates( RATE0 4, TRIES0 1, MCS0 false )
-  -> Discard;
+  -> PARAMS_B_ELEMENT;
+//  -> Discard;
 //  -> wifioutq;
 
   rrs[2]
   -> SetTXRates( RATE0 11, TRIES0 1, MCS0 false )
-  -> Discard;
+  -> PARAMS_B_ELEMENT;
+//  -> Discard;
 //  -> wifioutq;
 
   rrs[3]
   -> SetTXRates( RATE0 22, TRIES0 1, MCS0 false )
-  -> Discard;
+  -> PARAMS_B_ELEMENT;
+//  -> Discard;
 //  -> wifioutq;
 
 /* 80211ag */

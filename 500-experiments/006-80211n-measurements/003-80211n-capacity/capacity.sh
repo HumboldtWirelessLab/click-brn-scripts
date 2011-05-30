@@ -23,19 +23,30 @@ fi
 #GF="false true"
 #PACKET_SIZE="1500 2200 3800"
 
-#DST="C4-3D-C7-90-C9-F9"
-#RETRIES="7"
+##DST="C4-3D-C7-90-C9-F9"
+##RETRIES="7"
+#DST="ff-ff-ff-ff-ff-ff"
+#RETRIES="1"
+#SENDER="1 2 3 4"
+#CHANNEL="153 6"
+#BANDWIDTH="0 1"
+#RATEINDEX="0 3 7 8 11 15"
+#SGI="false true"
+#GF="false true"
+#PACKET_SIZE="500 1500 2200 3800"
+
+#DST="C4-3D-C7-90-CC-72"
 DST="ff-ff-ff-ff-ff-ff"
 RETRIES="1"
-SENDER="1 2 3 4"
-CHANNEL="153 6"
-BANDWIDTH="0 1"
-RATEINDEX="0 3 7 8 11 15"
-SGI="false true"
-GF="false true"
-PACKET_SIZE="500 1500 2200 3800"
+SENDER="3 1"
+CHANNEL="153"
+BANDWIDTH="1 0"
+RATEINDEX="15 8 7 0"
+SGI="true false"
+GF="true"
+PACKET_SIZE="3800 1500"
 
-RUNS=10
+RUNS=5
 
 MCS="true"
 

@@ -77,9 +77,9 @@ while [ -e $RESULTDIR/$DIRNUM ]; do
 
 
   RXLOAD=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "cpu_usage" | sed -e "s#=# #g" -e "s#'# #g" -e "s#\"# #g" | awk '{print $3}'`
-  RXRATE=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep -v "Overflow" | head -n 2 | tail -n 1` 
-  RXPACKETS=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep -v "Overflow" | head -n 4 | tail -n 1`
-  RXBYTES=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep -v "Overflow" | head -n 6 | tail -n 1`
+  RXRATE=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep -v "Overflow" | grep -v "Silence" | head -n 2 | tail -n 1` 
+  RXPACKETS=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep -v "Overflow" | grep -v "Silence" | head -n 4 | tail -n 1`
+  RXBYTES=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep -v "Overflow" | grep -v "Silence" | head -n 6 | tail -n 1`
   RXHWBUSY=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "hwbusy" | sed -e "s#=# #g" -e "s#\"# #g" | awk '{print $3}'`
   RXHWRX=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "hwbusy" | sed -e "s#=# #g" -e "s#\"# #g" | awk '{print $5}'`
   RXHWTX=`cat $RESULTDIR/$DIRNUM/$RECEIVER.$RECEIVERDEV.log | grep "hwbusy" | sed -e "s#=# #g" -e "s#\"# #g" | awk '{print $7}'`

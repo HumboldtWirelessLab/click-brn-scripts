@@ -66,10 +66,11 @@ while [ -e $RESULTDIR/$DIRNUM ]; do
 
       for d in $DEVICES; do
 
+        #rm $RESULTDIR/$DIRNUM/$n.$d.raw.out
         if [ ! -f $RESULTDIR/$DIRNUM/$n.$d.raw.out ]; then
 
           if [ -f $RESULTDIR/$DIRNUM/$n.$d.raw.dump ]; then
-            ( cd $RESULTDIR/$DIRNUM; WIFI=802 fromdump.sh $n.$d.raw.dump | grep "OKPack" | grep -v "err" | grep data | grep ":[[:space:]]*1032" | grep FF-FF-FF-FF-FF-FF | sed -e "s#Mb##g" -e "s#+[0]*##g" -e "s#/# #g" -e "s#:##g" > $n.$d.raw.out )
+            ( cd $RESULTDIR/$DIRNUM; WIFI=802 fromdump.sh $n.$d.raw.dump | grep "OKPack" | grep -v "err" | grep data | grep ":[[:space:]]*100[[:space:]]*|" | grep FF-FF-FF-FF-FF-FF | sed -e "s#Mb##g" -e "s#+[0]*##g" -e "s#/# #g" -e "s#:##g" > $n.$d.raw.out )
           else
             echo "Missing Dump for $n $d"
           fi
@@ -77,10 +78,18 @@ while [ -e $RESULTDIR/$DIRNUM ]; do
 
         cat $RESULTDIR/$DIRNUM/$n.$d.raw.out | awk -v NODE=$n '{ print $2" "$3" "$16" "NODE" 1 "$5" "$6" "$7" "$8" "$9" "$10" "$11" "$19 }' | mac_to_num $RESULTDIR/$DIRNUM/nodes.mac | grep -v "[A-F0-9]-" >> $RESULTDIR/result_$DIRNUM\.txt
 
+
       done
     done
 
+    if [ -f $RESULTDIR/$DIRNUM/params ]; then
+      . $RESULTDIR/$DIRNUM/params
+
+      mv $RESULTDIR/result_$DIRNUM\.txt $RESULTDIR/result_$PARAMS_CHANNEL\_$PARAMS_POWER\.txt
+    fi
+
   DIRNUM=`expr $DIRNUM + 1`
+
 done
 
 exit 0

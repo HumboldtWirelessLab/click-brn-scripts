@@ -1,6 +1,7 @@
 #define DEBUGLEVEL 2
 
 //#define CST cst
+#define PACKET_REUSE 1
 
 #if WIFITYPE == 802
 
@@ -30,7 +31,8 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 wifidevice
   -> Discard;
 
-ps::BRN2PacketSource(SIZE PARAMS_PACKETSIZE, INTERVAL 10, MAXSEQ 500000, BURST PARAMS_BURST, ACTIVE false)
+ps::BRN2PacketSource(SIZE PARAMS_PACKETSIZE, INTERVAL 10, MAXSEQ 500000, BURST PARAMS_BURST,/* PACKETCOUNT 100,*/ ACTIVE false)
+//  -> Print("Foo")
   -> EtherEncap(0x8086, deviceaddress, PARAMS_DST)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
 
@@ -38,6 +40,13 @@ ps::BRN2PacketSource(SIZE PARAMS_PACKETSIZE, INTERVAL 10, MAXSEQ 500000, BURST P
 
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice;
+
+wifidevice[1]
+//-> Print("muell")
+-> Discard;
+//-> rate;
+
+
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
