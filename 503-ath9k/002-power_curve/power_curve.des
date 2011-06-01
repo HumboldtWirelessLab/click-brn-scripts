@@ -4,7 +4,7 @@ SIMULATOR=ns2
 RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=10
+TIME=25
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=power_curve.mes

@@ -6,8 +6,13 @@
 #define CST cst
 
 #if WIFITYPE == 802
-//#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
-#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:10.0/stats/channel_utility"
+
+#if DEVICENUMBER == 0
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
+#endif
+
 #else
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 #endif
@@ -40,7 +45,7 @@ wifidevice
 //rate::SetTXRates( RATE0 7, RATE1 7, RATE2 7, RATE3 7, TRIES0 10, TRIES1 10, TRIES2 10, TRIES3 10, MCS0 true, MCS1 true, MCS2 true, MCS3 true ) //MCS
 //rate::SetTXRates( RATE0 72, RATE1 72, RATE2 72, RATE3 72, TRIES0 10, TRIES1 10, TRIES2 10, TRIES3 10, MCS0 false, MCS1 false, MCS2 false, MCS3 false )
 
-rate::SetTXRates( RATE0 15, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+rate::SetTXRates( RATE0 1, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
 //rate::SetTXRates( RATE0 108, TRIES0 1, MCS0 false )
   //-> SetTXPower(13)
   -> wifioutq::NotifierQueue(1000)
@@ -48,12 +53,14 @@ rate::SetTXRates( RATE0 15, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FE
   //-> PrintWifi("Sender", TIMESTAMP true)
   -> wifidevice;
 
-ps::BRN2PacketSource(SIZE /*1800*//* 2200*/ 3700 /*4000*/, INTERVAL 10 /*20*/, MAXSEQ 500000, BURST 40, ACTIVE false)
+ps::BRN2PacketSource(SIZE /*1800*//* 2200*/ 300 /*4000*/, INTERVAL 10 /*20*/, MAXSEQ 500000, BURST 1, ACTIVE true)
   -> cnt2::Counter()
   //-> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   //-> PrintWifi("Sender", TIMESTAMP true)
+  //-> Discard;
+  //Idle
   -> rate;
 
 /*
@@ -75,9 +82,9 @@ BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE false)
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000); 
 
 Script(
-  wait 1,
+/*  wait 1,
   write ps.active true
-  /*
+  *//*
   wait 7,
   write cnt.reset,
   wait 1,

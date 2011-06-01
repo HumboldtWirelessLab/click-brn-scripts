@@ -4,11 +4,11 @@
 
 #if WIFITYPE == 802
 
-//#if NODEDEVICE == "wlan0"
-//#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
-//#else
+#if DEVICENUMBER == 0
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
 #define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
-//#endif
+#endif
 
 #else
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
@@ -42,6 +42,8 @@ Script(
   read cnt.count,
   read cnt.byte_count,
   read wifidevice/cst.stats_xml,
-  wait 4,
+  wait 2,
+  read wifidevice/cst.stats_xml,
+  wait 1,
   read sys_info.systeminfo
 );

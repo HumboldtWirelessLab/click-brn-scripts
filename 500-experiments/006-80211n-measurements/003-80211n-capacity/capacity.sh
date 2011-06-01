@@ -38,10 +38,10 @@ fi
 #DST="C4-3D-C7-90-CC-72"
 DST="ff-ff-ff-ff-ff-ff"
 RETRIES="1"
-SENDER="3 1"
-CHANNEL="153"
+SENDER="5 4 3 2 1"
+CHANNEL="153 6"
 BANDWIDTH="1 0"
-RATEINDEX="15 8 7 0"
+RATEINDEX="15 12 8 7 4 0"
 SGI="true false"
 GF="true"
 PACKET_SIZE="3800 1500"
@@ -124,12 +124,13 @@ for p_c in $CHANNEL; do
 	     #mkdir $MEASUREMENT_NUM
 	     RUNMODE=$CURRENT_RUNMODE run_measurement.sh sender_and_receiver.des $MEASUREMENT_NUM
 
+	     FINAL_PACKET_SIZE=`expr $p_ps + 32`
 	     echo "PARAMS_RATEINDEX=$p_ri" > $MEASUREMENT_NUM/params
 	     echo "PARAMS_BANDWIDTH=$p_bw" >> $MEASUREMENT_NUM/params
 	     echo "PARAMS_SGI=$p_sg" >> $MEASUREMENT_NUM/params
 	     echo "PARAMS_GF=$p_gf" >> $MEASUREMENT_NUM/params
 	     echo "PARAMS_CHANNEL=$p_c" >> $MEASUREMENT_NUM/params
-	     echo "PARAMS_PACKETSIZE=$p_ps" >> $MEASUREMENT_NUM/params
+	     echo "PARAMS_PACKETSIZE=$FINAL_PACKET_SIZE" >> $MEASUREMENT_NUM/params
 	     echo "PARAMS_DATARATE=$p_datarate" >> $MEASUREMENT_NUM/params
 	     echo "PARAMS_NO_SENDER=$p_s" >> $MEASUREMENT_NUM/params
 	     echo "PARAMS_BURST=$p_burst" >> $MEASUREMENT_NUM/params
