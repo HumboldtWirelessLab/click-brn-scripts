@@ -22,6 +22,8 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+
 /*Idle
 -> ath_op::Ath2Operation(DEVICE wireless, READCONFIG false, DEBUG 2)
 -> Discard;
