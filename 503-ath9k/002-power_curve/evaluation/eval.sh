@@ -54,17 +54,16 @@ function mac_to_num() {
 
 DIRNUM=1
 
-echo "CHANNEL POWER TIME RATE HT RATEINDEX HT40 SGI RSSI NOISE" > $RESULTDIR/result.txt 
+echo "POSITION CHANNEL POWER TIME RATE HT RATEINDEX HT40 SGI CTL_RSSI0 CTL_RSSI1 EXT_RSSI0 EXT_RSSI1 RSSI NOISE" > $RESULTDIR/result.txt 
 
 while [ -e $RESULTDIR/$DIRNUM ]; do
-
 
     SENDER=`cat $RESULTDIR/$DIRNUM/power_curve.mes.real | grep sender.click | awk '{print $1}'`
     RECEIVER=`cat $RESULTDIR/$DIRNUM/power_curve.mes.real | grep receiver.click | awk '{print $1}'`
 
     DEVICE=`cat $RESULTDIR/$DIRNUM/nodes.mac | grep "$RECEIVER " | awk '{print $2}'`
 
-    #echo "$RECEIVER $SENDER $DEVICE"
+    echo "$DIRNUM $RECEIVER $SENDER $DEVICE"
 
     #rm  $RESULTDIR/$DIRNUM/$RECEIVER.$DEVICE.raw.out
     if [ ! -f $RESULTDIR/$DIRNUM/$RECEIVER.$DEVICE.raw.out ]; then
@@ -75,9 +74,11 @@ while [ -e $RESULTDIR/$DIRNUM ]; do
         echo "Missing Dump for $n $d"
       fi
     fi
-    . $RESULTDIR/$DIRNUM/params
+    if [ -f $RESULTDIR/$DIRNUM/$RECEIVER.$DEVICE.raw.out ]; then
+      . $RESULTDIR/$DIRNUM/params
 
-    cat $RESULTDIR/$DIRNUM/$RECEIVER.$DEVICE.raw.out | awk -v CHANNEL=$PARAMS_CHANNEL -v POWER=$PARAMS_POWER '{ print CHANNEL" "POWER" "$2" "$5" "$6" "$7" "$8" "$9" "$10" "$11 }' | mac_to_num $RESULTDIR/$DIRNUM/nodes.mac | grep -v "[A-F0-9]-" >> $RESULTDIR/result.txt
+      cat $RESULTDIR/$DIRNUM/$RECEIVER.$DEVICE.raw.out | awk -v POSITION=$PARAMS_POSITION -v CHANNEL=$PARAMS_CHANNEL -v POWER=$PARAMS_POWER '{ print POSITION" "CHANNEL" "POWER" "$2" "$5" "$6" "$7" "$8" "$9" "$10" "$11" "$13" "$14" "$16" "$17 }' | mac_to_num $RESULTDIR/$DIRNUM/nodes.mac | grep -v "[A-F0-9]-" >> $RESULTDIR/result.txt
+    fi
 
     DIRNUM=`expr $DIRNUM + 1`
 

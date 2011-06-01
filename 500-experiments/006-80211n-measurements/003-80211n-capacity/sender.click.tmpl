@@ -1,15 +1,15 @@
 #define DEBUGLEVEL 2
 
-//#define CST cst
+#define CST cst
 #define PACKET_REUSE 1
 
 #if WIFITYPE == 802
 
-//#if NODEDEVICE == "wlan0"
-//#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
-//#else
+#if DEVICENUMBER == 0
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
 #define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
-//#endif
+#endif
 
 #else
 
@@ -31,7 +31,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 wifidevice
   -> Discard;
 
-ps::BRN2PacketSource(SIZE PARAMS_PACKETSIZE, INTERVAL 10, MAXSEQ 500000, BURST PARAMS_BURST,/* PACKETCOUNT 100,*/ ACTIVE false)
+ps::BRN2PacketSource(SIZE PARAMS_PACKETSIZE, INTERVAL 10, MAXSEQ 500000, BURST PARAMS_BURST, PACKETCOUNT 300, ACTIVE false)
 //  -> Print("Foo")
   -> EtherEncap(0x8086, deviceaddress, PARAMS_DST)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
@@ -39,20 +39,28 @@ ps::BRN2PacketSource(SIZE PARAMS_PACKETSIZE, INTERVAL 10, MAXSEQ 500000, BURST P
   -> rate::SetTXRates( RATE0 PARAMS_RATEINDEX, TRIES0 PARAMS_RETRIES, MCS0 PARAMS_MCS, BW0 PARAMS_BANDWIDTH, SGI0 PARAMS_SGI, GF0 PARAMS_GF, FEC0 0, SP0 true, STBC0 false, DEBUG false )
 
   -> wifioutq::NotifierQueue(1000)
+  -> out_cnt::Counter()
   -> wifidevice;
 
 wifidevice[1]
 //-> Print("muell")
--> Discard;
-//-> rate;
-
-
+//-> Discard;
+-> rate;
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
   wait 1,
   write ps.active true,
-  wait 23,
+  wait 9,
+  write out_cnt.reset,
+  wait 10,
+  read out_cnt.bit_rate,
+  read out_cnt.count,
+  read out_cnt.byte_count,
+  read wifidevice/cst.stats_xml,
+  wait 2,
+  read wifidevice/cst.stats_xml,
+  wait 1,
   read sys_info.systeminfo
 );
