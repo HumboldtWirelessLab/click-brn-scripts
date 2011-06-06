@@ -96,6 +96,10 @@ for p_c in $CHANNEL; do
              #p_burst=`calc "round($p_datarate * 1250 / ( $p_ps * $p_s * $p_r ) )" | awk '{print $1}'`
              p_burst=`calc "round($p_datarate * 1250 / ( $p_ps * $p_s ) )" | awk '{print $1}'`
 
+             if [ $p_burst -lt 1 ]; then
+               p_burst=1
+             fi
+
              #echo "$baserate $p_datarate $p_ps $p_burst"
 
              SEDARG=" -e s#PARAMS_RATEINDEX#$p_ri#g -e s#PARAMS_BANDWIDTH#$p_bw#g -e s#PARAMS_SGI#$p_sg#g -e s#PARAMS_GF#$p_gf#g"
