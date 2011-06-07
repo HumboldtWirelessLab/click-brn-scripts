@@ -18,7 +18,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
   -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump");
 */
 
-  FROMRAWDEVICE(NODEDEVICE)
+FROMRAWDEVICE(NODEDEVICE)
   -> cnt::Counter()
   //-> t :: Tee()
   -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump", SNAPLEN 7500);
