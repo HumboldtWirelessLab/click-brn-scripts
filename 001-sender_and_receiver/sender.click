@@ -2,6 +2,7 @@
 //#define RAWDEV_DEBUG 1
 
 //#define NOPCAP
+#define RAWDUMP
 
 #define CST cst
 
@@ -38,29 +39,29 @@ wifidevice
   //-> PrintWifi("Feedback", TIMESTAMP true)
   -> Discard;
 
-//rate::SetTXRates(RATE0 108, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+rate::SetTXRates(RATE0 12, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
 //rate::SetTXRates(RATE0 108, RATE1 11, RATE2 4, RATE3 2, TRIES0 2, TRIES1 2, TRIES2 2, TRIES3 2)
 
 //rate::SetTXRates( RATE0 15, RATE1 7, RATE2 12, RATE3 2, TRIES0 3, TRIES1 1, TRIES2 2, TRIES3 4, MCS0 true, MCS1 true, MCS2 false, MCS3 false ) //MCS
 //rate::SetTXRates( RATE0 7, RATE1 7, RATE2 7, RATE3 7, TRIES0 10, TRIES1 10, TRIES2 10, TRIES3 10, MCS0 true, MCS1 true, MCS2 true, MCS3 true ) //MCS
 //rate::SetTXRates( RATE0 72, RATE1 72, RATE2 72, RATE3 72, TRIES0 10, TRIES1 10, TRIES2 10, TRIES3 10, MCS0 false, MCS1 false, MCS2 false, MCS3 false )
 
-rate::SetTXRates( RATE0 1, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+//rate::SetTXRates( RATE0 1, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
 //rate::SetTXRates( RATE0 108, TRIES0 1, MCS0 false )
+
   //-> SetTXPower(13)
   -> wifioutq::NotifierQueue(1000)
   -> cnt::Counter()
   //-> PrintWifi("Sender", TIMESTAMP true)
   -> wifidevice;
 
-ps::BRN2PacketSource(SIZE /*1800*//* 2200*/ 300 /*4000*/, INTERVAL 10 /*20*/, MAXSEQ 500000, BURST 1, ACTIVE true)
+ps::BRN2PacketSource(SIZE /*1800*//* 2200*/ 18 /*4000*/, INTERVAL 10 /*20*/, MAXSEQ 500000, BURST 5, ACTIVE true)
   -> cnt2::Counter()
   //-> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   //-> PrintWifi("Sender", TIMESTAMP true)
-  //-> Discard;
-  //Idle
+  //-> Discard; Idle
   -> rate;
 
 /*
@@ -82,9 +83,7 @@ BRN2PacketSource(SIZE 100, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE false)
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000); 
 
 Script(
-/*  wait 1,
-  write ps.active true
-  *//*
+  /*
   wait 7,
   write cnt.reset,
   wait 1,
