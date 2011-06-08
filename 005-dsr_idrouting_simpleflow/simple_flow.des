@@ -1,15 +1,15 @@
-NAME=dsr_simpleflow
+NAME=simpleflow
 SIMULATOR=ns2
 RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=120
+TIME=60
 
 NODEPLACEMENTFILE=placement.default
-NODETABLE=dsr_simpleflow.mes
-NODEPLACEMENT=grid
-FIELDSIZE=180
+NODETABLE=simple_flow.mes
+NODEPLACEMENT=string
+FIELDSIZE=500
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
@@ -23,4 +23,3 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
-CONTROLFILE=dsr_simpleflow.ctl

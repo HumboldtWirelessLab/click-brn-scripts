@@ -35,11 +35,8 @@ device_wifi[2]
 -> Discard;
 
 
-ps::BRN2PacketSource(SIZE 1450, INTERVAL 50, MAXSEQ 500000, BURST 1, ACTIVE false)
-  -> EtherEncap(0x8088, deviceaddress, FF:FF:FF:FF:FF:FF )
-  -> SetTXRate(2)
-  -> power::SetTXPower(15)
-  -> [0]device_wifi;
+Idle
+-> [0]device_wifi;
 
 Idle
 ->[1]device_wifi;
