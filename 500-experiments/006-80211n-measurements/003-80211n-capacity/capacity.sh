@@ -35,11 +35,13 @@ fi
 #GF="false true"
 #PACKET_SIZE="500 1500 2200 3800"
 
-#DST="C4-3D-C7-90-CC-72"
-DST="ff-ff-ff-ff-ff-ff"
-RETRIES="1"
+DST_2_4GHz="C4-3D-C7-90-CC-70"
+DST_5GHz="C4-3D-C7-90-CC-72"
+#DST_2_4GHz="ff-ff-ff-ff-ff-ff"
+#DST_5GHz="ff-ff-ff-ff-ff-ff"
+RETRIES="7"
 SENDER="5 4 3 2 1"
-CHANNEL="153 6"
+CHANNEL="44 6"
 BANDWIDTH="1 0"
 RATEINDEX="15 12 8 7 4 0"
 SGI="true false"
@@ -55,6 +57,12 @@ CURRENT_RUNMODE=REBOOT
 MEASUREMENT_NUM=1
 
 for p_c in $CHANNEL; do
+
+ if [ $p_c -gt 14 ]; then
+   DST=$DST_5GHz
+ else
+   DST=$DST_2_4GHz
+ fi
 
  for p_s in $SENDER; do
 
