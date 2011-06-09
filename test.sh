@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LIMIT=7
+LIMIT=8
 i=1
 
 while [ $i -le $LIMIT ]; do

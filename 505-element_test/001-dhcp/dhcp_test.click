@@ -1,3 +1,5 @@
+AddressInfo(server_ip 192.168.0.1);
+BRNAddressInfo(server2_eth eth0:eth);
 AddressInfo(server_eth 00:00:00:00:00:01);
 AddressInfo(client_eth 00:00:00:00:00:02);
 
@@ -14,7 +16,7 @@ dsnl::BRN2DHCPSubnetList();
 lease_tab::BRN2DHCPLeaseTable(DEBUG 2);
 
 dh::BRN2DHCPServer( ETHERADDRESS server_eth, ADDRESSPREFIX 192.168.0.0/24,
-                    ROUTER 192.168.0.1, SERVER 192.168.0.1, DNS 192.168.0.1, SERVERNAME foo, DOMAIN bla, DHCPSUBNETLIST dsnl, DHTSTORAGE dhtstorage/dhtstorage, LEASETABLE lease_tab, DEBUG 2);
+                    ROUTER server_ip, SERVER 192.168.0.1, DNS 192.168.0.1, SERVERNAME foo, DOMAIN bla, DHCPSUBNETLIST dsnl, DHTSTORAGE dhtstorage/dhtstorage, LEASETABLE lease_tab, DEBUG 2);
 
   
   fromClient::BRN2EtherDecap()
