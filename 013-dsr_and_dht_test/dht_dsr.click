@@ -90,7 +90,7 @@ toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;
 toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 
 Script(
-wait 119,
+wait 239,
 read  dht/dhtrouting.routing_info
 );
 //read lt.links,
