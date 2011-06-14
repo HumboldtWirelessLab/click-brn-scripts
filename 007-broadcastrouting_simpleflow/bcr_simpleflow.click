@@ -43,9 +43,8 @@ brn_clf[0]
 brn_clf[1]
   //-> Print("rx")
   -> BRN2Decap()
-  -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS deviceaddress,
-                        RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0, HEADROOM 192, DEBUG 2)
-  -> BRN2EtherEncap()
+  -> sf::BRN2SimpleFlow(DEBUG 2)
+  -> BRN2EtherEncap(USEANNO true)
   //-> Print("Raus damit")
   -> [0]bc;
 

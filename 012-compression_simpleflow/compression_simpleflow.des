@@ -1,26 +1,27 @@
-NAME=dht_dsr
+NAME=compression_simpleflow
 SIMULATOR=ns2
 #RADIO=shadowing11b
 RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=240
+TIME=8
 
 NODEPLACEMENTFILE=placement.default
-NODETABLE=dht_dsr.mes
-NODEPLACEMENT=grid
-FIELDSIZE=360
+NODETABLE=compression_simpleflow.mes
+NODEPLACEMENT=string
+#NODEPLACEMENT=grid
+FIELDSIZE=30
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-#EVALUATION="basic"
+EVALUATIONSDIRPOSTFIX=_evaluation
 
 GPS=no
 NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
-#CONTROLFILE=dht_dsr.ctl
+#CONTROLFILE=compression_simpleflow.ctl

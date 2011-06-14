@@ -1,48 +1,61 @@
 #define DEBUGLEVEL 2
 
+//#define COMP_DEBUG
+
+#include "brn/helper.inc"
 #include "brn/brn.click"
-#include "device/simdev.click"
+#include "device/rawwifidev.click"
 
-BRNAddressInfo(deviceaddress eth0:eth);
-wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-rawdevice::RAWDEV(DEVNAME eth0, DEVICE wireless);
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+
+rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 pc::PacketCompression(CMODE 0, DEBUG 4);
 
 rawdevice
   -> Discard;
 Idle
-  -> sf_src::BRN2SimpleFlow(SRCADDRESS 00:0f:00:00:00:00, DSTADDRESS 00:0f:00:00:01:00, RATE 100 , SIZE 500, MODE 0, DURATION 20000, ACTIVE 0, CLEARPACKET true)
+  -> sf::BRN2SimpleFlow(CLEARPACKET true)
   -> BRN2EtherEncap(USEANNO true)
-//-> Print("ETHER-out")
+#ifdef COMP_DEBUG
+  -> Print("ETHER-out")
+#endif
   -> pc
-  -> EtherEncap( 0xabcd, 00:0f:00:00:00:00, 00:0f:00:00:01:00 )
-//-> Print("COMP-out")
-  -> cnt::Counter()
+  -> EtherEncap( 0xabcd, 00:00:00:00:00:01, 00:00:00:00:00:02 )
+#ifdef COMP_DEBUG
+  -> Print("COMP-out")
+#endif
+  -> cnt_tx_comp::Counter()
   -> wifien::WifiEncap(0x00, 0:0:0:0:0:0)
   -> rawdevice;
 
 pc[1]
+#ifdef COMP_DEBUG
   -> Print("Decomp-out")
+#endif
   -> Discard;
 
 pc[2]
-  -> Print("Compression Error")
-  -> wifien;
+  -> Print("Compression Error (Compression not worthwhile)")
+  -> cnt_tx_comp;
 
 pc[3]
+#ifdef COMP_DEBUG
   -> Print("Decompression Error")
+#endif
   -> Discard;
 
 Idle
   -> [1]pc;
   
 Script(
-  write  sf_src.active 1,
-  wait  10,
-  read  sf_src.txflows,
-  read  sf_src.rxflows,
-  read  cnt.count,
-  read  cnt.byte_count
+  write sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:02 10 1000 2 100 true,
+  wait  6,
+  write sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:02 10 1000 2 100 false,
+  read  sf.stats,
+  read  cnt_tx_comp.count,
+  read  cnt_tx_comp.byte_count
 );

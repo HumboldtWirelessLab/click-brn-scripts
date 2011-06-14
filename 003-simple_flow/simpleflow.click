@@ -32,11 +32,10 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS deviceaddress,
-                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0, HEADROOM 192, DEBUG 2)
+-> sf::BRN2SimpleFlow(DEBUG 2)
 //-> SetTimestamp()
 //-> Print(TIMESTAMP true)
--> BRN2EtherEncap()
+-> BRN2EtherEncap(USEANNO true)
 -> [0]device_wifi;
 
 brn_clf[1] -> Discard;
