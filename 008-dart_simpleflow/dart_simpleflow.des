@@ -4,12 +4,18 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=90
+TIME=92
 
 NODEPLACEMENTFILE=placement.default
-NODETABLE=dart_flow.mes
+NODETABLE=dart_simpleflow.mes
 NODEPLACEMENT=grid
-FIELDSIZE=500
+#FIELDSIZE=1800
+#FIELDSIZE=360
+#FIELDSIZE=700
+
+#shaw
+FIELDSIZE=140
+
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
@@ -23,3 +29,4 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
+CONTROLFILE=dart_simpleflow.ctl

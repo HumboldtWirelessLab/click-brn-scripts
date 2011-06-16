@@ -46,8 +46,7 @@ Idle -> [2]batman;
 brn_clf[1]
 //-> Print("rx")
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS deviceaddress,
-                      RATE 1000 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0, HEADROOM 192)
+-> sf::BRN2SimpleFlow(HEADROOM 192)
 -> BRN2EtherEncap()
 -> [0]batman;
 

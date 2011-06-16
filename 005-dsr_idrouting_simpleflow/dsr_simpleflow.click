@@ -1,5 +1,6 @@
 #define DEBUGLEVEL 2
 
+#define DSR_ID_CACHE
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
@@ -23,7 +24,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/etx_metric);
+//lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/etx_metric);
 
 dsr::DSR(id,lt,rc,device_wifi/etx_metric);
 
@@ -69,7 +70,9 @@ Script(
   wait 100,
   read lt.links,
   wait 1,
-  read sf.stats
+  read sf.stats,
+  wait 1,
+  read dsr/ridc.cache
 );
 
 Script(

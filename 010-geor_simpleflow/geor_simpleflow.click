@@ -47,8 +47,7 @@ geor[1]
 
 brn_clf[1]
   -> BRN2Decap()
-  -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:03:00,
-                        RATE 1000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
+  -> sf::BRN2SimpleFlow()
   -> BRN2EtherEncap(USEANNO true)
   -> [0]geor;
 
