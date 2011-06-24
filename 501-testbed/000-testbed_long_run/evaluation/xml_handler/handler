@@ -1,0 +1,8 @@
+device_wifi/lp_power systempower
+device_wifi/data_power systempower
+device_wifi/wifidevice/sc systemchannel
+device_wifi/wifidevice/cst stats
+sys_info systeminfo
+gps gps_coord
+lease_tab leases
+device_wifi/link_stat bcast_stats

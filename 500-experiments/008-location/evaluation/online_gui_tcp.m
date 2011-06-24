@@ -40,15 +40,48 @@ try
         end
 
         % pick-up the last
-        idx = find(message == 127);
+        idx = find(message == 127)
         if (size(idx,2) > 1)
             newdata = message(idx(end-1)+1:idx(end)-1);
         else
             newdata = message(1:idx(end)-1);
         end
 
-        newdata
+        size(newdata)
         
+        data_index = 1;
+        no_nodes = newdata(data_index);
+
+        if ( no_nodes > 12 )
+          disp('Too much nodes');
+        end
+
+        data_index = data_index + 1;
+        
+        for n = 1:no_nodes
+          node = newdata(data_index);
+          
+          if ( node > 12 )
+              disp('WRONG ID');
+              message
+              newdata
+          end
+          
+          data_index = data_index + 1;
+          no_neighbours = newdata(data_index);
+          data_index = data_index + 1;
+
+          for neighbour = 1:no_neighbours
+            next_n = newdata(data_index);
+            data_index = data_index + 6;
+            if ( next_n > 12 )
+               disp('WRONG NEIGHBOUR ID');
+            end
+          end
+        end
+
+        data_index
+        size(newdata,1)
     end
 catch Exp
     Exp.message

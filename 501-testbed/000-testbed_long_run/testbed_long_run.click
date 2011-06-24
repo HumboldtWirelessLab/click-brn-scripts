@@ -5,7 +5,7 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
-//#define SETCHANNEL
+#define SETCHANNEL
 
 #if WIFITYPE == 802
 #define NOPCAP
