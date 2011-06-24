@@ -4,6 +4,10 @@
 
 #define CST cst
 
+#define CST_PROCINTERVAL 1000
+#define CST_SAVE_DURATION 200
+#define CST_STATS_DURATION 200
+
 #if WIFITYPE == 802
 
 #if DEVICENUMBER == 0
