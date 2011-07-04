@@ -1,8 +1,9 @@
 #define DEBUGLEVEL 2
 
+
+#include "brn/helper.inc"
 #include "brn/brn.click"
-#include "device/simdev.click"
-#include "device/wifidev.click"
+#include "device/wifidev_linkstat.click"
 #include "dht/routing/dht_falcon.click"
 #include "dht/storage/dht_storage.click"
 #include "routing/hawk.click"
@@ -10,10 +11,10 @@
 BRNAddressInfo(deviceaddress eth0:eth);
 wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-id::BRN2NodeIdentity(wireless);
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITIY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
@@ -61,7 +62,7 @@ dht[1]
 
 brn_clf[3]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:08:00, RATE 100 , SIZE 100, MODE 0, DURATION 20000, ACTIVE 0)
+-> sf::BRN2SimpleFlow()
 -> BRN2EtherEncap()
 -> [0]routing;
 
@@ -79,11 +80,11 @@ Script(
   read dht/dhtrouting.routing_info,
   wait 9, 
   read dht/dhtrouting.routing_info,
-  wait 19,
+  wait 18,
   read dht/dhtrouting.routing_info,
   wait 1,
-  read  sf.txflows,
-  read  sf.rxflows,
+  read  sf.stats,
+  wait 1, 
   read  routing/rt.tableinfo
 
 );
