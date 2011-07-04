@@ -13,9 +13,7 @@ function eval_mcs(filename)
   
   all_rates = unique(raw_data(:,[3 4 5 6 7]), 'rows');
 
-  result = [];
-  
-  scrsz = [ 1 1 1200 1200 ]
+  scrsz = [ 1 1 1200 1200 ];
   figure('Visible', 'on','Position',[1 scrsz(4) scrsz(3) scrsz(4)])
   set(gcf,'paperpositionmode','auto');
   set(gca,'fontsize',16);
@@ -24,7 +22,9 @@ function eval_mcs(filename)
   Y_PLOT_SIZE=3;
 
   for l = 1:size(LINKS,1)
-  
+ 
+    result = [];
+    
     link_res = raw_data(find(raw_data(:,2) == LINKS(l)),:);
   
     for r = 1:size(all_rates,1)
@@ -43,10 +43,14 @@ function eval_mcs(filename)
     end
 
     %result
+    result(:,2:end) = result(:,2:end) .* result(:,1);
+    result = sortrows(result, [2:size(result,2)]);
+    
+    plot_res = result(:,2:end);
     
     subplot(Y_PLOT_SIZE,X_PLOT_SIZE,l);
-    boxplot(result);
-    
+    %boxplot(plot_res');
+    scatter([1:size(result,1)],result(:,1));
   
   end
           
