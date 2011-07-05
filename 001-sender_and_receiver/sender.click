@@ -1,5 +1,7 @@
 #define DEBUGLEVEL 2
 
+//#define NOPCAP
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
