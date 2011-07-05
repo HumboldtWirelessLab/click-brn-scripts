@@ -13,6 +13,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 pc::PacketCompression(CMODE 0, DEBUG 2);
+pdc::PacketDecompression(CMODE 0, DEBUG 2);
 
 rawdevice
 #ifdef COMP_DEBUG
@@ -22,7 +23,17 @@ rawdevice
   -> comp_clf::Classifier(12/abcd, -)
   -> BRN2EtherDecap()
 //-> BRN2Decap()
-  -> [1]pc 
+  -> pdc
+#ifdef COMP_DEBUG
+  -> Print("Decomp")
+#endif
+  -> cnt_rx_dec::Counter()
+  -> BRN2EtherDecap()
+  -> BRN2Decap()
+  -> sf::BRN2SimpleFlow()
+  -> Discard;
+ 
+pc
 #ifdef COMP_DEBUG
   -> Print("Compression")
 #endif
@@ -32,28 +43,18 @@ Idle
   -> rawdevice;
   
 Idle
-  -> [0]pc;  
-  
-pc[1]
-#ifdef COMP_DEBUG
-  -> Print("Decomp")
-#endif
-  -> cnt_rx_dec::Counter()
-  -> BRN2EtherDecap()
-  -> BRN2Decap()
-  -> sf::BRN2SimpleFlow()
-  -> Discard;
+  -> pc;  
 
 comp_clf[1]
   -> cnt_rx_dec;
   
-pc[2]
+pc[1]
 #ifdef COMP_DEBUG
   -> Print("Compression Error")
 #endif
   -> Discard;
 
-pc[3]
+pdc[1]
   -> Print("Decompression Error")
   -> Discard;
   

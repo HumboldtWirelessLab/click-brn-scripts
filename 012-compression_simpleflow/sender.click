@@ -14,6 +14,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 pc::PacketCompression(CMODE 0, DEBUG 4);
+pdc::PacketDecompression(CMODE 0, DEBUG 4);
 
 rawdevice
   -> Discard;
@@ -32,24 +33,24 @@ Idle
   -> wifien::WifiEncap(0x00, 0:0:0:0:0:0)
   -> rawdevice;
 
-pc[1]
+pdc
 #ifdef COMP_DEBUG
   -> Print("Decomp-out")
 #endif
   -> Discard;
 
-pc[2]
+pc[1]
   -> Print("Compression Error (Compression not worthwhile)")
   -> cnt_tx_comp;
 
-pc[3]
+pdc[1]
 #ifdef COMP_DEBUG
   -> Print("Decompression Error")
 #endif
   -> Discard;
 
 Idle
-  -> [1]pc;
+  -> pdc;
   
 Script(
   write sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:02 10 1000 2 100 true,
