@@ -83,6 +83,6 @@ Script(
 #endif
 //  wait 40,
 //  read batman/brt.nodes,
-//  wait 40,
-//  read batman/brt.nodes
+    wait 100,
+    read batman/brt.nodes
 );
