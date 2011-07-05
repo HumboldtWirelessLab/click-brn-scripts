@@ -5,8 +5,8 @@
 #define CST cst
 
 #define CST_PROCINTERVAL 1000
-#define CST_SAVE_DURATION 200
-#define CST_STATS_DURATION 200
+#define CST_SAVE_DURATION 1000
+#define CST_STATS_DURATION 1000
 
 #if WIFITYPE == 802
 
@@ -34,7 +34,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 wifidevice
   -> Discard;
 
-ps::BRN2PacketSource(SIZE 18 , INTERVAL 10, MAXSEQ 500000, BURST 1, ACTIVE true)
+ps::BRN2PacketSource(SIZE 18 , INTERVAL 25, MAXSEQ 500000, BURST 1, ACTIVE true)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> rate::SetTXRates(RATE0 12, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
