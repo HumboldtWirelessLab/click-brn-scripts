@@ -1,0 +1,20 @@
+ps::BRN2PacketSource(SIZE 4, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE true)
+-> EtherEncap(0x8086, 00:00:00:00:00:01, 00:00:00:00:00:02)  //src, dst
+-> SetTXRates(RATE0 1)
+-> SetTXPower(1)
+-> OpenBeaconEncap(/*00:01:02:03:04:05*/)
+-> OpenBeaconPrint()
+-> NotifierQueue(50)
+-> to_obd::ToSocket("UDP", 127.0.0.1, 20001);
+
+from_obd::FromSocket("UDP", 127.0.0.1, 20000)
+-> OpenBeaconPrint()
+-> OpenBeaconDecap()
+-> Print()
+-> Discard;
+
+Script(
+  wait 30,
+  stop
+);
+
