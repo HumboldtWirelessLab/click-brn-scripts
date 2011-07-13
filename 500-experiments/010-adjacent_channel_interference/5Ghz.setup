@@ -1,0 +1,54 @@
+## # # # ### # # ###
+#  231  248 ->     #
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#223            228#
+#                  #
+#                  #
+###   ##############
+
+WLANDEVICE=wlan1
+PAIR_FIX="wndr231 wndr223"
+PAIR_MOBILE="wndr248 wndr228"
+
+CHANNEL_FIX="100"
+CHANNEL_MOBIL="100 104 108 112 116 120 124 128 132 136 140"
+
+POSITION_COUNT=6
+POSITION_STEP_DIRECTION="backward"
+POSITION_STEP_LENGTH="750000"
+POWER="30"
+GF="true"
+
+
+REPETITION=1
+
+#SINGLELINK wndr231 wndr223
+#SINGLELINK wndr228 wndr248
+#SINGLELINK wndr248 wndr228
+#SINGLELINK wndr223 wndr231
+
+#LINKPAIRS wndr231 wndr223 wndr248 wndr228
+#LINKPAIRS wndr231 wndr223 wndr228 wndr248
+#LINKPAIRS wndr223 wndr231 wndr248 wndr228
+#LINKPAIRS wndr223 wndr231 wndr228 wndr248
+
+#%RATES HT20_NHT_11_0 HT20_NHT_11
+#RATES HT20_NHT_12_0 HT20_NHT_12
+#RATES HT20_HT_0_0 HT20_HT_0_0
+#RATES HT20_HT_0_1 HT20_HT_0_1
+#RATES HT20_HT_8_0 HT20_HT_8_0
+#RATES HT20_HT_8_1 HT20_HT_8_1
+#RATES HT40_HT_0_0 HT20_HT_0_0
+#RATES HT40_HT_0_1 HT20_HT_0_1
+#RATES HT40_HT_8_0 HT20_HT_8_0
+#RATES HT40_HT_8_1 HT20_HT_8_1
+#RATES HT40_HT_0_0 HT40_HT_0_0
+#RATES HT40_HT_0_1 HT40_HT_0_1
+#RATES HT40_HT_8_0 HT40_HT_8_0
+#RATES HT40_HT_8_1 HT40_HT_8_1
+
+
