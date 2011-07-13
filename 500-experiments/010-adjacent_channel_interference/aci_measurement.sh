@@ -64,7 +64,7 @@ for pow in $POWER; do
       FINALPATH=init_$MEASUREMENT_COUNT\_ht_$HT\_pow_$pow\_rate_$r\_channel_$CHANNEL_FIX\_link_$l\_monitor
 
       if [ ! -e $FINALPATH ]; then
-        #RUNMODE=$MODE run_measurement.sh rxpower.des $FINALPATH
+        RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
 
         echo "POSITION=$p" > $FINALPATH/params
         echo "POWER=$pow" >> $FINALPATH/params
@@ -83,6 +83,7 @@ for pow in $POWER; do
         echo "MOBILE_RECEIVER=0" >> $FINALPATH/params
         echo "MOBILE_RATEINDEX=0" >> $FINALPATH/params
         echo "MOBILE_BW=0" >> $FINALPATH/params
+
         echo "MOBILE_HT=0" >> $FINALPATH/params
         echo "MOBILE_SGI=0" >> $FINALPATH/params
       fi
@@ -147,7 +148,7 @@ for p in $POSITIONS; do
 
             if [ ! -d $FINALPATH ]; then
 
-              RUNMODE=$MODE run_measurement.sh rxpower.des $FINALPATH
+              RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
               MODE=$REPEATMODE
 
               #(cd $FINALPATH; wget http://www2.informatik.hu-berlin.de/~sombrutz/pub/labs/webcam.jpeg )
@@ -176,7 +177,7 @@ for p in $POSITIONS; do
 
             MEASUREMENT_COUNT=`expr $MEASUREMENT_COUNT + 1`
 
-            ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
+            #ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
 
             NUM=`expr $NUM + 1`
 
