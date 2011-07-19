@@ -1,5 +1,8 @@
 #define DEBUGLEVEL 2
 
+#include "performance.click"
+
+//#define ENABLE_PCAP
 #define CST cst
 #define PACKET_REUSE 1
 
@@ -31,7 +34,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 wifidevice
   -> Discard;
 
-ps::BRN2PacketSource(SIZE 1468, INTERVAL 10, MAXSEQ 500000, BURST 250, PACKETCOUNT 250, ACTIVE false)
+ps::BRN2PacketSource(SIZE 2268, INTERVAL 200, MAXSEQ 500000, BURST 25, PACKETCOUNT 500, ACTIVE false)
 //-> Print("Foo")
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
