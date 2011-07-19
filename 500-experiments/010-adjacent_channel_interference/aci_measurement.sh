@@ -66,11 +66,11 @@ for pow in $POWER; do
       if [ ! -e $FINALPATH ]; then
         RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
 
-        echo "POSITION=$p" > $FINALPATH/params
+        echo "POSITION=1" > $FINALPATH/params
         echo "POWER=$pow" >> $FINALPATH/params
         echo "FIX_CHANNEL=$CHANNEL_FIX" >> $FINALPATH/params
         echo "FIX_HTMODE=$HTMODE" >> $FINALPATH/params
-        echo "FIX_SENDER=$NODE_2" > $FINALPATH/params
+        echo "FIX_SENDER=$NODE_2" >> $FINALPATH/params
         echo "FIX_RECEIVER=$NODE_1" >> $FINALPATH/params
         echo "FIX_RATEINDEX=$RATEINDEX" >> $FINALPATH/params
         echo "FIX_BW=$BW" >> $FINALPATH/params
@@ -79,7 +79,7 @@ for pow in $POWER; do
 
         echo "MOBILE_CHANNEL=0" >> $FINALPATH/params
         echo "MOBILE_HTMODE=0" >> $FINALPATH/params
-        echo "MOBILE_SENDER=0" > $FINALPATH/params
+        echo "MOBILE_SENDER=0" >> $FINALPATH/params
         echo "MOBILE_RECEIVER=0" >> $FINALPATH/params
         echo "MOBILE_RATEINDEX=0" >> $FINALPATH/params
         echo "MOBILE_BW=0" >> $FINALPATH/params
@@ -93,6 +93,8 @@ for pow in $POWER; do
     done
   done
 done
+
+exit 0
 
 MEASUREMENT_COUNT=0
 NUM=1
@@ -140,7 +142,7 @@ for p in $POSITIONS; do
           SENDER_2=`echo $AC_LINK_PAIR | awk '{print $4}'`
           RECEIVER_2=`echo $AC_LINK_PAIR | awk '{print $5}'`
 
-          cat tmpl/aci.mes.tmpl | sed -e "s#RECEIVER1#$RECEIVER_1#g" -e "s#SENDER1#$SENDER_1#g" -e "s#RECEIVER2#$RECEIVER_2#g" -e "s#SENDER2#$SENDER_2#g"-e "s#WLANDEVICE#$WLANDEVICE#g" > aci.mes
+          cat tmpl/aci.mes.tmpl | sed -e "s#RECEIVER1#$RECEIVER_1#g" -e "s#SENDER1#$SENDER_1#g" -e "s#RECEIVER2#$RECEIVER_2#g" -e "s#SENDER2#$SENDER_2#g" -e "s#WLANDEVICE#$WLANDEVICE#g" > aci.mes
 
           for rep in `seq 1 $REPETITION`; do
 
@@ -157,7 +159,7 @@ for p in $POSITIONS; do
               echo "POWER=$pow" >> $FINALPATH/params
               echo "FIX_CHANNEL=$CHANNEL_FIX" >> $FINALPATH/params
               echo "FIX_HTMODE=$HTMODE_1" >> $FINALPATH/params
-              echo "FIX_SENDER=$SENDER_1" > $FINALPATH/params
+              echo "FIX_SENDER=$SENDER_1" >> $FINALPATH/params
               echo "FIX_RECEIVER=$RECEIVER_1" >> $FINALPATH/params
               echo "FIX_RATEINDEX=$RATEINDEX_1" >> $FINALPATH/params
               echo "FIX_BW=$BW_1" >> $FINALPATH/params
@@ -166,7 +168,7 @@ for p in $POSITIONS; do
 
               echo "MOBILE_CHANNEL=$c" >> $FINALPATH/params
               echo "MOBILE_HTMODE=$HTMODE_2" >> $FINALPATH/params
-              echo "MOBILE_SENDER=$SENDER_2" > $FINALPATH/params
+              echo "MOBILE_SENDER=$SENDER_2" >> $FINALPATH/params
               echo "MOBILE_RECEIVER=$RECEIVER_2" >> $FINALPATH/params
               echo "MOBILE_RATEINDEX=$RATEINDEX_2" >> $FINALPATH/params
               echo "MOBILE_BW=$BW_2" >> $FINALPATH/params

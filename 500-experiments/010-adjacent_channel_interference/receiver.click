@@ -1,5 +1,8 @@
 #define DEBUGLEVEL 2
 
+#include "performance.click"
+
+//#define ENABLE_PCAP
 #define CST cst
 
 #if WIFITYPE == 802
@@ -29,8 +32,8 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 Idle()
   -> wifidevice
   -> cnt::Counter()
-  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump", SNAPLEN 7500);
-//-> Discard;
+//  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump", SNAPLEN 7500);
+  -> Discard;
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 

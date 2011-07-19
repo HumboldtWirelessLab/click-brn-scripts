@@ -73,6 +73,8 @@ routing::DSR(id,lt,rc,device_wifi/etx_metric);
 #ifndef SIMULATION
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 #endif
+//sys_info.systeminfo
+com::BrnCompoundHandler(HANDLER "wireless.deviceinfo", UPDATEMODE 1, RECORDMODE 1, RECORDSAMPLES 25, SAMPLETIME 200, DEBUG 2);
 
 gps::GPS();
 
