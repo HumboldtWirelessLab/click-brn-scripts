@@ -2,7 +2,7 @@ dev::BRN2Device(DEVICENAME "dummydev", ETHERADDRESS 00:00:00:00:00:01, DEVICETYP
 id::BRN2NodeIdentity(NAME dummy, DEVICES dev);
 
 //com::BrnCompoundHandler(HANDLER "dev.deviceinfo id.info", /* CLASSES "BRN2Device BRN2NodeIdentity", CLASSESHANDLER "debug",*/ UPDATEMODE 0, DEBUG 4);
-com::BrnCompoundHandler(HANDLER "dev.deviceinfo id.info", /* CLASSES "BRN2Device BRN2NodeIdentity", CLASSESHANDLER "debug",*/ UPDATEMODE 2, RECORDMODE 1, RECORDSAMPLES 5, SAMPLETIME 100, DEBUG 2);
+com::BrnCompoundHandler(HANDLER "dev.deviceinfo id.info", /* CLASSES "BRN2Device BRN2NodeIdentity", CLASSESHANDLER "debug",*/ UPDATEMODE 1, RECORDMODE 1, RECORDSAMPLES 5, SAMPLETIME 100, DEBUG 4);
 
 
 /*ph::BrnPushHandler(HANDLER "com.read", PERIOD 500)
@@ -47,7 +47,9 @@ Script(
   wait 2,
   write ph.handler com.read,  
   wait 2,*/
+  write com.reset,
   read com.read, 
+  write com.insert dev.deviceinfo id.info id.class dev.class com.handler,
   wait 1,
   read com.read, 
 //wait 1000,
