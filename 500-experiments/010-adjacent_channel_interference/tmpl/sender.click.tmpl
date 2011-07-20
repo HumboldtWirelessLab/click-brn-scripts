@@ -34,7 +34,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 wifidevice
   -> Discard;
 
-ps::BRN2PacketSource(SIZE 2268, INTERVAL 200, MAXSEQ 500000, BURST 25, PACKETCOUNT 100, ACTIVE false)
+ps::BRN2PacketSource(SIZE PACKET_SIZE, INTERVAL 200, MAXSEQ 500000, BURST 25, PACKETCOUNT 100, ACTIVE false)
 //-> Print("Foo")
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
