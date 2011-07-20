@@ -1,0 +1,68 @@
+#define DEBUGLEVEL 2
+
+#include "performance.click"
+
+//#define ENABLE_PCAP
+#define CST cst
+#define PACKET_REUSE 1
+
+#if WIFITYPE == 802
+
+#if DEVICENUMBER == 0
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
+#endif
+
+#else
+
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+
+#endif
+
+#include "brn/helper.inc"
+#include "brn/brn.click"
+#include "device/rawdev.click"
+
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+
+rawdev::RAWDEV(DEVNAME "NODEDEVICE", DEVICE wireless);
+
+cst::ChannelStats(DEVICE wireless, STATS_DURATION 1000, PROCFILE CST_PROCFILE, PROCINTERVAL 1000, NEIGHBOUR_STATS true, FULL_STATS false, SAVE_DURATION 1000 );
+
+ps::BRN2PacketSource(SIZE 2268, INTERVAL 200, MAXSEQ 500000, BURST 25, PACKETCOUNT 100, ACTIVE false)
+  -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> rate::SetTXRates( RATE0 PARAMS_RATEINDEX, TRIES0 1, MCS0 PARAMS_MCS, BW0 PARAMS_BANDWIDTH, SGI0 PARAMS_SGI, GF0 PARAMS_GF, FEC0 0, SP0 true, STBC0 false, DEBUG false )
+  -> wifioutq::NotifierQueue(110)
+  -> out_cnt::Counter()
+  -> __WIFIENCAP__
+  -> wifiseq::WifiSeq(OFFSET 58)  //radiotap + offset in WifiHeader (36+22) // Set sequencenumber
+  -> rawdev
+  -> dev_decap::__WIFIDECAP__
+  -> cst                                                                    //add channel stats if requested
+  -> Discard;
+
+rawdev[1]
+-> wifiseq;
+
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+
+Script(
+  wait 1,
+  write ps.active true,
+  wait 9,
+  write out_cnt.reset,
+  wait 10,
+  read out_cnt.bit_rate,
+  read out_cnt.count,
+  read out_cnt.byte_count,
+  read cst.stats_xml,
+  wait 2,
+  read cst.stats_xml,
+  wait 1,
+  read sys_info.systeminfo
+);
