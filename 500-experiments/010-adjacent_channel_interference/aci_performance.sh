@@ -18,39 +18,45 @@ case "$SIGN" in
 	;;
 esac
 
-for burst in 1; do
+for frequ in 5Ghz.setup 2_4Ghz.setup; do
+
+  PREFIX=`echo $frequ | sed "s#\.setup##g"`
+
+  for burst in 1; do
+    for pcap in yes no; do
+      echo "$burst $pcap"
+      echo "#define PACKETBURST $burst" > performance.click
+
+      if [ "x$pcap" = "xyes" ]; then
+        echo "#define ENABLE_PCAP" >> performance.click
+      fi
+
+      ./aci_measurement.sh $frequ
+
+      AC_PATH=`echo "$PREFIX\_burst_$burst\_pcap_$pcap\_brndev_0" | sed -e "s#\\\\\##g"`
+
+      mkdir $AC_PATH
+      mv init* $AC_PATH
+    done
+  done
+
   for pcap in yes no; do
     echo "$burst $pcap"
+    echo "#define USEBRNDEVICE" >> performance.click
     echo "#define PACKETBURST $burst" > performance.click
 
     if [ "x$pcap" = "xyes" ]; then
       echo "#define ENABLE_PCAP" >> performance.click
     fi
 
-    ./aci_measurement.sh ./5Ghz.setup
+    ./aci_measurement.sh $frequ
 
-    AC_PATH="burst_$burst\_pcap_$pcap\_brndev_0"
+    AC_PATH=`echo "$PREFIX\_burst_1_pcap_$pcap\_brndev_1" | sed -e "s#\\\\\##g"`
 
     mkdir $AC_PATH
     mv init* $AC_PATH
   done
-done
 
-for pcap in yes no; do
-  echo "$burst $pcap"
-  echo "#define USEBRNDEVICE" >> performance.click
-  echo "#define PACKETBURST $burst" > performance.click
-
-  if [ "x$pcap" = "xyes" ]; then
-    echo "#define ENABLE_PCAP" >> performance.click
-  fi
-
-  ./aci_measurement.sh ./5Ghz.setup
-
-  AC_PATH="burst_1_pcap_$pcap\_brndev_1"
-
-  mkdir $AC_PATH
-  mv init* $AC_PATH
 done
 
 exit 0

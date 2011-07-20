@@ -22,6 +22,9 @@ esac
 
 POSITIONS=`seq 1 $POSITION_COUNT`
 
+#SENDER_TMPL=sender.click.tmpl
+SENDER_TMPL=sender_fast.click.tmpl
+
 MODE=REBOOT
 REPEATMODE=REBOOT
 POSITIONREPEATMODE=REBOOT
@@ -52,7 +55,7 @@ for pow in $POWER; do
     RATEINDEX=`echo $RATE | sed "s#_# #g" | awk '{print $3}'`
     SGI=`echo $RATE | sed "s#_# #g" | awk '{print $4}' | sed -e "s#0#false#g" -e "s#1#true#g"`
 
-    cat tmpl/sender.click.tmpl | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX#g" -e "s#PARAMS_MCS#$HT#g" -e "s#PARAMS_BANDWIDTH#$BW#g" -e "s#PARAMS_SGI#$SGI#g" -e "s#PARAMS_GF#$GF#g" > sender.click
+    cat tmpl/$SENDER_TMPL | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX#g" -e "s#PARAMS_MCS#$HT#g" -e "s#PARAMS_BANDWIDTH#$BW#g" -e "s#PARAMS_SGI#$SGI#g" -e "s#PARAMS_GF#$GF#g" > sender.click
 
     for l in `seq 1 $COUNT_SINGLE_LINKS`; do
       LINK=`cat $1 | grep "#SINGLELINK" | head -n $l | tail -n 1 | awk '{print $2" "$3}'`
@@ -61,10 +64,11 @@ for pow in $POWER; do
 
       cat tmpl/throughput.mes.tmpl | sed -e "s#RECEIVER#$NODE_1#g" -e "s#SENDER#$NODE_2#g" -e "s#WLANDEVICE#$WLANDEVICE#g" > aci.mes
 
-      FINALPATH=init_$MEASUREMENT_COUNT\_ht_$HT\_pow_$pow\_rate_$r\_channel_$CHANNEL_FIX\_link_$l\_monitor
+      FINALPATH=`echo "init_$MEASUREMENT_COUNT\_ht_$HT\_pow_$pow\_rate_$r\_channel_$CHANNEL_FIX\_link_$l\_monitor" | sed -e "s#\\\\\##g"`
 
       if [ ! -e $FINALPATH ]; then
         RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+        #mkdir $FINALPATH
 
         echo "POSITION=1" > $FINALPATH/params
         echo "POWER=$pow" >> $FINALPATH/params
@@ -94,7 +98,7 @@ for pow in $POWER; do
   done
 done
 
-exit 0
+#exit 0
 
 MEASUREMENT_COUNT=0
 NUM=1
@@ -117,7 +121,7 @@ for p in $POSITIONS; do
         RATEINDEX_1=`echo $RATE_1 | sed "s#_# #g" | awk '{print $3}'`
         SGI_1=`echo $RATE_1 | sed "s#_# #g" | awk '{print $4}' | sed -e "s#0#false#g" -e "s#1#true#g"`
 
-        cat tmpl/sender.click.tmpl | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX_1#g" -e "s#PARAMS_MCS#$HT_1#g" -e "s#PARAMS_BANDWIDTH#$BW_1#g" -e "s#PARAMS_SGI#$SGI_1#g" -e "s#PARAMS_GF#$GF#g" > sender_fix.click
+        cat tmpl/$SENDER_TMPL | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX_1#g" -e "s#PARAMS_MCS#$HT_1#g" -e "s#PARAMS_BANDWIDTH#$BW_1#g" -e "s#PARAMS_SGI#$SGI_1#g" -e "s#PARAMS_GF#$GF#g" > sender_fix.click
 
         cat tmpl/mode.monitor | sed -e "s#VAR_CHANNEL#$c#g" -e "s#VAR_POWER#$pow#g" > mode_mobile.monitor
 
@@ -132,7 +136,7 @@ for p in $POSITIONS; do
         RATEINDEX_2=`echo $RATE_2 | sed "s#_# #g" | awk '{print $3}'`
         SGI_2=`echo $RATE_2 | sed "s#_# #g" | awk '{print $4}' | sed -e "s#0#false#g" -e "s#1#true#g"`
 
-        cat tmpl/sender.click.tmpl | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX_2#g" -e "s#PARAMS_MCS#$HT_2#g" -e "s#PARAMS_BANDWIDTH#$BW_2#g" -e "s#PARAMS_SGI#$SGI_2#g" -e "s#PARAMS_GF#$GF#g" > sender_mobile.click
+        cat tmpl/$SENDER_TMPL | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX_2#g" -e "s#PARAMS_MCS#$HT_2#g" -e "s#PARAMS_BANDWIDTH#$BW_2#g" -e "s#PARAMS_SGI#$SGI_2#g" -e "s#PARAMS_GF#$GF#g" > sender_mobile.click
 
         for l in `seq 1 $COUNT_LINK_PAIRS`; do
 
@@ -146,11 +150,12 @@ for p in $POSITIONS; do
 
           for rep in `seq 1 $REPETITION`; do
 
-            FINALPATH=$NUM\_pos_$p\_power_$pow\_channel_$c\_ratepair_$r\_link_$l\_rep_$rep\_monitor
+            FINALPATH=`echo "$NUM\_pos_$p\_power_$pow\_channel_$c\_ratepair_$r\_link_$l\_rep_$rep\_monitor" | sed -e "s#\\\\\##g"`
 
             if [ ! -d $FINALPATH ]; then
 
               RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+              #mkdir $FINALPATH
               MODE=$REPEATMODE
 
               #(cd $FINALPATH; wget http://www2.informatik.hu-berlin.de/~sombrutz/pub/labs/webcam.jpeg )
