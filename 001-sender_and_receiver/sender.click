@@ -14,14 +14,14 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 ps::BRN2PacketSource(SIZE 1460, INTERVAL 20, MAXSEQ 500000, BURST 2, ACTIVE true)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-  -> PrintWifi("Sender", TIMESTAMP true)
+  -> BRN2PrintWifi("Sender", TIMESTAMP true)
   -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
-  -> PrintWifi("OKPacket", TIMESTAMP true)
+  -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
   -> discard::Discard;
 
 error_clf[1]
