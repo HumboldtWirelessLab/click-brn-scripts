@@ -1,5 +1,7 @@
 #define DEBUGLEVEL 2
 
+#define RAWDUMP
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
@@ -13,7 +15,7 @@ Idle
   -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
-  -> PrintWifi("OKPacket", TIMESTAMP true)
+  -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
   -> discard::Discard;
 
 error_clf[1]
