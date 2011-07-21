@@ -1,6 +1,6 @@
 NAME=aci
 
-TIME=25
+TIME=30
 
 NODETABLE=aci.mes
 

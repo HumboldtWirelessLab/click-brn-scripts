@@ -37,10 +37,10 @@ ps::BRN2PacketSource(SIZE PACKET_SIZE, INTERVAL 200, MAXSEQ 500000, BURST 25, PA
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> rate::SetTXRates( RATE0 PARAMS_RATEINDEX, TRIES0 1, MCS0 PARAMS_MCS, BW0 PARAMS_BANDWIDTH, SGI0 PARAMS_SGI, GF0 PARAMS_GF, FEC0 0, SP0 true, STBC0 false, DEBUG false )
-  -> out_cnt::Counter()
   -> __WIFIENCAP__
   -> wifiseq::WifiSeq(OFFSET 58)  //radiotap + offset in WifiHeader (36+22) // Set sequencenumber
   -> wifioutq::NotifierQueue(110)
+  -> out_cnt::Counter()
   -> rawdev
   -> dev_decap::__WIFIDECAP__
   -> cst                                                                    //add channel stats if requested
@@ -58,10 +58,23 @@ Script(
   write out_cnt.reset,
   wait 10,
   read out_cnt.bit_rate,
-  read out_cnt.count,
   read out_cnt.byte_count,
   read cst.stats_xml,
   wait 2,
+  read out_cnt.bit_rate,
+  read out_cnt.byte_count,
+  read cst.stats_xml,
+  wait 2,
+  read out_cnt.bit_rate,
+  read out_cnt.byte_count,
+  read cst.stats_xml,
+  wait 2,
+  read out_cnt.bit_rate,
+  read out_cnt.byte_count,
+  read cst.stats_xml,
+  wait 2,
+  read out_cnt.bit_rate,
+  read out_cnt.byte_count,
   read cst.stats_xml,
   wait 1,
   read sys_info.systeminfo

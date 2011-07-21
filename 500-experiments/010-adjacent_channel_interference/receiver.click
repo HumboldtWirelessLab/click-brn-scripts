@@ -3,6 +3,8 @@
 #include "performance.click"
 
 //#define ENABLE_PCAP
+#define RAWDUMPSNAPLEN 100
+#define RAWDUMP
 #define CST cst
 
 #if WIFITYPE == 802
@@ -31,6 +33,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 Idle()
   -> wifidevice
+//  -> BRN2PrintWifi("RX")
   -> cnt::Counter()
 //  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.raw.dump", SNAPLEN 7500);
   -> Discard;
@@ -44,6 +47,12 @@ Script(
   read cnt.bit_rate,
   read cnt.count,
   read cnt.byte_count,
+  read wifidevice/cst.stats_xml,
+  wait 2,
+  read wifidevice/cst.stats_xml,
+  wait 2,
+  read wifidevice/cst.stats_xml,
+  wait 2,
   read wifidevice/cst.stats_xml,
   wait 2,
   read wifidevice/cst.stats_xml,

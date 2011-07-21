@@ -107,7 +107,9 @@ for pow in $POWER; do
   done
 done
 
-#exit 0
+if [ "x$PERFORMANCETEST" = "x1" ]; then
+  exit 0
+fi
 
 MEASUREMENT_COUNT=0
 NUM=1
@@ -143,7 +145,7 @@ for p in $POSITIONS; do
         RATEINDEX_2=`echo $RATE_2 | sed "s#_# #g" | awk '{print $3}'`
         SGI_2=`echo $RATE_2 | sed "s#_# #g" | awk '{print $4}' | sed -e "s#0#false#g" -e "s#1#true#g"`
 
-        if [ "$HT_1" = "true" ] && [ "$HT_2" = "true" ] then
+        if [ "$HT_1" = "true" ] && [ "$HT_2" = "true" ]; then
           PACKET_SIZE=$HTPACKETSIZE
         else
           PACKET_SIZE=$NONHTPACKETSIZE

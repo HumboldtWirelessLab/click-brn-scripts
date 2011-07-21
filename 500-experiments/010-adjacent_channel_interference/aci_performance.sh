@@ -31,7 +31,7 @@ for frequ in 5Ghz.setup 2_4Ghz.setup; do
         echo "#define ENABLE_PCAP" >> performance.click
       fi
 
-      ./aci_measurement.sh $frequ
+      PERFORMANCETEST=1 ./aci_measurement.sh $frequ
 
       AC_PATH=`echo "$PREFIX\_burst_$burst\_pcap_$pcap\_brndev_0" | sed -e "s#\\\\\##g"`
 
@@ -49,7 +49,7 @@ for frequ in 5Ghz.setup 2_4Ghz.setup; do
       echo "#define ENABLE_PCAP" >> performance.click
     fi
 
-    ./aci_measurement.sh $frequ
+    PERFORMANCETEST=1 ./aci_measurement.sh $frequ
 
     AC_PATH=`echo "$PREFIX\_burst_1_pcap_$pcap\_brndev_1" | sed -e "s#\\\\\##g"`
 
