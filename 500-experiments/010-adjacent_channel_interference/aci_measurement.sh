@@ -22,6 +22,9 @@ esac
 
 POSITIONS=`seq 1 $POSITION_COUNT`
 
+#SENDER_TMPL=sender.click.tmpl
+SENDER_TMPL=sender_fast.click.tmpl
+
 MODE=REBOOT
 REPEATMODE=REBOOT
 POSITIONREPEATMODE=REBOOT
@@ -52,49 +55,59 @@ for pow in $POWER; do
     RATEINDEX=`echo $RATE | sed "s#_# #g" | awk '{print $3}'`
     SGI=`echo $RATE | sed "s#_# #g" | awk '{print $4}' | sed -e "s#0#false#g" -e "s#1#true#g"`
 
-    cat tmpl/sender.click.tmpl | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX#g" -e "s#PARAMS_MCS#$HT#g" -e "s#PARAMS_BANDWIDTH#$BW#g" -e "s#PARAMS_SGI#$SGI#g" -e "s#PARAMS_GF#$GF#g" > sender.click
 
-    for l in `seq 1 $COUNT_SINGLE_LINKS`; do
-      LINK=`cat $1 | grep "#SINGLELINK" | head -n $l | tail -n 1 | awk '{print $2" "$3}'`
-      NODE_1=`echo $LINK | awk '{print $1}'`
-      NODE_2=`echo $LINK | awk '{print $2}'`
+    if [ "$HT" = "true" ]; then
+      PACKET_SIZE_LIST="$HTPACKETSIZE $NONHTPACKETSIZE"
+    else
+      PACKET_SIZE_LIST=$NONHTPACKETSIZE
+    fi
 
-      cat tmpl/throughput.mes.tmpl | sed -e "s#RECEIVER#$NODE_1#g" -e "s#SENDER#$NODE_2#g" -e "s#WLANDEVICE#$WLANDEVICE#g" > aci.mes
+    for PACKET_SIZE in $PACKET_SIZE_LIST; do
+      cat tmpl/$SENDER_TMPL | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX#g" -e "s#PARAMS_MCS#$HT#g" -e "s#PARAMS_BANDWIDTH#$BW#g" -e "s#PARAMS_SGI#$SGI#g" -e "s#PARAMS_GF#$GF#g" -e "s#PACKET_SIZE#$PACKET_SIZE#g" > sender.click
 
-      FINALPATH=init_$MEASUREMENT_COUNT\_ht_$HT\_pow_$pow\_rate_$r\_channel_$CHANNEL_FIX\_link_$l\_monitor
+      for l in `seq 1 $COUNT_SINGLE_LINKS`; do
+        LINK=`cat $1 | grep "#SINGLELINK" | head -n $l | tail -n 1 | awk '{print $2" "$3}'`
+        NODE_1=`echo $LINK | awk '{print $1}'`
+        NODE_2=`echo $LINK | awk '{print $2}'`
 
-      if [ ! -e $FINALPATH ]; then
-        RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+        cat tmpl/throughput.mes.tmpl | sed -e "s#RECEIVER#$NODE_1#g" -e "s#SENDER#$NODE_2#g" -e "s#WLANDEVICE#$WLANDEVICE#g" > aci.mes
 
-        echo "POSITION=1" > $FINALPATH/params
-        echo "POWER=$pow" >> $FINALPATH/params
-        echo "FIX_CHANNEL=$CHANNEL_FIX" >> $FINALPATH/params
-        echo "FIX_HTMODE=$HTMODE" >> $FINALPATH/params
-        echo "FIX_SENDER=$NODE_2" >> $FINALPATH/params
-        echo "FIX_RECEIVER=$NODE_1" >> $FINALPATH/params
-        echo "FIX_RATEINDEX=$RATEINDEX" >> $FINALPATH/params
-        echo "FIX_BW=$BW" >> $FINALPATH/params
-        echo "FIX_HT=$HT" >> $FINALPATH/params
-        echo "FIX_SGI=$SGI" >> $FINALPATH/params
+        FINALPATH=`echo "init_$MEASUREMENT_COUNT\_ht_$HT\_pow_$pow\_rate_$r\_channel_$CHANNEL_FIX\_link_$l\_monitor" | sed -e "s#\\\\\##g"`
 
-        echo "MOBILE_CHANNEL=0" >> $FINALPATH/params
-        echo "MOBILE_HTMODE=0" >> $FINALPATH/params
-        echo "MOBILE_SENDER=0" >> $FINALPATH/params
-        echo "MOBILE_RECEIVER=0" >> $FINALPATH/params
-        echo "MOBILE_RATEINDEX=0" >> $FINALPATH/params
-        echo "MOBILE_BW=0" >> $FINALPATH/params
+        if [ ! -e $FINALPATH ]; then
+          RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+          #mkdir $FINALPATH
 
-        echo "MOBILE_HT=0" >> $FINALPATH/params
-        echo "MOBILE_SGI=0" >> $FINALPATH/params
-      fi
+          echo "POSITION=1" > $FINALPATH/params
+          echo "POWER=$pow" >> $FINALPATH/params
+          echo "FIX_CHANNEL=$CHANNEL_FIX" >> $FINALPATH/params
+          echo "FIX_HTMODE=$HTMODE" >> $FINALPATH/params
+          echo "FIX_SENDER=$NODE_2" >> $FINALPATH/params
+          echo "FIX_RECEIVER=$NODE_1" >> $FINALPATH/params
+          echo "FIX_RATEINDEX=$RATEINDEX" >> $FINALPATH/params
+          echo "FIX_BW=$BW" >> $FINALPATH/params
+          echo "FIX_HT=$HT" >> $FINALPATH/params
+          echo "FIX_SGI=$SGI" >> $FINALPATH/params
+          echo "FIX_PACKET_SIZE=$PACKET_SIZE" >> $FINALPATH/params
 
-      MEASUREMENT_COUNT=`expr $MEASUREMENT_COUNT + 1`
+          echo "MOBILE_CHANNEL=0" >> $FINALPATH/params
+          echo "MOBILE_HTMODE=0" >> $FINALPATH/params
+          echo "MOBILE_SENDER=0" >> $FINALPATH/params
+          echo "MOBILE_RECEIVER=0" >> $FINALPATH/params
+          echo "MOBILE_RATEINDEX=0" >> $FINALPATH/params
+          echo "MOBILE_BW=0" >> $FINALPATH/params
+          echo "MOBILE_HT=0" >> $FINALPATH/params
+          echo "MOBILE_SGI=0" >> $FINALPATH/params
+          echo "MOBILE_PACKET_SIZE=$PACKET_SIZE" >> $FINALPATH/params
+        fi
 
+        MEASUREMENT_COUNT=`expr $MEASUREMENT_COUNT + 1`
+      done
     done
   done
 done
 
-exit 0
+#exit 0
 
 MEASUREMENT_COUNT=0
 NUM=1
@@ -117,8 +130,6 @@ for p in $POSITIONS; do
         RATEINDEX_1=`echo $RATE_1 | sed "s#_# #g" | awk '{print $3}'`
         SGI_1=`echo $RATE_1 | sed "s#_# #g" | awk '{print $4}' | sed -e "s#0#false#g" -e "s#1#true#g"`
 
-        cat tmpl/sender.click.tmpl | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX_1#g" -e "s#PARAMS_MCS#$HT_1#g" -e "s#PARAMS_BANDWIDTH#$BW_1#g" -e "s#PARAMS_SGI#$SGI_1#g" -e "s#PARAMS_GF#$GF#g" > sender_fix.click
-
         cat tmpl/mode.monitor | sed -e "s#VAR_CHANNEL#$c#g" -e "s#VAR_POWER#$pow#g" > mode_mobile.monitor
 
         RATE_2=`cat $1 |  grep "#RATES" | awk '{print $3}' | sort -u | head -n $r | tail -n 1`
@@ -132,7 +143,15 @@ for p in $POSITIONS; do
         RATEINDEX_2=`echo $RATE_2 | sed "s#_# #g" | awk '{print $3}'`
         SGI_2=`echo $RATE_2 | sed "s#_# #g" | awk '{print $4}' | sed -e "s#0#false#g" -e "s#1#true#g"`
 
-        cat tmpl/sender.click.tmpl | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX_2#g" -e "s#PARAMS_MCS#$HT_2#g" -e "s#PARAMS_BANDWIDTH#$BW_2#g" -e "s#PARAMS_SGI#$SGI_2#g" -e "s#PARAMS_GF#$GF#g" > sender_mobile.click
+        if [ "$HT_1" = "true" ] && [ "$HT_2" = "true" ] then
+          PACKET_SIZE=$HTPACKETSIZE
+        else
+          PACKET_SIZE=$NONHTPACKETSIZE
+        fi
+
+        cat tmpl/$SENDER_TMPL | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX_1#g" -e "s#PARAMS_MCS#$HT_1#g" -e "s#PARAMS_BANDWIDTH#$BW_1#g" -e "s#PARAMS_SGI#$SGI_1#g" -e "s#PARAMS_GF#$GF#g" -e "s#PACKET_SIZE#$PACKET_SIZE#g" > sender_fix.click
+
+        cat tmpl/$SENDER_TMPL | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX_2#g" -e "s#PARAMS_MCS#$HT_2#g" -e "s#PARAMS_BANDWIDTH#$BW_2#g" -e "s#PARAMS_SGI#$SGI_2#g" -e "s#PARAMS_GF#$GF#g" -e "s#PACKET_SIZE#$PACKET_SIZE#g" > sender_mobile.click
 
         for l in `seq 1 $COUNT_LINK_PAIRS`; do
 
@@ -146,11 +165,12 @@ for p in $POSITIONS; do
 
           for rep in `seq 1 $REPETITION`; do
 
-            FINALPATH=$NUM\_pos_$p\_power_$pow\_channel_$c\_ratepair_$r\_link_$l\_rep_$rep\_monitor
+            FINALPATH=`echo "$NUM\_pos_$p\_power_$pow\_channel_$c\_ratepair_$r\_link_$l\_rep_$rep\_monitor" | sed -e "s#\\\\\##g"`
 
             if [ ! -d $FINALPATH ]; then
 
               RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+              #mkdir $FINALPATH
               MODE=$REPEATMODE
 
               #(cd $FINALPATH; wget http://www2.informatik.hu-berlin.de/~sombrutz/pub/labs/webcam.jpeg )
@@ -165,6 +185,7 @@ for p in $POSITIONS; do
               echo "FIX_BW=$BW_1" >> $FINALPATH/params
               echo "FIX_HT=$HT_1" >> $FINALPATH/params
               echo "FIX_SGI=$SGI_1" >> $FINALPATH/params
+              echo "FIX_PACKET_SIZE=$PACKET_SIZE" >> $FINALPATH/params
 
               echo "MOBILE_CHANNEL=$c" >> $FINALPATH/params
               echo "MOBILE_HTMODE=$HTMODE_2" >> $FINALPATH/params
@@ -174,6 +195,7 @@ for p in $POSITIONS; do
               echo "MOBILE_BW=$BW_2" >> $FINALPATH/params
               echo "MOBILE_HT=$HT_2" >> $FINALPATH/params
               echo "MOBILE_SGI=$SGI_2" >> $FINALPATH/params
+              echo "MOBILE_PACKET_SIZE=$PACKET_SIZE" >> $FINALPATH/params
 
             fi
 
