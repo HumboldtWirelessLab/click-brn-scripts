@@ -1,6 +1,6 @@
 #define DEBUGLEVEL 2
 
-//#define RAWDEV_DEBUG
+#define RAWDEV_DEBUG
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -12,7 +12,7 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 //  em::EtherMirror()
-Idle()
+ Idle()
   -> SetTXRate(RATE 2)
   -> SetTXPower(0)
   -> BRN2SetChannel(CHANNEL 82)

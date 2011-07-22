@@ -14,12 +14,12 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 2268, INTERVAL 200, MAXSEQ 500000, BURST 25, PACKETCOUNT 50, ACTIVE true)
+ps::BRN2PacketSource(SIZE /*2268*/3800, INTERVAL 200, MAXSEQ 500000, BURST 25, PACKETCOUNT 50, ACTIVE true)
 //ps::BRN2PacketSource(SIZE 1460, INTERVAL 20, MAXSEQ 500000, BURST 2, ACTIVE true)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> PrintWifi("Sender", TIMESTAMP true)
-  -> rate::SetTXRates( RATE0 2, TRIES0 1, MCS0 false, BW0 0, SGI0 false, GF0 true, FEC0 0, SP0 true, STBC0 false, DEBUG false )
+  -> rate::SetTXRates( RATE0 0, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
 //  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
   -> wifioutq::NotifierQueue(1000)
