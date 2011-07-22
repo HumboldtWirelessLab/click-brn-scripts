@@ -42,8 +42,8 @@ for frequ in 5Ghz.setup 2_4Ghz.setup; do
 
   for pcap in yes no; do
     echo "$burst $pcap"
-    echo "#define USEBRNDEVICE" >> performance.click
-    echo "#define PACKETBURST $burst" > performance.click
+    echo "#define USEBRNDEVICE" > performance.click
+    echo "#define PACKETBURST $burst" >> performance.click
 
     if [ "x$pcap" = "xyes" ]; then
       echo "#define ENABLE_PCAP" >> performance.click
