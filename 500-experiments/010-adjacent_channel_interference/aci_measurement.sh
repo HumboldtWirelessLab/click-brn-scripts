@@ -18,6 +18,17 @@ case "$SIGN" in
 	;;
 esac
 
+
+do_finish() {
+  rm -rf aci.mes measurment_counter.* mode.monitor mode_fix.monitor mode_mobile.monitor sender.click sender_fix.click sender_mobile.click finish
+
+  exit 0
+}
+
+
+INIT_MEASUREMENT=1
+
+
 SCRIPTS="$@"
 
 . ./$1
@@ -36,6 +47,8 @@ POSITIONREPEATMODE=REBOOT
 REPEATMODE=CLICK
 
 ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
+
+if [ $INIT_MEASUREMENT -eq 1 ]; then
 
 for params in $SCRIPTS; do
 
@@ -123,6 +136,10 @@ for params in $SCRIPTS; do
 
           fi
 
+          if [ -f finish ]; then
+            do_finish
+          fi
+
           MEASUREMENT_COUNT=`expr $MEASUREMENT_COUNT + 1`
         #end packet size
         done
@@ -148,6 +165,8 @@ for params in $SCRIPTS; do
 #end script
 done
 
+fi
+
 if [ "x$PERFORMANCETEST" = "x1" ]; then
   exit 0
 fi
@@ -158,6 +177,8 @@ RATEREPEATMODE=DRIVER
 POSITIONREPEATMODE=REBOOT
 REPEATMODE=CLICK
 SCRIPTREPEATMODE=REBOOT
+
+RUN_AT_LEAST_ONE_MEASURMENT=0
 
 for params in $SCRIPTS; do
   . ./$params
@@ -235,6 +256,8 @@ for p in $POSITIONS; do
               fi
 
               RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+              RUN_AT_LEAST_ONE_MEASURMENT=1
+
 
               if [ ! -e $FINALPATH ]; then
                 mkdir $FINALPATH
@@ -267,6 +290,10 @@ for p in $POSITIONS; do
 
               MODE=$REPEATMODE
 
+            fi
+
+            if [ -f finish ]; then
+              do_finish
             fi
 
             MEASUREMENT_COUNT=`expr $MEASUREMENT_COUNT + 1`
@@ -316,17 +343,16 @@ for p in $POSITIONS; do
     MODE=$POSITIONREPEATMODE
   fi
 
-#change position
-ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh $POSITION_STEP_DIRECTION $POSITION_STEP_LENGTH"
-sleep 1;
-ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
+  if [ $RUN_AT_LEAST_ONE_MEASURMENT -eq 1 ]; then
+    #change position
+    ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh $POSITION_STEP_DIRECTION $POSITION_STEP_LENGTH"
+    sleep 1;
+  fi
+
+  ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
 
 done
 
-for params in $SCRIPTS; do
-  . ./$params
-  rm -f measurment_counter.$MEASUREMENT_PREFIX
-done
-
+do_finish
 
 exit 0
