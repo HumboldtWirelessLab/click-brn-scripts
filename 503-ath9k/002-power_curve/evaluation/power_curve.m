@@ -13,8 +13,8 @@ RSSI=8;
 
 channel = unique(a(:,CHANNEL));
 power = unique(a(:,POWER));
-rates = unique(a(:,RATE));
-rates(rates(:) == 6) = [];
+rates = sort(unique(a(:,RATE)))
+%rates(rates(:) == 6) = [];
 
 mean_values = zeros(size(channel,1), size(rates,1), size(power,1));
 
@@ -49,7 +49,7 @@ scrsz = [ 0 0 640 480];
 %size(k(1,:))
 %size([1:size(power,1)])
 %col=[ 1 4 3 2 5 ]
-col=[ 'k', 'b', 'r', 'g', 'm' ];
+col=[ 'k', 'b', 'r', 'g', 'm', 'k' ];
 rates
 
 size(rates)
@@ -66,7 +66,7 @@ grid on;
 xlabel('txpower (dbm)');
 ylabel('snr (db)');
 title('TXPower vs. RXSNR (5 GHz and 2.4Ghz)');
-legend('1MBit/s',  '6.5MBit/s (HT20, 1 Stream)', '13MBit/s (HT20, 2 Streams)', '13.5MBit/s (HT40, 1 Stream)', '27MBit/s (HT40, 2 Streams)', 'location', 'northwest');
+legend('1MBit/s', '6MBit/s', '6.5MBit/s (HT20, 1 Stream)', '13MBit/s (HT20, 2 Streams)', '13.5MBit/s (HT40, 1 Stream)', '27MBit/s (HT40, 2 Streams)', 'location', 'northwest');
 
 %print('-landscape','-dpsc','txpower_rxpower.ps');
 print('-dpsc','txpower_rxpower.ps');

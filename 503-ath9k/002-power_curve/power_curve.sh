@@ -1,8 +1,9 @@
 #!/bin/sh
 
-CHANNEL="6 153 44"
+CHANNEL="6"
+# 153 44"
 MAX_POWER="30"
-NUM_POS=5
+NUM_POS=1
 
 MEASUREMENT_NUM=1
 
@@ -42,7 +43,7 @@ for p_pos in `seq 1 $NUM_POS`; do
     done
   done
 
-  if [ ! -f finish ]; then
+  if [ ! -f finish ] && [ $NUM_POS -lt $p_pos ]; then
     echo -n "Set to next position and press enter. "
     read key
   fi

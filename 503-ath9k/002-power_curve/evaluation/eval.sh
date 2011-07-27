@@ -65,11 +65,11 @@ while [ -e $RESULTDIR/$DIRNUM ]; do
 
     echo "$DIRNUM $RECEIVER $SENDER $DEVICE"
 
-    #rm  $RESULTDIR/$DIRNUM/$RECEIVER.$DEVICE.raw.out
+    rm -f $RESULTDIR/$DIRNUM/$RECEIVER.$DEVICE.raw.out
     if [ ! -f $RESULTDIR/$DIRNUM/$RECEIVER.$DEVICE.raw.out ]; then
 
       if [ -f $RESULTDIR/$DIRNUM/$RECEIVER.$DEVICE.raw.dump ]; then
-        ( cd $RESULTDIR/$DIRNUM; WIFI=802 fromdump.sh $RECEIVER.$DEVICE.raw.dump | grep "OKPack" | grep -v "err" | grep data | grep ":[[:space:]]*100" | grep FF-FF-FF-FF-FF-FF | sed -e "s#Mb##g" -e "s#+[0]*##g" -e "s#/# #g" -e "s#:##g" > $RECEIVER.$DEVICE.raw.out )
+        ( cd $RESULTDIR/$DIRNUM; WIFI=802 HT=true RX=true fromdump.sh $RECEIVER.$DEVICE.raw.dump | grep "OKPack" | grep -v "err" | grep data | grep ":[[:space:]]*44" | grep FF-FF-FF-FF-FF-FF | sed -e "s#Mb##g" -e "s#+[0]*##g" -e "s#/# #g" -e "s#:##g" > $RECEIVER.$DEVICE.raw.out )
       else
         echo "Missing Dump for $n $d"
       fi
