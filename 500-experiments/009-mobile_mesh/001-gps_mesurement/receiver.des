@@ -5,6 +5,7 @@ RADIO=shadowing11b
 FORGEINNODES=no
 
 TIME=3600
+#TIME=120
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=receiver.mes

@@ -129,6 +129,8 @@ for params in $SCRIPTS; do
             echo "MOBILE_SGI=0" >> $FINALPATH/params
             echo "MOBILE_PACKET_SIZE=$PACKET_SIZE" >> $FINALPATH/params
 
+            cp ./$params $FINALPATH/
+
             MODE=$PACKETREPEATMODE
 
             ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
@@ -287,6 +289,8 @@ for p in $POSITIONS; do
               echo "MOBILE_HT=$HT_2" >> $FINALPATH/params
               echo "MOBILE_SGI=$SGI_2" >> $FINALPATH/params
               echo "MOBILE_PACKET_SIZE=$PACKET_SIZE" >> $FINALPATH/params
+
+              cp ./$params $FINALPATH/
 
               MODE=$REPEATMODE
 
