@@ -28,6 +28,7 @@ do_finish() {
 
 INIT_MEASUREMENT=1
 
+#TEST=1
 
 SCRIPTS="$@"
 
@@ -54,7 +55,12 @@ for params in $SCRIPTS; do
 
   . ./$params
 
-  COUNT_RATES=`cat $params | grep "#RATES" | awk '{print $2}' | sort -u | wc -l`
+  if [ "xUSE_TESTRATE" = "x1" ]; then
+    COUNT_RATES=`cat $params | grep "#TESTRATE" | awk '{print $2}' | sort -u | wc -l`
+  else
+    COUNT_RATES=`cat $params | grep "#RATES" | awk '{print $2}' | sort -u | wc -l`
+  fi
+
   COUNT_SINGLE_LINKS=`cat $params | grep "#SINGLELINK" | awk '{print $1}' | wc -l`
   COUNT_LINK_PAIRS=`cat $params | grep "#LINKPAIRS" | awk '{print $1}' | wc -l`
   COUNT_RATE_PAIRS=`cat $params | grep "#RATES" | wc -l`
@@ -72,7 +78,12 @@ for params in $SCRIPTS; do
       for r in `seq 1 $COUNT_RATES`; do
         cat tmpl/mode.monitor | sed -e "s#VAR_CHANNEL#$CHANNEL_FIX#g" -e "s#VAR_POWER#$pow#g" > mode.monitor
 
-        RATE=`cat $params |  grep "#RATES" | awk '{print $2}' | sort -u | head -n $r | tail -n 1`
+        if [ "xUSE_TESTRATE" = "x1" ]; then
+          RATE=`cat $params |  grep "#TESTRATE" | awk '{print $2}' | sort -u | head -n $r | tail -n 1`
+        else
+          RATE=`cat $params |  grep "#RATES" | awk '{print $2}' | sort -u | head -n $r | tail -n 1`
+        fi
+
         HTMODE=`echo $RATE | sed "s#_# #g" | awk '{print $1}'`
         if [ "x$HTMODE" = "xHT40" ]; then
           echo "HTMODE=\"HT40+\"" >> mode.monitor
@@ -101,7 +112,12 @@ for params in $SCRIPTS; do
               echo "MODEERROR: $PACKET_SIZE $pow $r $l" >> modeerror
             fi
 
-            RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+            if [ "x$TEST" = "x1" ]; then
+              TESTONLY=1 RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+            else
+              RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+            fi
+
             if [ ! -e $FINALPATH ]; then
               mkdir $FINALPATH
             fi
@@ -164,6 +180,9 @@ for params in $SCRIPTS; do
   if [ "x$MODE" != "xREBOOT" ]; then
     MODE=$SCRIPTREPEATMODE
   fi
+
+  echo "INIT_MEASUREMENT_COUNTER=$MEASUREMENT_COUNT" > measurement_counter_init.$MEASUREMENT_PREFIX
+
 #end script
 done
 
@@ -184,7 +203,13 @@ RUN_AT_LEAST_ONE_MEASURMENT=0
 
 for params in $SCRIPTS; do
   . ./$params
+  if [ -f ./measurement_counter_init.$MEASUREMENT_PREFIX ]; then
+    . ./measurement_counter_init.$MEASUREMENT_PREFIX
+  else
+    INIT_MEASUREMENT_COUNTER=0
+  fi
   echo "MEASUREMENT_COUNT=0" > measurment_counter.$MEASUREMENT_PREFIX
+  echo "INIT_MEASUREMENT_COUNTER=$INIT_MEASUREMENT_COUNTER" >> measurment_counter.$MEASUREMENT_PREFIX
 done
 
 ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
@@ -199,7 +224,7 @@ for p in $POSITIONS; do
 
    for pow in $POWER; do
      for c in $CHANNEL_MOBIL; do
-      for r in `seq 1 $COUNT_RATE_PAIRS`; do
+       for r in `seq 1 $COUNT_RATE_PAIRS`; do
 
         cat tmpl/mode.monitor | sed -e "s#VAR_CHANNEL#$CHANNEL_FIX#g" -e "s#VAR_POWER#$pow#g" > mode_fix.monitor
 
@@ -257,7 +282,12 @@ for p in $POSITIONS; do
                 echo "MODEERROR: $p $pow $c $r $l $rep" >> modeerror
               fi
 
-              RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+              if [ "x$TEST" = "x1" ]; then
+                TESTONLY=1 RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+              else
+                RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+              fi
+
               RUN_AT_LEAST_ONE_MEASURMENT=1
 
 
@@ -300,7 +330,7 @@ for p in $POSITIONS; do
               do_finish
             fi
 
-            MEASUREMENT_COUNT=`expr $MEASUREMENT_COUNT + 1`
+            INIT_MEASUREMENT_COUNTER=`expr $INIT_MEASUREMENT_COUNTER + 1`
 
             ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
             sleep 1
@@ -323,6 +353,121 @@ for p in $POSITIONS; do
        #end rate
        done
 
+#
+#
+#  INIT
+#
+#
+
+       if [ "x$INIT_MEASURMENT" = "x1" ]; then
+
+        cat tmpl/mode.monitor | sed -e "s#VAR_CHANNEL#$CHANNEL_FIX#g" -e "s#VAR_POWER#$pow#g" > mode_fix.monitor
+
+        RATE=`cat $params |  grep "#TESTRATE" | awk '{print $2}' | sort -u | head -n 1`
+        HTMODE=`echo $RATE | sed "s#_# #g" | awk '{print $1}'`
+        if [ "x$HTMODE" = "xHT40" ]; then
+          echo "HTMODE=\"HT40+\"" >> mode_fix.monitor
+        fi
+
+        BW=`echo $RATE | sed "s#_# #g" | awk '{print $1}' | sed -e "s#HT20#0#g" -e "s#HT40#1#g"`
+        HT=`echo $RATE | sed "s#_# #g" | awk '{print $2}' | sed -e "s#NHT#false#g" -e "s#HT#true#g"`
+        RATEINDEX=`echo $RATE | sed "s#_# #g" | awk '{print $3}'`
+        SGI=`echo $RATE | sed "s#_# #g" | awk '{print $4}' | sed -e "s#0#false#g" -e "s#1#true#g"`
+
+        cat tmpl/mode.monitor | sed -e "s#VAR_CHANNEL#$c#g" -e "s#VAR_POWER#$pow#g" > mode_mobile.monitor
+
+        if [ "$HT" = "true" ]; then
+          PACKET_SIZE=$HTPACKETSIZE
+        else
+          PACKET_SIZE=$NONHTPACKETSIZE
+        fi
+
+        cat tmpl/$SENDER_TMPL | sed -e "s#PARAMS_RATEINDEX#$RATEINDEX#g" -e "s#PARAMS_MCS#$HT#g" -e "s#PARAMS_BANDWIDTH#$BW#g" -e "s#PARAMS_SGI#$SGI#g" -e "s#PARAMS_GF#$GF#g" -e "s#PACKET_SIZE#$PACKET_SIZE#g" > sender_fix.click
+
+        NODES=`cat $params | grep "#LINKPAIRS" | head -n 1 | sed "s/#LINKPAIRS//g"`
+
+        for n in $NODES; do
+
+          RESTNODES=`echo $NODES | sed "s#$n##g"`
+          RECEIVER_1=`echo $RESTNODES | awk '{print $1}'`
+          RECEIVER_2=`echo $RESTNODES | awk '{print $2}'`
+          RECEIVER_3=`echo $RESTNODES | awk '{print $3}'`
+
+          cat tmpl/init_measurement.mes.tmpl | sed -e "s#RECEIVER1#$RECEIVER_1#g" -e "s#RECEIVER2#$RECEIVER_2#g" -e "s#RECEIVER3#$RECEIVER_3#g" -e "s#SENDER#$n#g" -e "s#WLANDEVICE#$WLANDEVICE#g" > aci.mes
+
+          FINALPATH=`echo "$MEASUREMENT_PREFIX\_init_$INIT_MEASUREMENT_COUNTER\_ht_$HT\_pow_$pow\_rate_1\_channel_$CHANNEL_FIX\_channel_mobil_\$c\_link_1_monitor" | sed -e "s#\\\\\##g"`
+
+          if [ ! -d $FINALPATH ]; then
+            if [ "x$MODE" = "x" ]; then
+              MODE=REBOOT
+              echo "MODEERROR: $p $pow $c $r" >> modeerror
+            fi
+
+            if [ "x$TEST" = "x1" ]; then
+              TESTONLY=1 RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+            else
+              RUNMODE=$MODE run_measurement.sh aci.des $FINALPATH
+            fi
+
+            RUN_AT_LEAST_ONE_MEASURMENT=1
+
+            if [ ! -e $FINALPATH ]; then
+              mkdir $FINALPATH
+            fi
+
+            (cd $FINALPATH; wget http://www2.informatik.hu-berlin.de/~sombrutz/pub/labs/webcam.jpeg )
+
+            echo "MEASUREMENT=$MEASUREMENT_PREFIX" > $FINALPATH/params
+            echo "POSITION=-$p" >> $FINALPATH/params
+            echo "POWER=$pow" >> $FINALPATH/params
+            echo "FIX_CHANNEL=$CHANNEL_FIX" >> $FINALPATH/params
+            echo "FIX_HTMODE=$HTMODE" >> $FINALPATH/params
+            echo "FIX_SENDER=$n" >> $FINALPATH/params
+            echo "FIX_RECEIVER=$RECEIVER_1" >> $FINALPATH/params
+            echo "FIX_RATEINDEX=$RATEINDEX" >> $FINALPATH/params
+            echo "FIX_BW=$BW" >> $FINALPATH/params
+            echo "FIX_HT=$HT" >> $FINALPATH/params
+            echo "FIX_SGI=$SGI" >> $FINALPATH/params
+            echo "FIX_PACKET_SIZE=$PACKET_SIZE" >> $FINALPATH/params
+
+            echo "MOBILE_CHANNEL=$c" >> $FINALPATH/params
+            echo "MOBILE_HTMODE=$HTMODE" >> $FINALPATH/params
+            echo "MOBILE_SENDER=$RECEIVER_2" >> $FINALPATH/params
+            echo "MOBILE_RECEIVER=$RECEIVER_3" >> $FINALPATH/params
+            echo "MOBILE_RATEINDEX=$RATEINDEX" >> $FINALPATH/params
+            echo "MOBILE_BW=$BW" >> $FINALPATH/params
+            echo "MOBILE_HT=$HT" >> $FINALPATH/params
+            echo "MOBILE_SGI=$SGI" >> $FINALPATH/params
+            echo "MOBILE_PACKET_SIZE=$PACKET_SIZE" >> $FINALPATH/params
+
+            cp ./$params $FINALPATH/
+
+            MODE=$REPEATMODE
+          fi
+
+          if [ -f finish ]; then
+            do_finish
+          fi
+
+          INIT_MEASUREMENT_COUNTER=`expr $INIT_MEASUREMENT_COUNTER + 1`
+
+          ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
+          sleep 1
+
+          if [ "x$MODE" != "xREBOOT" ]; then
+            MODE=DRIVER
+          fi
+        #end node
+        done
+
+       fi
+
+#
+#
+#  END INIT
+#
+#
+
        if [ "x$MODE" != "xREBOOT" ]; then
          MODE=$RATEREPEATMODE
        fi
@@ -340,6 +485,8 @@ for p in $POSITIONS; do
     fi
 
     echo "MEASUREMENT_COUNT=$MEASUREMENT_COUNT" > measurment_counter.$MEASUREMENT_PREFIX
+    echo "INIT_MEASUREMENT_COUNTER=$INIT_MEASUREMENT_COUNTER" >> measurment_counter.$MEASUREMENT_PREFIX
+
   #end params
   done
 
