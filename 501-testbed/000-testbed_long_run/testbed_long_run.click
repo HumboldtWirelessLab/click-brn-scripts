@@ -75,7 +75,7 @@ sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 #endif
 //sys_info.systeminfo
 
-com::BrnCompoundHandler(HANDLER "wireless.deviceinfo", UPDATEMODE 2, RECORDMODE 1, RECORDSAMPLES 25, SAMPLETIME 200, DEBUG 2);
+com::BrnCompoundHandler(HANDLER "wireless.deviceinfo", UPDATEMODE 0, RECORDMODE 0, RECORDSAMPLES 25, SAMPLETIME 200, DEBUG 2);
 
 gps::GPS();
 
