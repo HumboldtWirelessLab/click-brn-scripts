@@ -228,7 +228,7 @@ for p in $POSITIONS; do
 
         cat tmpl/mode.monitor | sed -e "s#VAR_CHANNEL#$CHANNEL_FIX#g" -e "s#VAR_POWER#$pow#g" > mode_fix.monitor
 
-        RATE_1=`cat $params |  grep "#RATES" | awk '{print $2}' | sort -u | head -n $r | tail -n 1`
+        RATE_1=`cat $params |  grep "#RATES" | head -n $r | tail -n 1 | awk '{print $2}'`
         HTMODE_1=`echo $RATE_1 | sed "s#_# #g" | awk '{print $1}'`
         if [ "x$HTMODE_1" = "xHT40" ]; then
           echo "HTMODE=\"HT40+\"" >> mode_fix.monitor
@@ -241,7 +241,7 @@ for p in $POSITIONS; do
 
         cat tmpl/mode.monitor | sed -e "s#VAR_CHANNEL#$c#g" -e "s#VAR_POWER#$pow#g" > mode_mobile.monitor
 
-        RATE_2=`cat $params |  grep "#RATES" | awk '{print $3}' | sort -u | head -n $r | tail -n 1`
+        RATE_2=`cat $params |  grep "#RATES" | head -n $r | tail -n 1 | awk '{print $3}'`
         HTMODE_2=`echo $RATE_2 | sed "s#_# #g" | awk '{print $1}'`
         if [ "x$HTMODE_2" = "xHT40" ]; then
           echo "HTMODE=\"HT40+\"" >> mode_mobile.monitor
@@ -330,7 +330,7 @@ for p in $POSITIONS; do
               do_finish
             fi
 
-            INIT_MEASUREMENT_COUNTER=`expr $INIT_MEASUREMENT_COUNTER + 1`
+            MEASUREMENT_COUNT=`expr $MEASUREMENT_COUNT + 1`
 
             ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
             sleep 1

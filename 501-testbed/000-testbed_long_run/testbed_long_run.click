@@ -126,6 +126,9 @@ Idle
 //-> dhtstorage
 -> [0]routing;
 
+Idle
+-> [3]routing;
+
 brn_clf[4] -> Discard;
 
 //dht[1] -> [0]device_wifi;

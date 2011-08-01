@@ -24,14 +24,14 @@ ID=0
 
 PREFIXES=""
 
-for d in `(cd $RESULTDIR; ls -d *_init_0*)`; do
+for d in `(cd $RESULTDIR; ls -d *_init_0*) | grep -v "_channel_mobil_"`; do
   PREFIX=`(cd $RESULTDIR; echo "$d" | sed -e "s#_init*# #g" | awk '{print $1}')`
   PREFIXES="$PREFIXES $PREFIX"
 done
 
 for p in $PREFIXES; do
 
-  for i in `(cd $RESULTDIR; ls -d $p\_init_*)`; do
+  for i in `(cd $RESULTDIR; ls -d $p\_init_* | grep -v "_channel_mobil_")`; do
 
     #echo "$i"
 
