@@ -1,7 +1,7 @@
 dev::BRN2Device(DEVICENAME "dummydev", ETHERADDRESS 00:00:00:00:00:01, DEVICETYPE "WIRELESS");
 id::BRN2NodeIdentity(NAME dummy, DEVICES dev);
 
-com::BrnCompoundHandler(HANDLER "dev.deviceinfo id.info", UPDATEMODE 0, RECORDMODE 0, RECORDSAMPLES 100, SAMPLETIME 100, COMPRESSIONLIMIT 2000, DEBUG 4);
+com::BrnCompoundHandler(HANDLER "dev.deviceinfo id.info", UPDATEMODE 0, RECORDMODE 0, RECORDSAMPLES 100, SAMPLETIME 100, COMPRESSIONLIMIT 0, DEBUG 4);
 
 /*ph::BrnPushHandler(HANDLER "com.read", PERIOD 500)
 -> Print("Foo",1000)
@@ -17,54 +17,20 @@ com::BrnCompoundHandler(HANDLER "dev.deviceinfo id.info", UPDATEMODE 0, RECORDMO
 #define TEST_0
 
 #ifdef TEST_0
-
 Script(
-  write com.remove dev.deviceinfo,
-  print "Update Mode 0",
-  read com.read,
-  print "Update Mode 1",
-  write com.updatemode 1,
-  read com.read,
-  read com.read,
-  print "Update Mode 2",
-  write com.updatemode 2,
-  read com.read,
-  read com.read,
-  print "Update Mode 0",
-  write com.updatemode 0,
-  read com.read,
-  read com.read,
-  
-  print "Record Mode 1",
+  wait 1,
+  write com.reset,
   write com.recordmode 1,
-  print "Update Mode 0",
-  wait 1,  
-  read com.read,
-  print "Update Mode 1",
-  write com.updatemode 1,
-  wait 1,  
-  read com.read,
-  print "Update Mode 2",
-  write com.updatemode 2,
+  read com.read, 
+  write com.insert dev.deviceinfo 500 id.info id.class dev.class 500 com.handler 200,
   wait 1,
   read com.read,
-  print "Update Mode 0",
-  write com.updatemode 0,
   wait 1,
-  read com.read,
-//  print "Sample Count 5",
-//  write com.samplecount 5,
-//  write com.sampletime 200,
-//  wait 1,
-//  read com.read,
-  print "Sample time 10",
-  write com.sampletime 10,
-  wait 1,
-  read com.read,
+  read com.read,  
   stop
 );
-
 #endif
+
 
 #ifdef TEST_1
 Script(
@@ -130,5 +96,54 @@ Script(
 
 #endif
 
+#ifdef TEST_5
+
+Script(
+  write com.remove dev.deviceinfo,
+  print "Update Mode 0",
+  read com.read,
+  print "Update Mode 1",
+  write com.updatemode 1,
+  read com.read,
+  read com.read,
+  print "Update Mode 2",
+  write com.updatemode 2,
+  read com.read,
+  read com.read,
+  print "Update Mode 0",
+  write com.updatemode 0,
+  read com.read,
+  read com.read,
+  
+  print "Record Mode 1",
+  write com.recordmode 1,
+  print "Update Mode 0",
+  wait 1,  
+  read com.read,
+  print "Update Mode 1",
+  write com.updatemode 1,
+  wait 1,  
+  read com.read,
+  print "Update Mode 2",
+  write com.updatemode 2,
+  wait 1,
+  read com.read,
+  print "Update Mode 0",
+  write com.updatemode 0,
+  wait 1,
+  read com.read,
+//  print "Sample Count 5",
+//  write com.samplecount 5,
+//  write com.sampletime 200,
+//  wait 1,
+//  read com.read,
+  print "Sample time 10",
+  write com.sampletime 10,
+  wait 1,
+  read com.read,
+  stop
+);
+
+#endif
 
 ControlSocket(tcp, 7777);
