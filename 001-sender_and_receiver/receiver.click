@@ -49,3 +49,10 @@ error_clf[7]
 filter_tx[1]
   -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
   -> discard;
+
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+
+Script(
+ wait 5,
+ read sys_info.systeminfo
+);

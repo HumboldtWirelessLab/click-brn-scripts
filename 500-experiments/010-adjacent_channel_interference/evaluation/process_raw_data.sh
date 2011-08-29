@@ -99,6 +99,8 @@ for p in $PREFIXES; do
       #echo $i
       . $RESULTDIR/$i/params
 
+ #     if [ $POSITION -lt 4 ]; then
+
       FIX_PACKET_SIZE=`expr $FIX_PACKET_SIZE + 32`
       MOBILE_PACKET_SIZE=`expr $MOBILE_PACKET_SIZE + 32`
 
@@ -200,6 +202,7 @@ for p in $PREFIXES; do
 
       ID=`expr $ID + 1`
 
+#    fi
     fi
   done
 done

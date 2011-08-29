@@ -29,6 +29,7 @@ do_finish() {
 INIT_MEASUREMENT=1
 
 #TEST=1
+#DISABLE_LEGO=1
 
 SCRIPTS="$@"
 
@@ -47,7 +48,9 @@ PACKETREPEATMODE=CLICK
 POSITIONREPEATMODE=REBOOT
 REPEATMODE=CLICK
 
-ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
+if [ "x$DISABLE_LEGO" != "x1" ]; then
+  ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
+fi
 
 if [ $INIT_MEASUREMENT -eq 1 ]; then
 
@@ -149,9 +152,10 @@ for params in $SCRIPTS; do
 
             MODE=$PACKETREPEATMODE
 
-            ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
-            sleep 1
-
+            if [ "x$DISABLE_LEGO" != "x1" ]; then
+              ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
+              sleep 1
+            fi
           fi
 
           if [ -f finish ]; then
@@ -212,8 +216,10 @@ for params in $SCRIPTS; do
   echo "INIT_MEASUREMENT_COUNTER=$INIT_MEASUREMENT_COUNTER" >> measurment_counter.$MEASUREMENT_PREFIX
 done
 
-ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
-sleep 1
+if [ "x$DISABLE_LEGO" != "x1" ]; then
+  ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
+  sleep 1
+fi
 
 for p in $POSITIONS; do
 
@@ -324,6 +330,10 @@ for p in $POSITIONS; do
 
               MODE=$REPEATMODE
 
+              if [ "x$DISABLE_LEGO" != "x1" ]; then
+                ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
+                sleep 1
+              fi
             fi
 
             if [ -f finish ]; then
@@ -331,9 +341,6 @@ for p in $POSITIONS; do
             fi
 
             MEASUREMENT_COUNT=`expr $MEASUREMENT_COUNT + 1`
-
-            ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
-            sleep 1
 
             if [ "x$MODE" != "xREBOOT" ]; then
               MODE=$REPEATMODE
@@ -443,6 +450,11 @@ for p in $POSITIONS; do
             cp ./$params $FINALPATH/
 
             MODE=$REPEATMODE
+
+            if [ "x$DISABLE_LEGO" != "x1" ]; then
+              ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
+              sleep 1
+            fi
           fi
 
           if [ -f finish ]; then
@@ -450,9 +462,6 @@ for p in $POSITIONS; do
           fi
 
           INIT_MEASUREMENT_COUNTER=`expr $INIT_MEASUREMENT_COUNTER + 1`
-
-          ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 1"
-          sleep 1
 
           if [ "x$MODE" != "xREBOOT" ]; then
             MODE=DRIVER
@@ -495,12 +504,13 @@ for p in $POSITIONS; do
   fi
 
   if [ $RUN_AT_LEAST_ONE_MEASURMENT -eq 1 ]; then
-    #change position
-    ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh $POSITION_STEP_DIRECTION $POSITION_STEP_LENGTH"
-    sleep 1;
+    if [ "x$DISABLE_LEGO" != "x1" ]; then
+      #change position
+      ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/motor.sh $POSITION_STEP_DIRECTION $POSITION_STEP_LENGTH"
+      sleep 1;
+      ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
+    fi
   fi
-
-  ssh testbed@192.168.4.124 "/testbedhome/testbed/helper/host/lib/legoMindstorm/bin/beep.sh 3"
 
 done
 

@@ -1,5 +1,5 @@
 #NODE			DEVICE	MODULSDIR						MODOPTIONS	WIFICONFIG		CLICKMODDIR	CLICKSCRIPT		CLICKLOGFILE			APPLICATION				APPLICATIONLOGFILE
 #group:nodes.outdoor	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-		monitor.b.channel	-		ap_wireless.click	LOGDIR/NODENAME.NODEDEVICE.log	-					-
 #sk111			ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-		monitor.b.channel	-		ap.click		LOGDIR/NODENAME.NODEDEVICE.log	-					-
-seismo167		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-		monitor.b.channel	-		ap.click		LOGDIR/NODENAME.NODEDEVICE.log	-					-
+seismo184		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-		monitor.b.channel	-		ap.click		LOGDIR/NODENAME.NODEDEVICE.log	-					-
 #seismo162		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-		monitor.b.channel	-		ap.click		LOGDIR/NODENAME.NODEDEVICE.log	-					-
