@@ -1,6 +1,6 @@
 #define DEBUGLEVEL 2
 
-#define DSR_ID_CACHE
+//#define DSR_ID_CACHE
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
@@ -60,7 +60,10 @@ brn_clf[1]
 brn_clf[2] -> Discard;
 
 dsr[0] -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-dsr[1] /*-> Print("DSR[1]-out")*/ -> BRN2EtherEncap() -> SetEtherAddr(SRC deviceaddress) /*-> Print("DSR-Ether-OUT")*/ -> dsr_out_counter::Counter() -> [0]device_wifi;
+dsr[1] /*-> Print("DSR[1]-out")*/ -> SetEtherAddr(SRC deviceaddress) /*-> Print("DSR-Ether-OUT")*/ -> dsr_out_counter::Counter() -> [0]device_wifi;
+
+Idle
+-> [3]dsr;
 
 toMeAfterDsr[0] -> /*Print("DSR-out: For ME",100) ->*/ Label_brnether; 
 toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;

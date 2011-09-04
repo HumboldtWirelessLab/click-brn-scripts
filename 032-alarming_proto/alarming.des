@@ -20,6 +20,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
+EVALUATION="evaluation/eval.sh"
 #EVALUATION="basic"
 
 GPS=no

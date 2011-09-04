@@ -83,11 +83,13 @@ dht[1]
 -> [0]device_wifi;
 
 dsr[0] -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-dsr[1] /*-> Print("DSR[1]-out")*/ -> BRN2EtherEncap() -> SetEtherAddr(SRC deviceaddress)/*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
+dsr[1] /*-> Print("DSR[1]-out") -> BRN2EtherEncap()*/ -> SetEtherAddr(SRC deviceaddress)/*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
 
 toMeAfterDsr[0] -> /*Print("DSR-out: For ME",100) ->*/ Label_brnether; 
 toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;
 toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
+
+Idle -> [3]dsr;
 
 Script(
 wait 239,

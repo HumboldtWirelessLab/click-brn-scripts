@@ -1,23 +1,23 @@
 #define DEBUGLEVEL 2
+#define LINKSTAT_ENABLE
 
 #include "brn/brn.click"
-#include "device/simdev.click"
 #include "device/wifidev_ap.click"
 #include "dht/routing/dht_falcon.click"
 #include "dht/storage/dht_storage.click"
 #include "routing/dsr.click"
 
-BRNAddressInfo(deviceaddress eth0:eth);
-wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-id::BRN2NodeIdentity(wireless);
+id::BRN2NodeIdentity(NAME "NODENAME", DEVICES wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITIY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000, DEBUG 2);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000, DEBUG 2);
 
-device_wifi::WIFIDEV_AP(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
+device_wifi::WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 
-dsr::DSR(id,lt,rc);
+dsr::DSR(id,lt,rc,device_wifi/etx_metric);
 
 dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting , DEBUG 2);
@@ -119,6 +119,7 @@ toMeAfterDsr[2]
   -> [1]device_wifi;
 
 Idle -> [2]dsr;
+Idle -> [3]dsr;
 brn_clf[3] -> Discard;
 
 Script(

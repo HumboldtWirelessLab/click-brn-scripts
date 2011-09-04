@@ -25,7 +25,7 @@ af::AlarmingForwarder(NODEID id, ALARMINGSTATE as, RSSI_DELAY true, DEBUG 2);
 asrc::AlarmingSource(ALARMINGSTATE as);
 art::AlarmingRetransmit(NODEID id, ALARMINGSTATE as, DEBUG 2);
 
-nhopinfo::NHopNeighbouringInfoEews(ALARMINGSTATE as, HOPLIMIT 3);
+nhopinfo::NHopNeighbouringInfoEews(EEWSSTATE as, HOPLIMIT 3);
 
 
 bc::BROADCAST(ID id, LT lt);
@@ -60,7 +60,7 @@ af
 art
 -> nq;
 
-nhop_ping::NHopNeighbouringPingEews(ALARMINGSTATE as, NODEIDENTITY id, NHOPN_INFO nhopinfo, INTERVAL 15000, ACTIVE true, DEBUG 4)
+nhop_ping::NHopNeighbouringPingEews(EEWSSTATE as, NODEIDENTITY id, NHOPN_INFO nhopinfo, INTERVAL 15000, ACTIVE true, DEBUG 4)
   -> BRN2EtherEncap(USEANNO true)
   //-> Print("Raus damit")
   -> [0]bc;

@@ -1,7 +1,6 @@
 #define DEBUGLEVEL 2
 
 #include "brn/brn.click"
-#include "device/simdev.click"
 #include "device/wifidev.click"
 #include "dht/routing/dht_dart.click"
 #include "dht/routing/dht_falcon.click"

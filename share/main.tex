@@ -1,0 +1,92 @@
+% THIS IS SIGPROC-SP.TEX - VERSION 3.1
+% WORKS WITH V3.2SP OF ACM_PROC_ARTICLE-SP.CLS
+% APRIL 2009
+%
+% It is an example file showing how to use the 'acm_proc_article-sp.cls' V3.2SP
+% LaTeX2e document class file for Conference Proceedings submissions.
+% ----------------------------------------------------------------------------------------------------------------
+% This .tex file (and associated .cls V3.2SP) *DOES NOT* produce:
+%       1) The Permission Statement
+%       2) The Conference (location) Info information
+%       3) The Copyright Line with ACM data
+%       4) Page numbering
+% ---------------------------------------------------------------------------------------------------------------
+% It is an example which *does* use the .bib file (from which the .bbl file
+% is produced).
+% REMEMBER HOWEVER: After having produced the .bbl file,
+% and prior to final submission,
+% you need to 'insert'  your .bbl file into your source .tex file so as to provide
+% ONE 'self-contained' source file.
+%
+% Questions regarding SIGS should be sent to
+% Adrienne Griscti ---> griscti@acm.org
+%
+% Questions/suggestions regarding the guidelines, .tex and .cls files, etc. to
+% Gerald Murray ---> murray@hq.acm.org
+%
+% For tracking purposes - this is V3.1SP - APRIL 2009
+
+
+%\pdfmajorversion=10
+\pdfminorversion=5
+
+\documentclass[onecolumn]{IEEEtran}
+
+%\conferenceinfo{UNKNOWN}{'11}
+
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage[table]{xcolor} % DVI only
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{ulem}
+\usepackage{url}
+\usepackage{amssymb}
+
+\definecolor{BgGray}{gray}{0.9}%
+\definecolor{BgGray2}{gray}{0.96}%
+\definecolor{RowColorOdd}{named}{BgGray2}%
+\definecolor{RowColorEven}{named}{white}%
+\definecolor{comments}{gray}{.5}
+
+\newcommand\colheadbegin{\hline\rowcolor{BgGray}}
+\newcommand\colheadend{\\\hline}
+
+%\tolerance=600
+
+\newcommand\all{\textcolor{brown}}
+\newcommand\robat{\textcolor{blue}}
+\newcommand\tolja{\textcolor{red}}
+\newcommand\chris{\textcolor{green}}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+\title{Evaluation of HWL Testbed}
+
+\author{\IEEEauthorblockN{HWL Testbed} \\
+\IEEEauthorblockA{Humboldt University\\
+Rudower Chaussee 25\\
+Berlin, Germany\\
+Email: sombrutz@informatik.hu-berlin.de}
+}
+
+\maketitle
+
+\begin{abstract}
+Results
+\end{abstract}
+
+%IEEE 802.11n, MIMO, Testbed, Mesh Network
+\begin{IEEEkeywords}
+IEEE 802.11n, MIMO, Testbed, Mesh Network
+\end{IEEEkeywords}
+
+%\bibliographystyle{IEEEtran}
+%\bibliography{IEEEabrv,mybib}
+
+%\end{document}

@@ -4,7 +4,7 @@ SIMULATOR=ns2
 RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=1000
+TIME=1
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=aps_with_dhcp_arp_dns_and_clients.mes

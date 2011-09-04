@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LIMIT=18
+LIMIT=35
 i=1
 
 while [ $i -le $LIMIT ]; do
@@ -10,8 +10,13 @@ while [ $i -le $LIMIT ]; do
   DESFILE=`(cd $DIR; ls *.des)`
   echo -n "($DESFILE) ... "
   (cd $DIR; run_sim.sh ns $DESFILE 1) > /dev/null 2>&1
-  if [ $? -ne 0 ]; then 
-    echo "failed !";
+  RESULT=$?
+  if [ $RESULT -ne 0 ]; then 
+    if [ $RESULT -eq 1 ]; then
+      echo "failed ! Simulation failed !";
+    else
+      echo "failed ! Evaluation failed !";
+    fi
   else
     echo "ok."
   fi
