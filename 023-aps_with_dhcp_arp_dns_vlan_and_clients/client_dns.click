@@ -1,13 +1,12 @@
 #define DEBUGLEVEL 2
 
 #include "brn/brn.click"
-#include "device/simdev.click"
 #include "device/wifidev_client.click"
 
 BRNAddressInfo(deviceaddress eth0:eth);
 wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-infra_client :: WIFIDEV_CLIENT( DEVICENAME "eth0", DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn");
+infra_client :: WIFIDEV_CLIENT( DEVICENAME "eth0", DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", ACTIVESCAN false );
 
 arpc::BRN2ARPClient(CLIENTIP 192.168.0.6, CLIENTETHERADDRESS deviceaddress, STARTIP 192.168.1.81,
                     ADDRESSRANGE 1, START 13000, INTERVAL 1000, COUNT 2,
@@ -69,6 +68,5 @@ Script(
   read infra_client/client/isc.assoc,
   wait 10,
   wait 5,
-  read  sf.txflows,
-  read  sf.rxflows
+  read  sf.stats
 );
