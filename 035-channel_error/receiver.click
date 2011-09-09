@@ -2,6 +2,9 @@
 
 #define RAWDUMP
 #define CERR
+#define CST
+
+// include unter helper/measurement/etc/click
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
