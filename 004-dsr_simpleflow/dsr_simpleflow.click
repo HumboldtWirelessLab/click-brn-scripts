@@ -2,9 +2,11 @@
 
 //#define DSR_ID_CACHE
 //#define WIFIDEV_LINKSTAT_DEBUG
-//#define ENABLE_DSR_DEBUG
+#define ENABLE_DSR_DEBUG
 
 //#define SETCHANNEL
+
+#define BRNFEEDBACK
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
@@ -24,7 +26,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/etx_metric);
+lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/etx_metric, ACTIVE false);
 
 dsr::DSR(id,lt,rc,device_wifi/etx_metric);
 
@@ -46,8 +48,9 @@ brn_clf[0]
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
+device_wifi[3] -> ff::FilterFailures() -> Discard;
+ff[1] -> BRN2EtherDecap() -> Classifier( 0/BRN_PORT_DSR ) -> Print("ERROR") -> [2]dsr;
 
-Idle -> [2]dsr;
 
 brn_clf[1]
 //-> Print("rx")
@@ -75,7 +78,12 @@ Script(
   wait 1,
   read sf.stats,
   wait 1,
-  read dsr_out_counter.byte_count
+  read dsr_out_counter.byte_count,
+  wait 127,
+  read dsr/dsr_stats.stats,
+  read dsr/querier.stats,
+  write dsr/dsr_stats.reset,
+  read dsr/dsr_stats.stats,
 );
 
 Script(
@@ -83,5 +91,6 @@ Script(
   write dsr/querier.debug 4,
   write dsr/req_forwarder.debug 4,
   write dsr/rep_forwarder.debug 4,
+  write dsr/err_forwarder.debug 4
 #endif
 );
