@@ -1,15 +1,11 @@
 #!/bin/sh
 
-SEND_PACKETS=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $9}'`
-ECHO_PACKETS=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $13}'`
-RECV_PACKETS=`cat $RESULTDIR/measurement.log | grep "<rxflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $9}'`
+IS_CONFIGURED=`cat $RESULTDIR/measurement.log | grep "Client is configured" | wc -l`
 
-echo -n "Send $SEND_PACKETS packet, received $ECHO_PACKETS packets and $RECV_PACKETS echo packets are received."
-
-if [ $ECHO_PACKETS -gt 3 ]; then
-  echo " OK !"
+if [ $IS_CONFIGURED -gt 0 ]; then
+  echo "Client is configured"
   exit 0
 else
-  echo " Too bad !"
+  echo "Client is not configure. TODO: more info about errors (assoc-failure,...??) !"
   exit 2
 fi

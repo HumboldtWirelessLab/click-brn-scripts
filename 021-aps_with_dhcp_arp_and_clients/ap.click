@@ -19,7 +19,7 @@ device_wifi::WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS device
 
 dsr::DSR(id,lt,rc,device_wifi/etx_metric);
 
-dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
+dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 2000, DEBUG 2);
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting , DEBUG 2);
 
 dsnl::BRN2DHCPSubnetList();
@@ -69,7 +69,7 @@ device_wifi[1]       //broadcast and brn
   -> BRN2EtherDecap()
   -> brn_clf;
   
-device_wifi[2] -> [0]dsr;  //foreign and brn
+device_wifi[2] -> Discard; //[0]dsr;  //foreign and brn
 
 device_wifi[3] -> Discard;  //to me no brn
 
@@ -101,7 +101,6 @@ dsr[0]
   
 dsr[1] 
   //-> Print("DSR[1]-out")
-  -> BRN2EtherEncap()
   -> SetEtherAddr(SRC deviceaddress)
   //-> Print("DSR-Ether-OUT")
   -> [0]device_wifi;

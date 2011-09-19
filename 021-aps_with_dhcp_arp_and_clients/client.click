@@ -4,12 +4,12 @@
 #include "device/wifidev_client.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODENAME", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 infra_client :: WIFIDEV_CLIENT( DEVICENAME "NODEDEVICE", DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", ACTIVESCAN false );
 
-arpc::BRN2ARPClient(CLIENTIP 192.168.0.50, CLIENTETHERADDRESS deviceaddress, STARTIP 192.168.0.5,
-                    ADDRESSRANGE 2, START 13000, INTERVAL 1000, COUNT 2,
+arpc::BRN2ARPClient(CLIENTIP 192.168.0.6, CLIENTETHERADDRESS deviceaddress, STARTIP 192.168.0.14,
+                    ADDRESSRANGE 1, START 65000, INTERVAL 1000, COUNT 2,
                     REQUESTSPERTIME 1, TIMEOUT 1000, ACTIVE true, DEBUG 4);
 
 infra_client
@@ -31,7 +31,7 @@ infra_client
   -> CheckIPHeader(0)
   -> ip_classifier :: IPClassifier(dst udp port 68 and src udp port 67, -)
   -> Strip(28) // strip ip and udp
-  -> dhcpr::BRN2DHCPClient(FIRSTETHERADDRESS deviceaddress, FIRSTIP 0.0.0.0, RANGE 1, STARTTIME 10000, DIFF 500, DEBUG 4)
+  -> dhcpr::BRN2DHCPClient(FIRSTETHERADDRESS deviceaddress, FIRSTIP 0.0.0.0, RANGE 1, STARTTIME 60000, DIFF 500, DEBUG 4)
   -> udpen::UDPIPEncap(0.0.0.0, 68, 255.255.255.255, 67)
   -> EtherEncap(0x0800, deviceaddress , ff:ff:ff:ff:ff:ff)
   -> Print("DHCP-Client")
@@ -50,9 +50,5 @@ dhcpr[1] -> udpen;
 Script(
   wait 5,
   read infra_client/client/isc.wireless_info,
-  read infra_client/client/isc.assoc,
-  wait 10,
-  wait 5,
-  read  sf.txflows,
-  read  sf.rxflows
+  read infra_client/client/isc.assoc
 );
