@@ -1,5 +1,12 @@
 #!/bin/bash
 # Author: kuehne@informatik.hu-berlin.de
+# Function: Stream-Test; Program checks if throughput passes threshold to be valid.
+# Return:
+#			exit 0: ok
+#			exit 1:
+#			exit 2: throughput too small
+ 
+
 
 . $CONFIGFILE
 
@@ -31,6 +38,6 @@ if [ $pdr -gt 50 ]; then
 	exit 0
 else 
 	echo "PDR too small (PDR=$pdr/100)."
-	exit 1
+	exit 2
 fi
 
