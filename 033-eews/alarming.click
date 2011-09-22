@@ -20,12 +20,12 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 loc::GPS();
 
-as::AlarmingState(GPS loc, LINKTABLE lt,NHOPNEIGHBOURINFO nhopinfo, HOPLIMIT 3, LOWHOPFWD false, RETRIES 4, MINNEIGHBOURFRACT 70, MINFRACT 70, DEBUG 2);
-af::AlarmingForwarder(NODEID id, ALARMINGSTATE as, RSSI_DELAY true, DEBUG 2);
-asrc::AlarmingSource(ALARMINGSTATE as);
-art::AlarmingRetransmit(NODEID id, ALARMINGSTATE as, DEBUG 2);
+as::EewsState(GPS loc, LINKTABLE lt,NHOPNEIGHBOURINFO nhopinfo, HOPLIMIT 3, LOWHOPFWD false, RETRIES 4, MINNEIGHBOURFRACT 70, MINFRACT 70, DEBUG 2);
+af::EewsForwarder(NODEID id, EEWSSTATE as, RSSI_DELAY true, DEBUG 2);
+asrc::EewsSource(EEWSSTATE as);
+art::EewsRetransmit(NODEID id, EEWSSTATE as, DEBUG 2);
 
-nhopinfo::NHopNeighbouringInfoEews(ALARMINGSTATE as, HOPLIMIT 3);
+nhopinfo::NHopNeighbouringInfoEews(EEWSSTATE as, HOPLIMIT 3);
 
 
 bc::BROADCAST(ID id, LT lt);
@@ -50,7 +50,7 @@ af
   //-> Print("Out")
   -> rdq::RandomDelayQueue(MINDELAY 3, MAXDELAY 100, DIFFDELAY 10, TIMESTAMPANNOS true)
   -> nq::NotifierQueue(50)
-  -> AlarmingAggregation(ALARMINGSTATE as, DELAYQUEUE rdq, ALARMINGRETRANSMIT art)
+  -> EewsAggregation(EEWSSTATE as, DELAYQUEUE rdq, EEWSRETRANSMIT art)
   //-> Print ("Out",TIMESTAMP true)
   -> BRN2EtherEncap(USEANNO true)
   -> c_out::Counter()
@@ -60,7 +60,7 @@ af
 art
 -> nq;
 
-nhop_ping::NHopNeighbouringPingEews(ALARMINGSTATE as, NODEIDENTITY id, NHOPN_INFO nhopinfo, INTERVAL 15000, ACTIVE true, DEBUG 4)
+nhop_ping::NHopNeighbouringPingEews(EEWSSTATE as, NODEIDENTITY id, NHOPN_INFO nhopinfo, INTERVAL 15000, ACTIVE true, DEBUG 4)
   -> BRN2EtherEncap(USEANNO true)
   //-> Print("Raus damit")
   -> [0]bc;

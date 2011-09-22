@@ -4,7 +4,7 @@ SIMULATOR=ns2
 RADIO=tworayground11b
 FORGEINNODES=no
 
-TIME=160
+TIME=200
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=falcon_dsr_clustering.mes

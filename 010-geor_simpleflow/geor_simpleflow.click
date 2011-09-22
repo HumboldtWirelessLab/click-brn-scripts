@@ -64,6 +64,9 @@ device_wifi[2]
 Idle
   ->[2]geor;
 
+Idle
+  ->[3]geor;
+
 Script(
   write geor/gps.cart_coord NODEPOSITIONX NODEPOSITIONY NODEPOSITIONZ,
 ); 

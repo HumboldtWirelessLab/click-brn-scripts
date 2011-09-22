@@ -1,5 +1,6 @@
 #define DEBUGLEVEL 2
 
+#define BRNFEEDBACK
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -75,13 +76,17 @@ Idle
 Idle
 -> [2]routing;
 
+device_wifi[3] -> ff::FilterFailures() -> Discard;
+ff[1] -> Print("TXFAILED",100) -> Discard;
+
 Script(
   wait 20,
   read dht/dhtrouting.routing_info,
   wait 9, 
   read dht/dhtrouting.routing_info,
   wait 18,
-  read dht/dhtrouting.routing_info,
+  //read dht/dhtrouting.routing_info,
+  read lt.links,
   wait 1,
   read  sf.stats,
   wait 1, 

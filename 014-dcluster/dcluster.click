@@ -61,6 +61,9 @@ dsr[1]
 Idle
 -> [1]device_wifi;
 
+Idle
+->[3]dsr;
+
 Script(
   wait 15,
   read dc.stats,

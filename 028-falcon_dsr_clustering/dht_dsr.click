@@ -9,14 +9,14 @@
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-id::BRN2NodeIdentity(wireless);
+id::BRN2NodeIdentity(NAME "NODENAME", DEVICES wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITIY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-routing::DSR(id,lt,rc);
+routing::DSR(id,lt,rc,device_wifi/etx_metric);
 
 dhtrouting::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 190000, UPDATEINT 2000, DEBUG 4);
 
@@ -37,6 +37,7 @@ device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
 
 Idle -> [2]routing;
+Idle -> [3]routing;
 
 brn_clf[1]
 //-> Print("Routing-Packet",100)
@@ -62,7 +63,7 @@ dhtrouting[1]
 -> [0]device_wifi;
 
 routing[0] -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-routing[1] /*-> Print("DSR[1]-out")*/ -> BRN2EtherEncap() -> SetEtherAddr(SRC deviceaddress)/*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
+routing[1] -> SetEtherAddr(SRC deviceaddress)/*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
 
 toMeAfterDsr[0] -> /*Print("DSR-out: For ME",100) ->*/ Label_brnether; 
 toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;

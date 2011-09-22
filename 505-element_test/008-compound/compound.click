@@ -25,6 +25,7 @@ Script(
   write com.insert dev.deviceinfo 500 id.info id.class dev.class 500 com.handler 200,
   wait 1,
   read com.read,
+  write com.insert dev.deviceinfo 200,
   wait 1,
   read com.read,  
   stop

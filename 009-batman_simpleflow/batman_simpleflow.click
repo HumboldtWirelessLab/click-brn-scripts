@@ -6,6 +6,8 @@
 //#define CST cst
 //#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
+#define BRNFEEDBACK
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
@@ -40,14 +42,14 @@ brn_clf[0]
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
-
-Idle -> [2]batman;
+device_wifi[3] -> ff::FilterFailures() -> Discard;
+ff[1] /*-> Print("TxFailed")*/ -> BRN2EtherDecap() -> [2]batman;
 
 brn_clf[1]
 //-> Print("rx")
 -> BRN2Decap()
 -> sf::BRN2SimpleFlow(HEADROOM 192)
--> BRN2EtherEncap()
+-> BRN2EtherEncap(USEANNO true)
 -> [0]batman;
 
 brn_clf[2]
@@ -57,8 +59,6 @@ batman[0]
   -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
 
 batman[1]
-//-> Print("DSR[1]-out")
-  -> BRN2EtherEncap(USEANNO true)
 //-> Print("DSR-Ether-OUT")
   -> [0]device_wifi;
 
@@ -74,6 +74,9 @@ toMeAfterDsr[2]
 //-> Print("DSR-out: Foreign/Client")
   -> [1]device_wifi;
 
+Idle
+-> [3]batman;
+
 Script(
 //  write sf.debug 4,
 #ifdef ENABLE_BATMAN_DEBUG
@@ -83,6 +86,12 @@ Script(
 #endif
 //  wait 40,
 //  read batman/brt.nodes,
-    wait 100,
-    read batman/brt.nodes
+    wait 200,
+    read batman/brt.nodes,
+    wait 17,
+    read batman/bfd.info,    
+    wait 1,
+    read batman/bofwd.links,    
+    wait 1,
+    stop
 );

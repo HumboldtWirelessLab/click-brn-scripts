@@ -1,8 +1,7 @@
 #define DEBUGLEVEL 2
 
 #include "brn/brn.click"
-#include "device/simdev.click"
-#include "device/wifidev.click"
+#include "device/wifidev_linkstat.click"
 #include "dht/routing/dht_dart.click"
 #include "dht/routing/dht_falcon.click"
 #include "dht/routing/dht_klibs.click"
@@ -14,22 +13,22 @@
 BRNAddressInfo(deviceaddress eth0:eth);
 wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-id::BRN2NodeIdentity(wireless);
+id::BRN2NodeIdentity(NAME "NODENAME", DEVICES wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITIY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dsr::DSR(id,lt,rc);
+dsr::DSR(id,lt,rc,device_wifi/etx_metric);
 
 //dht::DHT_OMNI(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 //dht::DHT_KLIBS(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
-dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
+dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 3000, DEBUG 2);
 //dht::DHT_DART(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
-dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage, STARTTIME 30000, INTERVAL 1000, COUNTKEYS 10, WRITE false, RETRIES 1, REPLICA 0, DEBUG 2);
+dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage, STARTTIME 160000, INTERVAL 2000, COUNTKEYS 10, WRITE false, READ true, RETRIES 1, REPLICA 0, DEBUG 2);
 
 device_wifi
 -> Label_brnether::Null()
@@ -45,6 +44,7 @@ device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
 
 Idle -> [2]dsr;
+Idle -> [3]dsr;
 
 brn_clf[1]
 //-> Print("Routing-Packet",100)
@@ -70,7 +70,7 @@ dht[1]
 -> [0]device_wifi;
 
 dsr[0] -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-dsr[1] /*-> Print("DSR[1]-out")*/ -> BRN2EtherEncap() -> SetEtherAddr(SRC deviceaddress)/*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
+dsr[1] -> SetEtherAddr(SRC deviceaddress)/*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
 
 toMeAfterDsr[0] -> /*Print("DSR-out: For ME",100) ->*/ Label_brnether; 
 toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;
@@ -81,9 +81,9 @@ Script(
 //read lt.links,
   wait 5,
 //read lt.links,
-  wait 39, 
+  wait 229, 
   read  dhtstorage/dhtstorage.db_size,
-//read  dht/dhtrouting.routing_info,
+  read  dht/dhtrouting.routing_info,
   read  dhtstoragetest.stats,
   read  dhtstorage/dhtstorage.stats,
 //read  dht/dhtrouting.routing_info

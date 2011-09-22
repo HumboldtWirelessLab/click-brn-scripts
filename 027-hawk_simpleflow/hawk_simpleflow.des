@@ -1,4 +1,4 @@
-NAME=dartflow
+NAME=hawkflow
 SIMULATOR=ns2
 RADIO=shadowing11b
 #RADIO=tworayground01b

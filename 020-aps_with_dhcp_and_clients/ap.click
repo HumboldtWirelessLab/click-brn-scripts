@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
+#define LINKSTAT_ENABLE
 
 #include "brn/brn.click"
-#include "device/simdev.click"
 #include "device/wifidev_ap.click"
 #include "dht/routing/dht_falcon.click"
 #include "dht/storage/dht_storage.click"
@@ -10,16 +10,16 @@
 BRNAddressInfo(deviceaddress eth0:eth);
 wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-id::BRN2NodeIdentity(wireless);
+id::BRN2NodeIdentity(NAME "NODENAME", DEVICES wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITIY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000, DEBUG 2);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000, DEBUG 2);
 
 device_wifi::WIFIDEV_AP(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 
-dsr::DSR(id,lt,rc);
+dsr::DSR(id,lt,rc, device_wifi/etx_metric);
 
-dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
+dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 2000, DEBUG 2);
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
 
 dsnl::BRN2DHCPSubnetList();
@@ -66,13 +66,14 @@ device_wifi[1]       //broadcast and brn
   -> BRN2EtherDecap()
   -> brn_clf;
   
-device_wifi[2] -> [0]dsr;  //foreign and brn
+device_wifi[2] -> Discard;// [0]dsr;  //foreign and brn
 
 device_wifi[3] -> Discard;  //to me no brn
 
 device_wifi[4]            //broadcast and no brn
     -> BRN2EtherDecap()
     -> Strip(28) // strip ip and udp
+    -> Print("For DHCP-Server", TIMESTAMP true)
     -> dh
     -> UDPIPEncap(192.168.0.1, 67, 255.255.255.255, 68)
     -> EtherEncap(0x0800, deviceaddress , ff:ff:ff:ff:ff:ff)
@@ -85,12 +86,7 @@ device_wifi[5] //foreign and no brn
 dsr[0]
   -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
   
-dsr[1] 
-  //-> Print("DSR[1]-out")
-  -> BRN2EtherEncap()
-  -> SetEtherAddr(SRC deviceaddress)
-  //-> Print("DSR-Ether-OUT")
-  -> [0]device_wifi;
+dsr[1] -> SetEtherAddr(SRC deviceaddress) -> [0]device_wifi;
 
 toMeAfterDsr[0] 
   //-> Print("DSR-out: For ME",100)
@@ -105,12 +101,15 @@ toMeAfterDsr[2]
   -> [1]device_wifi;
 
 Idle -> [2]dsr;
+Idle -> [3]dsr;
 brn_clf[3] -> Discard;
 
 Script(
   read dsnl.info,
   wait 10,
   read device_wifi/ap/assoclist.stations,
+  wait 29,
+  read  dht/dhtrouting.routing_info
   //read lt.links
   //read lt.hosts
   

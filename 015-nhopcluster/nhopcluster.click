@@ -39,6 +39,9 @@ device_wifi[2]
 
 Idle         //no error, so Idle as input
   -> [2]dsr;
+
+Idle
+  -> [3]dsr;
   
 brn_clf[1]
 -> Print("Routing-Packet",100)

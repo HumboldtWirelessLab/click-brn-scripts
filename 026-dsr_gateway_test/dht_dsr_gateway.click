@@ -1,8 +1,7 @@
 #define DEBUGLEVEL 2
 
 #include "brn/brn.click"
-#include "device/simdev.click"
-#include "device/wifidev.click"
+#include "device/wifidev_linkstat.click"
 #include "dht/routing/dht_dart.click"
 #include "dht/routing/dht_falcon.click"
 #include "dht/routing/dht_klibs.click"
@@ -19,14 +18,14 @@ BRNAddressInfo(serviceaddress 00:00:00:01:23:45);
 wireless::BRN2Device(DEVICENAME "eth0_1", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", MASTERDEVICE true, SERVICEDEVICE false);
 service::BRN2Device(DEVICENAME "service", ETHERADDRESS serviceaddress, DEVICETYPE "VIRTUAL", MASTERDEVICE false, SERVICEDEVICE true);
 
-id::BRN2NodeIdentity(wireless,service);
+id::BRN2NodeIdentity(NAME "NODENAME", DEVICES "wireless service");
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITIY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dsr::DSR(id,lt,rc);
+dsr::DSR(id,lt,rc,device_wifi/etx_metric);
 
 dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 3000, DEBUG 2);
 
@@ -52,6 +51,7 @@ device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
 
 Idle -> [2]dsr;
+Idle -> [3]dsr;
 
 brn_clf[1]
 //-> Print("Routing-Packet")
@@ -77,7 +77,7 @@ dht[1]
 -> [0]device_wifi;
 
 dsr[0] /*-> Print("DSR[0]-out")*/ -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-dsr[1] /*-> Print("DSR[1]-out")*/ -> BRN2EtherEncap() -> SetEtherAddr(SRC deviceaddress)/*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
+dsr[1] -> SetEtherAddr(SRC deviceaddress)/*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
 
 toMeAfterDsr[0] -> /*Print("DSR-out: For ME") ->*/ Label_brnether; 
 toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;

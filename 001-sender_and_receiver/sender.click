@@ -1,5 +1,7 @@
 #define DEBUGLEVEL 2
 
+#define RAWDUMP
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
@@ -11,7 +13,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 1460, INTERVAL 20, MAXSEQ 500000, BURST 2, ACTIVE true)
+ps::BRN2PacketSource(SIZE 1460, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE true)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> BRN2PrintWifi("Sender", TIMESTAMP true)
