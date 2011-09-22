@@ -1,5 +1,5 @@
 gps::GPS();
-seismo::Seismo(GPS gps, PRINT true, CALCSTATS false, DEBUG 4);
+seismo::Seismo(GPS gps, PRINT true, CALCSTATS true, DEBUG 4);
 
 FromDump("data.dump"/*,STOP true, TIMING true*/)
 -> BRN2EtherDecap()
