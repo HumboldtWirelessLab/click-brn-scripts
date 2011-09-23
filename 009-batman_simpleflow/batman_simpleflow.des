@@ -4,13 +4,13 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-#TIME=220
 TIME=220
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=batman_simpleflow.mes
 NODEPLACEMENT=grid
-FIELDSIZE=550
+NODEPLACEMENTOPTS="relative"
+FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log

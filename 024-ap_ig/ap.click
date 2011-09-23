@@ -1,5 +1,5 @@
 #define DEBUGLEVEL 2
-//#define IG_ENABLE
+#define IG_ENABLE
 
 #include "brn/brn.click"
 #include "device/wifidev_ap.click"
@@ -29,14 +29,3 @@ Idle
 
 Idle
 -> [1]device_wifi;
-
-Script(
-   wait 1,
-//   write device_wifi/qc.flow_insert 1000 2000 1500 1,
-   wait 5,
-//   read device_wifi/qc.flow_stats,
-   wait 1,
-//   write device_wifi/qc.flow_insert 1000 2000 100 1,
-   wait 5,
-//   read device_wifi/qc.flow_stats,
-);

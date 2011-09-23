@@ -1,7 +1,7 @@
 NAME=ap
 SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
+#RADIO=shadowing11b
+RADIO=tworayground01b
 FORGEINNODES=no
 
 TIME=21
@@ -9,7 +9,13 @@ TIME=21
 NODEPLACEMENTFILE=placement.default
 NODETABLE=ap.mes
 NODEPLACEMENT=grid
-FIELDSIZE=40
+NODEPLACEMENTOPTS="relative"
+
+#260 sensing limit
+#200 rx limit
+
+FIELDSIZE=150
+
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
@@ -24,6 +30,7 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
+CONTROLFILE=ap_ig.ctl
 
 MULTIREPEAT="3"
 MULTIWAIT=0

@@ -8,9 +8,9 @@ wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "
 
 infra_client :: WIFIDEV_CLIENT( DEVICENAME "eth0", DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", ACTIVESCAN false );
 
-arpc::BRN2ARPClient(CLIENTIP 192.168.0.6, CLIENTETHERADDRESS deviceaddress, STARTIP 192.168.1.81,
-                    ADDRESSRANGE 1, START 13000, INTERVAL 1000, COUNT 2,
-                    REQUESTSPERTIME 1, TIMEOUT 1000, ACTIVE true, DEBUG 3);
+arpc::BRN2ARPClient(CLIENTIP 192.168.0.6, CLIENTETHERADDRESS deviceaddress, STARTIP 192.168.0.11,
+                    ADDRESSRANGE 1, START 65000, INTERVAL 2000, COUNT 2,
+                    REQUESTSPERTIME 1, TIMEOUT 1000, ACTIVE true, DEBUG 2);
 
 infra_client
   -> brn_ether_clf :: Classifier( 12/8086 14/BRN_PORT_FLOW, - )
@@ -34,7 +34,7 @@ infra_client
                                    src udp port 53,
                                      -)
   -> Strip(28) // strip ip and udp
-  -> dhcpr::BRN2DHCPClient(FIRSTETHERADDRESS deviceaddress, FIRSTIP 0.0.0.0, RANGE 1, STARTTIME 11000, DIFF 500, DEBUG 3)
+  -> dhcpr::BRN2DHCPClient(FIRSTETHERADDRESS deviceaddress, FIRSTIP 0.0.0.0, RANGE 1, STARTTIME 60000, DIFF 500, DEBUG 2)
   -> udpen::UDPIPEncap(0.0.0.0, 68, 255.255.255.255, 67)
   -> EtherEncap(0x0800, deviceaddress , ff:ff:ff:ff:ff:ff)
 //-> Print("DHCP-Client")
@@ -51,9 +51,8 @@ dhcp_arp_clf[2]
 ip_classifier[1]
 //-> Print("got DNS response")
 -> Strip(28) // strip ip and udp
-//-> BRN2DNSClient(".192.168.0.6.bloblo.org", 18000,1000,true,0, DEBUG 4)
--> BRN2DNSClient(".www.bloblo.org", 18000, 1000, true, 0, DEBUG 3)
--> UDPIPEncap( 192.168.0.5 , 39000 , 192.168.0.1 , 53 )
+-> dnsc::BRN2DNSClient(".www.bloblo.org", 68000, 2000, true, 0, DEBUG 2)
+-> UDPIPEncap( 192.168.0.6 , 39000 , 192.168.0.1 , 53 )
 -> CheckIPHeader()
 -> EtherEncap(0x0800, 00:0f:00:00:00:00 , ff:ff:ff:ff:ff:ff /*00:0f:00:00:01:00*/ )
 //-> Print("DNS-Request")
@@ -66,7 +65,8 @@ Script(
   wait 5,
   read infra_client/client/isc.wireless_info,
   read infra_client/client/isc.assoc,
-  wait 10,
-  wait 5,
-  read  sf.stats
+  wait 65,
+  read dhcpr.stats,
+  read arpc.stats,
+  read dnsc.stats
 );

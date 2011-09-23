@@ -11,7 +11,7 @@ echo "\section{Summary}" > summary.tex
 
 echo "\begin{table}[h]" >> summary.tex
 echo "\centering" >> summary.tex
-echo "\begin{tabular}{p{.35\textwidth}p{.20\textwidth}p{.20\textwidth}}" >> summary.tex
+echo "\begin{tabular}{p{.55\textwidth}p{.20\textwidth}p{.20\textwidth}}" >> summary.tex
 echo "\colheadbegin \textbf{Scenario} & \textbf{Simulation} & \textbf{Evaluation}" >> summary.tex
 echo "\colheadend" >> summary.tex
 

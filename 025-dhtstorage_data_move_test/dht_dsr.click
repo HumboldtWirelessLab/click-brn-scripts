@@ -28,7 +28,7 @@ dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STAR
 //dht::DHT_DART(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
-dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage, STARTTIME 160000, INTERVAL 2000, COUNTKEYS 10, WRITE false, READ true, RETRIES 1, REPLICA 0, DEBUG 2);
+dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage, STARTTIME 115000, INTERVAL 2000, COUNTKEYS 10, WRITE false, READ true, RETRIES 1, REPLICA 0, DEBUG 2);
 
 device_wifi
 -> Label_brnether::Null()
@@ -77,16 +77,12 @@ toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;
 toMeAfterDsr[2] -> /*Print("DSR-out: Foreign/Client") ->*/ [1]device_wifi;
 
 Script(
-  wait 5,
-//read lt.links,
-  wait 5,
-//read lt.links,
-  wait 229, 
-  read  dhtstorage/dhtstorage.db_size,
-  read  dht/dhtrouting.routing_info,
-  read  dhtstoragetest.stats,
-  read  dhtstorage/dhtstorage.stats,
-//read  dht/dhtrouting.routing_info
+  wait 139, 
+  read dhtstorage/dhtstorage.db_size,
+  read dht/dhtrouting.routing_info,
+  read dhtstoragetest.stats,
+  read dhtstorage/dhtstorage.stats,
+//read dht/dhtrouting.routing_info
 //read dht_r_all.count,
 //read dht_r_all.byte_count,
 //read dht_r_neighbour.count,
