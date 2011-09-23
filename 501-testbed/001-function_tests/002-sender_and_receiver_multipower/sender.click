@@ -16,7 +16,7 @@ ps::BRN2PacketSource(SIZE 1460, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE tru
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> BRN2PrintWifi("Sender", TIMESTAMP true)
   -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
-  -> SetTXPower(13)
+  -> setpower::BrnSetTXPower(13)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> filter_tx :: FilterTX()

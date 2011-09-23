@@ -27,6 +27,8 @@ mac=`cat $RESULTDIR/nodes.mac | \
 	sed s/:/-/g`
 
 
+# todo: anpassung der total-werte an die verschiedenen phasen;
+# in dieser form nicht korrekt
 total=`fromdump.sh $RESULTDIR/$DUMP_FILE | \
 		grep $mac | \
 		wc -l`
