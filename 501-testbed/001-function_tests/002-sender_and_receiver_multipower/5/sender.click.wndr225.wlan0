@@ -1,15 +1,47 @@
-#define DEBUGLEVEL 2
 
-#include "brn/helper.inc"
-#include "brn/brn.click"
-#include "device/rawwifidev.click"
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
-wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
-id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+
+elementclass RAWDEV { DEVNAME $devname, DEVICE $device |
+
+  input[0]
+  -> ToDevice(DEVNAME $devname, METHOD LINUX, DEBUG false, BURST 1);
+
+
+
+  FromDevice(DEVNAME $devname, PROMISC true, SNAPLEN 8190, OUTBOUND false, SNIFFER false, METHOD LINUX, HEADROOM 64, BURST 1)
+  -> BRN2SetDeviceAnno(DEVICE $device)
+  -> [0]output;
+}
+
+elementclass RAWWIFIDEV { DEVNAME $devname, DEVICE $device |
+  rawdev::RAWDEV(DEVNAME $devname, DEVICE $device);
+
+  input[0]
+
+  -> WifiSeq()
+
+  -> BrnRadiotapEncap()
+  -> rawdev;
+
+  rawdev
+  -> dev_decap::BrnRadiotapDecap(DEBUG false)
+
+
+
+
+
+
+  -> [0]output;
+}
+
+BRNAddressInfo(deviceaddress wlan0:eth);
+wireless::BRN2Device(DEVICENAME "wlan0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+
+wifidevice::RAWWIFIDEV(DEVNAME wlan0, DEVICE wireless);
+
+id::BRN2NodeIdentity(NAME wndr225, DEVICES wireless);
 
 ps::BRN2PacketSource(SIZE 1460, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE true)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
@@ -62,3 +94,6 @@ Script(
   wait 5,
   read sys_info.systeminfo
 );
+
+ControlSocket(tcp, 7777);
+Script(wait 30, stop);

@@ -1,0 +1,105 @@
+
+
+
+
+
+
+
+
+elementclass RAWDEV { DEVNAME $devname, DEVICE $device |
+
+  input[0]
+  -> ToSimDevice($devname, ENCAP UNKNOWN );
+
+
+
+  FromSimDevice($devname, SNAPLEN 8190)
+
+
+
+
+
+
+
+  -> ToDump(FILENAME "/home/aureliano/Uni/METRIK/repository2/click-brn-scripts/501-testbed/001-function_tests/002-sender_and_receiver_multipower/3/wgt79.eth0.raw.dump", SNAPLEN 8192)
+
+
+
+  -> SetTimestamp()
+
+  -> BRN2SetDeviceAnno(DEVICE $device)
+  -> [0]output;
+}
+
+elementclass RAWWIFIDEV { DEVNAME $devname, DEVICE $device |
+  rawdev::RAWDEV(DEVNAME $devname, DEVICE $device);
+
+  input[0]
+
+  -> WifiSeq()
+
+  -> ExtraEncap()
+  -> rawdev;
+
+  rawdev
+  -> dev_decap::ExtraDecap()
+
+
+
+
+
+
+  -> [0]output;
+}
+
+BRNAddressInfo(deviceaddress eth0:eth);
+wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+
+id::BRN2NodeIdentity(NAME wgt79, DEVICES wireless);
+
+Idle
+  -> wifidevice::RAWWIFIDEV(DEVNAME eth0, DEVICE wireless)
+  -> filter_tx :: FilterTX()
+  -> error_clf :: WifiErrorClassifier()
+  -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
+  -> discard::Discard;
+
+error_clf[1]
+  -> BRN2PrintWifi("CRCerror", TIMESTAMP true)
+  -> discard;
+
+error_clf[2]
+  -> BRN2PrintWifi("PHYerror", TIMESTAMP true)
+  -> discard;
+
+error_clf[3]
+  -> BRN2PrintWifi("FIFOerror", TIMESTAMP true)
+  -> discard;
+
+error_clf[4]
+  -> BRN2PrintWifi("DECRYPTerror", TIMESTAMP true)
+  -> discard;
+
+error_clf[5]
+  -> BRN2PrintWifi("MICerror", TIMESTAMP true)
+  -> discard;
+
+error_clf[6]
+  -> BRN2PrintWifi("ZEROerror", TIMESTAMP true)
+  -> discard;
+
+error_clf[7]
+  -> BRN2PrintWifi("UNKNOWNerror", TIMESTAMP true)
+  -> discard;
+
+filter_tx[1]
+  -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
+  -> discard;
+
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+
+Script(
+ wait 5,
+ read sys_info.systeminfo
+);
+Script(wait 30, stop);
