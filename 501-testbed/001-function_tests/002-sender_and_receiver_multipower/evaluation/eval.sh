@@ -2,12 +2,17 @@
 # Author: kuehne@informatik.hu-berlin.de
 # Function: Stream-Test; checks throughput under different power rates.
 
+# Todos: 
+#	Zeitoffset herausfinden
+#	"total" muss phasenabhaengig generiert werden
+# 	In der des-Datei muss die Experimentzeit richtig eingestellt werden
+
 . $CONFIGFILE
 
 
 
 # Get dump-file
-DUMP_FILE=`ls -1 "$RESULTDIR" | grep dump`
+DUMP_FILE=`ls -1 "$RESULTDIR" | grep "raw.dump"`
 
 # check for sender or receiver role
 nodes[0]=`sed -n 1p "$RESULTDIR/nodes.mac" | awk '{ print $1; }'`
@@ -33,15 +38,19 @@ total=`fromdump.sh $RESULTDIR/$DUMP_FILE | \
 		grep $mac | \
 		wc -l`
 		
-threshold=50
+echo "total $total\n"
 
-for ((step=0; step<100; step+=20, range=20))
+threshold=50
+timeOffset=`fromdump.sh $RESULTDIR/$DUMP_FILE | head -n 1 | grep "[0-9]\{10\}\.[0-9]\{2\}" --only-matching`
+timeOffset=INT${timeOffset/.*}
+
+for ((step=$timeOffset; step<100; step+=20, range=20))
 do
 	pkt_recv=`fromdump.sh $RESULTDIR/$DUMP_FILE | \
 		grep $mac | \
 		awk -v step=$step -v range=$range \
 			'	
-				{x=substr($2,0,(length($2)-1));}  	# stupid hack: cut ":" as last position
+				{x=substr($2,0,(length($2)-1));}  	# stupid hack: cut ":" as last position from time-field
 				step<x && x<(step+range) {print $1;} 		# check if in valid time range
 			' | \
 		wc -l`
