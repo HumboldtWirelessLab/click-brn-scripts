@@ -24,7 +24,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-routing::ROUTING(ID id, ETTHERADDRESS deviceaddress, LT lt, RC rc, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
+routing::ROUTING(ID id, ETTHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
 
 dht::DHT(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 3000, DEBUG 2);
 
@@ -37,7 +37,7 @@ sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
+-> brn_clf::Classifier(    0/BRN_PORT_ROUTING,  //BrnDSR
                            0/BRN_PORT_DHTROUTING,  //DHT-Routing
                            0/BRN_PORT_DHTSTORAGE ); //DHT-Storage
                                     

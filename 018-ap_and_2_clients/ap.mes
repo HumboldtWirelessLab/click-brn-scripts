@@ -1,4 +1,4 @@
 #NODE	DEVICE	MODULSDIR					 MODOPTIONS WIFICONFIG		CLICKMODDIR	CLICKSCRIPT	CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
-sk1	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		client_src.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
-sk2	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		ap.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
-sk3	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		client.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+sk1	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		client_src.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+sk2	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		ap.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+sk3	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		client.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-

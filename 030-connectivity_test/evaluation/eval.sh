@@ -1,13 +1,19 @@
 #!/bin/bash
 
-echo "Eval not valid"
+#echo "Eval not valid"
 
-exit 2
+#exit 0
+
+. $CONFIGFILE
+
+if [ ! -e $EVALUATIONSDIR ]; then
+  mkdir -p $EVALUATIONSDIR
+fi
 
 THRESHOLD=10000
 
-cat $1 | grep "-" | awk '{print $1" "$2}' | sed -e "s#-##g" | sort -u > links.all
-cat $1 | grep "-" | awk '{print $1" "$2" "$3}' | sed -e "s#-##g" | sort -u > linksmetric.all
+cat $RESULTDIR/measurement.log | grep "link from" | grep -v 'metric="9999"' | sed 's#"# #g' | awk '{print $3" "$5}' | sed -e "s#-##g" | sort -u > $EVALUATIONSDIR/links.all
+cat $RESULTDIR/measurement.log | grep "link from" | grep -v 'metric="9999"' | sed 's#"# #g' | awk '{print $3" "$5" "$7}' | sed -e "s#-##g" | sort -u > $EVALUATIONSDIR/linksmetric.all
 
 FULLSED=""
 while read line; do
@@ -15,11 +21,11 @@ while read line; do
   SRCM=`echo $line | awk '{print $2}' | sed -e "s#-##g"`
   
   FULLSED="$FULLSED -e s#$SRCM#$SRCN#g"
-done < $2
+done < $RESULTDIR/nodes.mac
 
-echo $FULLSED
+#echo $FULLSED
 
-echo "digraph G {" > linksmetric.dot.tmp
+echo "digraph G {" > $EVALUATIONSDIR/linksmetric.dot.tmp
 while read line; do
   SRC=`echo $line | awk '{print $1}'`
   DST=`echo $line | awk '{print $2}'`
@@ -27,21 +33,21 @@ while read line; do
   METRIC=`cat linksmetric.all | grep "$SRC $DST" | awk '{print $3}' | sort | head -n 1`
   
   if [ $METRIC -lt $THRESHOLD ]; then
-    echo "\"$SRC\" -> \"$DST\"  [label=\"$METRIC\"];" >> linksmetric.dot.tmp
+    echo "\"$SRC\" -> \"$DST\"  [label=\"$METRIC\"];" >> $EVALUATIONSDIR/linksmetric.dot.tmp
   fi
   
 done < links.all
 
-echo "}" >> linksmetric.dot.tmp
+echo "}" >> $EVALUATIONSDIR/linksmetric.dot.tmp
 
-cat linksmetric.dot.tmp | sed $FULLSED > linksmetric.dot
-dot -Tpng linksmetric.dot > linksmetric.png
+cat $EVALUATIONSDIR/linksmetric.dot.tmp | sed $FULLSED > $EVALUATIONSDIR/linksmetric.dot
+dot -Tpng $EVALUATIONSDIR/linksmetric.dot > $EVALUATIONSDIR/linksmetric.png
 
 
-echo "digraph G {" > links.dot.tmp
+echo "digraph G {" > $EVALUATIONSDIR/links.dot.tmp
 
-cat links.all | sort -u | awk '{print "\"" $1 "\" -> \"" $2 "\" [label=\"1\"];"}' >> links.dot.tmp
-echo "}" >> links.dot.tmp
+cat links.all | sort -u | awk '{print "\"" $1 "\" -> \"" $2 "\" [label=\"1\"];"}' >> $EVALUATIONSDIR/links.dot.tmp
+echo "}" >> $EVALUATIONSDIR/links.dot.tmp
 
-cat links.dot.tmp | sed $FULLSED > links.dot
-dot -Tpng links.dot > links.png
+cat $EVALUATIONSDIR/links.dot.tmp | sed $FULLSED > $EVALUATIONSDIR/links.dot
+dot -Tpng $EVALUATIONSDIR/links.dot > $EVALUATIONSDIR/links.png

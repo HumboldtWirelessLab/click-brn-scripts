@@ -1,8 +1,8 @@
 #NODE		DEVICE	MODULSDIR						MODOPTIONS WIFICONFIG	CLICKMODDIR	CLICKSCRIPT	CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
-wndr210		wlan0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
-wndr231		wlan0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
-#sk110		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
-#sk111		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
-#wgt79		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
-#wgt44		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
-#wgt79		obd0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION-obd	-          monitor.807	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wndr210		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wndr231		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#sk110		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#sk111		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#wgt79		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#wgt44		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#wgt79		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION-obd	-          monitor.807	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -

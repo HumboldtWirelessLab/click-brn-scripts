@@ -50,6 +50,7 @@ while [ $i -le $LIMIT ]; do
   (cd $DIR; rm -rf 1/)
   
   echo "$NAME & $SIM & $EVO \\\\" >> summary.tex
+  echo "\cline{1-3}" >> summary.tex
   
   i=`expr $i + 1`
 done

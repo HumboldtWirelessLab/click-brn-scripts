@@ -32,7 +32,7 @@ if [ "x$STABLE_SUCC" = "xtrue" ]; then
   NO_DHT_NODES=`echo $RESULT | awk '{print $2}'`
   NO_ERRORS=`echo $RESULT | awk '{print $4}'`
   
-  echo "Have $NO_NODES node(s) overall and $NO_DHT_NODES dht_node(s). DHT routing has $NO_ERRORS error(s)."
+  echo "Have $NO_NODES node(s) overall and $NO_DHT_NODES dht node(s). DHT routing has $NO_ERRORS error(s)."
   
   if [ $NO_ERRORS -gt 0 ] || [ $NO_NODES -ne $NO_DHT_NODES ]; then
     echo "DHT routing failed"
