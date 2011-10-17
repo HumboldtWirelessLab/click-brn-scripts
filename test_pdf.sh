@@ -1,9 +1,11 @@
 #!/bin/sh
 
-LIMIT=35
+LIMIT=1
 i=1
 
 cat share/main.tex > testbed.tex
+
+cp share/IEEEtran* .
 
 echo "\input{summary}" >> testbed.tex
 
@@ -66,3 +68,5 @@ echo "\end{document}" >> testbed.tex
 pdflatex testbed.tex > /dev/null 2>&1
 
 rm -f testbed.aux testbed.log testbed.tex summary.tex summary.aux
+
+rm -f IEEEtran.*
