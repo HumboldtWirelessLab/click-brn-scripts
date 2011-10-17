@@ -14,7 +14,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dsr::DSR(id,lt,rc,device_wifi/etx_metric);
+dsr::DSR(id,lt,device_wifi/etx_metric);
 
 clu::NHopCluster(NODEIDENTITY id,  DISTANCE 2, LINKSTAT device_wifi/link_stat, START 5000, MAXSTARTDELAY 5000);
 

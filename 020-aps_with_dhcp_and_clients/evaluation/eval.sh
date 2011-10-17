@@ -1,6 +1,6 @@
 #!/bin/sh
 
-IS_CONFIGURED=`cat $RESULTDIR/measurement.log | grep "Client is configured" | wc -l`
+IS_CONFIGURED=`cat $RESULTDIR/measurement.log | grep "dhcp_request" | wc -l`
 
 if [ $IS_CONFIGURED -gt 0 ]; then
   echo "Client is configured"

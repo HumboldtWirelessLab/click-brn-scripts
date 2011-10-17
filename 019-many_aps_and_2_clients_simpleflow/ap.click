@@ -15,7 +15,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 
-dsr::DSR(id, lt, rc, device_wifi/etx_metric);
+dsr::DSR(id, lt, device_wifi/etx_metric);
 
 device_wifi
   -> Label_brnether::Null()

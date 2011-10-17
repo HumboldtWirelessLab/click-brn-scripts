@@ -1,5 +1,7 @@
 #define DEBUGLEVEL 2
 
+#define RAWDUMP
+
 #include "brn/brn.click"
 #include "device/rawdev.click"
 

@@ -1,5 +1,2 @@
 #NODE	  DEVICE	MODULSDIR					 MODOPTIONS WIFICONFIG		CLICKMODDIR	CLICKSCRIPT	CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
-#wgt23	  ath0		BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-	alarming_src.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
-#group:wgt ath0		BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-	alarming_src.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
-#group:sk50 ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-	alarming_src.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
-group:sk50 ath0		BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-	alarming.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
+random:49 DEV0		BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-	alarming.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-

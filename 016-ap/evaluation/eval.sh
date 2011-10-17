@@ -4,7 +4,7 @@ SEND_PACKETS=`cat $RESULTDIR/measurement.log | grep "mgmt beacon 00-00-00-00-00-
 
 echo -n "Send $SEND_PACKETS beacons."
 
-if [ $SEND_PACKETS -gt 250 ]; then
+if [ $SEND_PACKETS -gt 50 ]; then
   echo " OK !"
   exit 0
 else

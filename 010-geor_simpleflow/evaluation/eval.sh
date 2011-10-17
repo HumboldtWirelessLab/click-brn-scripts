@@ -6,7 +6,7 @@ RECV_PACKETS=`cat $RESULTDIR/measurement.log | grep "<rxflow src=" | sed 's#"# #
 
 echo -n "Send $SEND_PACKETS packet, received $ECHO_PACKETS packets and $RECV_PACKETS echo packets are received."
 
-if [ $ECHO_PACKETS -gt 3 ]; then
+if [ $ECHO_PACKETS -gt 2 ]; then
   echo " OK !"
   exit 0
 else
