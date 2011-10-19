@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LIMIT=1
+LIMIT=35
 i=1
 
 cat share/main.tex > testbed.tex

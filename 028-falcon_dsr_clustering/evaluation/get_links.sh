@@ -2,10 +2,10 @@
 
 THRESHOLD=3000
 
-cat $RESULTDIR/measurement.log | grep "^[[:space:]]*00\-00\-00\-00\-00\-" | grep " 00\-00\-00\-00\-00\-" | awk '{print $1" "$2}' | sed -e "s#-##g" | sort -u > links.all
-cat $RESULTDIR/measurement.log | grep "^[[:space:]]*00\-00\-00\-00\-00\-" | grep " 00\-00\-00\-00\-00\-" | awk '{print $1" "$2" "$3}' | sed -e "s#-##g" | sort -u > linksmetric.all
+cat $RESULTDIR/measurement.log | grep "<link from" | sed 's#"# #g' | awk '{print $3" "$5}' | sed -e "s#-##g" | sort -u > links.all
+cat $RESULTDIR/measurement.log | grep "<link from" | sed 's#"# #g' | awk '{print $3" "$5" "$7}' | sed -e "s#-##g" | sort -u > linksmetric.all
 
-NODES=`cat $RESULTDIR/measurement.log | grep "^[[:space:]]*00\-00\-00\-00\-00\-" | grep " 00\-00\-00\-00\-00\-" | awk '{print $1}' | sed -e "s#-##g" | sort -u`
+NODES=`cat $RESULTDIR/measurement.log | grep "<link from" | sed 's#"# #g' | awk '{print $3}' | sed -e "s#-##g" | sort -u`
 
 FULLSED=""
 
