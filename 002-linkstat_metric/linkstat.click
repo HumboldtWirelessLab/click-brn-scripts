@@ -1,11 +1,11 @@
 #define DEBUGLEVEL 2
 
-//#define CST cst
-//#ifndef SIMULATION
-//#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
-//#else
-//#define CST_PROCFILE "RESULTDIR/../cst"
-//#endif
+#define CST cst
+#ifndef SIMULATION
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#else
+#define CST_PROCFILE "RESULTDIR/../cst"
+#endif
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -41,7 +41,7 @@ Idle
 Idle
 ->[1]device_wifi;
 
-/*Script(
+Script(
   wait 11,
   write lt.best_route_and_dijkstra 00:00:00:00:00:01 00:00:00:00:00:05,
   wait 1,
@@ -49,5 +49,5 @@ Idle
   read lt.routes,
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats_xml	
-);*/
+);
 
