@@ -13,7 +13,7 @@
 
 
 # Get dump-file
-DUMP_FILE=`ls -1 "$RESULTDIR" | grep dump`
+DUMP_FILE=`ls -1 "$RESULTDIR" | grep "raw.dump"`
 
 # check for sender or receiver role
 nodes[0]=`sed -n 1p "$RESULTDIR/nodes.mac" | awk '{ print $1; }'`

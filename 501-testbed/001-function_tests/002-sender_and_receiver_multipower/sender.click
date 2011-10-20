@@ -59,6 +59,12 @@ filter_tx[1]
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
-  wait 5,
-  read sys_info.systeminfo
+  //wait 5,
+  //read sys_info.systeminfo,
+  //wait 5,
+  write setpower.systempower wlan0 15,
+  wait 10,
+  write setpower.systempower wlan0 10,
+  wait 10,
+  write setpower.systempower wlan0 5
 );

@@ -28,7 +28,7 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
-CONTROLFILE=simpleflow.ctl
+#CONTROLFILE=simpleflow.ctl
 
 MULTIREPEAT="3"
 MULTIWAIT=0
