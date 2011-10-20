@@ -1,15 +1,18 @@
 NAME=falcon_dsr_clustering
 SIMULATOR=ns2
-#RADIO=shadowing11b
-RADIO=tworayground11b
+RADIO=shadowing11b
+#RADIO=tworayground11b
 FORGEINNODES=no
 
 TIME=200
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=falcon_dsr_clustering.mes
-NODEPLACEMENT=npart
-FIELDSIZE=1000
+#NODEPLACEMENT=npart
+#FIELDSIZE=1000
+NODEPLACEMENT=grid
+NODEPLACEMENTOPTS="relative"
+FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log

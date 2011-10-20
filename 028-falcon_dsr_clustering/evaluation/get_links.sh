@@ -2,10 +2,10 @@
 
 THRESHOLD=3000
 
-cat $RESULTDIR/measurement.log | grep "^[[:space:]]*00\-00\-00\-00\-00\-" | grep " 00\-00\-00\-00\-00\-" | awk '{print $1" "$2}' | sed -e "s#-##g" | sort -u > links.all
-cat $RESULTDIR/measurement.log | grep "^[[:space:]]*00\-00\-00\-00\-00\-" | grep " 00\-00\-00\-00\-00\-" | awk '{print $1" "$2" "$3}' | sed -e "s#-##g" | sort -u > linksmetric.all
+cat $RESULTDIR/measurement.log | grep "<link from" | sed 's#"# #g' | awk '{print $3" "$5}' | sed -e "s#-##g" | sort -u > links.all
+cat $RESULTDIR/measurement.log | grep "<link from" | sed 's#"# #g' | awk '{print $3" "$5" "$7}' | sed -e "s#-##g" | sort -u > linksmetric.all
 
-NODES=`cat $RESULTDIR/measurement.log | grep "^[[:space:]]*00\-00\-00\-00\-00\-" | grep " 00\-00\-00\-00\-00\-" | awk '{print $1}' | sed -e "s#-##g" | sort -u`
+NODES=`cat $RESULTDIR/measurement.log | grep "<link from" | sed 's#"# #g' | awk '{print $3}' | sed -e "s#-##g" | sort -u`
 
 FULLSED=""
 
@@ -41,7 +41,8 @@ echo "digraph G {" > linksmetric.dot.tmp
 
 for n in $NODES; do
   NUM=`echo $n | awk '{print strtonum("0x"$1)'}`
-  NODE=`cat $RESULTDIR/nodes.mac | grep " $NUM$" | awk '{print $1}'`
+  NODENUM=`expr $NUM - 1`
+  NODE=`cat $RESULTDIR/nodes.mac | grep " $NODENUM$" | awk '{print $1}'`
 #  echo "$n $NUM $NODE"
   X=`cat $RESULTDIR/placementfile.plm | grep "$NODE " | awk '{print $2}'`
   X=`calc $X / 50 | sed "s#^[[:space:]]*~##g"`

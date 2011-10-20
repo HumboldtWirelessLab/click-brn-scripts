@@ -1,3 +1,3 @@
 #NODE	 DEVICE	MODULSDIR					 MODOPTIONS WIFICONFIG		CLICKMODDIR	CLICKSCRIPT		CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
 sk1	 DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		dht_dsr.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
-group:sk DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		dht_dsr_writer.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+group:sk:8 DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		dht_dsr_writer.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
