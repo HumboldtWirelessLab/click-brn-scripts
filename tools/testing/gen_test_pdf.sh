@@ -17,11 +17,11 @@ case "$SIGN" in
      exit -1
      ;;
 esac
-							       
 
 LIMIT=$LIMIT
 i=$START
 
+CURRENT_DIR=$PWD
 
 cat $DIR/share/main.tex > testbed.tex
 
@@ -79,7 +79,7 @@ while [ $i -le $LIMIT ]; do
       echo "failed ! Evaluation failed !";
       SIM="OK"
       EVO="Failed"
-      
+
     fi
   else
     echo "OK !" >> testbed.tex
@@ -89,10 +89,10 @@ while [ $i -le $LIMIT ]; do
 
     IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$"`
     IMG_COUNT=`echo $IMGS | wc -w`
-      
+
     if [ $IMG_COUNT -gt 0 ]; then
 
-      (cd $WORKDIR/$MEASUREMENTNUM/evaluation/; for p in $IMGS; do mv $p $PWD/img/$NUM-$p; done)
+      (cd $WORKDIR/$MEASUREMENTNUM/evaluation/; for p in $IMGS; do mv $p $CURRENT_DIR/img/$NUM-$p; done)
 
       for p in $IMGS; do
         echo "\begin{figure}[h]" >> testbed.tex
