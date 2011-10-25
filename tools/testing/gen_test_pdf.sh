@@ -22,6 +22,7 @@ esac
 LIMIT=$LIMIT
 i=$START
 
+TOPDIR=$PWD
 
 cat $DIR/share/main.tex > testbed.tex
 
@@ -92,7 +93,7 @@ while [ $i -le $LIMIT ]; do
       
     if [ $IMG_COUNT -gt 0 ]; then
 
-      (cd $WORKDIR/$MEASUREMENTNUM/evaluation/; for p in $IMGS; do mv $p $PWD/img/$NUM-$p; done)
+      (cd $WORKDIR/$MEASUREMENTNUM/evaluation/; for p in $IMGS; do mv $p $TOPDIR/img/$NUM-$p; done)
 
       for p in $IMGS; do
         echo "\begin{figure}[h]" >> testbed.tex
