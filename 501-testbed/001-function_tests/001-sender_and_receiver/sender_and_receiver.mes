@@ -1,6 +1,6 @@
 #NODE		DEVICE	MODULSDIR						MODOPTIONS WIFICONFIG	CLICKMODDIR	CLICKSCRIPT	CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
-wndr249		wlan0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
-wndr231		wlan0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wndr223		wlan0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wndr225		wlan0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
 #sk110		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
 #sk111		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
 #wgt79		ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
