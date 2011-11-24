@@ -59,7 +59,7 @@ while [ $i -le $LIMIT ]; do
     RESULT=$?
   else
     if [ "x$MODE" = "xMEASUREMENT" ]; then
-      (cd $WORKDIR; EVAL_LOG_OUT=3 RUNMODE=REBOOT run_measurement.sh $DESCRIPTIONFILE $MEASUREMENTNUM ) 1> /dev/null 3>> testbed.tex
+      (cd $WORKDIR; EVAL_LOG_OUT=3 RUNMODE=REBOOT run_measurement.sh $DESCRIPTIONFILE $MEASUREMENTNUM ) >> testbed.tex 3>&1
       RESULT=$?
     else
       RESULT=1
