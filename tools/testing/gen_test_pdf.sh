@@ -21,6 +21,7 @@ esac
 LIMIT=$LIMIT
 i=$START
 
+TOPDIR=$PWD
 CURRENT_DIR=$PWD
 
 cat $DIR/share/main.tex > testbed.tex
