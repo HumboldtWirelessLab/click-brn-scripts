@@ -4,19 +4,19 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=30
+TIME=5
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=sender_and_receiver.mes
 NODEPLACEMENT=string
 #NODEPLACEMENT=grid
-FIELDSIZE=30
+FIELDSIZE=200
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="evaluation/eval.sh dump_compression status_compression"
+EVALUATION="tmp_rawdump_copy evaluation/eval.sh dump_compression status_compression"
 #EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
 EVALUATIONSDIRPOSTFIX=_evaluation

@@ -1,6 +1,7 @@
 #define DEBUGLEVEL 2
 
 #define RAWDUMP
+//#define RAWDUMPSNAPLEN 100
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
