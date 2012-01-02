@@ -5,6 +5,8 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
+//#define SEISMODUMP
+
 #define SETCHANNEL
 
 #if WIFITYPE == 802
@@ -84,7 +86,21 @@ FromSocket("UDP", 127.0.0.1, 8086)
 #else
 Idle()
 #endif
--> seismo::Seismo(GPS gps, CALCSTATS true, PRINT false);
+#ifdef SEISMODUMP
+-> ToDump(FILENAME "RESULTDIR/NODENAME.seismo.dump")
+#endif
+-> seismo::Seismo(GPS gps, CALCSTATS true, PRINT false,  RECORD true, SHORTTAGS true, DEBUG 2);
+
+seismoreport::SeismoReporting(SEISMO seismo, INTERVAL 500, LONGAVG 1000, SHORTAVG 50, MAXALARM 20, DEBUG 2);
+
+
+#ifndef SIMULATION
+FromSocket("UDP", 0.0.0.0, 9090)
+-> Print("VideoData")
+#else
+Idle()
+#endif
+-> vi::VideoInfo();
 
 device_wifi
   -> Label_brnether::Null()
@@ -139,3 +155,8 @@ routing[1] -> SetEtherAddr(SRC deviceaddress) -> [0]device_wifi;
 toMeAfterRouting[0] -> /*Print("Routing-out: For ME",100) ->*/ Label_brnether; 
 toMeAfterRouting[1] -> /*Print("Routing-out: Broadcast") ->*/ Discard;
 toMeAfterRouting[2] -> /*Print("Routing-out: Foreign/Client") ->*/ [1]device_wifi;
+
+SYNC
+  -> tsi::TimeSyncInfo(MAXIDS 16);
+  //-> td :: TODUMP("RESULTDIR/NODENAME.NODEDEVICE.sync.dump");
+

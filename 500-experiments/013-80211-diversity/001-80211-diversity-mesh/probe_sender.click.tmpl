@@ -1,6 +1,21 @@
 #define DEBUGLEVEL 2
 
-#define RAWDUMP 1
+elementclass COMPRESSIONFILTER{ |
+
+    //pc::PacketCompression(CMODE 0);
+    pc::PacketCompression(CMODE 0, COMPRESSION 2, STRIPLEN 100);
+
+    input[0]
+    -> pc
+    -> [0]output;
+
+    pc[1]
+    -> [0]output;
+}
+
+#define TMPDUMP
+#define RAWDUMP
+#define RAWFILTER cf::COMPRESSIONFILTER()
 
 #define CST cst
 
@@ -30,7 +45,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 
-wifioutq::NotifierQueue(1000)
+wifioutq::NotifierQueue(2000)
   -> wifidevice
   -> Discard;
 
@@ -45,10 +60,10 @@ wifioutq::NotifierQueue(1000)
   -> wifioutq;
 
 /* 80211ag */
-//  ee_g1::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
-//  -> WifiEncap(0x00, 0:0:0:0:0:0)
-//  -> SetTXRates( RATE0 12, TRIES0 1, MCS0 false )
-//  -> wifioutq;
+  ee_g1::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates( RATE0 12, TRIES0 1, MCS0 false )
+  -> wifioutq;
 
 //#ifdef WIFI_N
 

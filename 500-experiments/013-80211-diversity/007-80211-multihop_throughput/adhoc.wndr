@@ -1,0 +1,6 @@
+MODE=adhoc
+CHANNEL=44
+POWER=16
+WIFITYPE=0
+SSID="HWLwndr"
+

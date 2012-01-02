@@ -1,10 +1,10 @@
-NAME=testbed_long_run
+NAME=seismo
 SIMULATOR=ns2
 RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=6000000
+TIME=600000
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=testbed_long_run.mes
@@ -23,6 +23,9 @@ NOTICE=no
 LOS=no
 
 #LOCALPROCESS=CONFIGDIR/network_stats.sh
+LOCALPROCESS=CONFIGDIR/sync_dumps.sh
 
 CONTROLSOCKET=yes
 #CONTROLFILE=dsr_simpleflow.ctl
+
+REMOTEFILES="CONFIGDIR/sync_gateway CONFIGDIR/sync_gw.sh"

@@ -1,0 +1,310 @@
+#define DEBUGLEVEL 2
+
+#define RAWDUMP 1
+
+#define CST cst
+
+#if WIFITYPE == 802
+
+#if DEVICENUMBER == 0
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
+#endif
+
+#else
+
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+
+#endif
+
+#include "brn/helper.inc"
+#include "brn/brn.click"
+#include "device/rawwifidev.click"
+
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+
+wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
+
+
+wifioutq::NotifierQueue(1000)
+  -> wifidevice
+  -> Discard;
+
+ps::BRN2PacketSource(SIZE 50, INTERVAL 100, MAXSEQ 500000, BURST 12, ACTIVE true)
+  -> EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> rrs::RoundRobinSwitch();
+
+/* R A T E S */
+
+/* 80211b */
+
+  rrs[0]
+  -> SetTXRates( RATE0 2, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[1]
+  -> SetTXRates( RATE0 4, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[2]
+  -> SetTXRates( RATE0 11, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[3]
+  -> SetTXRates( RATE0 22, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+/* 80211ag */
+
+  rrs[4]
+  -> SetTXRates( RATE0 12, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[5]
+  -> SetTXRates( RATE0 18, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[6]
+  -> SetTXRates( RATE0 24, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[7]
+  -> SetTXRates( RATE0 36, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[8]
+  -> SetTXRates( RATE0 48, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[9]
+  -> SetTXRates( RATE0 72, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[10]
+  -> SetTXRates( RATE0 96, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+  rrs[11]
+  -> SetTXRates( RATE0 108, TRIES0 1, MCS0 false )
+  -> wifioutq;
+
+
+
+
+
+//#ifdef WIFI_N
+
+ /* 80211n */
+/*
+  rrs[12]
+  -> SetTXRates( RATE0 0, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[13]
+  -> SetTXRates( RATE0 1, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[14]
+  -> SetTXRates( RATE0 2, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[15]
+  -> SetTXRates( RATE0 3, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[16]
+  -> SetTXRates( RATE0 4, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[17]
+  -> SetTXRates( RATE0 5, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[18]
+  -> SetTXRates( RATE0 6, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[19]
+  -> SetTXRates( RATE0 7, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[20]
+  -> SetTXRates( RATE0 8, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[21]
+  -> SetTXRates( RATE0 9, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[22]
+  -> SetTXRates( RATE0 10, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[23]
+  -> SetTXRates( RATE0 11, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[24]
+  -> SetTXRates( RATE0 12, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[25]
+  -> SetTXRates( RATE0 13, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[26]
+  -> SetTXRates( RATE0 14, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[27]
+  -> SetTXRates( RATE0 15, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+
+  rrs[28]
+  -> SetTXRates( RATE0 0, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[29]
+  -> SetTXRates( RATE0 1, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[30]
+  -> SetTXRates( RATE0 2, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[31]
+  -> SetTXRates( RATE0 3, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[32]
+  -> SetTXRates( RATE0 4, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[33]
+  -> SetTXRates( RATE0 5, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[34]
+  -> SetTXRates( RATE0 6, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[35]
+  -> SetTXRates( RATE0 7, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[36]
+  -> SetTXRates( RATE0 8, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[37]
+  -> SetTXRates( RATE0 9, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[38]
+  -> SetTXRates( RATE0 10, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[39]
+  -> SetTXRates( RATE0 11, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[40]
+  -> SetTXRates( RATE0 12, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[41]
+  -> SetTXRates( RATE0 13, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[42]
+  -> SetTXRates( RATE0 14, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[43]
+  -> SetTXRates( RATE0 15, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+
+
+  rrs[44]
+  -> SetTXRates( RATE0 0, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[45]
+  -> SetTXRates( RATE0 1, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[46]
+  -> SetTXRates( RATE0 2, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[47]
+  -> SetTXRates( RATE0 3, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[48]
+  -> SetTXRates( RATE0 4, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[49]
+  -> SetTXRates( RATE0 5, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[50]
+  -> SetTXRates( RATE0 6, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[51]
+  -> SetTXRates( RATE0 7, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[52]
+  -> SetTXRates( RATE0 8, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[53]
+  -> SetTXRates( RATE0 9, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[54]
+  -> SetTXRates( RATE0 10, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[55]
+  -> SetTXRates( RATE0 11, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[56]
+  -> SetTXRates( RATE0 12, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[57]
+  -> SetTXRates( RATE0 13, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[58]
+  -> SetTXRates( RATE0 14, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  rrs[59]
+  -> SetTXRates( RATE0 15, TRIES0 1, MCS0 true, BW0 1, SGI0 true, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+
+
+
+//#endif
+*/
+
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+
+Script(
+  wait 1,
+  write ps.active true
+);

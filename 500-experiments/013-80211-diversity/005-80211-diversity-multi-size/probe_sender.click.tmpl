@@ -1,0 +1,115 @@
+#define DEBUGLEVEL 2
+
+elementclass COMPRESSIONFILTER{ |
+
+    //pc::PacketCompression(CMODE 0);
+    pc::PacketCompression(CMODE 0, COMPRESSION 2, STRIPLEN 96);
+
+    input[0]
+    -> pc
+    -> [0]output;
+
+    pc[1]
+    -> [0]output;
+}
+
+#define RAWDUMPSNAPLEN 100
+#define TMPDUMP
+#define RAWDUMP
+#define RAWFILTER cf::COMPRESSIONFILTER()
+
+#define CST cst
+
+#if WIFITYPE == 802
+
+#if DEVICENUMBER == 0
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
+#endif
+
+#else
+
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+
+#endif
+
+#include "brn/helper.inc"
+#include "brn/brn.click"
+#include "device/rawwifidev.click"
+
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+
+id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+
+wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
+
+
+wifioutq::NotifierQueue(2000)
+  -> wifidevice
+  -> Discard;
+
+
+/* R A T E S */
+
+/* 80211b */
+
+/*  ee_b1::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)  
+  -> SetTXRates( RATE0 2, TRIES0 1, MCS0 false )
+  -> wifioutq;
+*/
+/* 80211ag */
+/*  ee_g1::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates( RATE0 12, TRIES0 1, MCS0 false )
+  -> wifioutq;
+  */
+//#ifdef WIFI_N
+
+ /* 80211n */
+/*  ee_n1::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates( RATE0 0, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  ee_n2::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates( RATE0 7, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  ee_n3::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates( RATE0 8, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+ */
+  ee_n4::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+//  -> SetTXRates( RATE0 15, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> SetTXRates( RATE0 13, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+ /*
+  ee_n5::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates( RATE0 0, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  ee_n6::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates( RATE0 7, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  ee_n7::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates( RATE0 8, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+
+  ee_n8::EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates( RATE0 15, TRIES0 1, MCS0 true, BW0 1, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
+  -> wifioutq;
+ */
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+
