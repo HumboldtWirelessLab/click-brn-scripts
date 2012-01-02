@@ -42,12 +42,14 @@ Idle
 ->[1]device_wifi;
 
 Script(
+  read device_wifi/link_stat.probes,
   wait 11,
   write lt.best_route_and_dijkstra 00:00:00:00:00:01 00:00:00:00:00:05,
   wait 1,
   read lt.links,
   read lt.routes,
   read device_wifi/link_stat.bcast_stats,
-  read device_wifi/wifidevice/cst.stats_xml	
+  read device_wifi/wifidevice/cst.stats_xml,
+  read device_wifi/cocst.stats 
 );
 

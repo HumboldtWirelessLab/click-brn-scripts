@@ -60,6 +60,6 @@ dht[0] -> [0]device_wifi;
 dht[1] -> [0]routing;
 
 Script(
-wait 239,
+wait 119,
 read dht/dht/dhtrouting.routing_info
 );

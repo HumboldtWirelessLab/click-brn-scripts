@@ -19,7 +19,7 @@ Idle
   -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
-  -> Print("NODENAME RX")
+//  -> Print("NODENAME RX")
   -> discard::Discard;
 
 error_clf[1]
