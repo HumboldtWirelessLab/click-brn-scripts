@@ -15,18 +15,15 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-//rts_cts::SetRTS(true);
-
-//graph_elem:: 
-
 ps::BRN2PacketSource(SIZE 1460, INTERVAL 200, MAXSEQ 500000, BURST 2, ACTIVE true)
-  -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
-  -> WifiEncap(0x00, 0:0:0:0:0:0)
-  //-> PacketLossReason()
+  //-> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
+  -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:02)
+  -> WifiEncap(0x00, 0:0:0:0:0:2)
   ->PacketLossInformation()
-  -> BRN2PrintWifi("Sender", TIMESTAMP true)
+  ->Brn2_SetRTSCTS()
   -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
+  -> BRN2PrintWifi("Sender (NODENAME TX)", TIMESTAMP true)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> filter_tx :: FilterTX()

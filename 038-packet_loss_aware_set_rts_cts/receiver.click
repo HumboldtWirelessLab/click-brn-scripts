@@ -18,35 +18,45 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 Idle
   -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
   -> filter_tx :: FilterTX()
+
   -> error_clf :: WifiErrorClassifier()
-  //-> SetRTS("TRUE")
-  -> Print("NODENAME RX")
+//  -> Print("NODENAME RX")
+  -> BRN2PrintWifi("Receiver (NODENAME) RX OKPacket", TIMESTAMP true)
   -> discard::Discard;
 
 error_clf[1]
+  -> BRN2PrintWifi("CRCerror", TIMESTAMP true)
   -> discard;
 
 error_clf[2]
+  -> BRN2PrintWifi("PHYerror", TIMESTAMP true)
   -> discard;
 
 error_clf[3]
+  -> BRN2PrintWifi("FIFOerror", TIMESTAMP true)
   -> discard;
 
 error_clf[4]
+  -> BRN2PrintWifi("DECRYPTerror", TIMESTAMP true)
   -> discard;
 
 error_clf[5]
+  -> BRN2PrintWifi("MICerror", TIMESTAMP true)
   -> discard;
 
 error_clf[6]
+  -> BRN2PrintWifi("ZEROerror", TIMESTAMP true)
   -> discard;
 
 error_clf[7]
+  -> BRN2PrintWifi("UNKNOWNerror", TIMESTAMP true)
   -> discard;
 
 filter_tx[1]
+  -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
   -> discard;
-  
+
+ 
 Script(
  wait 1,
  read wifidevice/ced.stats
