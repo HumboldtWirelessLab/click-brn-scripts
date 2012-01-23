@@ -16,7 +16,7 @@ Idle
   -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
-  -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
+  -> BRN2PrintWifi("OKPacket (NODENAME)", TIMESTAMP true)
   -> discard::Discard;
 
 error_clf[1]

@@ -57,7 +57,7 @@ device_wifi[3] -> ff::FilterFailures() -> Discard;
 ff[1]
   -> BRN2EtherDecap()
   -> Classifier( 0/BRN_PORT_ROUTING )
-  -> Print("ERROR")
+  -> Print("NODENAME: ERROR")
   -> [2]routing;
 
 brn_clf[1]
