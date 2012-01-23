@@ -1,18 +1,19 @@
 #!/bin/sh
 
-#SEND_PACKETS=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $9}'`
-#ECHO_PACKETS=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $13}'`
-#RECV_PACKETS=`cat $RESULTDIR/measurement.log | grep "<rxflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $9}'`
+. $CONFIGFILE
 
-#echo -n "Send $SEND_PACKETS packet, received $ECHO_PACKETS packets and $RECV_PACKETS echo packets are received."
+RECEIVER=`cat $NODETABLE | grep receiver.click | awk '{print $1}'`
+DEVICE=`cat $NODETABLE | grep receiver.click | awk '{print $2}'`
 
-#if [ $ECHO_PACKETS -gt 10 ]; then
-#  echo " OK !"
-#  exit 0
-#else
-#  echo " Too bad !"
-#  exit 2
-#fi
+#ls -lisa $RESULTDIR/$RECEIVER.$DEVICE.raw.dump
+#echo "$RESULTDIR/$RECEIVER.$DEVICE.raw.dump"
 
-echo "No valid evaluation."
-exit 0
+PACKETS=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | wc -l`
+
+echo "$PACKETS packets received"
+
+if [ $PACKETS -gt 290 ]; then
+  exit 0
+else
+  exit 2
+fi
