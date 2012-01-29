@@ -53,9 +53,9 @@ Idle
   -> pdc;
   
 Script(
-  write sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:02 10 1000 2 100 true,
+  write sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:02 10 1000 2 1000 true,
   wait  6,
-  write sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:02 10 1000 2 100 false,
+  write sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:02 10 1000 2 1000 false,
   read  sf.stats,
   read  cnt_tx_comp.count,
   read  cnt_tx_comp.byte_count

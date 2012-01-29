@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
 //#define WIFIDEV_LINKSTAT_DEBUG
-//#define ENABLE_BATMAN_DEBUG
+#define ENABLE_BATMAN_DEBUG
 
 //#define CST cst
 //#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
@@ -19,7 +19,7 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE true, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 9998);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500, MIN_LINK_METRIC_IN_ROUTE 9998);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
@@ -80,7 +80,7 @@ Idle
 Script(
 //  write sf.debug 4,
 #ifdef ENABLE_BATMAN_DEBUG
-//  write batman/bofwd.debug 4,
+  write batman/bofwd.debug 4,
   write batman/bf.debug 4,
   write batman/br.debug 4,
 #endif
