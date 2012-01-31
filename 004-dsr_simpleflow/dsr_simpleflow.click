@@ -80,7 +80,8 @@ Script(
   read routing/dsr_stats.stats,
   read routing/querier.stats,
   write routing/dsr_stats.reset,
-  read routing/dsr_stats.stats,
+  read routing/routing/dsr_stats.stats,	
+  read routing/routing/req_forwarder.routemap,
 );
 
 Script(
@@ -88,6 +89,6 @@ Script(
   write dsr/querier.debug 4,
   write dsr/req_forwarder.debug 4,
   write dsr/rep_forwarder.debug 4,
-  write dsr/err_forwarder.debug 4
+  write dsr/err_forwarder.debug 4,
 #endif
 );
