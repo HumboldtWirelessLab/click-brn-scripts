@@ -33,7 +33,7 @@ Script(
   wait 5,
   read infra_client/client/isc.wireless_info,
   read infra_client/client/isc.assoc,
-  write  sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:03 1000 100 2 100 true,
+  write  sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:03 1000 100 2 10000 true,
   wait 6,
   read  sf.stats
 );

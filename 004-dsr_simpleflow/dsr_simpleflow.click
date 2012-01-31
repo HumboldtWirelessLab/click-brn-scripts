@@ -22,7 +22,7 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE true, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 9998);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500, MIN_LINK_METRIC_IN_ROUTE 9998);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
@@ -72,23 +72,20 @@ brn_clf[1]
 Script(
   wait 100,
   read lt.links,
-  wait 1,
-  read sf.stats,
-  wait 1,
-  read dsr_out_counter.byte_count,
-  wait 127,
-  read routing/dsr_stats.stats,
-  read routing/querier.stats,
-  write routing/dsr_stats.reset,
-  read routing/routing/dsr_stats.stats,	
+  read device_wifi/link_stat.bcast_stats,
+  wait 128,
+  read routing/routing/dsr_stats.stats,
+  read routing/routing/querier.stats,
+  write routing/routing/dsr_stats.reset,
+  read routing/routing/dsr_stats.stats
   read routing/routing/req_forwarder.routemap,
 );
 
 Script(
 #ifdef ENABLE_DSR_DEBUG
-  write dsr/querier.debug 4,
-  write dsr/req_forwarder.debug 4,
-  write dsr/rep_forwarder.debug 4,
-  write dsr/err_forwarder.debug 4,
+  write routing/routing/querier.debug 4,
+  write routing/routing/req_forwarder.debug 4,
+  write routing/routing/rep_forwarder.debug 4,
+  write routing/routing/err_forwarder.debug 4
 #endif
 );

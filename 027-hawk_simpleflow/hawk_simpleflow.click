@@ -15,11 +15,11 @@ wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CONSTMETRIC 1, MIN_LINK_METRIC_IN_ROUTE 15000);
+lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500, MIN_LINK_METRIC_IN_ROUTE 9998);
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 4);
+dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 1000, DEBUG 4);
 dhtstorage::DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2 );
 routing::HAWK(id, dht/dhtroutingtable, dhtstorage/dhtstorage, dht/dhtrouting, lt, dht/dhtlprh, dht, 4);
 
@@ -80,7 +80,7 @@ device_wifi[3] -> ff::FilterFailures() -> Discard;
 ff[1] -> Print("TXFAILED",100) -> Discard;
 
 Script(
-  wait 20,
+  wait 60,
   read dht/dhtrouting.routing_info,
   wait 9, 
   read dht/dhtrouting.routing_info,
