@@ -1,6 +1,13 @@
 #define DEBUGLEVEL 2
-//#define SIMULATION
-#define CST
+
+#define CST cst
+#ifndef SIMULATION
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#else
+#define CST_PROCFILE "RESULTDIR/../cst"
+#endif
+
+
 #define USE_RTS_CTS
 
 // include unter helper/measurement/etc/click
@@ -11,6 +18,7 @@
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
+//#include "device/wifidev_linkstat.click"
 #include "device/rawwifidev.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
@@ -24,8 +32,6 @@ ps::BRN2PacketSource(SIZE 1460, INTERVAL 200, MAXSEQ 500000, BURST 2, ACTIVE tru
   //-> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:02)
   -> WifiEncap(0x00, 0:0:0:0:0:2)
-//  ->PacketLossInformation()
-//  ->Brn2_SetRTSCTS()
   -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
   -> BRN2PrintWifi("Sender (NODENAME TX)", TIMESTAMP true)
@@ -58,3 +64,13 @@ error_clf[7]
 
 filter_tx[1]
   -> discard;
+
+Script(
+  read wifidevice/cst.stats_xml,
+  wait 1,
+  read wifidevice/cst.stats_xml,
+  wait 1,
+  read wifidevice/cst.stats_xml
+
+);
+
