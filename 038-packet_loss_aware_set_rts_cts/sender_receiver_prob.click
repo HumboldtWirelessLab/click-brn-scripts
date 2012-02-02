@@ -9,7 +9,7 @@
 
 
 #define USE_RTS_CTS
-#define RAWDUMP 
+#define RAWDUMP
 // include unter helper/measurement/etc/click
 
 
@@ -28,10 +28,10 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 1460, INTERVAL 200, MAXSEQ 500000, BURST 2, ACTIVE true)
+ps::BRN2PacketSource(SIZE 18, INTERVAL 500, MAXSEQ 500000, BURST 1, ACTIVE true)
   //-> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
-  -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:02)
-  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
+  -> wenc::WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
   -> BRN2PrintWifi("Sender (NODENAME TX)", TIMESTAMP true)
@@ -40,6 +40,11 @@ ps::BRN2PacketSource(SIZE 1460, INTERVAL 200, MAXSEQ 500000, BURST 2, ACTIVE tru
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
   -> discard::Discard;
+
+ps2::BRN2PacketSource(SIZE 18, INTERVAL 500, MAXSEQ 500000, BURST 1, ACTIVE true)
+  //-> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
+  -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:03)
+-> wenc;
 
 error_clf[1]
   -> discard;
@@ -71,6 +76,5 @@ Script(
   read wifidevice/cst.stats_xml,
   wait 1,
   read wifidevice/cst.stats_xml
-
 );
 
