@@ -9,6 +9,6 @@ else
 fi 
 
 
-VALGRIND=$VALGRIND_PARAMS MODE=SIMULATION START=1 LIMIT=1 ./tools/testing/gen_test_pdf.sh
+VALGRIND=$VALGRIND_PARAMS MODE=SIMULATION START=1 LIMIT=35 ./tools/testing/gen_test_pdf.sh
 
 exit 0
