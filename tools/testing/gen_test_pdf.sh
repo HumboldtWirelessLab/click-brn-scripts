@@ -38,8 +38,13 @@ echo "\section{Summary}" > summary.tex
 
 echo "\begin{table}[h]" >> summary.tex
 echo "\centering" >> summary.tex
-echo "\begin{tabular}{p{.55\textwidth}p{.20\textwidth}p{.20\textwidth}}" >> summary.tex
-echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation}" >> summary.tex
+if [ "x$VALGRIND" = "x1" ]; then
+  echo "\begin{tabular}{p{.50\textwidth}p{.15\textwidth}p{.15\textwidth}p{.15\textwidth}}" >> summary.tex
+  echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Memory Leak} " >> summary.tex
+else
+  echo "\begin{tabular}{p{.55\textwidth}p{.20\textwidth}p{.20\textwidth}}" >> summary.tex
+  echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation}" >> summary.tex
+fi
 echo "\colheadend" >> summary.tex
 
 mkdir -p img
@@ -102,12 +107,27 @@ while [ $i -le $LIMIT ]; do
         echo "\end{figure}" >> testbed.tex
       done
     fi
+    
+    if [ "x$VALGRIND" = "x1" ]; then
+      LEAKBYTES=`(cd $WORKDIR/$MEASUREMENTNUM/; cat valgrind.log | grep -A 4 "LEAK SUMMARY" | grep "definitely lost" | awk '{print $4}')`
+      if [ $LEAKBYTES -eq 0 ]; then
+        MEMORYLEAK=NO
+      else
+        MEMORYLEAK=YES
+      fi
+    fi
 
   fi
   (cd $WORKDIR; rm -rf $MEASUREMENTNUM/)
   
+if [ "x$VALGRIND" = "x1" ]; then
+  echo "$NAME & $SIM & $EVO & $MEMORYLEAK \\\\" >> summary.tex
+  $LINEEND=4
+else
   echo "$NAME & $SIM & $EVO \\\\" >> summary.tex
-  echo "\cline{1-3}" >> summary.tex
+  $LINEEND=3
+fi
+  echo "\cline{1-$LINEEND}" >> summary.tex
   
   i=`expr $i + 1`
 done
