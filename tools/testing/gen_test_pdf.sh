@@ -122,10 +122,10 @@ while [ $i -le $LIMIT ]; do
   
 if [ "x$VALGRIND" = "x1" ]; then
   echo "$NAME & $SIM & $EVO & $MEMORYLEAK \\\\" >> summary.tex
-  $LINEEND=4
+  LINEEND=4
 else
   echo "$NAME & $SIM & $EVO \\\\" >> summary.tex
-  $LINEEND=3
+  LINEEND=3
 fi
   echo "\cline{1-$LINEEND}" >> summary.tex
   
