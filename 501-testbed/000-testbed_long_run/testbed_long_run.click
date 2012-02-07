@@ -5,6 +5,8 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
+//#define USELPR
+
 #define SETCHANNEL
 
 #if WIFITYPE == 802
@@ -22,7 +24,12 @@
 /* Standard */
 #define LINKPROBE_PERIOD               1000
 #define LINKPROBE_TAU                100000
+
+#ifdef USELPR
+#define LINKPROBE_PROBES     "2 1000 12 1000"
+#else
 #define LINKPROBE_PROBES     "2 300 12 300"
+#endif
 
 /* Test RSSI */
 //#define LINKPROBE_PERIOD               100
@@ -58,7 +65,9 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500,  SIMULATE false, CO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-//lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/etx_metric);
+#ifdef USELPR
+lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/etx_metric, ACTIVE false);
+#endif
 
 routing::DSR(id,lt,device_wifi/etx_metric);
 
@@ -139,3 +148,10 @@ routing[1] -> SetEtherAddr(SRC deviceaddress) -> [0]device_wifi;
 toMeAfterRouting[0] -> /*Print("Routing-out: For ME",100) ->*/ Label_brnether; 
 toMeAfterRouting[1] -> /*Print("Routing-out: Broadcast") ->*/ Discard;
 toMeAfterRouting[2] -> /*Print("Routing-out: Foreign/Client") ->*/ [1]device_wifi;
+
+#ifdef USELPR
+Script (
+ wait 300,
+ write lpr.active true
+);
+#endif
