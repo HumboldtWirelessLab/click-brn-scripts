@@ -30,7 +30,7 @@ echo "Replies: $REPLIES Requests: $REQUESTS Retries: $RETRIES Timeouts: $TIMEOUT
 
 EXP_REPLIES=`expr $REQUESTS - 10`
 
-if [ $REPLIES -lt $EXP_REPLIES ] || [ $NOTFOUND -ne 0 ]; then
+if [ $REPLIES -lt $EXP_REPLIES ] || [ $NOTFOUND -gt 1 ]; then
   echo "Failed"
   exit 2
 fi

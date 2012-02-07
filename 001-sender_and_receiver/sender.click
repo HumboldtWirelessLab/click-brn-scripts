@@ -19,7 +19,7 @@ ps::BRN2PacketSource(SIZE 1460, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE tru
 //-> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:05)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-  -> BRN2PrintWifi("Sender", TIMESTAMP true)
+  -> BRN2PrintWifi("Sender (NODENAME)", TIMESTAMP true)
   -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
   -> wifioutq::NotifierQueue(1000)
@@ -30,6 +30,8 @@ ps::BRN2PacketSource(SIZE 1460, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE tru
   -> discard::Discard;
 
 ps[1] -> Discard;
+
+
 
 error_clf[1]
   -> BRN2PrintWifi("CRCerror", TIMESTAMP true)

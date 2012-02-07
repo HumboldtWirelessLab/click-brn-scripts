@@ -48,5 +48,5 @@ filter_tx[1]
   
 Script(
  wait 1,
- read wifidevice/ced.stats
+ read wifidevice/hnd.stats
 );
