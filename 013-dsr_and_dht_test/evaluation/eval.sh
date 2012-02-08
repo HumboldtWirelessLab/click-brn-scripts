@@ -19,7 +19,7 @@ case "$SIGN" in
 esac
 							       
 
-STABLE_SUCC=`cat $RESULTDIR/measurement.log | grep "successor" | sed "s#\"# #g" | awk '{print $7}' | sort -u`
+STABLE_SUCC=`cat $RESULTDIR/measurement.log | grep "<successor" | sed "s#\"# #g" | awk '{print $7}' | sort -u`
 NO_NODES=`cat $RESULTDIR/nodes.mac | awk '{print $1}' | sort -u | wc -l`
 
 
