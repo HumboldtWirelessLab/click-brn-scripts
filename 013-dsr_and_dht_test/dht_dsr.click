@@ -61,5 +61,12 @@ dht[1] -> [0]routing;
 
 Script(
 wait 119,
+wait 119,
 read dht/dht/dhtrouting.routing_info
+);
+
+Script(
+wait 10,
+read device_wifi/wifidevice/cst.stats,
+loop
 );
