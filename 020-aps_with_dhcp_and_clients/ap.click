@@ -18,7 +18,6 @@ lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500, MIN_LINK_METRIC_IN_
 device_wifi::WIFIDEV_AP(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 
 dsr::DSR(id,lt,device_wifi/etx_metric);
-
 dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 2000, DEBUG 2);
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
 
@@ -109,8 +108,8 @@ Script(
   wait 10,
   read device_wifi/ap/assoclist.stations,
   wait 29,
-  read  dht/dhtrouting.routing_info
+  read  dht/dhtrouting.routing_info,
   //read lt.links
   //read lt.hosts
-  
+  read dh.server_info
 );
