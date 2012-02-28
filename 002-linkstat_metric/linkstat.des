@@ -3,7 +3,7 @@ SIMULATOR=ns2
 RADIO=shadowing11b
 FORGEINNODES=no
 
-TIME=60
+TIME=25
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=linkstat.mes
@@ -22,6 +22,7 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
+CONTROLFILE=linkstat.ctl
 
 MULTIREPEAT="3"
 MULTIWAIT=0
