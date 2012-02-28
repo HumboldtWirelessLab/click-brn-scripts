@@ -78,6 +78,7 @@ Script(
   read routing/routing/querier.stats,
   write routing/routing/dsr_stats.reset,
   read routing/routing/dsr_stats.stats
+  read routing/routing/req_forwarder.routemap,
 );
 
 Script(
