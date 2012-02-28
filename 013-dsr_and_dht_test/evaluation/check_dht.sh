@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NODES=`cat $1 | grep "falconroutingtable" | sed "s#\"# #g" | awk '{print $3}' | sort -u`
+NODES=`cat $1 | grep "<falconroutingtable" | sed "s#\"# #g" | awk '{print $3}' | sort -u`
 NO_NODES=`echo $NODES | wc -w`
 
 FIRST_NODE=`echo $NODES | awk '{print $1}'`
@@ -13,7 +13,7 @@ ALL_NODES=""
 
 PRE_ERROR=0
 
-#echo "a: $PRE b: $BACKLOG_PRE"
+echo "a: $PRE b: $BACKLOG_PRE f: $FIRST_NODE n: $NO_NODES"
 
 while [ $PRE != $BACKLOG_PRE ]; do
 

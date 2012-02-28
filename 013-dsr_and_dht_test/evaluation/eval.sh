@@ -37,7 +37,7 @@ NO_ERRORS=`echo $RESULT | awk '{print $4}'`
   
 echo "Have $NO_NODES node(s) overall and $NO_DHT_NODES dht node(s). DHT routing has $NO_ERRORS error(s)."
   
-if [ $NO_ERRORS -gt 0 ] || [ $NO_NODES -ne $NO_DHT_NODES ] || [ "x$STABLE_SUCC" = "xtrue" ]; then
+if [ $NO_ERRORS -gt 0 ] || [ $NO_NODES -ne $NO_DHT_NODES ] || [ "x$STABLE_SUCC" != "xtrue" ]; then
  echo "DHT routing failed"
  exit 2
 fi

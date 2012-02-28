@@ -109,7 +109,7 @@ while [ $i -le $LIMIT ]; do
     fi
     
     if [ "x$VALGRIND" = "x1" ]; then
-      LEAKBYTES=`(cd $WORKDIR/$MEASUREMENTNUM/; cat valgrind.log | grep -A 4 "LEAK SUMMARY" | grep "definitely lost" | awk '{print $4}')`
+      LEAKBYTES=`(cd $WORKDIR/$MEASUREMENTNUM/; cat valgrind.log | grep -A 4 "LEAK SUMMARY" | grep "definitely lost" | awk '{print $4}' | sed "s#,##g" )`
       if [ $LEAKBYTES -eq 0 ]; then
         MEMORYLEAK=NO
       else
