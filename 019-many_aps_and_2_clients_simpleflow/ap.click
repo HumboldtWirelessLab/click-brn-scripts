@@ -46,7 +46,6 @@ dsr[0]
   
 dsr[1] 
   //-> Print("DSR[1]-out")
-  -> BRN2EtherEncap()
   -> SetEtherAddr(SRC deviceaddress)
   //-> Print("DSR-Ether-OUT")
   -> [0]device_wifi;
@@ -73,3 +72,14 @@ Script(
   read device_wifi/ap/assoclist.stations,
   read lt.links
 );
+
+//#define ENABLE_DSR_DEBUG
+Script(
+#ifdef ENABLE_DSR_DEBUG
+  write dsr/querier.debug 4,
+  write dsr/req_forwarder.debug 4,
+  write dsr/rep_forwarder.debug 4,
+  write dsr/err_forwarder.debug 4
+#endif
+);
+	

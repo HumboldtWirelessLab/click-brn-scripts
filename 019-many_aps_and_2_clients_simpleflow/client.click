@@ -13,10 +13,11 @@ infra_client :: WIFIDEV_CLIENT(  DEVICENAME "NODEDEVICE", DEVICE wireless, ETHER
 infra_client
   -> brn_ether_clf :: Classifier( 12/8086 14/BRN_PORT_FLOW, - )
   -> BRN2EtherDecap()
-  -> Print("rx",TIMESTAMP true)
+//  -> Print("rx",TIMESTAMP true)
   -> BRN2Decap()
   -> sf::BRN2SimpleFlow(HEADROOM 192)
-  -> BRN2EtherEncap()
+  -> BRN2EtherEncap(USEANNO true)
+//  -> Print("Mirror")
   -> infra_client;
  
   brn_ether_clf[1]
