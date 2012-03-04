@@ -1,7 +1,7 @@
 NAME=ap
 SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
+#RADIO=shadowing11b
+RADIO=tworayground01b
 FORGEINNODES=no
 
 TIME=21
