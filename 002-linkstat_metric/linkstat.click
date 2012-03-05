@@ -43,7 +43,7 @@ Idle
 Idle
 ->[1]device_wifi;
 
-/*Script(
+Script(
   read device_wifi/link_stat.probes,
   wait 11,
   write route_maint.algo_and_best_route 00:00:00:00:00:01 00:00:00:00:00:05,
@@ -53,4 +53,4 @@ Idle
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats_xml,
   read device_wifi/cocst.stats 
-);*/
+);
