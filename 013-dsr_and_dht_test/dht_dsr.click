@@ -5,6 +5,8 @@
 
 //#define SETCHANNEL
 
+#define BRNFEEDBACK
+
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
@@ -19,8 +21,7 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-rc::Brn2RouteCache(DEBUG 0, ACTIVE true, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500, MIN_LINK_METRIC_IN_ROUTE 9998);
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
@@ -40,9 +41,12 @@ device_wifi
 -> brn_clf::Classifier(    0/BRN_PORT_ROUTING,  //BrnDSR
                            0/BRN_PORT_DHTROUTING,  //DHT-Routing
                            0/BRN_PORT_DHTSTORAGE ); //DHT-Storage
-                                    
+
 device_wifi[1] -> Label_brnether;
 device_wifi[2] -> Discard;
+device_wifi[3] -> ff::FilterFailures() -> Discard;
+ff[1] -> Print("TxFailed") -> BRN2EtherDecap() -> Discard;
+
 
 routing[0] -> [0]device_wifi;
 routing[1] -> [1]device_wifi;
@@ -61,5 +65,14 @@ dht[1] -> [0]routing;
 
 Script(
 wait 119,
-read dht/dht/dhtrouting.routing_info
+wait 119,
+read dht/dht/dhtrouting.routing_info,
+wait 1,
+read lt.links
+);
+
+Script(
+wait 10,
+read device_wifi/rawWifiDevice/cst.stats,
+loop
 );

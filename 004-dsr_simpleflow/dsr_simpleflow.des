@@ -4,11 +4,11 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=230
+TIME=130
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=dsr_simpleflow.mes
-NODEPLACEMENT=string
+NODEPLACEMENT=grid
 NODEPLACEMENTOPTS="relative"
 FIELDSIZE=RXRANGE
 

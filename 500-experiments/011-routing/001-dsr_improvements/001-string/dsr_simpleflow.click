@@ -69,6 +69,8 @@ brn_clf[1]
 -> [0]routing;
 
 Script(
+  write routing/routing/querier.debug 4,
+  write routing/routing/querier.max_retries 0,
 #ifdef ENABLE_DSR_DEBUG
   write routing/routing/querier.debug 4,
   write routing/routing/req_forwarder.debug 4,

@@ -39,11 +39,11 @@ echo "\section{Summary}" > summary.tex
 echo "\begin{table}[h]" >> summary.tex
 echo "\centering" >> summary.tex
 if [ "x$VALGRIND" = "x1" ]; then
-  echo "\begin{tabular}{p{.50\textwidth}p{.15\textwidth}p{.15\textwidth}p{.15\textwidth}}" >> summary.tex
-  echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Memory Leak} " >> summary.tex
+  echo "\begin{tabular}{p{.35\textwidth}p{.15\textwidth}p{.15\textwidth}p{.15\textwidth}p{.10\textwidth}}" >> summary.tex
+  echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Memory Leak} & \textbf{Time}" >> summary.tex
 else
-  echo "\begin{tabular}{p{.55\textwidth}p{.20\textwidth}p{.20\textwidth}}" >> summary.tex
-  echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation}" >> summary.tex
+  echo "\begin{tabular}{p{.40\textwidth}p{.20\textwidth}p{.20\textwidth}p{.10\textwidth}}" >> summary.tex
+  echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Time}" >> summary.tex
 fi
 echo "\colheadend" >> summary.tex
 
@@ -52,7 +52,7 @@ mkdir -p img
 while [ $i -le $LIMIT ]; do
   MEASUREMENTNUM=$RANDOM
   NUM=`printf "%03d\n" $i`
-  WORKDIR=`ls -l | awk '{print $8}' | grep "$NUM-"`
+  WORKDIR=`ls -w 1 | awk '{print $1}' | grep "$NUM-"`
   NAME=`echo $WORKDIR | sed "s#$NUM-##g" | sed "s#_# #g"`
   DESCRIPTIONFILE=`(cd $WORKDIR;ls *.des | awk '{print $1}')`
   echo -n "Test $WORKDIR "
@@ -71,9 +71,9 @@ while [ $i -le $LIMIT ]; do
       RESULT=1
     fi
   fi
-  
+
   echo "\subsection{Result}" >> testbed.tex
-  
+
   if [ $RESULT -ne 0 ]; then 
     if [ $RESULT -eq 1 ]; then
       echo "$MODESTRING failed !" >> testbed.tex
@@ -85,7 +85,6 @@ while [ $i -le $LIMIT ]; do
       echo "failed ! Evaluation failed !";
       SIM="OK"
       EVO="Failed"
-
     fi
   else
     echo "OK !" >> testbed.tex
@@ -107,9 +106,9 @@ while [ $i -le $LIMIT ]; do
         echo "\end{figure}" >> testbed.tex
       done
     fi
-    
+
     if [ "x$VALGRIND" = "x1" ]; then
-      LEAKBYTES=`(cd $WORKDIR/$MEASUREMENTNUM/; cat valgrind.log | grep -A 4 "LEAK SUMMARY" | grep "definitely lost" | awk '{print $4}')`
+      LEAKBYTES=`(cd $WORKDIR/$MEASUREMENTNUM/; cat valgrind.log | grep -A 4 "LEAK SUMMARY" | grep "definitely lost" | awk '{print $4}' | sed "s#,##g" )`
       if [ $LEAKBYTES -eq 0 ]; then
         MEMORYLEAK=NO
       else
@@ -118,17 +117,26 @@ while [ $i -le $LIMIT ]; do
     fi
 
   fi
+
+  if [ -f $WORKDIR/$MEASUREMENTNUM/time.stats ]; then
+    TIMESTATS=`cat $WORKDIR/$MEASUREMENTNUM/time.stats`
+  else
+    TIMESTATS="00:00.00"
+  fi
+
   (cd $WORKDIR; rm -rf $MEASUREMENTNUM/)
-  
+
+
+
 if [ "x$VALGRIND" = "x1" ]; then
-  echo "$NAME & $SIM & $EVO & $MEMORYLEAK \\\\" >> summary.tex
-  LINEEND=4
+  echo "$NAME & $SIM & $EVO & $MEMORYLEAK & $TIMESTATS \\\\" >> summary.tex
+  LINEEND=5
 else
-  echo "$NAME & $SIM & $EVO \\\\" >> summary.tex
-  LINEEND=3
+  echo "$NAME & $SIM & $EVO & $TIMESTATS \\\\" >> summary.tex
+  LINEEND=4
 fi
   echo "\cline{1-$LINEEND}" >> summary.tex
-  
+
   i=`expr $i + 1`
 done
 
@@ -136,7 +144,6 @@ echo "\end{tabular}" >> summary.tex
 echo "\caption{Summary}" >> summary.tex
 echo "\label{tab:measurements_parameters}" >> summary.tex
 echo "\end{table}" >> summary.tex
-								
 
 echo "\end{document}" >> testbed.tex
 

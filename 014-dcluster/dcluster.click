@@ -2,19 +2,19 @@
 
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
-#include "routing/dsr.click"
+#include "routing/routing.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500, MIN_LINK_METRIC_IN_ROUTE 9998);
+
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dsr::DSR(id,lt,device_wifi/etx_metric);
+routing::ROUTING(ID id, ETTHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
 
 Idle
   -> dc::DCluster(NODEIDENTITY id, LINKSTAT device_wifi/link_stat, DISTANCE 1, DEBUG 4)
@@ -23,46 +23,25 @@ Idle
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/BRN_PORT_DSR,  //BrnDSR
+-> brn_clf::Classifier(    0/BRN_PORT_ROUTING,
                              -  );//other
-                                    
-brn_clf[0]
-//-> Print("DSR-Packet")
-  -> [1]dsr;
 
-device_wifi[1] 
-//-> Print("BRN-In")
-  -> BRN2EtherDecap()
-  -> brn_clf;
-  
-device_wifi[2]
-  -> Discard;
+routing[0] -> [0]device_wifi;
+routing[1] -> [1]device_wifi;
+routing[2] -> Label_brnether;
+routing[3] -> Discard;
 
-Idle         //no error, so Idle as input
-  -> [2]dsr;
-  
-Idle
-  -> [0]dsr;
-
-brn_clf[1]
-  -> Discard;
+Idle -> [0]routing;
+brn_clf[0] -> [1]routing;
+Idle -> [2]routing;      //no error, so Idle as input
+Idle -> [3]routing;
+		
+device_wifi[1] -> BRN2EtherDecap() -> brn_clf;
+device_wifi[2] -> Discard;
+		                    
 
 
-dsr[0]
-  -> Discard;
-  
-dsr[1]
-//-> Print("DSR[1]-out")
-  -> BRN2EtherEncap()
-  -> SetEtherAddr(SRC deviceaddress)
-//-> Print("DSR-Ether-OUT")
-  -> [0]device_wifi;
-
-Idle
--> [1]device_wifi;
-
-Idle
-->[3]dsr;
+brn_clf[1] -> Discard;
 
 Script(
   wait 15,

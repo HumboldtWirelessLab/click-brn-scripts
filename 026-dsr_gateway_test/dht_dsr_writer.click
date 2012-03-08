@@ -19,18 +19,20 @@ service::BRN2Device(DEVICENAME "service", ETHERADDRESS serviceaddress, DEVICETYP
 
 id::BRN2NodeIdentity(NAME "NODENAME", DEVICES "wireless service");
 
-rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500, MIN_LINK_METRIC_IN_ROUTE 9998);
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
+routingtable::BrnRoutingTable(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
+routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 2);
+routingmaint::RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dsr::DSR(id,lt,device_wifi/etx_metric);
+dsr::DSR(id, lt, device_wifi/etx_metric,routingmaint);
 
 dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 3000, DEBUG 2);
 
 dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2 );
 
-brngw::Gateway( ETHER_ADDR deviceaddress, LINKTABLE lt, UPDATE_GATEWAYS_INTERVAL 3, UPDATE_DHT_INTERVAL 3,
+brngw::Gateway( ETHER_ADDR deviceaddress, ROUTINGMAINTENANCE routingmaint, UPDATE_GATEWAYS_INTERVAL 3, UPDATE_DHT_INTERVAL 3,
          PREFIX 192.168.0.0/24, SERVICE_IP 192.168.0.1, DHTSTORAGE dhtstorage/dhtstorage);
 
 device_wifi
