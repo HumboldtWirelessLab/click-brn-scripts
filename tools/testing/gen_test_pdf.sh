@@ -52,7 +52,7 @@ mkdir -p img
 while [ $i -le $LIMIT ]; do
   MEASUREMENTNUM=$RANDOM
   NUM=`printf "%03d\n" $i`
-  WORKDIR=`ls -l | awk '{print $8}' | grep "$NUM-"`
+  WORKDIR=`ls -w 1 | awk '{print $1}' | grep "$NUM-"`
   NAME=`echo $WORKDIR | sed "s#$NUM-##g" | sed "s#_# #g"`
   DESCRIPTIONFILE=`(cd $WORKDIR;ls *.des | awk '{print $1}')`
   echo -n "Test $WORKDIR "
