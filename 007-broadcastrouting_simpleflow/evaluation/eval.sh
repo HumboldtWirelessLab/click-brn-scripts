@@ -4,7 +4,7 @@ SEND_PACKETS=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | sed 's#"# #
 ECHO_PACKETS=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $13}'`
 RECV_PACKETS=`cat $RESULTDIR/measurement.log | grep "<rxflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $9}'`
 
-echo -n "Send $SEND_PACKETS packet, received $ECHO_PACKETS packets and $RECV_PACKETS echo packets are received."
+echo -n "Send $SEND_PACKETS packet, received $RECV_PACKETS packets and $ECHO_PACKETS echo packets are received."
 
 if [ $ECHO_PACKETS -gt 5 ]; then
   echo " OK !"

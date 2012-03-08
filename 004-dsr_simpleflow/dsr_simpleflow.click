@@ -2,7 +2,7 @@
 
 //#define DSR_ID_CACHE
 //#define WIFIDEV_LINKSTAT_DEBUG
-#define ENABLE_DSR_DEBUG
+//#define ENABLE_DSR_DEBUG
 
 //#define SETCHANNEL
 
@@ -69,29 +69,19 @@ brn_clf[1]
 
 
 Script(
-  wait 100,
-  read lt.links,
-  read device_wifi/link_stat.bcast_stats,
-  wait 128,
-  read routing/routing/dsr_stats.stats,
-  read routing/routing/querier.stats,
-  write routing/routing/dsr_stats.reset,
-  read routing/routing/dsr_stats.stats
-  read routing/routing/req_forwarder.routemap,
-  read sf.stats
-);
-
-Script(
-  wait 128,
-  read routingalgo.stats
-);
-
-Script(
 #ifdef ENABLE_DSR_DEBUG
   write routing/routing/querier.debug 4,
   write routing/routing/req_forwarder.debug 4,
   write routing/routing/rep_forwarder.debug 4,
-  write routing/routing/err_forwarder.debug 4
+  write routing/routing/err_forwarder.debug 4,
 #endif
+  wait 100,
+//  read lt.links,
+//  read device_wifi/link_stat.bcast_stats,
+  wait 10,
+  read routing/routingtable.stats,
+  wait 18,
+  read routing/routingalgo.stats,
+  read routing/routingmaint.stats
 );
 

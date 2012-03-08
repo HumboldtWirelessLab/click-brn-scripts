@@ -10,12 +10,14 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 id::BRN2NodeIdentity(NAME "NODENAME", DEVICES wireless);
 
-rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, ROUTECACHE rc, STALE 500, MIN_LINK_METRIC_IN_ROUTE 9998, DEBUG 2);
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
+routingtable::BrnRoutingTable(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
+routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 2);
+routingmaint::RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
 
 device_wifi::WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 
-dsr::DSR(id, lt, device_wifi/etx_metric);
+dsr::DSR(id, lt, device_wifi/etx_metric,routingmaint);
 
 device_wifi
   -> Label_brnether::Null()
@@ -29,7 +31,7 @@ device_wifi[1]       //broadcast and brn
   -> BRN2EtherDecap()
   -> brn_clf;
 
-device_wifi[2] -> [0]dsr;  //foreign and brn
+device_wifi[2] /*-> Print("NODENAME: For and brn", TIMESTAMP true)*/ -> [0]dsr;  //foreign and brn
 
 device_wifi[3] -> Discard;  //to me no brn
 device_wifi[4] -> Discard;  //broadcast and no brn

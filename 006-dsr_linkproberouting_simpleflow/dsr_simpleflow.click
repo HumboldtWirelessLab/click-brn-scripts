@@ -69,7 +69,7 @@ brn_clf[1]
 
 
 Script(
-  wait 100,
+  wait 120,
   read lt.links,
   wait 1,
   read sf.stats
