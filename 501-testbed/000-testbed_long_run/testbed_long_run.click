@@ -6,6 +6,7 @@
 //#define ENABLE_DSR_DEBUG
 
 //#define USELPR
+#define NORETRIES
 
 #define SETCHANNEL
 
@@ -153,5 +154,11 @@ toMeAfterRouting[2] -> /*Print("Routing-out: Foreign/Client") ->*/ [1]device_wif
 Script (
  wait 300,
  write lpr.active true
+);
+#endif
+
+#ifdef NORETRIES
+Script (
+  write routing/querier.max_retries 0
 );
 #endif
