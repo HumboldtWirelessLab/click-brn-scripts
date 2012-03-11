@@ -29,7 +29,7 @@ routing::ROUTING(ID id, ETTHERADDRESS deviceaddress, LT lt, METRIC device_wifi/e
 
 dht::DHT(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 3000, DEBUG 2);
 
-//dhtstoragetest :: DHTStorageTest( DHTSTORAGE dht/dhtstorage/dhtstorage, STARTTIME 175000, INTERVAL 1000, COUNTKEYS 10, WRITE false, RETRIES 1, REPLICA 0, DEBUG 2);
+dhtstoragetest :: DHTStorageTest( DHTSTORAGE dht/dhtstorage/dhtstorage, STARTTIME 0, INTERVAL 1000, COUNTKEYS 0, WRITE false, RETRIES 1, REPLICA 0, DEBUG 2);
 
 #ifndef SIMULATION
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
@@ -68,11 +68,13 @@ wait 119,
 wait 119,
 read dht/dht/dhtrouting.routing_info,
 wait 1,
-read lt.links
+read lt.links,
+wait 20,
+read dht/dhtstorage/dhtstorage.stats
 );
 
-Script(
+/*Script(
 wait 10,
-read device_wifi/rawWifiDevice/cst.stats,
+read device_wifi/wifidevice/cst.stats,
 loop
-);
+);*/
