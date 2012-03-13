@@ -91,7 +91,7 @@ case "$1" in
     start)
         ARCH=$(get_arch)
 	case "$ARCH" in
-	    "i586")
+	    "i586"|"i686")
 		setup_ip ath1
 		rm -f /tmp/olsr_ews_ath1.conf
 		cp $DIR/olsrd/olsr_ews_ath1.conf /tmp
