@@ -2,6 +2,9 @@
 
 #define RAWDUMP
 #define CST
+#define CERR
+#define USE_RTS_CTS
+//#define PLE
 
 // include unter helper/measurement/etc/click
 
@@ -17,6 +20,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 ps::BRN2PacketSource(SIZE 1460, INTERVAL 20, MAXSEQ 500000, BURST 1, ACTIVE true)
+  -> SetTimestamp()
 //  -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:02)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
@@ -53,3 +57,4 @@ error_clf[7]
 
 filter_tx[1]
   -> discard;
+

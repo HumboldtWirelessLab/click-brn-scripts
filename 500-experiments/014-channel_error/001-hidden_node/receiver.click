@@ -3,24 +3,37 @@
 #define RAWDUMP
 #define CERR
 #define CST
+#define CST_PROCFILE foo
+#define USE_RTS_CTS
+#define PLE
 
 // include unter helper/measurement/etc/click
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
+#include "device/wifidev_linkstat.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", CWMIN CWMINPARAM, CWMAX CWMAXPARAM, AIFS AIFSPARAM);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
+device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 Idle
-  -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
+  -> SetTimestamp()
+  -> [0]device_wifi
+  //-> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
   -> Print("NODENAME RX")
   -> discard::Discard;
+
+Idle -> [1]device_wifi;
+
+device_wifi[1] -> /* Print("BRN-In") -> */ BRN2EtherDecap() -> discard;
+device_wifi[2] -> discard;
 
 error_clf[1]
   -> discard;
@@ -48,5 +61,10 @@ filter_tx[1]
   
 Script(
  wait 1,
- read wifidevice/hnd.stats
+// read wifidevice/hnd.stats,
+ //read device_wifi/wifidevice/ple.stats,
+ //read wifidevice/cst.stats,
+ read device_wifi/wifidevice/cst.stats,
+ read device_wifi/cocst.stats,
+ loop
 );
