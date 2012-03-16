@@ -1,18 +1,27 @@
 #!/bin/sh
 
-for count in 20 30 40 50;
+if [ "x$1" = "x1" ]; then
+NODECOUNT="20 30 40 50"
+RUNS=1000
+NODEDIST="65 75 85"
+else
+NODECOUNT="20"
+RUNS=1
+NODEDIST="65"
+fi
+
+
+for count in $NODECOUNT;
 	do
-	for simuRun in {1..1000};
+	for simuRun in `seq $RUNS`;
 		do
-		for s in 65 75 85;
+		for s in $NODEDIST;
 			do
-			sizeCommand="sqrt(${count})*${s}"
-			size=`echo ${sizeCommand} | bc`
 			dir="scurow_${s}_${count}_${simuRun}"
 			
 			if [ "x$1" = "x" ]; then
 				cat linkstat.mes.tmpl | sed "s#NODENUM#$count#g" > linkstat.mes
-				cat linkstat.des.tmpl | sed "s#PARAMS_FIELDSIZE#$size#g"  > linkstat.des
+				cat linkstat.des.tmpl | sed "s#PARAMS_FIELDSIZE#$s#g"  > linkstat.des
 
 				run_sim.sh ns linkstat.des $dir
 				rm -f linkstat.mes linkstat.des
