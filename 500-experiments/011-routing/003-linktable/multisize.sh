@@ -26,5 +26,5 @@ for count in 20 30 40 50;
 done
 
 if [ "x$1" = "x" ]; then
-	zip scurowMeasurements.zip scurow*
+	zip -r scurowMeasurements.zip scurow*
 fi
