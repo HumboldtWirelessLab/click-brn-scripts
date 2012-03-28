@@ -21,9 +21,9 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 1000, DEBUG 4);
+dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 1000, DEBUG 2);
 dhtstorage::DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2 );
-routing::HAWK(id, dht/dhtroutingtable, dhtstorage/dhtstorage, dht/dhtrouting, lt, dht/dhtlprh, dht, 4);
+routing::HAWK(id, dht/dhtroutingtable, dhtstorage/dhtstorage, dht/dhtrouting, lt, dht/dhtlprh, dht, 2);
 
 device_wifi
 -> Label_brnether::Null()

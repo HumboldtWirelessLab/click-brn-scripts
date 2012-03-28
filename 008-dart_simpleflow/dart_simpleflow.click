@@ -80,9 +80,10 @@ Idle
 
 Script(
   wait 30,
-  read lt.links,
+  //read lt.links,
   wait 30, 
-  read dht/dhtrouting.routing_info,
+  read lt.links,
+  //read dht/dhtrouting.routing_info,
   wait 20, 
   //read  dhtstorage.db_size,
   //read  dhtstoragetest.stats,
