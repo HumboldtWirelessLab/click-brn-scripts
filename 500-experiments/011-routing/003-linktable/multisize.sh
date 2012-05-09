@@ -35,5 +35,5 @@ for count in $NODECOUNT;
 done
 
 if [ "x$1" = "x" ]; then
-	zip scurowMeasurements.zip scurow*
+	zip -r scurowMeasurements.zip scurow*
 fi
