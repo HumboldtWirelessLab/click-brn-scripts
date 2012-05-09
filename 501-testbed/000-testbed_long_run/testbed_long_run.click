@@ -61,9 +61,9 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
-routingtable::BrnRoutingTable(DEBUG 2, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE 500, TTL 10);
-routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 2);
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 10, DEBUG 2);
+routingtable::BrnRoutingTable(DEBUG 2, ACTIVE true, DROP /* 1/20 = 5% */ 0, SLICE 500, TTL 20);
+routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 10000, DEBUG 2);
 routingmaint::RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
@@ -74,12 +74,12 @@ lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, ETXMETRIC device_wifi/e
 
 routing::DSR(id, lt, device_wifi/etx_metric, routingmaint);
 
-//dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 120000, UPDATEINT 60000, DEBUG 2);
+dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 120000, UPDATEINT 10000, DEBUG 2);
 //dht::DHT_OMNI(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 //dht::DHT_KLIBS(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 //dht::DHT_DART(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 1000, DEBUG 2);
 
-//dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
+dhtstorage :: DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2);
 //dhtstoragetest :: DHTStorageTest( DHTSTORAGE dhtstorage/dhtstorage, STARTTIME 0, INTERVAL 1000, COUNTKEYS 0, WRITE false, RETRIES 3, REPLICA 0, DEBUG 4);
 
 #ifndef SIMULATION
@@ -128,22 +128,24 @@ brn_clf[2]
 -> BRN2Decap()
 -> Discard;
 Idle
-//-> [0]dht[0]
--> [0]routing;
+-> [0]dht[0]
+-> Discard;
+//-> [0]routing;
 
 brn_clf[3]
 -> BRN2Decap()
 -> Discard;
 Idle
-//-> dhtstorage
--> [0]routing;
+-> dhtstorage
+-> Discard;
+//-> [0]routing;
 
 Idle
 -> [3]routing;
 
 brn_clf[4] -> Discard;
 
-//dht[1] -> [0]device_wifi;
+dht[1] -> Discard;// [0]device_wifi;
 
 routing[0] -> toMeAfterRouting::BRN2ToThisNode(NODEIDENTITY id);
 routing[1] -> SetEtherAddr(SRC deviceaddress) -> [0]device_wifi;
