@@ -58,7 +58,7 @@ function mac_to_num() {
 DIRNUM=1
 
 if [ ! -e $RESULTDIR/head.txt ]; then
-  echo "TIME SIZE SRC DST STATE RATE HT RATEINDEX HT40 SGI RSSI NOISE SEQ CTL_RSSI0 CTL_RSS1 EXT_RSSI0 EXT_RSS1 PACKETID REPEAT CHANNEL" > $RESULTDIR/head.txt
+  echo "TIME SIZE DST STATE RATE HT RATEINDEX HT40 SGI RSSI NOISE" > $RESULTDIR/head.txt
 fi
 
 while [ -e $RESULTDIR/$DIRNUM ]; do
@@ -81,7 +81,8 @@ while [ -e $RESULTDIR/$DIRNUM ]; do
 
 #     echo "$RESULTDIR/allresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt"
 
-     if [ ! -e $RESULTDIR/allresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt ]; then
+     rm -f $RESULTDIR/allforeignresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt
+     if [ ! -e $RESULTDIR/allforeignresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt ]; then
 
        for n in $NODES; do
 
@@ -90,32 +91,32 @@ while [ -e $RESULTDIR/$DIRNUM ]; do
         SENDER_MAC=`cat $RESULTDIR/$DIRNUM/nodes.mac | grep "$PARAMS_SENDER " | awk '{print $3}'`
         SENDER_ID=`echo $PARAMS_SENDER | mac_to_num $RESULTDIR/$NODESMACDIR/nodes.mac`
 
-        if [ ! -e $RESULTDIR/allresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt ]; then
+        if [ ! -e $RESULTDIR/allforeignresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt ]; then
  #        echo "TIME SIZE SRC DST STATE RATE HT RATEINDEX HT40 SGI RSSI NOISE SEQ CTL_RSSI0 CTL_RSS1 EXT_RSSI0 EXT_RSS1 PACKETID REPEAT CHANNEL" > $RESULTDIR/allresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt
-          touch $RESULTDIR/allresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt
+          touch $RESULTDIR/allforeignresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt
         fi
 
         DEVICES=`cat $RESULTDIR/$DIRNUM/nodes.mac | grep "$n " | awk '{print $2}'`
 
         for d in $DEVICES; do
 
-          #rm -f $RESULTDIR/$DIRNUM/$n.$d.raw.out
-          if [ ! -f $RESULTDIR/$DIRNUM/$n.$d.raw.out ]; then
+          rm -f $RESULTDIR/$DIRNUM/$n.$d.foreign.raw.out
+          if [ ! -f $RESULTDIR/$DIRNUM/$n.$d.foreign.raw.out ]; then
 
             if [ -f $RESULTDIR/$DIRNUM/$n.$d.raw.dump ]; then
-              ( cd $RESULTDIR/$DIRNUM; CONTENT=yes HT=true EVM=true RX=true WIFI=802 $DIR/fromdump.sh $n.$d.raw.dump | grep data | sed "s# err # #g" | sed "s# tx # #g" | sed "s#retries 0##g" | grep FF-FF-FF-FF-FF-FF | grep $SENDER_MAC | sed -e "s#Mb##g" -e "s#+[0]*##g" -e "s#/# #g" -e "s#:##g" > $n.$d.raw.out )
+              ( cd $RESULTDIR/$DIRNUM; CONTENT=yes HT=true EVM=true RX=true WIFI=802 $DIR/fromdump.sh $n.$d.raw.dump | grep -v RAW | grep -v expensive | sed "s# err # #g" | sed "s# tx # #g" | sed "s#retries 0##g" | grep -v $SENDER_MAC | sed -e "s#Mb##g" -e "s#+[0]*##g" -e "s#/# #g" -e "s#:##g" > $n.$d.foreign.raw.out )
             else
               echo "Missing Dump for $n $d"
             fi
           fi
 
-          cat $RESULTDIR/$DIRNUM/$n.$d.raw.out | awk -v NODE=$n -v REPEAT=$PARAMS_REPEAT -v CHANNEL=$PARAMS_CHANNEL '{ print $2" "$3" "$27" "NODE" "$1" "$5" "$6" "$7" "$8" "$9" "$21" "$22" "$30" "$10" "$11" "$13" "$14" "strtonum("0x"$39)" "REPEAT" "CHANNEL""}' | sed "s#OKPacket#1#g" | sed "s#CRCerror#0#g" | sed "s#TXFeedback#2#g" | mac_to_num $RESULTDIR/$NODESMACDIR/nodes.mac $2 | grep -v "[A-F0-9]-" >> $RESULTDIR/result_$DIRNUM\.txt
+          cat $RESULTDIR/$DIRNUM/$n.$d.foreign.raw.out | awk -v NODE=$n -v REPEAT=$PARAMS_REPEAT -v CHANNEL=$PARAMS_CHANNEL '{ print $2" "$3" "NODE" "$1" "$5" "$6" "$7" "$8" "$9" "$21" "$22}' | sed "s#OKPacket#1#g" | sed "s#CRCerror#0#g" | sed "s#TXFeedback#2#g" | mac_to_num $RESULTDIR/$NODESMACDIR/nodes.mac $2  >> $RESULTDIR/result_$DIRNUM\.txt
 
         done
 
        done
 
-       cat $RESULTDIR/result_$DIRNUM\.txt >> $RESULTDIR/allresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt
+       cat $RESULTDIR/result_$DIRNUM\.txt >> $RESULTDIR/allforeignresult_$PARAMS_CHANNEL\_$PARAMS_REPEAT\_$SENDER_ID.txt
        rm $RESULTDIR/result_$DIRNUM\.txt
 
      fi

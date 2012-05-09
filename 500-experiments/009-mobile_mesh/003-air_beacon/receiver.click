@@ -1,6 +1,16 @@
 #define DEBUGLEVEL 2
 
-#define RAWDUMP
+#define CST cst
+
+#if DEVICENUMBER == 0
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
+#endif
+
+#define NOATHOPERATION
+//#define RAWDUMP
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"

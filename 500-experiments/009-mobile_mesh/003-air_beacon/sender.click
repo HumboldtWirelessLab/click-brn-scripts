@@ -1,5 +1,8 @@
 #define DEBUGLEVEL 2
 
+#define NOATHOPERATION
+//#define RAWDUMP
+
 #define CST cst
 
 #if DEVICENUMBER == 0
@@ -21,15 +24,16 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 68, INTERVAL 20, MAXSEQ 500000, BURST 1, PACKETCOUNT 100000, ACTIVE true)
-  -> Print()
+ps::BRN2PacketSource(SIZE 68, INTERVAL 10, MAXSEQ 500000, BURST 50, PACKETCOUNT 10000000, ACTIVE true)
+//  -> Print()
 //ps::BRN2PacketSource(SIZE 1460, INTERVAL 20, MAXSEQ 500000, BURST 2, ACTIVE true)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
+//  -> EtherEncap(0x8086, deviceaddress, 00:01:02:03:04:05)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
 //-> PrintWifi("Sender", TIMESTAMP true)
 //-> rate::SetTXRates( RATE0 0, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
-  -> rate::SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
-  -> SetTXPower(16)
+  -> rate::SetTXRates(RATE0 12, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+  //-> SetTXPower(16)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> Discard;
