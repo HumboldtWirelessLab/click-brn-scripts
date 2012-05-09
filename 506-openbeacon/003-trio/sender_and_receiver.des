@@ -10,7 +10,7 @@ NODEPLACEMENTFILE=placement.default
 NODETABLE=sender_and_receiver.mes
 NODEPLACEMENT=string
 #NODEPLACEMENT=grid
-FIELDSIZE=30
+FIELDSIZE=60
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
