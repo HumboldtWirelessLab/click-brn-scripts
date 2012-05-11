@@ -1,13 +1,13 @@
-NAME=simpleflow
+NAME=mobisec
 SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
+#RADIO=shadowing11b
+RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=20
+TIME=30
 
 NODEPLACEMENTFILE=placement.default
-NODETABLE=simpleflow.mes
+NODETABLE=mobisec.mes
 NODEPLACEMENT=string
 NODEPLACEMENTOPTS="relative"
 FIELDSIZE=RXRANGE
@@ -24,4 +24,4 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
-CONTROLFILE=simpleflow.ctl
+CONTROLFILE=mobisec.ctl
