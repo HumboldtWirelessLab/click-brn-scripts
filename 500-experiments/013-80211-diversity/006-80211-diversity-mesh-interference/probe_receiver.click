@@ -52,3 +52,20 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
   -> Discard;
 
 
+
+/*
+Script(
+wait 5,
+read wifidevice/cst.stats,
+wait 5,
+read wifidevice/cst.stats,
+wait 5,
+read wifidevice/cst.stats
+);
+*/
+
+Script(
+wait 10,
+read wifidevice/cst.stats,
+loop
+);

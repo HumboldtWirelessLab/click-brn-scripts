@@ -11,11 +11,11 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 16, INTERVAL 100, MAXSEQ 500000, BURST 12, PACKETCOUNT 10000, ACTIVE true)
+ps::BRN2PacketSource(SIZE 24, INTERVAL 16, MAXSEQ 500000, BURST 6, PACKETCOUNT 10000, ACTIVE true)
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:32:63)
   -> SetTXRate(RATE 4)
   -> SetTXPower( 4 )
-  -> BRN2SetChannel(CHANNEL 22)
+  -> BRN2SetChannel(CHANNEL 25)
   -> SetTimestamp()
 //  -> Print("TxPreQueue",TIMESTAMP true)
   -> wifioutq::NotifierQueue(1000)

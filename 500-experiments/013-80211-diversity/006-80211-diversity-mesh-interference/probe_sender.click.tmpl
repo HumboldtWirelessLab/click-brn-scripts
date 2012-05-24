@@ -113,3 +113,13 @@ wifioutq::NotifierQueue(2000)
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
+Script(
+wait 10,
+read wifidevice/cst.stats,
+loop
+/*
+wait 5,
+read wifidevice/cst.stats,
+wait 5,
+read wifidevice/cst.stats*/
+);

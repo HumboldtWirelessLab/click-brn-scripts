@@ -1,3 +1,7 @@
 #NODE		DEVICE	MODULSDIR						MODOPTIONS WIFICONFIG	CLICKMODDIR	CLICKSCRIPT	CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
-seismo196	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
-seismo185	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#seismo196	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.804	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#seismo185	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.804	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#seismo176	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#seismo156	ath0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.805	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wndr218		wlan1	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wndr227		wlan1	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -

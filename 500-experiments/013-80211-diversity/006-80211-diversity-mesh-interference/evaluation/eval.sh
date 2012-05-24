@@ -75,7 +75,7 @@ while [ -e $RESULTDIR/$DIRNUM ]; do
 
     . $RESULTDIR/$DIRNUM/params
     if [ $PARAMS_CHANNEL -lt 14 ]; then
-      NODESMACDIR=48
+      NODESMACDIR=1
     fi
     SENDER_ID=`echo $PARAMS_SENDER | mac_to_num $RESULTDIR/$NODESMACDIR/nodes.mac`
 
