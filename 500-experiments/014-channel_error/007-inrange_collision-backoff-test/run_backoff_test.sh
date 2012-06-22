@@ -1,15 +1,18 @@
 #!/bin/bash
 
-NO_NODES_VECTOR="2 3 4 5 6 7"
-PACKET_SIZE_VECTOR="100 250 500 1000 1500"
+NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15"
+PACKET_SIZE_VECTOR="1500"
+#PACKET_SIZE_VECTOR="100 250 500 1000 1500"
 #NO_NODES_VECTOR="3"
 #PACKET_SIZE_VECTOR="250 1500"
 
+REP=1
+
 BO_START_MIN=4
-BO_START_MAX=16
-BO_END_MIN=128
+BO_START_MAX=4
+BO_END_MIN=512
 MUL_STEP=1
-ADD_STEP=16
+ADD_STEP=8
 
 NUM=1
 
@@ -35,7 +38,7 @@ for non in $NO_NODES_VECTOR ; do
       B=$BACKOFF
 
       echo -n "CWMIN=\"" >>  monitor.802
-     
+
       for i in `seq 4`; do
         b=`expr $B - 1`
         echo -n "$b "  >>  monitor.802
@@ -55,30 +58,37 @@ for non in $NO_NODES_VECTOR ; do
 
       echo "AIFS=\"2 2 2 2\""  >>  monitor.802
 
-      BACKOFF=`expr $BACKOFF \* 2`
-      BACKOFF_MAX=`expr $BACKOFF_MAX \* 2`
+      #BACKOFF=`expr $BACKOFF \* 2`
+      #BACKOFF_MAX=`expr $BACKOFF_MAX \* 2`
 
-      if [ "x$TEST" = "x1" ]; then
-        echo "$non $p_s $BACKOFF"
-      else 
+      BACKOFF=`expr $BACKOFF \* $MUL_STEP + $ADD_STEP`
+      BACKOFF_MAX=`expr $BACKOFF_MAX \* $MUL_STEP + $ADD_STEP`
+
+      for r in `seq $REP`; do
+
+        if [ "x$TEST" = "x1" ]; then
+          echo "$non $p_s $BACKOFF"
+        else
+
+          rm -rf $NUM
+          mkdir $NUM
+
+          echo "NUM=$NUM" > $NUM/params
+          echo "NO_NODES=$non" >> $NUM/params
+          echo "PACKETSIZE=$p_s" >> $NUM/params
+          echo "BACKOFF=$BACKOFF" >> $NUM/params
+          echo "BACKOFF_MAX=$non" >> $NUM/params
+
+          LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
+
+          cp monitor.802 $NUM
+        fi
 
         rm -rf $NUM
-	mkdir $NUM
-	
-        echo "NUM=$NUM" > $NUM/params
-        echo "NO_NODES=$non" >> $NUM/params
-        echo "PACKETSIZE=$p_s" >> $NUM/params
-        echo "BACKOFF=$BACKOFF" >> $NUM/params
-        echo "BACKOFF_MAX=$non" >> $NUM/params
-	
-        LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
-  
-        cp monitor.802 $NUM
-      
-      fi
-  
-      let NUM=NUM+1
-  
+
+        let NUM=NUM+1
+      done
+
       rm -f  monitor.802
     done
     rm -f sender.click
@@ -86,3 +96,8 @@ for non in $NO_NODES_VECTOR ; do
   rm -f sender_and_receiver.mes
 done
 
+let NUM=NUM-1
+
+#tar cvfj all_sim.tar.bz2 `seq $NUM` > /dev/null 2>&1
+
+#rm -rf `seq $NUM`
