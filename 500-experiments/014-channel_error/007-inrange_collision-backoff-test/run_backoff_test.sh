@@ -16,7 +16,9 @@ NUM=1
 #echo $NO_NODES_VECTOR
 #echo $PACKET_SIZE_VECTOR
 
-for non in $NO_NODES_VECTOR ; do
+#for rate in $RATES; do
+
+for non in $NO_NODES_VECTOR; do
 
   cat sender_and_receiver.mes.tmpl | sed "s#NONODES#$non#g" > sender_and_receiver.mes
   for p_s in $PACKET_SIZE_VECTOR ; do
@@ -71,7 +73,7 @@ for non in $NO_NODES_VECTOR ; do
         echo "BACKOFF=$BACKOFF" >> $NUM/params
         echo "BACKOFF_MAX=$non" >> $NUM/params
 	
-        LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
+        SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
   
         cp monitor.802 $NUM
       
