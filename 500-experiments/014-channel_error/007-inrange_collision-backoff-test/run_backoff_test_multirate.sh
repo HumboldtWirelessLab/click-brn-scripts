@@ -9,7 +9,7 @@
 CWMIN=( 4 8 12 16 20 24 28 32 64 128 256 512 1024 2048 )
 CWMAX=( 4 8 12 16 20 24 28 32 64 128 256 512 1024 2048 )
 NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15"
-PACKET_SIZE_VECTOR="1500"
+PACKET_SIZE_VECTOR="150"
 RATE_VECTOR="125 62 12"
 
 #CWMIN=( 4 8 )
@@ -39,18 +39,18 @@ for non in $NO_NODES_VECTOR ; do
       rm -f  monitor.802
 
       #echo ${#CWMIN[@]}
- 
+
       for cw_index in `seq ${#CWMIN[@]}` ; do
 
         cp monitor.802.tmpl monitor.802
-	
-	let cwi=cw_index-1
-	
+
+        let cwi=cw_index-1
+
         cwmin=${CWMIN[$cwi]}
         cwmax=${CWMAX[$cwi]}
-       
+
         echo -n "CWMIN=\"" >>  monitor.802
-       
+
         for i in `seq 4`; do
           echo -n "$cwmin "  >>  monitor.802
         done
@@ -76,18 +76,21 @@ for non in $NO_NODES_VECTOR ; do
             echo "NUM=$NUM" > $NUM/params
             echo "NO_NODES=$non" >> $NUM/params
             echo "PACKETSIZE=$p_s" >> $NUM/params
-            echo "BACKOFF=$BACKOFF" >> $NUM/params
+            echo "BACKOFF=$cwmin" >> $NUM/params
             echo "BACKOFF_MAX=$non" >> $NUM/params
             echo "SEED=$NUM" >> $NUM/params
+            echo "RATE=$rate" >> $NUM/params
+            cp monitor.802 $NUM
 
             SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
 
-            cp monitor.802 $NUM
+            rm -rf $NUM
+
           fi
 
           let NUM=NUM+1
-        
-	done
+
+        done
         rm -f  monitor.802
       done
     done
