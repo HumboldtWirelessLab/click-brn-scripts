@@ -6,11 +6,11 @@
 #MUL_STEP=1
 #ADD_STEP=8
 
-CWMIN=( 4 8 12 16 20 24 28 32 40 48 56 64 80 96 112 128 160 192 224 256 )
-CWMAX=( 4 8 12 16 20 24 28 32 40 48 56 64 80 96 112 128 160 192 224 256 )
-NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15"
+CWMIN=( 4 8 12 16 20 24 28 32 40 48 56 64 72 80 88 96 104 112 120 128 144 160 176 192 208 224 240 256 )
+CWMAX=( 4 8 12 16 20 24 28 32 40 48 56 64 72 80 88 96 104 112 120 128 144 160 176 192 208 224 240 256 )
+NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10"
 PACKET_SIZE_VECTOR="150"
-RATE_VECTOR="125 62 12"
+RATE_VECTOR="125 62 12 6"
 
 #CWMIN=( 4 8 )
 #CWMAX=( 4 8 )
@@ -18,7 +18,8 @@ RATE_VECTOR="125 62 12"
 #PACKET_SIZE_VECTOR="1500"
 #RATE_VECTOR="125"
 
-REP=10
+REP=25
+PAR_REP=4
 NUM=1
 
 #echo $NO_NODES_VECTOR
@@ -64,7 +65,8 @@ for non in $NO_NODES_VECTOR ; do
 
         echo "AIFS=\"2 2 2 2\""  >>  monitor.802
 
-        for r in `seq $REP`; do
+        for pr in `seq $PAR_REP`; do
+         for r in `seq $REP`; do
 
           if [ "x$TEST" = "x1" ]; then
             echo "$non $p_s $cwmin $cw_index"
@@ -82,15 +84,27 @@ for non in $NO_NODES_VECTOR ; do
             echo "RATE=$rate" >> $NUM/params
             cp monitor.802 $NUM
 
-            SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
+            rm -f /dev/shm/$r.mark
+            (SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM > /dev/shm/$r.out;rm -rf $NUM;touch /dev/shm/$r.mark) &
 
-            rm -rf $NUM
+            #rm -rf $NUM
 
           fi
 
           let NUM=NUM+1
+         done
 
+         for r in `seq $REP`; do
+           while [ ! -e /dev/shm/$r.mark ]; do
+             sleep 1
+           done
+
+           cat /dev/shm/$r.out
+
+           rm -f /dev/shm/$r.mark /dev/shm/$r.out
+         done
         done
+
         rm -f  monitor.802
       done
     done
