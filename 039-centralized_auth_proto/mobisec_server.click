@@ -14,9 +14,9 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
 device_wifi::WIFIDEV_AP(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 
-tls::TLS(ETHERADDRESS deviceaddress, dst 00-00-00-00-00-01, ROLE "SERVER", KEYDIR "/home/aureliano/Uni/METRIK/repository2/click-brn-scripts/039-centralized_auth_proto/", DEBUG 5);
+tls::TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "SERVER", KEYDIR "/home/aureliano/Uni/METRIK/repository2/click-brn-scripts/039-centralized_auth_proto/", DEBUG 0);
 
-KeyServer::keyserver(PROTOCOL_TYPE "CLIENT-DRIVEN", KEY_LIST_CARDINALITY 4, KEY_TIMEOUT 15, START 5 /* too fast ?? */, DEBUG 5);
+KeyServer::KEYSERVER(PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP device_wifi/wep/wep_encap, WEPDECAP device_wifi/wep/wep_decap, KEY_LIST_CARDINALITY 4, KEY_TIMEOUT 5000, START 20000 /* too fast ?? */, DEBUG 5);
 
 device_wifi
 	-> srv_cnt_in::Counter()
@@ -52,11 +52,12 @@ Idle
 
 
 Script(
-  wait 12,
-  read device_wifi/ap/assoclist.stations,
-  read lt.links,
-  wait 10,
-  read srv_cnt_in.count,
-  read srv_cnt_out.count,
-  wait 5
+	write device_wifi/wep_enable.switch 1,
+	wait 12,
+	read device_wifi/ap/assoclist.stations,
+	read lt.links,
+	wait 10,
+	read srv_cnt_in.count,
+	read srv_cnt_out.count,
+	wait 5
 );
