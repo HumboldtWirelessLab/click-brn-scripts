@@ -1,25 +1,19 @@
 #!/bin/bash
 
-#BO_START_MIN=4
-#BO_START_MAX=4
-#BO_END_MIN=512
-#MUL_STEP=1
-#ADD_STEP=8
-
 CWMIN=( 4 8 12 16 20 24 28 32 40 48 56 64 72 80 88 96 104 112 120 128 144 160 176 192 208 224 240 256 )
 CWMAX=( 4 8 12 16 20 24 28 32 40 48 56 64 72 80 88 96 104 112 120 128 144 160 176 192 208 224 240 256 )
 NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10"
 PACKET_SIZE_VECTOR="150"
 RATE_VECTOR="125 62 12 6"
-
-#CWMIN=( 4 8 )
-#CWMAX=( 4 8 )
-#NO_NODES_VECTOR="4"
-#PACKET_SIZE_VECTOR="1500"
-#RATE_VECTOR="125"
+BURST_PARAMS="2"
 
 REP=10
 PAR_REP=10
+
+if [ "x$1" != "x" ]; then
+  . $1
+fi
+
 NUM=1
 
 #echo $NO_NODES_VECTOR
@@ -27,15 +21,18 @@ NUM=1
 
 #for rate in $RATES; do
 
+rm -rf measurement_logdir
+mkdir measurement_logdir
+
 for non in $NO_NODES_VECTOR ; do
 
   cat sender_and_receiver.mes.tmpl | sed "s#NONODES#$non#g" > sender_and_receiver.mes
-  
+
   for p_s in $PACKET_SIZE_VECTOR ; do
 
     for rate in $RATE_VECTOR ; do
 
-      cat sender.click.tmpl | sed "s#PACKETSIZE_PARAMS#$p_s#g" | sed "s#RATE_PARAMS#$rate#g" > sender.click
+      cat sender.click.tmpl | sed "s#PACKETSIZE_PARAMS#$p_s#g" | sed "s#RATE_PARAMS#$rate#g" | sed "s#BURST_PARAMS#$BURST_PARAMS#g" > sender.click
 
       rm -f  monitor.802
 
@@ -115,6 +112,8 @@ done
 
 let NUM=NUM-1
 
+tar cvf measurement_logdir.tar measurement_logdir
+rm -rf measurement_logdir
 #tar cvfj all_sim.tar.bz2 `seq $NUM` > /dev/null 2>&1
 
 #rm -rf `seq $NUM`

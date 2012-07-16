@@ -46,11 +46,17 @@ error_clf[7]
 
 filter_tx[1]
   -> discard;
-  
+
 Script(
  wait 1,
 // read wifidevice/ced.stats,
  wait 8,
  read cnt.count,
  read cnt.byte_count
+);
+
+Script(
+ wait 1,
+ read wifidevice/cst.stats,
+ loop
 );
