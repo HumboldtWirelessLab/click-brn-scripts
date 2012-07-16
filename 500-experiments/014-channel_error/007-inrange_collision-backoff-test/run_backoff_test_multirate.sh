@@ -14,6 +14,15 @@ if [ "x$1" != "x" ]; then
   . $1
 fi
 
+if [ "x$RESULTFILE_PREFIX" = "x" ]; then
+  RESULTFILE_PREFIX="result"
+fi
+
+
+DATE=`date +"%Y%m%d-%k%M"`
+RESULTFILE="$RESULTFILE_PREFIX\_$DATE\.dat"
+
+
 NUM=1
 
 #echo $NO_NODES_VECTOR
@@ -96,7 +105,7 @@ for non in $NO_NODES_VECTOR ; do
              sleep 1
            done
 
-           cat /dev/shm/$r.out
+           cat /dev/shm/$r.out | tee -a $RESULTFILE
 
            rm -f /dev/shm/$r.mark /dev/shm/$r.out
          done
