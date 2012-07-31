@@ -18,36 +18,47 @@ case "$SIGN" in
      ;;
 esac
 
+if [ $LATEX -eq 1 ]; then
+    SUMMARY=summary.tex
+    TESTBED=testbed.tex
+else
+    SUMMARY=summary.log
+    TESTBED=summary.log
+fi
+
 LIMIT=$LIMIT
 i=$START
 
 TOPDIR=$PWD
 CURRENT_DIR=$PWD
 
-cat $DIR/share/main.tex > testbed.tex
-
-cp $DIR/share/IEEEtran* .
+if [ $LATEX -eq 1 ]; then
+    cat $DIR/share/main.tex > testbed.tex
+    cp $DIR/share/IEEEtran* .
+fi
 
 if [ "x$MODE" = "xSIMULATION" ]; then
   MODESTRING="Simulation"
 fi
 
-echo "\input{summary}" >> testbed.tex
+if [ $LATEX -eq 1 ]; then
+    echo "\input{summary}" >> testbed.tex
 
-echo "\section{Summary}" > summary.tex
+    echo "\section{Summary}" > summary.tex
 
-echo "\begin{table}[h]" >> summary.tex
-echo "\centering" >> summary.tex
-if [ "x$VALGRIND" = "x1" ]; then
-  echo "\begin{tabular}{p{.35\textwidth}p{.15\textwidth}p{.15\textwidth}p{.15\textwidth}p{.10\textwidth}}" >> summary.tex
-  echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Memory Leak} & \textbf{Time}" >> summary.tex
-else
-  echo "\begin{tabular}{p{.40\textwidth}p{.20\textwidth}p{.20\textwidth}p{.10\textwidth}}" >> summary.tex
-  echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Time}" >> summary.tex
+    echo "\begin{table}[h]" >> summary.tex
+    echo "\centering" >> summary.tex
+    if [ "x$VALGRIND" = "x1" ]; then
+      echo "\begin{tabular}{p{.35\textwidth}p{.15\textwidth}p{.15\textwidth}p{.15\textwidth}p{.10\textwidth}}" >> summary.tex
+      echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Memory Leak} & \textbf{Time}" >> summary.tex
+    else
+      echo "\begin{tabular}{p{.40\textwidth}p{.20\textwidth}p{.20\textwidth}p{.10\textwidth}}" >> summary.tex
+      echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Time}" >> summary.tex
+    fi
+    echo "\colheadend" >> summary.tex
+
+    mkdir -p img
 fi
-echo "\colheadend" >> summary.tex
-
-mkdir -p img
 
 while [ $i -le $LIMIT ]; do
   MEASUREMENTNUM=$RANDOM
@@ -56,32 +67,36 @@ while [ $i -le $LIMIT ]; do
   NAME=`echo $WORKDIR | sed "s#$NUM-##g" | sed "s#_# #g"`
   DESCRIPTIONFILE=`(cd $WORKDIR;ls *.des | awk '{print $1}')`
   echo -n "Test $WORKDIR "
-  echo "\section{$NAME}" >> testbed.tex
-  echo "\subsection{Output}" >> testbed.tex
+  if [ $LATEX -eq 1 ]; then
+      echo "\section{$NAME}" >> testbed.tex
+      echo "\subsection{Output}" >> testbed.tex
+  fi
 
 
   if [ "x$MODE" = "xSIMULATION" ]; then
-    (cd $WORKDIR; EVAL_LOG_OUT=3 run_sim.sh ns $DESCRIPTIONFILE $MEASUREMENTNUM) 1> /dev/null 3>> testbed.tex
+    (cd $WORKDIR; EVAL_LOG_OUT=3 run_sim.sh ns $DESCRIPTIONFILE $MEASUREMENTNUM) 1> /dev/null 3>> $TESTBED
     RESULT=$?
   else
     if [ "x$MODE" = "xMEASUREMENT" ]; then
-      (cd $WORKDIR; EVAL_LOG_OUT=3 RUNMODE=REBOOT run_measurement.sh $DESCRIPTIONFILE $MEASUREMENTNUM ) >> testbed.tex 3>&1
+      (cd $WORKDIR; EVAL_LOG_OUT=3 RUNMODE=REBOOT run_measurement.sh $DESCRIPTIONFILE $MEASUREMENTNUM ) >> $TESTBED 3>&1
       RESULT=$?
     else
       RESULT=1
     fi
   fi
 
-  echo "\subsection{Result}" >> testbed.tex
+  if [ $LATEX -eq 1 ]; then
+      echo "\subsection{Result}" >> testbed.tex
+  fi
 
-  if [ $RESULT -ne 0 ]; then 
+  if [ $RESULT -ne 0 ]; then
     if [ $RESULT -eq 1 ]; then
-      echo "$MODESTRING failed !" >> testbed.tex
+      echo "$MODESTRING failed !" >> $TESTBED
       echo "failed ! $MODESTRING failed !";
       SIM="Failed"
       EVO="Failed"
     else
-      echo "Evaluation failed !" >> testbed.tex
+      echo "Evaluation failed !" >> $TESTBED
       echo "failed ! Evaluation failed !";
       SIM="OK"
       EVO="Failed"
@@ -92,19 +107,21 @@ while [ $i -le $LIMIT ]; do
     SIM="OK"
     EVO="OK"
 
-    IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$"`
-    IMG_COUNT=`echo $IMGS | wc -w`
+    if [ $LATEX -eq 1 ]; then
+        IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$"`
+        IMG_COUNT=`echo $IMGS | wc -w`
 
-    if [ $IMG_COUNT -gt 0 ]; then
+        if [ $IMG_COUNT -gt 0 ]; then
 
-      (cd $WORKDIR/$MEASUREMENTNUM/evaluation/; for p in $IMGS; do mv $p $CURRENT_DIR/img/$NUM-$p; done)
+          (cd $WORKDIR/$MEASUREMENTNUM/evaluation/; for p in $IMGS; do mv $p $CURRENT_DIR/img/$NUM-$p; done)
 
-      for p in $IMGS; do
-        echo "\begin{figure}[h]" >> testbed.tex
-        echo "\centering" >> testbed.tex
-        echo "\includegraphics[width=0.50\textwidth]{img/$NUM-$p}" >> testbed.tex
-        echo "\end{figure}" >> testbed.tex
-      done
+          for p in $IMGS; do
+            echo "\begin{figure}[h]" >> testbed.tex
+            echo "\centering" >> testbed.tex
+            echo "\includegraphics[width=0.50\textwidth]{img/$NUM-$p}" >> testbed.tex
+            echo "\end{figure}" >> testbed.tex
+          done
+        fi
     fi
 
     if [ "x$VALGRIND" = "x1" ]; then
@@ -129,27 +146,29 @@ while [ $i -le $LIMIT ]; do
 
 
 if [ "x$VALGRIND" = "x1" ]; then
-  echo "$NAME & $SIM & $EVO & $MEMORYLEAK & $TIMESTATS \\\\" >> summary.tex
+  echo "$NAME & $SIM & $EVO & $MEMORYLEAK & $TIMESTATS \\\\" >> $SUMMARY
   LINEEND=5
 else
-  echo "$NAME & $SIM & $EVO & $TIMESTATS \\\\" >> summary.tex
+  echo "$NAME & $SIM & $EVO & $TIMESTATS \\\\" >> $SUMMARY
   LINEEND=4
 fi
-  echo "\cline{1-$LINEEND}" >> summary.tex
+  echo "\cline{1-$LINEEND}" >> $SUMMARY
 
   i=`expr $i + 1`
 done
 
-echo "\end{tabular}" >> summary.tex
-echo "\caption{Summary}" >> summary.tex
-echo "\label{tab:measurements_parameters}" >> summary.tex
-echo "\end{table}" >> summary.tex
+if [ $LATEX -eq 1 ]; then
+    echo "\end{tabular}" >> summary.tex
+    echo "\caption{Summary}" >> summary.tex
+    echo "\label{tab:measurements_parameters}" >> summary.tex
+    echo "\end{table}" >> summary.tex
 
-echo "\end{document}" >> testbed.tex
+    echo "\end{document}" >> testbed.tex
 
-pdflatex -halt-on-error testbed.tex > /dev/null 2>&1
+    pdflatex -halt-on-error testbed.tex > /dev/null 2>&1
 
-if [ -f testbed.pdf ]; then
-  rm -f testbed.aux testbed.log testbed.tex summary.tex summary.aux IEEEtran.*
-  rm -rf img
+    if [ -f testbed.pdf ]; then
+      rm -f testbed.aux testbed.log testbed.tex summary.tex summary.aux IEEEtran.*
+      rm -rf img
+    fi
 fi
