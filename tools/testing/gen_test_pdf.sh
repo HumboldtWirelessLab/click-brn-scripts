@@ -18,12 +18,20 @@ case "$SIGN" in
      ;;
 esac
 
+if [ "x$LATEX" = "x" ]; then
+    LATEX=1
+fi
+
 if [ $LATEX -eq 1 ]; then
     SUMMARY=summary.tex
     TESTBED=testbed.tex
+    SUMMARY_TEX=summary.tex
+    TESTBED_TEX=testbed.tex
 else
     SUMMARY=summary.log
     TESTBED=summary.log
+    SUMMARY_TEX=/dev/null
+    TESTBED_TEX=/dev/null
 fi
 
 LIMIT=$LIMIT
@@ -33,7 +41,7 @@ TOPDIR=$PWD
 CURRENT_DIR=$PWD
 
 if [ $LATEX -eq 1 ]; then
-    cat $DIR/share/main.tex > testbed.tex
+    cat $DIR/share/main.tex > $TESTBED_TEX
     cp $DIR/share/IEEEtran* .
 fi
 
@@ -42,20 +50,20 @@ if [ "x$MODE" = "xSIMULATION" ]; then
 fi
 
 if [ $LATEX -eq 1 ]; then
-    echo "\input{summary}" >> testbed.tex
+    echo "\input{summary}" >> $TESTBED_TEX
 
-    echo "\section{Summary}" > summary.tex
+    echo "\section{Summary}" > $SUMMARY_TEX
 
-    echo "\begin{table}[h]" >> summary.tex
-    echo "\centering" >> summary.tex
+    echo "\begin{table}[h]" >> $SUMMARY_TEX
+    echo "\centering" >> $SUMMARY_TEX
     if [ "x$VALGRIND" = "x1" ]; then
-      echo "\begin{tabular}{p{.35\textwidth}p{.15\textwidth}p{.15\textwidth}p{.15\textwidth}p{.10\textwidth}}" >> summary.tex
-      echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Memory Leak} & \textbf{Time}" >> summary.tex
+      echo "\begin{tabular}{p{.35\textwidth}p{.15\textwidth}p{.15\textwidth}p{.15\textwidth}p{.10\textwidth}}" >> $SUMMARY_TEX
+      echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Memory Leak} & \textbf{Time}" >> $SUMMARY_TEX
     else
-      echo "\begin{tabular}{p{.40\textwidth}p{.20\textwidth}p{.20\textwidth}p{.10\textwidth}}" >> summary.tex
-      echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Time}" >> summary.tex
+      echo "\begin{tabular}{p{.40\textwidth}p{.20\textwidth}p{.20\textwidth}p{.10\textwidth}}" >> $SUMMARY_TEX
+      echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Time}" >> $SUMMARY_TEX
     fi
-    echo "\colheadend" >> summary.tex
+    echo "\colheadend" >> $SUMMARY_TEX
 
     mkdir -p img
 fi
@@ -68,8 +76,8 @@ while [ $i -le $LIMIT ]; do
   DESCRIPTIONFILE=`(cd $WORKDIR;ls *.des | awk '{print $1}')`
   echo -n "Test $WORKDIR "
   if [ $LATEX -eq 1 ]; then
-      echo "\section{$NAME}" >> testbed.tex
-      echo "\subsection{Output}" >> testbed.tex
+      echo "\section{$NAME}" >> $TESTBED_TEX
+      echo "\subsection{Output}" >> $TESTBED_TEX
   fi
 
 
@@ -86,7 +94,7 @@ while [ $i -le $LIMIT ]; do
   fi
 
   if [ $LATEX -eq 1 ]; then
-      echo "\subsection{Result}" >> testbed.tex
+      echo "\subsection{Result}" >> $TESTBED_TEX
   fi
 
   if [ $RESULT -ne 0 ]; then
@@ -102,7 +110,7 @@ while [ $i -le $LIMIT ]; do
       EVO="Failed"
     fi
   else
-    echo "OK !" >> testbed.tex
+    echo "OK !" >> $TESTBED
     echo "ok."
     SIM="OK"
     EVO="OK"
@@ -116,10 +124,10 @@ while [ $i -le $LIMIT ]; do
           (cd $WORKDIR/$MEASUREMENTNUM/evaluation/; for p in $IMGS; do mv $p $CURRENT_DIR/img/$NUM-$p; done)
 
           for p in $IMGS; do
-            echo "\begin{figure}[h]" >> testbed.tex
-            echo "\centering" >> testbed.tex
-            echo "\includegraphics[width=0.50\textwidth]{img/$NUM-$p}" >> testbed.tex
-            echo "\end{figure}" >> testbed.tex
+            echo "\begin{figure}[h]" >> $TESTBED_TEX
+            echo "\centering" >> $TESTBED_TEX
+            echo "\includegraphics[width=0.50\textwidth]{img/$NUM-$p}" >> $TESTBED_TEX
+            echo "\end{figure}" >> $TESTBED_TEX
           done
         fi
     fi
@@ -146,29 +154,32 @@ while [ $i -le $LIMIT ]; do
 
 
 if [ "x$VALGRIND" = "x1" ]; then
-  echo "$NAME & $SIM & $EVO & $MEMORYLEAK & $TIMESTATS \\\\" >> $SUMMARY
+  echo "$NAME & $SIM & $EVO & $MEMORYLEAK & $TIMESTATS \\\\" >> $SUMMARY_TEX
   LINEEND=5
 else
-  echo "$NAME & $SIM & $EVO & $TIMESTATS \\\\" >> $SUMMARY
+  echo "$NAME & $SIM & $EVO & $TIMESTATS \\\\" >> $SUMMARY_TEX
   LINEEND=4
 fi
-  echo "\cline{1-$LINEEND}" >> $SUMMARY
+  echo "\cline{1-$LINEEND}" >> $SUMMARY_TEX
 
   i=`expr $i + 1`
 done
 
 if [ $LATEX -eq 1 ]; then
-    echo "\end{tabular}" >> summary.tex
-    echo "\caption{Summary}" >> summary.tex
-    echo "\label{tab:measurements_parameters}" >> summary.tex
-    echo "\end{table}" >> summary.tex
+    echo "\end{tabular}" >> $SUMMARY_TEX
+    echo "\caption{Summary}" >> $SUMMARY_TEX
+    echo "\label{tab:measurements_parameters}" >> $SUMMARY_TEX
+    echo "\end{table}" >> $SUMMARY_TEX
 
-    echo "\end{document}" >> testbed.tex
+    echo "\end{document}" >> $SUMMARY_TEX
 
     pdflatex -halt-on-error testbed.tex > /dev/null 2>&1
 
     if [ -f testbed.pdf ]; then
-      rm -f testbed.aux testbed.log testbed.tex summary.tex summary.aux IEEEtran.*
+      rm -f testbed.aux testbed.log $TESTBED $SUMMARY $TESTBED_TEX $SUMMARY_TEX summary.aux IEEEtran.*
       rm -rf img
     fi
+else
+  rm -f testbed.aux testbed.log $TESTBED $SUMMARY summary.aux IEEEtran.*
+  rm -rf img
 fi
