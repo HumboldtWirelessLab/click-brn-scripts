@@ -4,7 +4,7 @@ SIMULATOR=ns2
 RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=1800
+TIME=60
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=mobisec.mes

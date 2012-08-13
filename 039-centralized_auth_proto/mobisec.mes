@@ -1,4 +1,6 @@
 #NODE	    DEVICE	MODULSDIR					 MODOPTIONS WIFICONFIG			CLICKMODDIR	CLICKSCRIPT			CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
 sk1	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		mobisec_server.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
 sk2	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		mobisec_node.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
-sk3	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		mobisec_node.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+#sk3	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		mobisec_node.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+#sk4	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		mobisec_node.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
+#sk5	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		mobisec_node.click	LOGDIR/NODENAME.NODEDEVICE.log	-		-
