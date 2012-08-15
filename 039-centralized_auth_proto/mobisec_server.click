@@ -32,6 +32,7 @@ KeyServer		:: KEYSERVER(PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/w
  * ******* Layer 0: Integration of Raw Device **************
  */
 rawdevice
+	-> Print("to server")
 	-> [2]wifidev_ap[6]
 	//-> Print("from server")
 	-> rawdevice;
@@ -53,20 +54,21 @@ wifidev_ap
 	-> dsr_clf :: Classifier( 0/BRN_PORT_DSR /* BrnDSR */, - /* other */);
          
 wifidev_ap[1] //broadcast and brn
-	-> Print("BRN-In")
+	//-> Print("BRN-In")
 	-> BRN2EtherDecap()
 	-> dsr_clf;
 	
 	dsr_clf[0]
-		-> Print("DSR-Packet")
+		-> Print("DSR-Packet",1000)
 		-> [1]dsr;
 
 	dsr_clf[1]
 		-> Print("No DSR-Packet")
+		-> BRN2Decap()
 		-> from_routing :: Null();
 
 wifidev_ap[2] 
-	-> Print("NODENAME: For and brn", TIMESTAMP true)
+	//-> Print("NODENAME: For and brn", TIMESTAMP true)
 	-> [0]dsr;  //foreign and brn
 
 wifidev_ap[3] -> Discard;  //to me no brn
@@ -81,6 +83,8 @@ dsr[0]
 	
 	toMeAfterDsr[0] 
 		-> Print("DSR-out: For ME",100)
+		-> BRN2EtherDecap()
+		-> BRN2Decap()
 		-> from_routing;
 	  
 	toMeAfterDsr[1]
@@ -111,7 +115,7 @@ Idle -> [3]dsr;
  */
 
 to_MobiSEC_KeyServer :: Null()
-	-> BRN2Decap()
+	-> Print("IMPORTANT: Here I need a clean TLS-Pkt****************************", 100)
 	-> tls
 	-> srv_cnt_out::Counter()
 	-> from_MobiSEC_KeyServer :: Null();
@@ -137,12 +141,15 @@ from_MobiSEC_KeyServer
 
 
 Script(
+	/*
 	write dsr/src_forwarder.debug 4,
 	write dsr/querier.debug 4,
 	wait 25,
-	read wifidev_ap/ap/assoclist.stations,
+	
 	read lt.links,
 	wait 10,
 	read wifidev_ap/ap/assoclist.stations,
 	read lt.links,
+	*/
 );
+
