@@ -1,7 +1,7 @@
 //#define RAWDUMP
 //#define RAWDEV_DEBUG
 #define LINKSTAT_ENABLE
-#define DEBUG_DSR
+//#define DEBUG_DSR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -41,8 +41,9 @@ switch_up		:: Switch();
 switch_down 	:: PullSwitch();
 switch_down2	:: Switch();
 
-tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "CLIENT", KEYDIR "/home/aureliano/Uni/METRIK/repository2/click-brn-scripts/039-centralized_auth_proto/", DEBUG 5);
+tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "CLIENT", KEYDIR "/home/aureliano/Uni/METRIK/repository2/click-brn-scripts/039-centralized_auth_proto/", DEBUG 0);
 BackboneNode	:: BACKBONE_NODE(NODEID id, PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, START 10000, KEY_TIMEOUT 5000, DEVICE_CONTROL_UP switch_up, DEVICE_CONTROL_DOWN switch_down, DEVICE_CONTROL_DOWN2 switch_down2, DEBUG 5);
+
 
 
 
@@ -67,15 +68,12 @@ switch_down
 
 /********* Layer 1: Integration of wifidev_client *********/
 switch_up[0] // Flow 0 upwards: Client-Pkts 
-	//-> Print("received by client ++++++")
-	-> [1]wifidev_client[1]
-	-> Print("Node as Cl: Power!!!")
+	-> [1]wifidev_client[1]	
 	-> [0]switch_down; // Flow 0 downwards: Client-Pkts 
 
 /********* Layer 1: Integration of wifidev_ap *********/
 switch_up[1] // Flow 1 upwards: AP-Pkts 
 	-> [2]wifidev_ap[6]
-	-> Print("Node as AP: Power!!!!")
 	-> [1]switch_down; // Flow 1 downwards: AP-Pkts 
 
 
@@ -104,7 +102,8 @@ wifidev_ap[1] //broadcast and brn
 
 	dsr_clf[1]
 		//-> Print("No DSR-Packet")
-		-> Discard;
+		-> BRN2Decap()
+		-> from_routing :: Null();
 
 wifidev_ap[2] 
 	// -> Print("NODENAME: For and brn", TIMESTAMP true)
@@ -120,21 +119,23 @@ dsr[0]
 	-> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
 	
 	toMeAfterDsr[0] 
-		-> Print("DSR-out: For ME",100)
-		-> from_routing :: Null();
+		//-> Print("DSR-out: For ME",100)
+		-> BRN2EtherDecap()
+		-> BRN2Decap()
+		-> from_routing;
 	  
 	toMeAfterDsr[1]
-		-> Print("DSR-out: Broadcast")
+		//-> Print("DSR-out: Broadcast")
 		-> Discard;
 
 	toMeAfterDsr[2]
-		-> Print("DSR-out: Foreign/Client")
+		//-> Print("DSR-out: Foreign/Client")
 		-> [1]wifidev_ap;
   
 dsr[1] 
-	-> Print("DSR[1]-out")
+	//-> Print("DSR[1]-out")
 	-> SetEtherAddr(SRC deviceaddress)
-	-> Print("DSR-Ether-OUT")
+	//-> Print("DSR-Ether-OUT")
 	-> [0]wifidev_ap;
 
 
@@ -154,12 +155,9 @@ Idle -> [3]dsr;
  */
 
 to_MobiSEC_BackboneNode :: Null()
-	-> BRN2EtherDecap()
-	-> BRN2Decap()
 	-> tls
-	//-> Print("tls from client")
+	-> BRN2Encap(BRN_PORT_FLOW, BRN_PORT_FLOW, BRN_DEFAULT_TTL, BRN_DEFAULT_TOS)
 	-> BRN2EtherEncap(USEANNO true)
-	-> Print("tls from client")
 	-> from_MobiSEC_BackboneNode :: Null();
 
 	tls[1] // decrypt message
@@ -169,6 +167,8 @@ to_MobiSEC_BackboneNode :: Null()
 
 /***** connection to wifidev_client *******/
 wifidev_client
+	-> BRN2EtherDecap()
+	-> BRN2Decap()
 	-> to_MobiSEC_BackboneNode;
 	
 /***** connection to wifidev_ap *******/	
@@ -187,6 +187,7 @@ from_MobiSEC_BackboneNode
 
 
 Script(
+	/*
 	wait 15,
 	//write wifidev_client/client/assoc_req.send_reassoc_req,
 	read wifidev_client/client/isc.wireless_info,
@@ -198,6 +199,7 @@ Script(
 	write dsr/querier.debug 4,
 	
 	read lt.links,
+	*/
 );
 
 

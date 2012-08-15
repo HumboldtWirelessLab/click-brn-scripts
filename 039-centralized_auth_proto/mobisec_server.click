@@ -1,7 +1,7 @@
 //#define RAWDUMP
 //#define RAWDEV_DEBUG
 #define LINKSTAT_ENABLE
-#define DEBUG_DSR
+//#define DEBUG_DSR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -22,7 +22,7 @@ routingmaint	:: RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE rou
 wifidev_ap		:: WIFIDEV_AP(DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 dsr				:: DSR(id, lt, wifidev_ap/etx_metric,routingmaint); // Routing 
 
-tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "SERVER", KEYDIR "/home/aureliano/Uni/METRIK/repository2/click-brn-scripts/039-centralized_auth_proto/", DEBUG 5);
+tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "SERVER", KEYDIR "/home/aureliano/Uni/METRIK/repository2/click-brn-scripts/039-centralized_auth_proto/", DEBUG 0);
 KeyServer		:: KEYSERVER(PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, KEY_LIST_CARDINALITY 4, KEY_TIMEOUT 5000, START 10000 /* too fast ?? */, DEBUG 5);
 
 
@@ -32,9 +32,7 @@ KeyServer		:: KEYSERVER(PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/w
  * ******* Layer 0: Integration of Raw Device **************
  */
 rawdevice
-	-> Print("to server")
 	-> [2]wifidev_ap[6]
-	//-> Print("from server")
 	-> rawdevice;
 
 
@@ -46,7 +44,6 @@ rawdevice
  * Output 0: 	From device to me
  */
 to_routing :: Null()
-
 	-> dsr;
 	
 wifidev_ap
@@ -59,11 +56,11 @@ wifidev_ap[1] //broadcast and brn
 	-> dsr_clf;
 	
 	dsr_clf[0]
-		-> Print("DSR-Packet",1000)
+		//-> Print("DSR-Packet",1000)
 		-> [1]dsr;
 
 	dsr_clf[1]
-		-> Print("No DSR-Packet")
+		//-> Print("No DSR-Packet")
 		-> BRN2Decap()
 		-> from_routing :: Null();
 
@@ -78,27 +75,27 @@ wifidev_ap[5] //foreign and no brn
 	-> [0]dsr;
 
 dsr[0]
-	-> Print("DSR to this node????")
+	//-> Print("DSR to this node????")
 	-> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
 	
 	toMeAfterDsr[0] 
-		-> Print("DSR-out: For ME",100)
+		//-> Print("DSR-out: For ME",100)
 		-> BRN2EtherDecap()
 		-> BRN2Decap()
 		-> from_routing;
 	  
 	toMeAfterDsr[1]
-		-> Print("DSR-out: Broadcast")
+		//-> Print("DSR-out: Broadcast")
 		-> Discard;
 
 	toMeAfterDsr[2]
-		-> Print("DSR-out: Foreign/Client")
+		//-> Print("DSR-out: Foreign/Client")
 		-> [1]wifidev_ap;
   
 dsr[1] 
-	-> Print("DSR[1]-out")
+	//-> Print("DSR[1]-out")
 	-> SetEtherAddr(SRC deviceaddress)
-	-> Print("DSR-Ether-OUT")
+	//-> Print("DSR-Ether-OUT")
 	-> [0]wifidev_ap;
 	
 
@@ -115,15 +112,13 @@ Idle -> [3]dsr;
  */
 
 to_MobiSEC_KeyServer :: Null()
-	-> Print("IMPORTANT: Here I need a clean TLS-Pkt****************************", 100)
 	-> tls
-	-> srv_cnt_out::Counter()
+	-> BRN2Encap(BRN_PORT_FLOW, BRN_PORT_FLOW, BRN_DEFAULT_TTL, BRN_DEFAULT_TOS)
+	-> BRN2EtherEncap()
 	-> from_MobiSEC_KeyServer :: Null();
 
 	tls[1] // decrypt message
-	    //-> Print()
 		-> KeyServer
-		//-> Print()
 		-> [1]tls; //encrypt message
 
 
@@ -132,7 +127,6 @@ from_routing
 	-> to_MobiSEC_KeyServer;
 	
 from_MobiSEC_KeyServer
-	-> BRN2EtherEncap()
 	-> to_routing;
 
 
@@ -141,15 +135,16 @@ from_MobiSEC_KeyServer
 
 
 Script(
-	/*
+/*
+	wait 40,
 	write dsr/src_forwarder.debug 4,
 	write dsr/querier.debug 4,
-	wait 25,
+	read wifidev_ap/ap/assoclist.stations,
+	read lt.links,
 	
 	read lt.links,
 	wait 10,
-	read wifidev_ap/ap/assoclist.stations,
-	read lt.links,
+	
 	*/
 );
 
