@@ -18,6 +18,10 @@ case "$SIGN" in
      ;;
 esac
 
+if [ "x$SIMULATOR" = "x" ]; then
+  SIMULATOR=ns
+fi
+
 if [ "x$LATEX" = "x" ]; then
     LATEX=1
 fi
@@ -53,6 +57,9 @@ if [ $LATEX -eq 1 ]; then
     echo "\input{summary}" >> $TESTBED_TEX
 
     echo "\section{Summary}" > $SUMMARY_TEX
+if [ "x$MODE" = "xSIMULATION" ]; then
+    echo "Mode:$MODESTRING Simulator: $SIMULATOR" >> $SUMMARY_TEX
+fi 
 
     echo "\begin{table}[h]" >> $SUMMARY_TEX
     echo "\centering" >> $SUMMARY_TEX
@@ -82,7 +89,7 @@ while [ $i -le $LIMIT ]; do
 
 
   if [ "x$MODE" = "xSIMULATION" ]; then
-    (cd $WORKDIR; EVAL_LOG_OUT=3 run_sim.sh ns $DESCRIPTIONFILE $MEASUREMENTNUM) 1> /dev/null 3>> $TESTBED
+    (cd $WORKDIR; EVAL_LOG_OUT=3 run_sim.sh $SIMULATOR $DESCRIPTIONFILE $MEASUREMENTNUM) 1> /dev/null 3>> $TESTBED
     RESULT=$?
   else
     if [ "x$MODE" = "xMEASUREMENT" ]; then
