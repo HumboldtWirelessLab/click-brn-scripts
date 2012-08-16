@@ -178,7 +178,7 @@ if [ $LATEX -eq 1 ]; then
     echo "\label{tab:measurements_parameters}" >> $SUMMARY_TEX
     echo "\end{table}" >> $SUMMARY_TEX
 
-    echo "\end{document}" >> $SUMMARY_TEX
+    echo "\end{document}" >> $TESTBED_TEX
 
     pdflatex -halt-on-error testbed.tex > /dev/null 2>&1
 
