@@ -11,10 +11,10 @@
 #include "routing/dsr.click"
 #include "services/gateway.click"
 
-BRNAddressInfo(deviceaddress eth0:eth);
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 BRNAddressInfo(serviceaddress 00:00:00:01:23:45);
 
-wireless::BRN2Device(DEVICENAME "eth0_1", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", MASTERDEVICE true, SERVICEDEVICE false);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", MASTERDEVICE true, SERVICEDEVICE false);
 service::BRN2Device(DEVICENAME "service", ETHERADDRESS serviceaddress, DEVICETYPE "VIRTUAL", MASTERDEVICE false, SERVICEDEVICE true);
 
 id::BRN2NodeIdentity(NAME "NODENAME", DEVICES "wireless service");
@@ -24,7 +24,7 @@ routingtable::BrnRoutingTable(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLI
 routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 2);
 routingmaint::RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
 
-device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 dsr::DSR(id, lt, device_wifi/etx_metric,routingmaint);
 

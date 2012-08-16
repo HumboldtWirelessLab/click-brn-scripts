@@ -11,7 +11,7 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
+rawdevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 pc::PacketCompression(CMODE 0, DEBUG 2);
 pdc::PacketDecompression(CMODE 0, DEBUG 2);
 

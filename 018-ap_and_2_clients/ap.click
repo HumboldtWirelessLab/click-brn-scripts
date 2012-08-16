@@ -1,17 +1,20 @@
 #define DEBUGLEVEL 2
 
+#define RAWDEV_DEBUG
+#define RAWDUMP
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_ap.click"
 
-BRNAddressInfo(deviceaddress eth0:eth);
-wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
-device_wifi::WIFIDEV_AP(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
+device_wifi::WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 
 device_wifi
 -> BRN2EtherDecap()

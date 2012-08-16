@@ -12,7 +12,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
-device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 geor::GEOR(id, lt, device_wifi/link_stat); 
 
@@ -53,11 +53,11 @@ brn_clf[1]
 brn_clf[2]->Discard;
                                     
 device_wifi[1]
-  -> Print("BRN-In")
+//  -> Print("BRN-In")
   -> Discard;
 
 device_wifi[2]
-  -> Print("BRN-In")
+//  -> Print("BRN-In")
   -> Discard;
 
 Idle
@@ -67,5 +67,5 @@ Idle
   ->[3]geor;
 
 Script(
-  write geor/gps.cart_coord NODEPOSITIONX NODEPOSITIONY NODEPOSITIONZ,
+  write geor/gps.cart_coord NODEPOSITIONX NODEPOSITIONY NODEPOSITIONZ
 ); 

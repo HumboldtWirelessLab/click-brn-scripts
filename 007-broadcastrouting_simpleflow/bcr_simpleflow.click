@@ -18,7 +18,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
-device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 bc::BROADCAST(ID id, LT lt);
 

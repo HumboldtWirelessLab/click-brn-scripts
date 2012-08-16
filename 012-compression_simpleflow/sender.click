@@ -11,7 +11,7 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-rawdevice::RAWDEV(DEVNAME NODEDEVICE, DEVICE wireless);
+rawdevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 pc::PacketCompression(CMODE 0, DEBUG 4);
 pdc::PacketDecompression(CMODE 0, DEBUG 4);
@@ -31,6 +31,7 @@ Idle
 #endif
   -> cnt_tx_comp::Counter()
   -> wifien::WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> rawdevice;
 
 pdc

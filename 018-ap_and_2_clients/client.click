@@ -1,15 +1,18 @@
 #define DEBUGLEVEL 2
 
+#define RAWDEV_DEBUG
+#define RAWDUMP
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_client.click"
 
-BRNAddressInfo(deviceaddress eth0:eth);
-wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-infra_client :: WIFIDEV_CLIENT( DEVICENAME "eth0", DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", ACTIVESCAN false);
+infra_client :: WIFIDEV_CLIENT( DEVICENAME "NODEDEVICE", DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", ACTIVESCAN false);
 
 infra_client
   -> brn_ether_clf :: Classifier( 0/000000000003 12/8086 14/BRN_PORT_FLOW, - )
