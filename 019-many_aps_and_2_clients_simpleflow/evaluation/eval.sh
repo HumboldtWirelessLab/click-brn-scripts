@@ -6,6 +6,10 @@ RECV_PACKETS=`cat $RESULTDIR/measurement.log | grep "<rxflow src=" | sed 's#"# #
 
 echo -n "Send $SEND_PACKETS packet, received $ECHO_PACKETS packets and $RECV_PACKETS echo packets are received."
 
+if [ "x$ECHO_PACKETS" = "x" ]; then
+  ECHO_PACKETS=0
+fi
+
 if [ $ECHO_PACKETS -ge 3 ]; then
   echo " OK !"
   exit 0
