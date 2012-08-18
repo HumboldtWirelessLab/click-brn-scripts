@@ -1,5 +1,5 @@
 #include "wifi/access_point.click"
-#include "device/wep_painted.click"
+#include "device/wep.click"
 
 //output:
 //  0: To me and BRN
@@ -73,8 +73,8 @@ elementclass WIFIDEV_AP { DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid
 
   wifioutq::NotifierQueue(50);
 
-  wep					:: WepPainted(KEY "weizenbaum", ACTIVE true, DEBUG true);
-  is_Application_pkt 	:: Classifier(25/aa,-);
+  wep					:: Wep(KEY "weizenbaum", ACTIVE true, DEBUG true);
+  //is_TLS 				:: Classifier(25/aa,-);
 
 
 
@@ -83,8 +83,8 @@ elementclass WIFIDEV_AP { DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid
 
 
   input[0] 
-  -> brnwifi::WifiEncap(0x00, 0:0:0:0:0:0)
-  -> is_Application_pkt[1]
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> wep
   -> wifioutq;
   
   input[2]
@@ -128,8 +128,6 @@ elementclass WIFIDEV_AP { DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid
     //-> Print("For a Station",TIMESTAMP true)
     -> clientwifi::WifiEncap(0x02, WIRELESS_INFO ap/winfo)
     //-> Print("Und wieder raus",TIMESTAMP true)
-    -> is_Application_pkt[0]
-  	-> wep
     -> wifioutq;
 
   toStation[1]                
@@ -158,7 +156,8 @@ elementclass WIFIDEV_AP { DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid
     -> link_stat
     -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
     -> power::SetTXPower(15)
-    -> brnwifi;
+    -> WifiEncap(0x00, 0:0:0:0:0:0)
+    -> wifioutq;
 #else
     -> Discard;
 #endif
