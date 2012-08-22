@@ -21,8 +21,6 @@ elementclass WIFIDEV_CLIENT { DEVICE $device,
   client::ADHOC_OR_INFRASTRUCTURE_CLIENT(DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid,
                                          CHANNEL 5, WIFIENCAP infra_wifiencap, WIRELESS_INFO auth_info, ACTIVESCAN $active);
 
-  
-  wifioutq::NotifierQueue(50);
 
   input[1]
   -> filter_tx :: FilterTX()
@@ -38,7 +36,6 @@ elementclass WIFIDEV_CLIENT { DEVICE $device,
 
   wififrame_clf[0]
     -> client
-    -> wifioutq
     -> [1]output;
 
   wififrame_clf[1]
@@ -58,6 +55,6 @@ elementclass WIFIDEV_CLIENT { DEVICE $device,
 
   input[0]
     -> infra_wifiencap
-    -> wifioutq;
+    -> [1]output;
   
 } 
