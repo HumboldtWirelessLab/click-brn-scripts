@@ -22,6 +22,21 @@ if [ "x$LIMIT" = "x" ]; then
   LIMIT=35
 fi
 
-SIMULATOR=$SIMULATOR LATEX=$ENABLE_LATEX VALGRIND=$VALGRIND_PARAMS MODE=SIMULATION START=1 LIMIT=$LIMIT ./tools/testing/gen_test_pdf.sh
+if [ "x$START" = "x" ]; then
+  START=1
+fi
+
+
+NO_SIM=`echo $SIMULATOR | wc -w`
+
+for next_sim in $SIMULATOR; do
+
+  SIMULATOR=$next_sim LATEX=$ENABLE_LATEX VALGRIND=$VALGRIND_PARAMS MODE=SIMULATION START=$START LIMIT=$LIMIT ./tools/testing/gen_test_pdf.sh
+
+  if [ -f testbed.pdf ] && [ $NO_SIM -gt 1 ]; then
+    mv testbed.pdf testbed_$next_sim.pdf
+  fi
+
+done
 
 exit 0
