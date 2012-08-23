@@ -29,4 +29,10 @@ Idle
 -> [1]device_wifi;
 
 Script(
+  wait 5,
+  read device_wifi/ap/assoclist.stations,
+  read lt.links,
+  wait 12,
+  read device_wifi/ap/assoclist.stations,
+  read lt.links
 );

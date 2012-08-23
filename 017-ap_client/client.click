@@ -16,5 +16,9 @@ Script(
   wait 5,
   read infra_client/client/isc.wireless_info,
   read infra_client/client/isc.assoc,
-  wait 10
+  wait 5,
+  write infra_client/client/isc.disassoc,
+  wait 5,
+  read infra_client/client/isc.wireless_info,
+  read infra_client/client/isc.assoc
 );
