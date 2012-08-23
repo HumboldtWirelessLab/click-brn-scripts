@@ -14,7 +14,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-geor::GEOR(id, lt, device_wifi/link_stat); 
+geor::GEOR(ID id, LT lt, LINKSTAT device_wifi/link_stat, DEBUG 2); 
 
 device_wifi
   -> Label_brnether::Null()

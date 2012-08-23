@@ -15,7 +15,7 @@ PRE_ERROR=0
 
 echo "a: $PRE b: $BACKLOG_PRE f: $FIRST_NODE n: $NO_NODES"
 
-while [ $PRE != $BACKLOG_PRE ]; do
+while [ "x$PRE" != "x$BACKLOG_PRE" ]; do
 
 #next pre is only to have a clean output in th first round
 PRE=`cat $1 | grep -A 3 "<falconroutingtable node=\"$AC_NODE" | grep "<predecessor" | sed "s#\"# #g" | awk '{print $3}'`
@@ -33,7 +33,7 @@ AC_NODE=$SUCC
 PRE=`cat $1 | grep -A 3 "<falconroutingtable node=\"$AC_NODE" | grep "<predecessor" | sed "s#\"# #g" | awk '{print $3}'`
 #PRE=`cat $1 | grep "0 -1 $AC_NODE" | awk '{print $4}'`
 
-if [ $PRE != $OLD_NODE ]; then
+if [ "x$PRE" != "x$OLD_NODE" ]; then
   echo "$PRE $OLD_NODE"
   PRE_ERROR=`expr $PRE_ERROR + 1`
 
