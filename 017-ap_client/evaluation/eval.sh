@@ -1,7 +1,7 @@
 #!/bin/sh
 
-AUTH=`cat $RESULTDIR/measurement.log | grep "AuthInfo" | awk '{print $4}'`
-ASSOC=`cat $RESULTDIR/measurement.log | grep "AssocInfo" | awk '{print $4}'`
+AUTH=`cat $RESULTDIR/measurement.log | grep "AuthInfo" | head -n 1 | awk '{print $4}'`
+ASSOC=`cat $RESULTDIR/measurement.log | grep "AssocInfo" | head -n 1 | awk '{print $4}'`
 
 echo -n "Auth: $AUTH Assoc: $ASSOC."
 
