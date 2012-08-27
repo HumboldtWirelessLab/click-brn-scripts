@@ -56,5 +56,6 @@ sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 Script(
  wait 5,
  read sys_info.systeminfo,
- read id.version
+ read id.version,
+ read error_clf.stats
 );
