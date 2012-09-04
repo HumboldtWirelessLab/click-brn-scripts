@@ -1,7 +1,7 @@
 //#define RAWDUMP
 //#define RAWDEV_DEBUG
 #define LINKSTAT_ENABLE
-//#define DEBUG_DSR
+#define DEBUG_DSR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -73,8 +73,14 @@ rawdevice
 switch_down
 	-> rawdevice;
 		
-
-
+/*********************************************************/		
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+		
+		
 /********* Layer 1: Integration of wifidev_client *********/
 switch_up[0] // Flow 0 upwards: Client-Pkts 
 	-> [1]wifidev_client[1]	
@@ -83,7 +89,12 @@ switch_up[0] // Flow 0 upwards: Client-Pkts
 	-> [0]switch_down; // Flow 0 downwards: Client-Pkts 
 	
 	is_disassoc[0]
-		-> ap_outq;
+		-> dupl :: Tee(2);
+		
+		dupl[0]
+			-> client_outq;
+		dupl[1]
+			-> ap_outq;
 
 
 /********* Layer 1: Integration of wifidev_ap *********/
@@ -92,7 +103,12 @@ switch_up[1] // Flow 1 upwards: AP-Pkts
 	-> ap_outq
 	-> [1]switch_down; // Flow 1 downwards: AP-Pkts 
 
-
+/*********************************************************/		
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
 
 /*
  * ******** Layer 2: Integration of Network-Layer (only for AP) *********
@@ -108,21 +124,21 @@ wifidev_ap
 	-> dsr_clf :: Classifier( 0/BRN_PORT_DSR /* BrnDSR */, - /* other */);
          
 wifidev_ap[1] //broadcast and brn
-	//-> Print("[MOBISEC_NODE NODENAME]: BRN-In", TIMESTAMP true)
+	-> Print("[MOBISEC_NODE NODENAME]: BRN-In", TIMESTAMP true)
 	-> BRN2EtherDecap()
 	-> dsr_clf;
 	
 	dsr_clf[0]
-		//-> Print("[MOBISEC_NODE NODENAME]: DSR-Packet", TIMESTAMP true)
+		-> Print("[MOBISEC_NODE NODENAME]: DSR-Packet", TIMESTAMP true)
 		-> [1]dsr;
 
 	dsr_clf[1]
-		//-> Print("[MOBISEC_NODE NODENAME]: No DSR-Packet", TIMESTAMP true)
+		-> Print("[MOBISEC_NODE NODENAME]: No DSR-Packet", TIMESTAMP true)
 		-> BRN2Decap()
 		-> from_routing :: Null();
 
 wifidev_ap[2] 
-	//-> Print("[MOBISEC_NODE NODENAME]: Foreign and brn", TIMESTAMP true)
+	-> Print("[MOBISEC_NODE NODENAME]: Foreign and brn", TIMESTAMP true)
 	-> [0]dsr;  //foreign and brn
 
 wifidev_ap[3] -> Discard;  //to me no brn
@@ -132,38 +148,39 @@ wifidev_ap[5] //foreign and no brn
 	-> [0]dsr;
 
 dsr[0]
-	//-> Print("[MOBISEC_NODE NODENAME]: DSR to this node????", TIMESTAMP true)
+	-> Print("[MOBISEC_NODE NODENAME]: DSR to this node????", TIMESTAMP true)
 	-> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
 	
 	toMeAfterDsr[0] 
-		//-> Print("[MOBISEC_NODE NODENAME]: DSR-out: For ME",100, TIMESTAMP true)
+		-> Print("[MOBISEC_NODE NODENAME]: DSR-out: For ME",100, TIMESTAMP true)
 		-> BRN2EtherDecap()
 		-> BRN2Decap()
 		-> from_routing;
 	  
 	toMeAfterDsr[1]
-		//-> Print("[MOBISEC_NODE NODENAME]: DSR-out: Broadcast", TIMESTAMP true)
+		-> Print("[MOBISEC_NODE NODENAME]: DSR-out: Broadcast", TIMESTAMP true)
 		-> Discard;
 
 	toMeAfterDsr[2]
-		//-> Print("[MOBISEC_NODE NODENAME]: DSR-out: Foreign/Client", TIMESTAMP true)
+		-> Print("[MOBISEC_NODE NODENAME]: DSR-out: Foreign/Client", TIMESTAMP true)
 		-> [1]wifidev_ap;
   
 dsr[1] 
-	//-> Print("[MOBISEC_NODE NODENAME]: DSR[1]-out", TIMESTAMP true)
+	-> Print("[MOBISEC_NODE NODENAME]: DSR[1]-out", TIMESTAMP true)
 	-> SetEtherAddr(SRC deviceaddress)
-	//-> Print("[MOBISEC_NODE NODENAME]: DSR-Ether-OUT",100, TIMESTAMP true)
+	-> Print("[MOBISEC_NODE NODENAME]: DSR-Ether-OUT",100, TIMESTAMP true)
 	-> [0]wifidev_ap;
 
 
 Idle -> [2]dsr;
 Idle -> [3]dsr;
 
-
-
-
-
-
+/*********************************************************/		
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
 
 /********* Layer 3: Integration of MobiSEC-Module *********
  *
@@ -203,9 +220,30 @@ from_MobiSEC_BackboneNode
 		-> to_routing;
 
 
+/*********************************************************/		
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
+/*********************************************************/
 
 
-Script(/*
+Script(
+	wait 500,
+	read BackboneNode.stats,
+	loop
+);
+
+Script(
+	wait 1100,
+	write dsr/src_forwarder.debug 4,
+	write dsr/rep_forwarder.debug 5,
+	write dsr/querier.debug 4,
+	read wifidev_ap/ap/assoclist.stations,
+	read lt.links,	
+);
+
+/*
 	wait 41,
 	read wifidev_ap/ap/assoclist.stations,
 	write dsr/src_forwarder.debug 4,
@@ -231,6 +269,6 @@ Script(/*
 	read lt.links,
 	loop
 	*/
-);
+
 
 
