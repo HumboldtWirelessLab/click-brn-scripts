@@ -1,6 +1,9 @@
 #define DEBUGLEVEL 2
 
 #define RAWDUMP
+#define CST
+#define CERR
+#define USE_RTS_CTS
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -8,13 +11,18 @@
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+//wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", CWMIN CWMINPARAM, CWMAX CWMAXPARAM, AIFS AIFSPARAM);
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+//lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
+
+//device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 Idle() ->
 ps::BRN2PacketSource(SIZE 1460, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE true)
+  -> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
 //-> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:05)
 //-> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
@@ -22,14 +30,24 @@ ps::BRN2PacketSource(SIZE 1460, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE tru
   -> BRN2PrintWifi("Sender", TIMESTAMP true)
   -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
+  -> rdq::RandomDelayQueue(MINDELAY 20, MAXDELAY 200, DIFFDELAY 10, TIMESTAMPANNOS false)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
+  //-> [0]device_wifi
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
   -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
   -> discard::Discard;
 
-ps[1] -> Discard;
+//ps[1] -> Discard;
+
+//Idle -> [1]device_wifi;
+
+//device_wifi[1] -> /* Print("BRN-In") -> */ BRN2EtherDecap() -> discard;
+//device_wifi[2] -> discard;
+
+gps::GPS();
+mob::Mobility();
 
 error_clf[1]
   -> BRN2PrintWifi("CRCerror", TIMESTAMP true)
@@ -63,10 +81,16 @@ filter_tx[1]
   -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
   -> discard;
 
-sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+//sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+
+Script(
+  read gps.cart_coord,
+  wait 1,
+  loop
+);
 
 Script(
   wait 5,
-  read sys_info.systeminfo,
-  read id.version
-);
+  write mob.move 199 99 5 20
+ );
+

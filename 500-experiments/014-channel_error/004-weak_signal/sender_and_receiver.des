@@ -1,14 +1,15 @@
 NAME=receiver
 SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
+#RADIO=shadowing11b
+RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=30
+TIME=60
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=sender_and_receiver.mes
 NODEPLACEMENT=string
+NODEPLACEMENTOPTS="relative"
 #NODEPLACEMENT=grid
 FIELDSIZE=100
 
@@ -26,6 +27,7 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
+CONTROLFILE=sender_and_receiver.ctl
 
 MULTIREPEAT="3"
 MULTIWAIT=0
