@@ -1,31 +1,47 @@
 #define DEBUGLEVEL 2
 
 #define CST
+#define CST_PROCFILE foo
+#define CERR
+#define USE_RTS_CTS
+#define PLE
 
 // include unter helper/measurement/etc/click
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
+#include "device/wifidev_linkstat.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", CWMIN CWMINPARAM, CWMAX CWMAXPARAM, AIFS AIFSPARAM);
 
-wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
+//wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
+
+device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 ps::BRN2PacketSource(SIZE 1460, INTERVAL 200, MAXSEQ 500000, BURST 2, ACTIVE true)
+  -> SetTimestamp()
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
-  -> WifiEncap(0x00, 0:0:0:0:0:0)
+//  -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> BRN2PrintWifi("Sender", TIMESTAMP true)
-  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+//  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
-  -> wifioutq::NotifierQueue(1000)
-  -> wifidevice
+//  -> wifioutq::NotifierQueue(1000)
+  -> rdq::RandomDelayQueue(MINDELAY 30, MAXDELAY 200, DIFFDELAY 10, TIMESTAMPANNOS false)
+//  -> wifidevice
+  -> [0]device_wifi
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
   -> discard::Discard;
+
+Idle -> [1]device_wifi;
+
+device_wifi[1] -> /* Print("BRN-In") -> */ BRN2EtherDecap() -> discard;
+device_wifi[2] -> discard;
 
 error_clf[1]
   -> discard;

@@ -8,7 +8,8 @@ DEVICE=`cat $NODETABLE | grep receiver.click | awk '{print $2}'`
 #ls -lisa $RESULTDIR/$RECEIVER.$DEVICE.raw.dump
 #echo "$RESULTDIR/$RECEIVER.$DEVICE.raw.dump"
 
-PACKETS=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | wc -l`
+#PACKETS=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | wc -l`
+PACKETS=`cat $RESULTDIR/receiver.tr | grep -e "^r " | wc -l`
 
 echo "$PACKETS packets received"
 

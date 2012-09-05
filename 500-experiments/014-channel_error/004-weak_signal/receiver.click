@@ -1,23 +1,38 @@
 #define DEBUGLEVEL 2
 
 #define RAWDUMP
-//#define RAWDUMPSNAPLEN 100
+#define CERR
+#define CST
+#define CST_PROCFILE foo
+#define USE_RTS_CTS
+#define PLE
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
+#include "device/wifidev_linkstat.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", CWMIN CWMINPARAM, CWMAX CWMAXPARAM, AIFS AIFSPARAM);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
+device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 Idle
-  -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
+  -> SetTimestamp()
+  -> [0]device_wifi
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
   -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
   -> discard::Discard;
+
+Idle -> [1]device_wifi;
+device_wifi[1] -> /* Print("BRN-In") -> */ BRN2EtherDecap() -> discard;
+device_wifi[2] -> discard;
+
+gps::GPS();
+mob::Mobility();
 
 error_clf[1]
   -> BRN2PrintWifi("CRCerror", TIMESTAMP true)
@@ -54,7 +69,11 @@ filter_tx[1]
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
- wait 5,
- read sys_info.systeminfo,
- read id.version
+// wait 5,
+// read sys_info.systeminfo,
+// read id.version
+ wait 1,
+ read device_wifi/wifidevice/ple.stats,
+ loop
 );
+
