@@ -61,10 +61,9 @@ filter_tx[1]
   
 Script(
  wait 1,
-// read wifidevice/hnd.stats,
- //read device_wifi/wifidevice/ple.stats,
- //read wifidevice/cst.stats,
- read device_wifi/wifidevice/cst.stats,
+ //read wifidevice/hnd.stats,
+ read device_wifi/wifidevice/ple.stats,
+// read device_wifi/wifidevice/cst.stats,
  read device_wifi/cocst.stats,
  loop
 );

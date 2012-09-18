@@ -1,13 +1,19 @@
 #define DEBUGLEVEL 2
 
-#define RAWDUMP
 #define CST
+#define CST_PROCFILE foo
+#define RAWDUMP
+#define CERR
+#define USE_RTS_CTS
+//#define PLE
 
 // include unter helper/measurement/etc/click
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
+#include "device/wifidev_linkstat.click"
+
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -57,39 +63,9 @@ filter_tx[1]
   
 Script(
  wait 1,
- read wifidevice/cinfo.stats,
- read wifidevice/tosq.queue_usage,
- write wifidevice/tosq.reset,
- wait 1,
- read wifidevice/cinfo.stats,
- read wifidevice/tosq.queue_usage,
- write wifidevice/tosq.reset,
- wait 1,
- read wifidevice/cinfo.stats,
- read wifidevice/tosq.queue_usage,
- write wifidevice/tosq.reset,
- wait 1,
- read wifidevice/cinfo.stats,
- read wifidevice/tosq.queue_usage,
- write wifidevice/tosq.reset,
- wait 1,
- read wifidevice/cinfo.stats,
- read wifidevice/tosq.queue_usage,
- write wifidevice/tosq.reset,
- wait 1,
- read wifidevice/cinfo.stats,
- read wifidevice/tosq.queue_usage,
- write wifidevice/tosq.reset,
- wait 1,
- read wifidevice/cinfo.stats,
- read wifidevice/tosq.queue_usage,
- write wifidevice/tosq.reset,
- wait 1,
- read wifidevice/cinfo.stats,
- read wifidevice/tosq.queue_usage,
- write wifidevice/tosq.reset,
- wait 1,
- read wifidevice/cinfo.stats,
- read wifidevice/tosq.queue_usage,
- write wifidevice/tosq.reset
+// read wifidevice/cinfo.stats,
+// read wifidevice/tosq.queue_usage,
+// write wifidevice/tosq.reset,
+// read wifidevice/ple.stats,
+// loop
 );
