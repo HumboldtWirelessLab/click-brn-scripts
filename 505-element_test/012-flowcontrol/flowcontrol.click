@@ -9,9 +9,9 @@
   
   sps::SimplePrioSched();
 
-  rs[0] -> Print("0") -> sq0::SimpleQueue(200) -> [0]sps;
- // rs[1] -> Print("1") -> sq1::SimpleQueue(200) -> [1]sps;
-//  rs[2] -> Print("2") -> sq2::SimpleQueue(200) -> [2]sps;
+  rs[0] -> /*Print("0") ->*/ sq0::SimpleQueue(200) -> [0]sps;
+  rs[1] -> /*Print("1") ->*/ sq1::SimpleQueue(200) -> [1]sps;
+  rs[2] -> /*Print("2") ->*/ sq2::SimpleQueue(200) -> [2]sps;
 
   sps
   -> sup::Suppressor()
@@ -19,7 +19,7 @@
   -> RandomSample(0.2)
   -> BRN2EtherDecap()
   -> BRN2Decap()
-  -> fcsnk::FlowControlSink()
+  -> fcsnk::FlowControlSink(DEBUG 4)
   -> BRN2EtherEncap(USEANNO true)
   -> BRN2EtherDecap()
   -> BRN2Decap()
@@ -38,7 +38,7 @@ Script(
   wait  1,
   write sf.add_flow 00:00:00:00:00:01 00:00:00:00:00:02 100 1000 0 1000 false,
   //write sup.active0 1,
-  wait  1,
+  wait  10,
   read  sf.stats,
   read  sf2.stats,
   stop
