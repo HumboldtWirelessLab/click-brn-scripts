@@ -18,7 +18,7 @@ id::BRN2NodeIdentity(NAME "NODENAME", DEVICES wireless);
 
 //rt::BrnRoutingTable(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
 //lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
-//routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE rt, MIN_LINK_METRIC_IN_ROUTE 6000, DEBUG 4);
+//routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, MIN_LINK_METRIC_IN_ROUTE 6000, DEBUG 4);
 //route_maint::RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE rt, ROUTINGALGORITHM routingalgo, DEBUG 2);
 
 rc::Brn2RouteCache(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
