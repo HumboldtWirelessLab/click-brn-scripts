@@ -45,17 +45,9 @@ Idle -> [1]device_wifi;
 gps::GPS();
 mob::Mobility();
 
-/*
 Script(
-  read gps.cart_coord,
-  wait 1.001,
-  read device_wifi/wifidevice/cst.stats,
-  loop
- );
-*/
-Script(
-  read gps.cart_coord,
   wait 1,
+  read gps.cart_coord,
   loop
  );
 
