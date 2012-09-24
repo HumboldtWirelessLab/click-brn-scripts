@@ -33,7 +33,7 @@ id				:: BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 // Device and routing elements
 lt				:: Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 routingtable	:: BrnRoutingTable(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-routingalgo		:: Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 5);
+routingalgo		:: Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 0);
 routingmaint	:: RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
 wifidev_ap		:: WIFIDEV_AP(DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 ap_outq			:: NotifierQueue(50);
@@ -46,12 +46,12 @@ client_outq		:: NotifierQueue(50);
 switch_up		:: Switch();
 switch_down 	:: PullSwitch();
 switch_down2	:: Switch();
-is_disassoc 	:: Classifier(0/a0%f0, -);
+is_assoc_req 	:: Classifier(0/a0%f0 /* disassoc */, 0/00%f0 /* assoc */, -);
 
 
 // Application elements
-tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "CLIENT", KEYDIR "CONFIGDIR/", DEBUG 0);
-BackboneNode	:: BACKBONE_NODE(NODEID id, PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, TLS tls, ASSOCREQ wifidev_client/client/assoc_req, AP_Q ap_outq, CLIENT_Q client_outq, START 10000, KEY_TIMEOUT 60000, DEVICE_CONTROL_UP switch_up, DEVICE_CONTROL_DOWN switch_down, DEVICE_CONTROL_DOWN2 switch_down2, DEBUG 5);
+tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "CLIENT", KEYDIR "CONFIGDIR/", DEBUG 5);
+BackboneNode	:: BACKBONE_NODE(NODEID id, PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, TLS tls, DEV_CLIENT wifidev_client/client/isc, AP_Q ap_outq, CLIENT_Q client_outq, START 10000, KEY_TIMEOUT 60000, DEVICE_CONTROL_UP switch_up, DEVICE_CONTROL_DOWN switch_down, DEVICE_CONTROL_DOWN2 switch_down2, DEBUG 5);
 
 
 
@@ -84,17 +84,21 @@ switch_down
 /********* Layer 1: Integration of wifidev_client *********/
 switch_up[0] // Flow 0 upwards: Client-Pkts 
 	-> [1]wifidev_client[1]	
-	-> is_disassoc[1] // special case: when upgrading to mesh node we need an disassoc
+	-> is_assoc_req[2] // special case: when upgrading to mesh node we need an disassoc
 	-> client_outq
+	-> Print("crk +++++++++++ ", 100)
 	-> [0]switch_down; // Flow 0 downwards: Client-Pkts 
 	
-	is_disassoc[0]
-		-> dupl :: Tee(2);
-		
+	
+	// This is the wormhole of the layer architecture :(
+	is_assoc_req[0]
+		-> dupl :: Tee(2);	
 		dupl[0]
 			-> client_outq;
 		dupl[1]
 			-> ap_outq;
+	is_assoc_req[1]
+		-> dupl;
 
 
 /********* Layer 1: Integration of wifidev_ap *********/
@@ -112,9 +116,10 @@ switch_up[1] // Flow 1 upwards: AP-Pkts
 
 /*
  * ******** Layer 2: Integration of Network-Layer (only for AP) *********
- *
- * Input 0: 	To device, thus to network
- * Output 0: 	From device to me
+ * 
+ * Use of routing service:
+ * Input: 	to_routing :: Null()
+ * Output: 	from_routing :: Null()
  */
 to_routing :: Null()
 	-> dsr;
@@ -124,21 +129,21 @@ wifidev_ap
 	-> dsr_clf :: Classifier( 0/BRN_PORT_DSR /* BrnDSR */, - /* other */);
          
 wifidev_ap[1] //broadcast and brn
-	-> Print("[MOBISEC_NODE NODENAME]: BRN-In", TIMESTAMP true)
+	//-> Print("[MOBISEC_NODE NODENAME]: BRN-In", TIMESTAMP true)
 	-> BRN2EtherDecap()
 	-> dsr_clf;
 	
 	dsr_clf[0]
-		-> Print("[MOBISEC_NODE NODENAME]: DSR-Packet", TIMESTAMP true)
+		//-> Print("[MOBISEC_NODE NODENAME]: DSR-Packet", TIMESTAMP true)
 		-> [1]dsr;
 
 	dsr_clf[1]
-		-> Print("[MOBISEC_NODE NODENAME]: No DSR-Packet", TIMESTAMP true)
+		//-> Print("[MOBISEC_NODE NODENAME]: No DSR-Packet (e.g. TLS-Packet from infra-struct-client)", TIMESTAMP true)
 		-> BRN2Decap()
 		-> from_routing :: Null();
 
 wifidev_ap[2] 
-	-> Print("[MOBISEC_NODE NODENAME]: Foreign and brn", TIMESTAMP true)
+	//-> Print("[MOBISEC_NODE NODENAME]: Foreign and brn", TIMESTAMP true)
 	-> [0]dsr;  //foreign and brn
 
 wifidev_ap[3] -> Discard;  //to me no brn
@@ -148,27 +153,27 @@ wifidev_ap[5] //foreign and no brn
 	-> [0]dsr;
 
 dsr[0]
-	-> Print("[MOBISEC_NODE NODENAME]: DSR to this node????", TIMESTAMP true)
+	//-> Print("[MOBISEC_NODE NODENAME]: DSR to this node????", TIMESTAMP true)
 	-> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
 	
 	toMeAfterDsr[0] 
-		-> Print("[MOBISEC_NODE NODENAME]: DSR-out: For ME",100, TIMESTAMP true)
+		//-> Print("[MOBISEC_NODE NODENAME]: DSR-out: For ME",100, TIMESTAMP true)
 		-> BRN2EtherDecap()
 		-> BRN2Decap()
 		-> from_routing;
 	  
 	toMeAfterDsr[1]
-		-> Print("[MOBISEC_NODE NODENAME]: DSR-out: Broadcast", TIMESTAMP true)
+		//-> Print("[MOBISEC_NODE NODENAME]: DSR-out: Broadcast", TIMESTAMP true)
 		-> Discard;
 
 	toMeAfterDsr[2]
-		-> Print("[MOBISEC_NODE NODENAME]: DSR-out: Foreign/Client", TIMESTAMP true)
+		//-> Print("[MOBISEC_NODE NODENAME]: DSR-out: Foreign/Client", TIMESTAMP true)
 		-> [1]wifidev_ap;
   
 dsr[1] 
-	-> Print("[MOBISEC_NODE NODENAME]: DSR[1]-out", TIMESTAMP true)
+	//-> Print("[MOBISEC_NODE NODENAME]: DSR[1]-out", TIMESTAMP true)
 	-> SetEtherAddr(SRC deviceaddress)
-	-> Print("[MOBISEC_NODE NODENAME]: DSR-Ether-OUT",100, TIMESTAMP true)
+	//-> Print("[MOBISEC_NODE NODENAME]: DSR-Ether-OUT",100, TIMESTAMP true)
 	-> [0]wifidev_ap;
 
 
@@ -184,8 +189,9 @@ Idle -> [3]dsr;
 
 /********* Layer 3: Integration of MobiSEC-Module *********
  *
- * Input 0: 	To MobiSEC
- * Output 0: 	From MobiSEC
+ * Use of MobiSEC-Service
+ * Input: 	to_MobiSEC_BackboneNode::Null()
+ * Output: 	from_MobiSEC_BackboneNode::Null()
  */
 
 to_MobiSEC_BackboneNode :: Null()
@@ -194,23 +200,22 @@ to_MobiSEC_BackboneNode :: Null()
 	-> BRN2EtherEncap(USEANNO true)
 	-> from_MobiSEC_BackboneNode :: Null();
 
+	// The main application sits on top of TLS 
 	tls[1] // decrypt message
 		-> BackboneNode
 		-> [1]tls; //encrypt message
 
-/***** connection to wifidev_client *******/
+/***** Integration of MobiSEC (connection with wifidev_client) *******/
 wifidev_client
 	-> BRN2EtherDecap()
 	-> BRN2Decap()
 	-> to_MobiSEC_BackboneNode;
 	
-/***** connection to wifidev_ap *******/	
+/***** Integration of MobiSEC (connection with wifidev_ap) *******/	
 from_routing
 	-> to_MobiSEC_BackboneNode;
 
-
-
-	
+/***** Integration of MobiSEC (connection with wifidev_client and routing) *******/
 from_MobiSEC_BackboneNode
 	-> switch_down2;
 	
@@ -234,14 +239,35 @@ Script(
 	loop
 );
 
+
+// Debugging Route-Requests
 Script(
 	wait 1100,
-	write dsr/src_forwarder.debug 4,
+	//write dsr/src_forwarder.debug 4,
 	write dsr/rep_forwarder.debug 5,
 	write dsr/querier.debug 4,
+	//read wifidev_ap/ap/assoclist.stations,
+	//read lt.links,	
+);
+
+Script(
+	wait 2461,
 	read wifidev_ap/ap/assoclist.stations,
 	read lt.links,	
+	read wifidev_client/client/isc.wireless_info,
+	read wifidev_client/client/isc.assoc,
 );
+
+/*
+// Debuggin of Routing
+Script(
+	wait 2350,
+	print "NODENAME",
+	read wifidev_ap/ap/assoclist.stations,
+	read lt.links,
+);
+*/
+
 
 /*
 	wait 41,

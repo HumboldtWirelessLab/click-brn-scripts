@@ -1,7 +1,7 @@
 //#define RAWDUMP
 //#define RAWDEV_DEBUG
 #define LINKSTAT_ENABLE
-//#define DEBUG_DSR
+#define DEBUG_DSR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -22,7 +22,7 @@ routingmaint	:: RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE rou
 wifidev_ap		:: WIFIDEV_AP(DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 dsr				:: DSR(id, lt, wifidev_ap/etx_metric,routingmaint); // Routing 
 
-tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "SERVER", KEYDIR "CONFIGDIR/", DEBUG 0);
+tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "SERVER", KEYDIR "CONFIGDIR/", DEBUG 5);
 KeyServer		:: KEYSERVER(PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, KEY_LIST_CARDINALITY 10, KEY_TIMEOUT 60000, START 10000 /* too fast ?? */, DEBUG 5);
 
 
