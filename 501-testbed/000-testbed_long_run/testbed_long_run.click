@@ -63,7 +63,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 lt::Brn2LinkTable(NODEIDENTITY id, STALE 10, DEBUG 2);
 routingtable::BrnRoutingTable(DEBUG 2, ACTIVE true, DROP /* 1/20 = 5% */ 0, SLICE 500, TTL 20);
-routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 10000, DEBUG 2);
+routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 10000, DEBUG 2);
 routingmaint::RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);

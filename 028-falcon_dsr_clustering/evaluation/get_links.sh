@@ -57,7 +57,8 @@ echo "}" >> links.dot.tmp
 
 cat links.dot.tmp | sed $FULLSED > links.dot
 #dot -Tpng links.dot > links.png
-neato -Tpng links.dot > links.png
+#neato -Tpng links.dot > links.png
+neato -Teps links.dot > links.eps
 
 rm links.dot*
 
@@ -91,6 +92,7 @@ done
 echo "}" >> linksmetric.dot.tmp
 
 cat linksmetric.dot.tmp | sed $FULLSED > linksmetric.dot
-neato -Tpng linksmetric.dot > linksmetric.png
+#neato -Tpng linksmetric.dot > linksmetric.png
+neato -Teps linksmetric.dot > linksmetric.eps
 
 rm linksmetric.dot*

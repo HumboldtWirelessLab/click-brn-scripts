@@ -41,7 +41,8 @@ done < links.all
 echo "}" >> $EVALUATIONSDIR/linksmetric.dot.tmp
 
 cat $EVALUATIONSDIR/linksmetric.dot.tmp | sed $FULLSED > $EVALUATIONSDIR/linksmetric.dot
-dot -Tpng $EVALUATIONSDIR/linksmetric.dot > $EVALUATIONSDIR/linksmetric.png
+#dot -Tpng $EVALUATIONSDIR/linksmetric.dot > $EVALUATIONSDIR/linksmetric.png
+dot -Teps $EVALUATIONSDIR/linksmetric.dot > $EVALUATIONSDIR/linksmetric.eps
 
 
 echo "digraph G {" > $EVALUATIONSDIR/links.dot.tmp
@@ -50,4 +51,5 @@ cat links.all | sort -u | awk '{print "\"" $1 "\" -> \"" $2 "\" [label=\"1\"];"}
 echo "}" >> $EVALUATIONSDIR/links.dot.tmp
 
 cat $EVALUATIONSDIR/links.dot.tmp | sed $FULLSED > $EVALUATIONSDIR/links.dot
-dot -Tpng $EVALUATIONSDIR/links.dot > $EVALUATIONSDIR/links.png
+#dot -Tpng $EVALUATIONSDIR/links.dot > $EVALUATIONSDIR/links.png
+dot -Teps $EVALUATIONSDIR/links.dot > $EVALUATIONSDIR/links.eps

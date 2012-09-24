@@ -20,7 +20,7 @@ PACKETS=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | w
 PACKETS_1=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | grep $MAC_1 | wc -l`
 PACKETS_2=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | grep $MAC_2 | wc -l`
 
-echo "$PACKETS packets received. Sender 1: $PACKETS_1 Sender_2: $PACKETS_2"
+echo "$PACKETS packets received. Sender 1: $PACKETS_1 Sender 2: $PACKETS_2"
 
 if [ $PACKETS -gt 290 ]; then
   exit 0
