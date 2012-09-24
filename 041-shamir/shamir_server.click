@@ -20,7 +20,7 @@ routingmaint	:: RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE rou
 wifidev 		:: WIFIDEV_AP(DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 dsr				:: DSR(id, lt, wifidev_ap/etx_metric,routingmaint); // Routing
 bc              :: BROADCAST(ID id, LT lt);
-tee             :: Tee(2)
+tee             :: Tee()
 
 server          :: ShamirServer();
 
