@@ -7,7 +7,6 @@
 #include "brn/brn.click"
 
 #include "device/wifidev_client.click"
-#include "routing/dsr.click"
 #include "routing/broadcast.click"
 
 // Device info elements
@@ -21,7 +20,7 @@ lt				:: Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 bc              :: BROADCAST(ID id, LT lt)
 
 // Application layer
-client          :: ShamirClient();
+client          :: ShamirClient(ETHERADDRESS deviceaddressm, THRESHOLD 3);
 
 // Outbound flow: broadcast the request
 client

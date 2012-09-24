@@ -23,7 +23,7 @@ dsr				:: DSR(id, lt, wifidev_ap/etx_metric,routingmaint); // Routing
 bc              :: BROADCAST(ID id, LT lt);
 tee             :: Tee()
 
-server          :: ShamirServer();
+server          :: ShamirServer(ETHERADDRESS deviceaddress);
 
 /* Inbound flow:
  * Might be requests distributed via flooding or responses distibuted via DSR
