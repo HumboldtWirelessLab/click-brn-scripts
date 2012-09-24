@@ -4,8 +4,9 @@
 #include "brn/helper.inc"
 #include "brn/brn.click"
 
-#include "device/wifidev_client.click"
+#include "device/wifidev_ap.click"
 #include "routing/dsr.click"
+#include "routing/broadcast.click"
 
 // Device info elements
 BRNAddressInfo(deviceaddress eth0:eth);
