@@ -16,10 +16,10 @@ id				:: BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 // Device and routing elements
 lt				:: Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 routingtable	:: BrnRoutingTable(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-routingalgo		:: Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 5);
+routingalgo		:: Dijkstra(NODEIDENTITY id, LINKTABLE lt, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 5);
 routingmaint	:: RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
 wifidev 		:: WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
-dsr				:: DSR(id, lt, wifidev_ap/etx_metric,routingmaint); // Routing
+dsr				:: DSR(id, lt, wifidev/etx_metric,routingmaint); // Routing
 bc              :: BROADCAST(ID id, LT lt);
 tee             :: Tee();
 
