@@ -12,7 +12,7 @@
 // Device info elements
 BRNAddressInfo(deviceaddress eth0:eth);
 wireless		:: BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
-wifidev		    :: WIFIDEV_CLIENT(DEVICENAME "eth0", DEVICE wireless, ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wifidev		    :: WIFIDEV_CLIENT(DEVICENAME "eth0", DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", ACTIVESCAN false);
 id				:: BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 // Device and routing elements
@@ -20,7 +20,7 @@ lt				:: Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 bc              :: BROADCAST(ID id, LT lt);
 
 // Application layer
-client          :: ShamirClient(ETHERADDRESS deviceaddressm, THRESHOLD 3);
+client          :: ShamirClient(ETHERADDRESS deviceaddress, THRESHOLD 3);
 
 // Outbound flow: broadcast the request
 client
