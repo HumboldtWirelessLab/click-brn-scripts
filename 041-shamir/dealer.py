@@ -66,7 +66,7 @@ def mes_line(node_id):
     ret += "- " #MODOPTIONS
     ret += "monitor.b.channel " #WIFICONFIG
     ret += "- " #CLICKMODDIR
-    ret += "shamir.click " #CLICKSCRIPT
+    ret += "shamir_server.click " #CLICKSCRIPT #FIXME: Needs to be shamir_node.click for the last entry
     ret += "LOGDIR/NODENAME.NODEDEVICE.log " #CLICKLOGFILE
     ret += "- " #APPLICATION
     ret += "-" #APPLICATIONLOGFILE

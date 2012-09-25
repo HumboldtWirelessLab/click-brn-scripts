@@ -5,7 +5,7 @@
 #define CST_PROCFILE foo
 #define CERR
 #define USE_RTS_CTS
-#define PLE
+//#define PLE
 
 // include unter helper/measurement/etc/click
 

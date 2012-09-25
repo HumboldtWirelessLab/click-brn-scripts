@@ -1,5 +1,5 @@
 #include "wifi/access_point.click"
-#include "device/wep_painted.click"
+#include "device/wep.click"
 
 //output:
 //  0: To me and BRN
@@ -71,21 +71,20 @@ elementclass WIFIDEV_AP { DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid
   toAP::BRN2ToThisNode(NODEIDENTITY id);
   toMe::BRN2ToThisNode(NODEIDENTITY id);
 
-  wifioutq::NotifierQueue(50);
 
-  wep					:: WepPainted(KEY "weizenbaum", ACTIVE true, DEBUG true);
-  is_Application_pkt 	:: Classifier(25/aa,-);
-
+  wep					:: Wep(KEY "weizenbaum", ACTIVE true, DEBUG true);
+  //is_TLS 				:: Classifier(25/aa,-);
 
 
-  wifioutq
+
+  to_underlying_layer::Null()
   -> [6]output; 
 
 
   input[0] 
-  -> brnwifi::WifiEncap(0x00, 0:0:0:0:0:0)
-  -> is_Application_pkt[1]
-  -> wifioutq;
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> wep
+  -> to_underlying_layer;
   
   input[2]
   -> filter_tx :: FilterTX()
@@ -106,7 +105,7 @@ elementclass WIFIDEV_AP { DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid
     -> fb::FilterBSSID(ACTIVE true, DEBUG 1, WIRELESS_INFO ap/winfo)
     -> ap
 
-    -> wifioutq;
+    -> to_underlying_layer;
 
   fb[1]
     -> Classifier( 16/ffffffffffff )
@@ -128,9 +127,7 @@ elementclass WIFIDEV_AP { DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid
     //-> Print("For a Station",TIMESTAMP true)
     -> clientwifi::WifiEncap(0x02, WIRELESS_INFO ap/winfo)
     //-> Print("Und wieder raus",TIMESTAMP true)
-    -> is_Application_pkt[0]
-  	-> wep
-    -> wifioutq;
+    -> to_underlying_layer;
 
   toStation[1]                
     //-> Print("Broadcast",TIMESTAMP true)
@@ -158,7 +155,8 @@ elementclass WIFIDEV_AP { DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid
     -> link_stat
     -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
     -> power::SetTXPower(15)
-    -> brnwifi;
+    -> WifiEncap(0x00, 0:0:0:0:0:0)
+    -> to_underlying_layer;
 #else
     -> Discard;
 #endif

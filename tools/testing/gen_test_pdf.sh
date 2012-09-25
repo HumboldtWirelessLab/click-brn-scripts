@@ -123,7 +123,7 @@ while [ $i -le $LIMIT ]; do
     EVO="OK"
 
     if [ $LATEX -eq 1 ]; then
-        IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$"`
+        IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$|eps$"`
         IMG_COUNT=`echo $IMGS | wc -w`
 
         if [ $IMG_COUNT -gt 0 ]; then
