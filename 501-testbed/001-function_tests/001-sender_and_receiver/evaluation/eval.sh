@@ -28,8 +28,11 @@ fi
 
 # sum up received packets
 mac=`cat $RESULTDIR/nodes.mac | grep ${nodes[$send_id]} | awk '{ print $3; }' | sed s/:/-/g`
-pkt_recv=`fromdump.sh $RESULTDIR/$DUMP_FILE | grep $mac | wc -l`
-
+if [ -f $RESULTDIR/$DUMP_FILE ]; then
+  pkt_recv=`fromdump.sh $RESULTDIR/$DUMP_FILE | grep $mac | wc -l`
+else
+  pkt_recv=0
+fi
 
 # eval pdr
 pdr=`expr $pkt_recv \* 100 / \( $TIME \* 10 \)`
