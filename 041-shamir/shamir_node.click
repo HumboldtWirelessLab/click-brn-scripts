@@ -17,7 +17,7 @@ id				:: BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 // Device and routing elements
 lt				:: Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
-bc              :: BROADCAST(ID id, LT lt)
+bc              :: BROADCAST(ID id, LT lt);
 
 // Application layer
 client          :: ShamirClient(ETHERADDRESS deviceaddressm, THRESHOLD 3);
@@ -25,15 +25,15 @@ client          :: ShamirClient(ETHERADDRESS deviceaddressm, THRESHOLD 3);
 // Outbound flow: broadcast the request
 client
     -> BRN2EtherEncap(USEANNO true)
-    -> [0]bc
+    -> [0]bc;
 
 bc[1]
-    ->[0]wifidev
+    ->[0]wifidev;
 
 
 // Inbound flow: receive the replies
 wifidev
     -> Label_brnether::Null()
     -> BRN2EtherDecap(USEANNO true)
-    -> client
+    -> client;
 
