@@ -37,3 +37,13 @@ wifidev
     -> BRN2EtherDecap(USEANNO true)
     -> client;
 
+/* Disable unnecessary in- and outputs */
+Idle
+    -> [1]bc;
+Idle
+    -> [2]bc;
+Idle
+    -> [3]bc;
+
+bc[0]
+    -> Discard;
