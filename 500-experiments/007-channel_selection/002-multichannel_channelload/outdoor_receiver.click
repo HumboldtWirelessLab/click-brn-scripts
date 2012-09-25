@@ -37,3 +37,47 @@ Script(
   wait 1,
   loop
   );
+
+
+Idle->
+setchannel::BRN2SetChannel(DEVICE wireless)
+-> Discard;
+
+Script(
+  write setchannel.systemchannel 1,
+  wait 300,
+  write setchannel.systemchannel 2,
+  wait 300,
+  write setchannel.systemchannel 3,
+  wait 300,
+  write setchannel.systemchannel 4,
+  wait 300,
+  write setchannel.systemchannel 5,
+  wait 300,
+  write setchannel.systemchannel 6,
+  wait 300,
+  write setchannel.systemchannel 7,
+  wait 300,
+  write setchannel.systemchannel 8,
+  wait 300,
+  write setchannel.systemchannel 9,
+  wait 300,
+  write setchannel.systemchannel 10,
+  wait 300,
+  write setchannel.systemchannel 11,
+  wait 300
+  write setchannel.systemchannel 12,
+  wait 300,
+  write setchannel.systemchannel 13,
+  wait 300,
+  write setchannel.systemchannel 14,
+  wait 300,
+  write setchannel.systemchannel 34,
+  wait 300
+  write setchannel.systemchannel 38,
+  wait 300,
+  write setchannel.systemchannel 42,
+  wait 300,
+  write setchannel.systemchannel 46,
+  wait 300
+);
