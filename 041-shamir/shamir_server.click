@@ -18,7 +18,7 @@ lt				:: Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 routingtable	:: BrnRoutingTable(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
 routingalgo		:: Dijkstra(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 5);
 routingmaint	:: RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
-wifidev 		:: WIFIDEV_AP(DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
+wifidev 		:: WIFIDEV_AP(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 dsr				:: DSR(id, lt, wifidev_ap/etx_metric,routingmaint); // Routing
 bc              :: BROADCAST(ID id, LT lt);
 tee             :: Tee();
@@ -38,6 +38,8 @@ wifidev
                           0/BRN_PORT_DSR,
                           0/BRN_PORT_SHAMIR, //Packets from clients directly associated  with this AP
                           - );
+wifidev[1]
+    -> Label_brnether;
 
 clf[0]
     -> [1]bc
@@ -62,11 +64,11 @@ tee[0] //Packets from clients directly associated  with this AP
 
 server[0]
 	-> BRN2EtherEncap(USEANNO true)
-	-> [1]wifidev; // forwarding to ap-clients, some improvements later needed here: guessing if pkt is for ap-clients
+	-> [1]wifidev; // forwarding to ap-client
 
 bc[1]
     -> BRN2EtherEncap()
-    -> [1]wifidev;
+    -> [0]wifidev;
 
 tee[1]
     -> bc; //FIXME: Does this create duplicate packets because of lines 69 and 55?
@@ -78,3 +80,26 @@ dsr[1] //BRN DSR packets to internal nodes
 dsr[0] //Ethernet frames to external nodes/clients
     -> BRN2EtherEncap()
     -> [1]wifidev;
+
+/* Disable unnecessary in- and outputs */
+
+Idle
+    -> [0]dsr; //ethernet frames from external nodes
+Idle
+    -> [2]dsr;
+Idle
+    -> [3]dsr;
+Idle
+    -> [2]bc;
+Idle
+    -> [3]bc;
+
+wifidev[2]
+    -> Discard;
+wifidev[3]
+    -> Discard;
+wifidev[4]
+    -> Discard;
+wifidev[5]
+    -> Discard;
+
