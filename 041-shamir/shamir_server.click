@@ -23,7 +23,7 @@ dsr				:: DSR(id, lt, wifidev/etx_metric,routingmaint); // Routing
 bc              :: BROADCAST(ID id, LT lt);
 tee             :: Tee();
 
-server          :: ShamirServer(ETHERADDRESS deviceaddress);
+shamir_server          :: ShamirServer(ETHERADDRESS deviceaddress);
 
 /* Inbound flow:
  * Might be requests distributed via flooding or responses distibuted via DSR
@@ -43,7 +43,7 @@ wifidev[1]
 
 clf[0]
     -> [1]bc
-    -> server; // Local copy
+    -> shamir_server; // Local copy
 
 clf[1]
     -> [1]dsr;
@@ -55,14 +55,14 @@ clf[3]
     -> Discard;
 
 tee[0] //Packets from clients directly associated  with this AP
-    -> server;
+    -> shamir_server;
 
 
 
 /* Outbound flow:
  * Forward requests and send responses to the client */
 
-server[0]
+shamir_server[0]
 	-> BRN2EtherEncap(USEANNO true)
 	-> [1]wifidev; // forwarding to ap-client
 

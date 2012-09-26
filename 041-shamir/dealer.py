@@ -16,7 +16,7 @@ def resp_str(node_id, modulus, pub, share):
     base += "sk" + str(node_id) #NODE
     base += " ath0 " #DEVICE
     base += "write " #MODE
-    base += "ShamirServer " #ELEMENT
+    base += "shamir_server " #ELEMENT
 
     ret = base
     ret += "modulus " #HANDLER
@@ -35,7 +35,7 @@ def req_str(node_id, modulus, threshold):
     base += "sk" + str(node_id) #NODE
     base += " ath0 " #DEVICE
     base += "write " #MODE
-    base += "ShamirClient " #ELEMENT
+    base += "chamir_client " #ELEMENT
 
     ret = base
     ret += "modulus " #HANDLER
@@ -51,7 +51,7 @@ def resp_activate(node_id):
     ret += "sk" + str(node_id) #NODE
     ret += " ath0 " #DEVICE
     ret += "write " #MODE
-    ret += "ShamirServer " #ELEMENT
+    ret += "shamir_server " #ELEMENT
     ret += "active " #HANDLER
     ret += "true"
     ret += "\n"
@@ -63,7 +63,7 @@ def req_activate(node_id):
     ret += "sk" + str(node_id) #NODE
     ret += " ath0 " #DEVICE
     ret += "write " #MODE
-    ret += "ShamirClient " #ELEMENT
+    ret += "shamir_client " #ELEMENT
     ret += "active " #HANDLER
     ret += "true"
     ret += "\n"
