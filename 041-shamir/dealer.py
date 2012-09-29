@@ -11,27 +11,38 @@ reconstruct the secret"""
 import subprocess
 
 def resp_str(node_id, modulus, pub, share):
-    ret = ""
-    ret += "1 " #TIME
-    ret += "sk" + str(node_id) #NODE
-    ret += " ath0 " #DEVICE
-    ret += "write " #MODE
-    ret += "shamir_resp " #ELEMENT
-    ret += "setup " #HANDLER
-    ret += modulus + " " + pub + " " + str(node_id) + " " + share #FIXME: Does not work with python3
-    ret += "\n"
+    base = ""
+    base += "1 " #TIME
+    base += "sk" + str(node_id) #NODE
+    base += " ath0 " #DEVICE
+    base += "write " #MODE
+    base += "shamir_server " #ELEMENT
+
+    ret = base
+    ret += "modulus " #HANDLER
+    ret += modulus + "\n"
+    ret += base
+    ret += "share " #HANDLER
+    ret += share + "\n" #FIXME: Do we also need to pass the public key to the handler
+    ret += base
+    ret += "share_id " #Handler
+    ret += str(node_id) + "\n"
     return ret
 
-def req_str(node_id, modulus, pub):
-    ret = ""
-    ret += "1 " #TIME
-    ret += "sk" + str(node_id) #NODE
-    ret += " ath0 " #DEVICE
-    ret += "write " #MODE
-    ret += "shamir_req " #ELEMENT
-    ret += "setup " #HANDLER
-    ret += modulus + " " + pub + " " + str(node_id) #FIXME: Does not work with python3
-    ret += "\n"
+def req_str(node_id, modulus, threshold):
+    base = ""
+    base += "1 " #TIME
+    base += "sk" + str(node_id) #NODE
+    base += " ath0 " #DEVICE
+    base += "write " #MODE
+    base += "chamir_client " #ELEMENT
+
+    ret = base
+    ret += "modulus " #HANDLER
+    ret += modulus + "\n"
+    ret += base
+    ret += "threshold " #HANDLER
+    ret += str(threshold) + "\n"
     return ret
 
 def resp_activate(node_id):
@@ -40,7 +51,7 @@ def resp_activate(node_id):
     ret += "sk" + str(node_id) #NODE
     ret += " ath0 " #DEVICE
     ret += "write " #MODE
-    ret += "shamir_resp " #ELEMENT
+    ret += "shamir_server " #ELEMENT
     ret += "active " #HANDLER
     ret += "true"
     ret += "\n"
@@ -52,7 +63,7 @@ def req_activate(node_id):
     ret += "sk" + str(node_id) #NODE
     ret += " ath0 " #DEVICE
     ret += "write " #MODE
-    ret += "shamir_req " #ELEMENT
+    ret += "shamir_client " #ELEMENT
     ret += "active " #HANDLER
     ret += "true"
     ret += "\n"
@@ -66,7 +77,7 @@ def mes_line(node_id):
     ret += "- " #MODOPTIONS
     ret += "monitor.b.channel " #WIFICONFIG
     ret += "- " #CLICKMODDIR
-    ret += "shamir_server.click " #CLICKSCRIPT #FIXME: Needs to be shamir_node.click for the last entry
+    ret += "shamir_server.click " #CLICKSCRIPT #FIXME: Needs to be shamir_client.click for the last entry
     ret += "LOGDIR/NODENAME.NODEDEVICE.log " #CLICKLOGFILE
     ret += "- " #APPLICATION
     ret += "-" #APPLICATIONLOGFILE
@@ -98,7 +109,7 @@ fd = open("shamir.ctl", "w+")
 fd.write("#TIME NODE(S) DEVICE MODE ELEMENT HANDLER VALUE\n")
 for i in range(n):
     fd.write(resp_str(i+1, modulus, pub, shares[i]))
-fd.write(req_str(n+1, modulus, pub))
+fd.write(req_str(n+1, modulus, 3)) #FIXME: threshold 3 should be configurable
 
 for i in range(n):
     fd.write(resp_activate(i+1))
