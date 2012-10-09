@@ -50,7 +50,7 @@ is_assoc_req 	:: Classifier(0/a0%f0 /* disassoc */, 0/00%f0 /* assoc */, -);
 
 
 // Application elements
-tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "CLIENT", KEYDIR "CONFIGDIR/", DEBUG 5);
+tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "CLIENT", KEYDIR "CONFIGDIR/", DEBUG 2);
 BackboneNode	:: BACKBONE_NODE(NODEID id, PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, TLS tls, DEV_CLIENT wifidev_client/client/isc, AP_Q ap_outq, CLIENT_Q client_outq, START 10000, KEY_TIMEOUT 60000, DEVICE_CONTROL_UP switch_up, DEVICE_CONTROL_DOWN switch_down, DEVICE_CONTROL_DOWN2 switch_down2, DEBUG 5);
 
 
