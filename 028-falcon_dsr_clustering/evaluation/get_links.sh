@@ -103,7 +103,7 @@ echo "}" >> linksmetric.dot.tmp
 
 cat linksmetric.dot.tmp | sed $FULLSED > linksmetric.dot
 #neato -Tpng linksmetric.dot > linksmetric.png
-neato -Teps linksmetric.dot > linksmetric.eps
+neato -Teps linksmetric.dot > linksmetric.eps 2> /dev/null
 
 if [ $? -ne 0 ]; then
   rm -f linksmetric.eps
