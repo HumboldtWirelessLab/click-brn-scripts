@@ -1,7 +1,7 @@
 //#define RAWDUMP
 //#define RAWDEV_DEBUG
 #define LINKSTAT_ENABLE
-#define DEBUG_DSR
+//#define DEBUG_DSR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -33,7 +33,7 @@ id				:: BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 // Device and routing elements
 lt				:: Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 routingtable	:: BrnRoutingTable(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-routingalgo		:: Dijkstra(NODEIDENTITY id, LINKTABLE lt, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 5);
+routingalgo		:: Dijkstra(NODEIDENTITY id, LINKTABLE lt, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 2);
 routingmaint	:: RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
 wifidev_ap		:: WIFIDEV_AP(DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 ap_outq			:: NotifierQueue(50);
@@ -86,7 +86,6 @@ switch_up[0] // Flow 0 upwards: Client-Pkts
 	-> [1]wifidev_client[1]	
 	-> is_assoc_req[2] // special case: when upgrading to mesh node we need an disassoc
 	-> client_outq
-	-> Print("crk +++++++++++ ", 100)
 	-> [0]switch_down; // Flow 0 downwards: Client-Pkts 
 	
 	
@@ -124,7 +123,7 @@ switch_up[1] // Flow 1 upwards: AP-Pkts
 to_routing :: Null()
 	-> dsr;
 	
-wifidev_ap
+wifidev_ap[0]
 	-> BRN2EtherDecap()
 	-> dsr_clf :: Classifier( 0/BRN_PORT_DSR /* BrnDSR */, - /* other */);
          
@@ -242,14 +241,13 @@ Script(
 
 // Debugging Route-Requests
 Script(
-	wait 1100,
+	wait 10,
 	//write dsr/src_forwarder.debug 4,
-	write dsr/rep_forwarder.debug 5,
-	write dsr/querier.debug 4,
 	//read wifidev_ap/ap/assoclist.stations,
 	//read lt.links,	
 );
 
+/*
 Script(
 	wait 2461,
 	read wifidev_ap/ap/assoclist.stations,
@@ -257,6 +255,7 @@ Script(
 	read wifidev_client/client/isc.wireless_info,
 	read wifidev_client/client/isc.assoc,
 );
+*/
 
 /*
 // Debuggin of Routing

@@ -1,7 +1,7 @@
 //#define RAWDUMP
 //#define RAWDEV_DEBUG
 #define LINKSTAT_ENABLE
-#define DEBUG_DSR
+//#define DEBUG_DSR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
