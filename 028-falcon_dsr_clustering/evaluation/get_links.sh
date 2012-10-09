@@ -58,7 +58,17 @@ echo "}" >> links.dot.tmp
 cat links.dot.tmp | sed $FULLSED > links.dot
 #dot -Tpng links.dot > links.png
 #neato -Tpng links.dot > links.png
-neato -Teps links.dot > links.eps
+
+neato -Teps links.dot > links.eps 2> /dev/null
+
+if [ $? -ne 0 ]; then
+  rm -f links.eps
+  neato -Tpng links.dot > links.png 2> /dev/null
+  if [ $? -ne 0 ]; then
+    rm -f links.png
+    echo "No Images"
+  fi
+fi
 
 rm links.dot*
 
@@ -94,5 +104,14 @@ echo "}" >> linksmetric.dot.tmp
 cat linksmetric.dot.tmp | sed $FULLSED > linksmetric.dot
 #neato -Tpng linksmetric.dot > linksmetric.png
 neato -Teps linksmetric.dot > linksmetric.eps
+
+if [ $? -ne 0 ]; then
+  rm -f linksmetric.eps
+  neato -Tpng linksmetric.dot > linksmetric.png 2> /dev/null
+  if [ $? -ne 0 ]; then
+    rm -f linksmetric.png
+  fi
+fi
+
 
 rm linksmetric.dot*
