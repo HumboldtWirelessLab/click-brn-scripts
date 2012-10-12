@@ -1,5 +1,8 @@
 #define DEBUGLEVEL 2
 
+#define CST cst
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+
 #define RAWDUMP
 
 #include "brn/helper.inc"
@@ -76,5 +79,6 @@ Script(
   wait 5,
   read sys_info.systeminfo,
   read id.version,
-  read wireless.deviceinfo
+  read wireless.deviceinfo,
+  read wifidevice/cst.stats
 );
