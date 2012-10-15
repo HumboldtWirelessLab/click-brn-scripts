@@ -57,9 +57,9 @@ if [ $LATEX -eq 1 ]; then
     echo "\input{summary}" >> $TESTBED_TEX
 
     echo "\section{Summary}" > $SUMMARY_TEX
-if [ "x$MODE" = "xSIMULATION" ]; then
-    echo "Mode:$MODESTRING Simulator: $SIMULATOR" >> $SUMMARY_TEX
-fi 
+    if [ "x$MODE" = "xSIMULATION" ]; then
+      echo -e "Mode:$MODESTRING\n\nSimulator: $SIMULATOR" >> $SUMMARY_TEX
+    fi 
 
     echo "\begin{table}[h]" >> $SUMMARY_TEX
     echo "\centering" >> $SUMMARY_TEX
@@ -73,6 +73,7 @@ fi
     echo "\colheadend" >> $SUMMARY_TEX
 
     mkdir -p img
+    mkdir -p element_info
 fi
 
 while [ $i -le $LIMIT ]; do
@@ -103,6 +104,9 @@ while [ $i -le $LIMIT ]; do
   if [ $LATEX -eq 1 ]; then
       echo "\subsection{Result}" >> $TESTBED_TEX
   fi
+
+  FULLMEASUREMENT=1 $DIR/check_element_usage.sh $WORKDIR/$MEASUREMENTNUM > element_info/used_element_$NUM
+  cat element_info/used_element_$NUM >> element_info/used_element_all
 
   if [ $RESULT -ne 0 ]; then
     if [ $RESULT -eq 1 ]; then
@@ -177,16 +181,42 @@ if [ $LATEX -eq 1 ]; then
     echo "\caption{Summary}" >> $SUMMARY_TEX
     echo "\label{tab:measurements_parameters}" >> $SUMMARY_TEX
     echo "\end{table}" >> $SUMMARY_TEX
+    
+    
+    echo -e -n "\n\n\\subsection{Element Info}" >> $SUMMARY_TEX
+    echo -n "Number of Elements: " >> $SUMMARY_TEX
+    find $CLICKPATH/elements/brn2 -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | sort -u | wc -l >> $SUMMARY_TEX
+    echo -n -e "\n\nNumber of Used Elements: " >> $SUMMARY_TEX
+    cat element_info/used_element_all | sort -u | wc -l >> $SUMMARY_TEX
+    
+    GREPARG=`cat element_info/used_element_all | sort -u | tr '\n' '|'`
+    GREPARG="\"bar|$GREPARG-foo\""
+    #echo $GREPARG
+    
+    echo -n -e "\n\nNumber of Unused Elements: " >> $SUMMARY_TEX
+    find $CLICKPATH/elements/brn2 -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | wc -l >> $SUMMARY_TEX
+
+
+    
+    echo -e -n "\n\n\\subsection{Used Elements}\\\\begin{flushleft}\\\\begin{sloppypar}\\\\nohyphens{" >> $SUMMARY_TEX
+    cat element_info/used_element_all | sort -u | tr '\n' ',' | sed -e "s#,\$#}#g" | sed -e "s#,#}, \\\\nohyphens{#g" | sed -e "s#_##g" >> $SUMMARY_TEX
+    echo -e -n "\\\\end{sloppypar}\\\\end{flushleft}" >> $SUMMARY_TEX
+
+    echo -e -n "\n\n\\subsection{Unused Elements}\\\\begin{flushleft}\\\\begin{sloppypar}\\\\nohyphens{" >> $SUMMARY_TEX
+    find $CLICKPATH/elements/brn2 -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | sort | tr '\n' ',' | sed -e "s#,\$#}#g" | sed -e "s#,#}, \\\\nohyphens{#g" | sed -e "s#_##g" >> $SUMMARY_TEX
+    echo -e -n "\\\\end{sloppypar}\\\\end{flushleft}" >> $SUMMARY_TEX
+
+
 
     echo "\end{document}" >> $TESTBED_TEX
 
     pdflatex -halt-on-error testbed.tex > /dev/null 2>&1
 
     if [ -f testbed.pdf ]; then
-      rm -f testbed.aux testbed.log $TESTBED $SUMMARY $TESTBED_TEX $SUMMARY_TEX summary.aux IEEEtran.*
+      rm -f testbed.aux testbed.log testbed.dvi $TESTBED $SUMMARY $TESTBED_TEX $SUMMARY_TEX summary.aux IEEEtran.*
       rm -rf img
     fi
 else
-  rm -f testbed.aux testbed.log $TESTBED $SUMMARY summary.aux IEEEtran.*
-  rm -rf img
+  rm -f testbed.aux testbed.dvi testbed.log $TESTBED $SUMMARY summary.aux IEEEtran.*
+  rm -rf img element_info
 fi

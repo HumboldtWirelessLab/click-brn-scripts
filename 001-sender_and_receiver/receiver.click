@@ -1,5 +1,8 @@
 #define DEBUGLEVEL 2
 
+#define CST cst
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+
 #define RAWDUMP
 //#define RAWDUMPSNAPLEN 100
 
@@ -57,5 +60,6 @@ Script(
  wait 5,
  read sys_info.systeminfo,
  read id.version,
- read error_clf.stats
+ read error_clf.stats,
+ read wifidevice/cst.stats
 );
