@@ -1,5 +1,8 @@
 gps::GPS();
-seismo::Seismo(GPS gps, PRINT true, CALCSTATS true, RECORD true, SHORTTAGS true, DEBUG 4);
+seismo::Seismo(GPS gps, PRINT false, RECORD true, SHORTTAGS true, DEBUG 2);
+
+longshortavg::SeismoDetectionLongShortAvg(LONGAVG 100, SHORTAVG 10, MAXALARM 15, DEBUG 4);
+seismoreport::SeismoReporting(SEISMO seismo, ALGORITHMS longshortavg, INTERVAL 500, DEBUG 2)
 
 //FromDump("data.dump",STOP true,TIMING true)
 //-> BRN2EtherDecap()
@@ -10,10 +13,7 @@ Idle
 FromDump("seismo175.seismo.dump",STOP true, TIMING true)
 -> [0]seismo;
 
-//seismoreport::SeismoReporting(SEISMO seismo, INTERVAL 500, LONGAVG 500, SHORTAVG 20, MAXALARM 15, DEBUG 2)
-
-
-Script(
+/*Script(
   wait 1,
   //read seismo.channelinfo,
   //read seismo.channelinfostats
@@ -23,7 +23,7 @@ Script(
   // write seismo.shorttag false,
   // read seismo.localchannelinfo
   loop
-);
+);*/
 
 /*Script(
   wait 86,
@@ -48,6 +48,7 @@ Script(
 );*/
 
 Script(
-  wait 15,
+  wait 4,
+  read longshortavg.stats,
   stop
 );
