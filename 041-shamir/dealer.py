@@ -35,7 +35,7 @@ def req_str(node_id, modulus, threshold):
     base += "sk" + str(node_id) #NODE
     base += " ath0 " #DEVICE
     base += "write " #MODE
-    base += "chamir_client " #ELEMENT
+    base += "shamir_client " #ELEMENT
 
     ret = base
     ret += "modulus " #HANDLER
