@@ -78,6 +78,9 @@ fi
 
 while [ $i -le $LIMIT ]; do
   MEASUREMENTNUM=$RANDOM
+  if [ "x$MEASUREMENTNUM" = "x" ]; then
+    MEASUREMENTNUM=`hexdump -n 2 -e '/2 "%u"' /dev/urandom`
+  fi
   NUM=`printf "%03d\n" $i`
   WORKDIR=`ls -w 1 | awk '{print $1}' | grep "$NUM-"`
   NAME=`echo $WORKDIR | sed "s#$NUM-##g" | sed "s#_# #g"`
