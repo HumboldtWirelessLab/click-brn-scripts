@@ -45,18 +45,6 @@ def req_str(node_id, modulus, threshold):
     ret += str(threshold) + "\n"
     return ret
 
-def resp_activate(node_id):
-    ret = ""
-    ret += "3 " #TIME
-    ret += "sk" + str(node_id) #NODE
-    ret += " ath0 " #DEVICE
-    ret += "write " #MODE
-    ret += "shamir_server " #ELEMENT
-    ret += "active " #HANDLER
-    ret += "true"
-    ret += "\n"
-    return ret
-
 def req_activate(node_id):
     ret = ""
     ret += "5 " #TIME
@@ -111,8 +99,6 @@ for i in range(n):
     fd.write(resp_str(i+1, modulus, pub, shares[i]))
 fd.write(req_str(n+1, modulus, 3)) #FIXME: threshold 3 should be configurable
 
-for i in range(n):
-    fd.write(resp_activate(i+1))
 fd.write(req_activate(n+1))
 
 """
