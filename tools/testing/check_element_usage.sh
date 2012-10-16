@@ -1,9 +1,9 @@
 #!/bin/sh
 
-GREPARG=`find $CLICKPATH/elements/brn2 -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|'`
+GREPARG=`find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|'`
 GREPARG="\"$GREPARG-foo\""
 
-SEDARG=`find $CLICKPATH/elements/brn2 -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|' | sed "s#|#\\\\\\\\|#g"`
+SEDARG=`find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|' | sed "s#|#\\\\\\\\|#g"`
 SEDARG="s#\($SEDARG-foo\)# \1 #g"
 
 #echo $SEDARG
