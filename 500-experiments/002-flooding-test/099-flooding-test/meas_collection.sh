@@ -1,6 +1,7 @@
 #!/bin/sh
 
-VAL_RATE="2"
+#Hier mehrer
+VAL_RATE="2" 
 #"2 12 72"
 VAL_TXPOWER="19"
 #"19 10"
