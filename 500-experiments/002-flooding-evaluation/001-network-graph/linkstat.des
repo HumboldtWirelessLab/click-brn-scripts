@@ -3,7 +3,7 @@ SIMULATOR=ns2
 RADIO=shadowing11b
 FORGEINNODES=no
 
-TIME=60
+TIME=450
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=linkstat.mes
@@ -15,8 +15,8 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="embrace_xml linkstat_graph"
-EVALUATIONSDIR=WORKDIR
+EVALUATION="embrace_xml linkstat_graph network_info"
+EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no
 NOTICE=no
@@ -24,7 +24,7 @@ LOS=no
 
 CONTROLSOCKET=yes
 
-MULTIREPEAT="3"
+MULTIREPEAT="1"
 MULTIWAIT=0
 MULTIRUNMODE=REBOOT
 

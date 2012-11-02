@@ -16,6 +16,10 @@
 
 #endif
 
+#define LINKPROBE_PERIOD                                         5000
+#define LINKPROBE_TAU                                          250000
+#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000"
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
@@ -55,5 +59,6 @@ Script(
   read lt.links,
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats,
-  read device_wifi/cocst.stats 
+  stop
+  //,read device_wifi/cocst.stats
 );
