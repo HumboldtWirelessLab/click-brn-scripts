@@ -51,6 +51,8 @@ fi
 
 if [ "x$MODE" = "xSIMULATION" ]; then
   MODESTRING="Simulation"
+else
+  MODESTRING="Measurement"
 fi
 
 if [ $LATEX -eq 1 ]; then
@@ -97,7 +99,7 @@ while [ $i -le $LIMIT ]; do
     RESULT=$?
   else
     if [ "x$MODE" = "xMEASUREMENT" ]; then
-      (cd $WORKDIR; EVAL_LOG_OUT=3 RUNMODE=REBOOT run_measurement.sh $DESCRIPTIONFILE $MEASUREMENTNUM ) >> $TESTBED 3>&1
+      (cd $WORKDIR; EVAL_LOG_OUT=3 RUNMODE=REBOOT run_measurement.sh $DESCRIPTIONFILE $MEASUREMENTNUM ) 3>&1 2> /dev/null 1> /dev/null | sed ':a;N;$!ba;s/\s/\n/g' >> $TESTBED
       RESULT=$?
     else
       RESULT=1
@@ -213,8 +215,8 @@ if [ $LATEX -eq 1 ]; then
     pdflatex -halt-on-error testbed.tex > /dev/null 2>&1
 
     if [ -f testbed.pdf ]; then
-      rm -f testbed.aux testbed.log testbed.dvi $TESTBED $SUMMARY $TESTBED_TEX $SUMMARY_TEX summary.aux IEEEtran.*
-      rm -rf img
+      #rm -f testbed.aux testbed.log testbed.dvi $TESTBED $SUMMARY $TESTBED_TEX $SUMMARY_TEX summary.aux IEEEtran.*
+      rm -rf img element_info
     fi
 else
   rm -f testbed.aux testbed.dvi testbed.log $TESTBED $SUMMARY summary.aux IEEEtran.*
