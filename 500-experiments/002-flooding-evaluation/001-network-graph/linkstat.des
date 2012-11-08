@@ -3,7 +3,7 @@ SIMULATOR=ns2
 RADIO=shadowing11b
 FORGEINNODES=no
 
-TIME=450
+TIME=350
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=linkstat.mes
@@ -15,12 +15,15 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="embrace_xml linkstat_graph network_info"
+#EVALUATION="embrace_xml linkstat_graph network_info"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph network_info"
 EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no
 NOTICE=no
 LOS=no
+
+#LOCALPROCESS=CONFIGDIR/linkstat_ctl.sh
 
 CONTROLSOCKET=yes
 
