@@ -2,20 +2,6 @@
 
 #define CST cst
 
-#if WIFITYPE == 802
-
-#if DEVICENUMBER == 0
-#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
-#else
-#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
-#endif
-
-#else
-
-#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
-
-#endif
-
 #define LINKPROBE_PERIOD                                         5000
 #define LINKPROBE_TAU                                          250000
 #define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000"
