@@ -4,7 +4,7 @@
 
 TMPFILECOUNT=`cat $NODETABLE | awk '{print $8}' | grep "/tmp/" | wc -l`
 
-echo $TMPFILECOUNT
+#echo $TMPFILECOUNT
 
 echo -n "" > $NODETABLE.tmp
 
