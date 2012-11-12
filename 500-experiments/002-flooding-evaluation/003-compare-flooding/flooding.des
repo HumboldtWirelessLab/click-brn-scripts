@@ -1,0 +1,33 @@
+NAME=simpleflooding
+SIMULATOR=ns2
+RADIO=shadowing11b
+#RADIO=tworayground01b
+FORGEINNODES=no
+
+TIME=200
+
+NODEPLACEMENTFILE=placement.default
+NODETABLE=flooding.mes
+NODEPLACEMENT=grid
+NODEPLACEMENTOPTS="relative"
+FIELDSIZE=RXRANGE
+
+LOGDIR=WORKDIR
+LOGFILE=measurement.log
+
+RESULTDIR=WORKDIR
+<<<<<<< HEAD
+EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph network_info"
+EVALUATIONSDIR=WORKDIR/evaluation
+=======
+EVALUATIONSDIR=WORKDIR/evaluation
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph network_info"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml"
+>>>>>>> 325efc43b45f8c641fa8ffdf84bee878917a27cc
+
+GPS=no
+NOTICE=no
+LOS=no
+
+CONTROLSOCKET=yes
+#CONTROLFILE=flooding.ctl
