@@ -1,10 +1,10 @@
 #define DEBUGLEVEL 2
 
-#define RAWDUMP 1
+//#define RAWDUMP 1
 
 #define CST cst
 
-#if WIFITYPE == 802
+#if WIFITYPE == 803
 
 #if DEVICENUMBER == 0
 #define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
@@ -98,9 +98,9 @@ ps::BRN2PacketSource(SIZE 50, INTERVAL 100, MAXSEQ 500000, BURST 12, ACTIVE true
 
 
 //#ifdef WIFI_N
-
+#if WIFITYPE == 803
  /* 80211n */
-/*
+
   rrs[12]
   -> SetTXRates( RATE0 0, TRIES0 1, MCS0 true, BW0 0, SGI0 false, GF0 false, FEC0 0, SP0 false, STBC0 false, DEBUG false )
   -> wifioutq;
@@ -297,10 +297,8 @@ ps::BRN2PacketSource(SIZE 50, INTERVAL 100, MAXSEQ 500000, BURST 12, ACTIVE true
   -> wifioutq;
 
 
+#endif
 
-
-//#endif
-*/
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 

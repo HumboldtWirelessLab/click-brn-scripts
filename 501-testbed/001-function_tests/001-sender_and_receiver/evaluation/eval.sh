@@ -5,42 +5,52 @@
 #			exit 0: ok
 #			exit 1:
 #			exit 2: throughput too small
- 
-
 
 . $CONFIGFILE
 
-
-
 # Get dump-file
-DUMP_FILE=`ls -1 "$RESULTDIR" | grep "raw.dump"`
+DUMP_FILES=`ls -1 "$RESULTDIR" | grep "raw.dump"`
 
-# check for sender or receiver role
-nodes[0]=`sed -n 1p "$RESULTDIR/nodes.mac" | awk '{ print $1; }'`
-nodes[1]=`sed -n 2p "$RESULTDIR/nodes.mac" | awk '{ print $1; }'`
+OK=0
+OVERALL=0
 
-cmd=`grep "${nodes[0]}" "$NODETABLE" | grep -v "#${nodes[0]}"  |  awk '{ print $7; }'`
-if [ "x$cmd" = "xsender.click" ]; then
-	send_id=0
+for f in $DUMP_FILES; do
+  NODEPRE=`echo $f | awk -F . '{print $1}' | tr -d '[0-9]'`
+  #echo $NODEPRE
+  SENDER=`cat $NODETABLE | grep -e "^$NODEPRE" | grep "sender.click" |  awk '{ print $1; }'`
+  RECEIVER=`cat $NODETABLE | grep -e "^$NODEPRE" | grep "receiver.click" |  awk '{ print $1; }'`
+
+  #echo "$SENDER"
+ 
+  SENDERMAC=`cat $RESULTDIR/nodes.mac | grep $SENDER | awk '{ print $3; }'`
+
+  if [ -f $RESULTDIR/$f ]; then
+    pkt_recv=`fromdump.sh $RESULTDIR/$f | grep $SENDERMAC | wc -l`
+  else
+    pkt_recv=0
+  fi
+
+  echo -n "$NODEPRE: "
+  # eval pdr
+  pdr=`expr $pkt_recv \* 100 / \( $TIME \* 10 \)`
+  if [ $pdr -gt 50 ]; then
+    echo "PDR seems okay (PDR=$pdr/100)."
+    let OK=OK+1
+  else
+    echo "PDR too small (PDR=$pdr/100)."
+  fi
+
+  let OVERALL=OVERALL+1
+
+done
+
+echo -n "PDR-Test: $OK of $OVERALL are ok! "
+
+if [ $OVERALL -eq $OK ]; then
+  echo "Passed!"
+  exit 0
 else
-	send_id=1
-fi
-
-# sum up received packets
-mac=`cat $RESULTDIR/nodes.mac | grep ${nodes[$send_id]} | awk '{ print $3; }' | sed s/:/-/g`
-if [ -f $RESULTDIR/$DUMP_FILE ]; then
-  pkt_recv=`fromdump.sh $RESULTDIR/$DUMP_FILE | grep $mac | wc -l`
-else
-  pkt_recv=0
-fi
-
-# eval pdr
-pdr=`expr $pkt_recv \* 100 / \( $TIME \* 10 \)`
-if [ $pdr -gt 50 ]; then
-	echo "PDR seems okay  (PDR=$pdr/100)."
-	exit 0
-else 
-	echo "PDR too small (PDR=$pdr/100)."
-	exit 2
+  echo "Failed!"
+  exit 2 
 fi
 

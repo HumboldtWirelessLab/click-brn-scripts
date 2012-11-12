@@ -1,7 +1,7 @@
 gps::GPS();
 seismo::Seismo(GPS gps, PRINT false, RECORD true, SHORTTAGS true, DATAFILEPREFIX "data/result_9.txt", DATAFILEINTERVAL 100, DEBUG 2);
 
-longshortavg::SeismoDetectionLongShortAvg(LONGAVG 4000, SHORTAVG 100, RATIOTHRESHOLD 400, NORMALIZE 100, MAXALARM 15, DEBUG 2);
+longshortavg::SeismoDetectionLongShortAvg(LONGAVG 4000, SHORTAVG 100, RATIOTHRESHOLD 400, NORMALIZE 100, MAXALARM 100, DEBUG 2);
 seismoreport::SeismoReporting(SEISMO seismo, ALGORITHMS longshortavg, INTERVAL 500, DEBUG 2)
 
 //FromDump("data.dump",STOP true,TIMING true)
