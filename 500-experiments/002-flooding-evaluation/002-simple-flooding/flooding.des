@@ -16,8 +16,8 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATIONSDIR=RESULTDIR/evaluation
 EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph network_info"
+EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no
 NOTICE=no
