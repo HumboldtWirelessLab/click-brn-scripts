@@ -4,7 +4,7 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=140
+TIME=200
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=flooding.mes
@@ -16,8 +16,9 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATIONSDIR=RESULTDIR/evaluation
-EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph network_info"
+EVALUATIONSDIR=WORKDIR/evaluation
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph network_info"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml"
 
 GPS=no
 NOTICE=no
