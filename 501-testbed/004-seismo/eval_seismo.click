@@ -50,7 +50,7 @@ Idle
 Script(
   wait 481,
 //  wait 4,
-//  read longshortavg.stats,
+  read longshortavg.stats,
   stop
 );
 
