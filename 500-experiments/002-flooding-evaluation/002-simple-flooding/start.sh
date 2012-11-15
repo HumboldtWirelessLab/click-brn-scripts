@@ -24,7 +24,11 @@ for i in `cat nodes | grep -v "#"`; do
   fi
 
   if [ ! -e $MEASUREMENTDIR ]; then
-    MAC=`cat nodes.mac | grep $i | awk '{print $3}'`
+    if [ "x$SIM" = "x" ]; then
+      MAC=`cat nodes.mac | grep $i | awk '{print $3}'`
+    else
+      MAC=`cat nodes.mac.sim | grep $i | awk '{print $3}'`
+    fi
 
     if [ "x$SIM" = "x" ]; then
       cat flooding.mes.tmpl | sed "s#TXFLOODNODE#$i#g" | sed "s#LOGDIR#/tmp#g" > flooding.mes
