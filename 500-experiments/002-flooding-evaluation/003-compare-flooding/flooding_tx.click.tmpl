@@ -3,6 +3,7 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define PRO_FL
 //#define RAWDUMP
+#define BRNFEEDBACK
 
 #define CST cst
 
@@ -57,10 +58,16 @@ brn_clf[1]
 
 flooding[0] -> Label_brnether;
 
-Idle -> [2]flooding; //route error
-Idle -> [3]flooding; //route error
+device_wifi[2] -> Discard; //foreign
+device_wifi[3]
+  -> Print("Feedback")
+  -> BRN2EtherDecap()
+  -> Classifier( 0/BRN_PORT_FLOODING)
+  -> ffilter::FilterFailures()
+  -> [4]flooding; //feedback failure
 
-device_wifi[2] -> Discard;
+Idle -> [3]flooding;
+ffilter[1] -> [2]flooding; //feedback success
 
 Script(
   wait 100,
