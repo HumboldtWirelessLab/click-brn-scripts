@@ -1,5 +1,7 @@
 #define DEBUGLEVEL 2
 
+#include "flooding_config.h"
+
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define PRO_FL
 //#define RAWDUMP
@@ -59,7 +61,11 @@ brn_clf[1]
 flooding[0] -> Label_brnether;
 
 device_wifi[2] -> Discard; //foreign
+#ifdef BRNFEEDBACK
 device_wifi[3]
+#else
+  Idle()
+#endif
   -> Print("Feedback")
   -> BRN2EtherDecap()
   -> Classifier( 0/BRN_PORT_FLOODING)
