@@ -90,3 +90,11 @@ Script(
 );
 
 // 5 + 10 + 60 + TAU = 185
+
+#ifdef MPR_STATS
+Script(
+  wait 100,
+  write flooding/flp.mpr_algo,
+  read flooding/flp.flooding_info
+);
+#endif
