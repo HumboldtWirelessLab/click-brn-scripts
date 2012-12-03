@@ -3,8 +3,8 @@
 //#define CST cst
 //#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
-#define PRO_FL
-#define BCAST2UNIC
+//#define PRO_FL
+//#define BCAST2UNIC
 
 #include "brn/helper.inc"
 #include "brn/brn.click"

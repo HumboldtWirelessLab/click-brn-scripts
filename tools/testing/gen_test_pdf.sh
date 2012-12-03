@@ -215,7 +215,7 @@ if [ $LATEX -eq 1 ]; then
     pdflatex -halt-on-error testbed.tex > /dev/null 2>&1
 
     if [ -f testbed.pdf ]; then
-      #rm -f testbed.aux testbed.log testbed.dvi $TESTBED $SUMMARY $TESTBED_TEX $SUMMARY_TEX summary.aux IEEEtran.*
+      rm -f testbed.aux testbed.log testbed.dvi $TESTBED $SUMMARY $TESTBED_TEX $SUMMARY_TEX summary.aux IEEEtran.*
       rm -rf img element_info
     fi
 else
