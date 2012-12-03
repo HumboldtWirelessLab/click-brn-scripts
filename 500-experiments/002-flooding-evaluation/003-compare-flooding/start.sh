@@ -25,6 +25,10 @@ RUNMODE_RESET_COUNT=0
 
 for i in `cat nodes | grep -v "#"`; do
 
+  if [ "x$i" = "xpc113" ]; then
+    continue
+  fi
+
   for al in $FLOODALGOS; do
 
    DONE_ALL_FOR_ALG=0
@@ -100,6 +104,9 @@ for i in `cat nodes | grep -v "#"`; do
                   ;;
     esac
 
+    if [ -f ./finish ]; then
+      exit
+    fi
 
    done
 
