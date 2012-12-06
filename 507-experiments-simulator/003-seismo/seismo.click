@@ -57,7 +57,6 @@ device_wifi[2] -> Discard;
 Idle -> [1]device_wifi;
 
 Script(
-  write cooperative.add_alarm FF-FF-FF-FF-FF-FE 140 1,
   wait 240,
   //  wait 4,
   read longshortavg.stats,

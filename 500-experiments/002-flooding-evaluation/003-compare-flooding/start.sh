@@ -1,7 +1,7 @@
 #!/bin/sh
 
-FLOODALGOS="simple probability"
-#FLOODALGOS="probability"
+#FLOODALGOS="simple probability"
+FLOODALGOS="mpr"
 
 #PROB_ARRAY=( 70 )
 PROB_ARRAY=( 60 70 75 80 85 90 95 100 )
@@ -25,6 +25,10 @@ RUNMODE_RESET_COUNT=0
 
 for i in `cat nodes | grep -v "#"`; do
 
+  if [ "x$i" = "xpc113" ]; then
+    continue
+  fi
+
   for al in $FLOODALGOS; do
 
    DONE_ALL_FOR_ALG=0
@@ -46,6 +50,11 @@ for i in `cat nodes | grep -v "#"`; do
                   echo "#define PROBABILITYFLOODING_FWDPROBALILITY ${PROB_ARRAY[$PROBINDEX]}" >> flooding_config.h
                   echo "#define PRO_FL" >> flooding_config.h
                   ;;
+      "mpr")
+                 echo "#define MPR_STATS" > flooding_config.h
+                 echo "#define MPR_FL" >> flooding_config.h
+                 ;;
+
     esac
 
     echo "$i $al $PROBINDEX"
@@ -98,8 +107,14 @@ for i in `cat nodes | grep -v "#"`; do
                     PROBINDEX=""
                   fi
                   ;;
+      "mpr")
+                 DONE_ALL_FOR_ALG=1
+                 ;;
     esac
 
+    if [ -f ./finish ]; then
+      exit
+    fi
 
    done
 
