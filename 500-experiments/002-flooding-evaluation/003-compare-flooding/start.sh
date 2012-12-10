@@ -30,9 +30,14 @@ RUNMODE_RESET_COUNT=0
 
 for i in `cat nodes | grep -v "#"`; do
 
+ if [ "x$i" = "xpc113" ] && [ "x$SIM" = "x" ]; then
+   continue
+ fi
+
  for flunic in $FLOODINGUNICAST; do
 
      for al in $FLOODALGOS; do
+
 
        DONE_ALL_FOR_ALG=0
 
@@ -140,7 +145,10 @@ for i in `cat nodes | grep -v "#"`; do
 
       done
 
-     done
+    done
+    if [ -f ./finish ]; then
+      exit
+    fi
 
  done
 
