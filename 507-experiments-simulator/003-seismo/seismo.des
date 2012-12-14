@@ -24,4 +24,4 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
-#CONTROLFILE=simpleflow.ctl
+CONTROLFILE=seismo.ctl
