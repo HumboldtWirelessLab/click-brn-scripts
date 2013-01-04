@@ -6,14 +6,15 @@ FLOODALGOS="simple probability mpr"
 FLOODINGPASSIVACK="0 1"
 
 FLOODINGUNICAST="0 1 2"
+#FLOODINGUNICAST="0"
 
-#PROB_ARRAY=( 70 )
+PROB_ARRAY=( 95 )
 #PROB_ARRAY=( 60 70 75 80 85 90 95 100 )
-PROB_ARRAY=( 70 80 90 100 )
+#PROB_ARRAY=( 70 80 90 100 )
 PROB_ARRAY_SIZE=${#PROB_ARRAY[@]}
 
-if [ "x$LIMIT" = "x" ]; then
-  LIMIT=`cat nodes | grep -v "#" | wc -l`
+if [ "x$START" = "x" ]; then
+  START=1
 fi
 
 NUM=1
@@ -23,14 +24,30 @@ if [ "x$DATARATE" = "x" ]; then
   exit 1
 fi
 
+if [ "x$SIM" = "x1" ]; then
+  cat placements_npart.dat | grep -e "^1 " | sed -e "s#^1 ##g" > placement.txt
+  cat placement.txt | awk '{print $1}' > nodes.sim
+  NODESFILE=nodes.sim
+else
+  NODESFILE=nodes.measurement
+fi
+
+if [ "x$LIMIT" = "x" ]; then
+  LIMIT=`cat $NODESFILE | grep -v "#" | wc -l`
+fi
 
 CURRENTRUNMODE=REBOOT
 
 RUNMODE_RESET_COUNT=0
 
-for i in `cat nodes | grep -v "#"`; do
+for i in `cat $NODESFILE | grep -v "#"`; do
 
- if [ "x$i" = "xpc113" ] && [ "x$SIM" = "x" ]; then
+ if [ $NUM -lt $START ]; then
+   let NUM=NUM+1
+   continue
+ fi
+
+ if [ "x$i" = "xpc113" ]; then
    continue
  fi
 
@@ -78,13 +95,25 @@ for i in `cat nodes | grep -v "#"`; do
          if [ "x$SIM" = "x" ]; then
            MAC=`cat nodes.mac | grep $i | awk '{print $3}'`
          else
-           MAC=`cat nodes.mac.sim | grep $i | awk '{print $3}'`
+           mac_raw=`echo $i | sed "s#sk##g"`
+           m1=`expr $mac_raw / 256`
+           m2=`expr $mac_raw % 256`
+           m1h=$(echo "obase=16; $m1" | bc)
+           m2h=$(echo "obase=16; $m2" | bc)
+           if [ $m1 -lt 16 ]; then
+              m1h="0$m1h"
+           fi
+           if [ $m2 -lt 16 ]; then
+              m2h="0$m2h"
+           fi
+
+           MAC="00-00-00-00-$m1h-$m2h"
          fi
 
          if [ "x$SIM" = "x" ]; then
-           cat flooding.mes.tmpl | sed "s#TXFLOODNODE#$i#g" | sed "s#LOGDIR#/tmp#g" > flooding.mes
+           cat flooding.mes.tmpl | sed "s#TXFLOODNODE#$i#g" | sed "s#LOGDIR#/tmp#g" | sed "s#NODES#nodes.measurement#g" > flooding.mes
          else
-           cat flooding.mes.tmpl | sed "s#TXFLOODNODE#$i#g" > flooding.mes
+           cat flooding.mes.tmpl | sed "s#TXFLOODNODE#$i#g" | sed "s#NODES#nodes.sim#g" > flooding.mes
          fi
 
          cat flooding_tx.click.tmpl | grep -v "flooding_init" > flooding.click
@@ -162,4 +191,4 @@ for i in `cat nodes | grep -v "#"`; do
 
 done
 
-rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h
+rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h nodes.sim placement.txt
