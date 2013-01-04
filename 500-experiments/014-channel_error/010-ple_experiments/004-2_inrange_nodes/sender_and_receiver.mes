@@ -1,0 +1,4 @@
+#NODE	DEVICE	MODULSDIR						MODOPTIONS WIFICONFIG	CLICKMODDIR	CLICKSCRIPT	CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
+sk1	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+sk2	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               sender_1.click	LOGDIR/NODENAME.NODEDEVICE.log  -               -
+sk3	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor.802	-               sender_2.click	LOGDIR/NODENAME.NODEDEVICE.log  -               -
