@@ -1,4 +1,4 @@
-NAME=linkchannelstat
+NAME=linkchannelstat_plm
 SIMULATOR=ns2
 RADIO=shadowing11b
 FORGEINNODES=no
@@ -6,8 +6,8 @@ FORGEINNODES=no
 TIME=350
 
 NODEPLACEMENTFILE=placement.default
-NODETABLE=linkstat.mes
-NODEPLACEMENT=grid
+NODETABLE=linkstat_plm.mes
+NODEPLACEMENT=npart
 NODEPLACEMENTOPTS="relative"
 FIELDSIZE=RXRANGE
 
@@ -17,6 +17,7 @@ LOGFILE=measurement.log
 RESULTDIR=WORKDIR
 #EVALUATION="embrace_xml linkstat_graph network_info"
 EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression evaluation/eval.sh linkstat_graph network_info"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph"
 EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no

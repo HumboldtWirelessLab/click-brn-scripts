@@ -60,19 +60,22 @@ brn_clf[1]
 
 flooding[0] -> Label_brnether;
 
-device_wifi[2] -> Discard; //foreign
+device_wifi[2] 
+  -> BRN2EtherDecap()
+  -> foreign_clf::Classifier( 0/BRN_PORT_FLOODING )
+  -> [3]flooding;
+
 #ifdef BRNFEEDBACK
 device_wifi[3]
 #else
   Idle()
 #endif
-  -> Print("Feedback")
+  //-> Print("Feedback")
   -> BRN2EtherDecap()
   -> Classifier( 0/BRN_PORT_FLOODING)
   -> ffilter::FilterFailures()
   -> [4]flooding; //feedback failure
 
-Idle -> [3]flooding;
 ffilter[1] -> [2]flooding; //feedback success
 
 Script(
