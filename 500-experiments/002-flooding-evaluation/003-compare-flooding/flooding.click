@@ -60,22 +60,19 @@ brn_clf[1]
 
 flooding[0] -> Label_brnether;
 
-device_wifi[2] 
-  -> BRN2EtherDecap()
-  -> foreign_clf::Classifier( 0/BRN_PORT_FLOODING )
-  -> [3]flooding;
-
+device_wifi[2] -> Discard; //foreign
 #ifdef BRNFEEDBACK
 device_wifi[3]
 #else
   Idle()
 #endif
-  //-> Print("Feedback")
+  -> Print("Feedback")
   -> BRN2EtherDecap()
   -> Classifier( 0/BRN_PORT_FLOODING)
   -> ffilter::FilterFailures()
   -> [4]flooding; //feedback failure
 
+Idle -> [3]flooding;
 ffilter[1] -> [2]flooding; //feedback success
 
 Script(
@@ -85,7 +82,6 @@ Script(
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats,
   wait 10,
-  write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 51000 true, //flooding_init
   wait 60,
   read flooding/fl.stats,
   read flooding/fl.forward_table,
@@ -93,11 +89,3 @@ Script(
 );
 
 // 5 + 10 + 60 + TAU = 185
-
-#ifdef MPR_STATS
-Script(
-  wait 100,
-  write flooding/flp.mpr_algo,
-  read flooding/flp.flooding_info
-);
-#endif

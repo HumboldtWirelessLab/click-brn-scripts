@@ -23,7 +23,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE PACKETSIZE_PARAMS, RATE RATE_PARAMS, MAXSEQ 500000, BURST 1, ACTIVE true)
+ps::BRN2PacketSource(SIZE 100, RATE 100, MAXSEQ 500000, BURST 1, ACTIVE true)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
 //-> EtherEncap(0x8086, deviceaddress, 06-1B-B1-05-44-EE)
   -> WifiEncap(0x00, 0:0:0:0:0:0)

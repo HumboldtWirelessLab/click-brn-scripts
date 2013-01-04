@@ -4,11 +4,12 @@ SIMULATOR=ns2
 RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=700
+TIME=7000
+
 
 NODEPLACEMENTFILE=placementfile.plm
 #NODEPLACEMENTFILE=placement.default
-NODETABLE=sender_and_receiver.mes
+NODETABLE=placement.mes
 NODEPLACEMENT=file
 #NODEPLACEMENT=string
 #NODEPLACEMENT=grid

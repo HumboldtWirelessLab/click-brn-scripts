@@ -1,18 +1,14 @@
-NAME=backoff
+NAME=receiver
 SIMULATOR=ns2
-#RADIO=shadowing11b
-RADIO=tworayground01b
+RADIO=shadowing11b
 FORGEINNODES=no
 
-TIME=700
+TIME=6000000
 
-NODEPLACEMENTFILE=placementfile.plm
-#NODEPLACEMENTFILE=placement.default
-NODETABLE=sender_and_receiver.mes
-NODEPLACEMENT=file
-#NODEPLACEMENT=string
-#NODEPLACEMENT=grid
-FIELDSIZE=320
+NODEPLACEMENTFILE=placement.default
+NODETABLE=ap.mes
+NODEPLACEMENT=grid
+FIELDSIZE=100
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
@@ -20,8 +16,7 @@ LOGFILE=measurement.log
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
 EVALUATIONSDIRPOSTFIX=_evaluation
-EVALUATION=""
-#EVALUATION="evaluation/eval.sh"
+EVALUATION="evaluation/eval.sh"
 
 GPS=no
 NOTICE=no

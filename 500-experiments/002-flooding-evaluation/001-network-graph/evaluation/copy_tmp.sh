@@ -14,7 +14,9 @@ if [ $TMPFILECOUNT -ne 0 ]; then
     NODE=`echo $line | awk '{print $1}'`
     FILE=`echo $line | awk '{print $8}'`
 
-    NODELIST="$NODE" scp_node.sh $FILE $RESULTDIR
+    if [ "x$MODE" != "xsim" ]; then
+      NODELIST="$NODE" scp_node.sh $FILE $RESULTDIR
+    fi
 
     echo $line | sed -e "s#/tmp/#$RESULTDIR/#g" >> $NODETABLE.tmp
 
