@@ -4,7 +4,8 @@
 
 #define LINKPROBE_PERIOD                                         5000
 #define LINKPROBE_TAU                                          250000
-#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000"
+//#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000"
+#define LINKPROBE_PROBES "2 100 11 100 12 100 24 100 48 100 72 100 108 100"
 #define DISABLE_LP_POWER
 
 #include "brn/helper.inc"
