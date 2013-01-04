@@ -17,7 +17,7 @@ ps::BRN2PacketSource(SIZE 118, INTERVAL 5, MAXSEQ 500000, BURST 1, ACTIVE true)
 -> EtherEncap(0x8086, 00:00:00:00:00:01, 00:00:00:00:00:02)
 -> WifiEncap(0x00, 0:0:0:0:0:0)
 -> rs
--> SetTXPower(7)
+-> SetTXPower(16)
 //-> wifioutq::NotifierQueue(1000)
 -> sd::SimDevice(DEVNAME "NODEDEVICE", EMPERICAL_FILE "empirical/empirical_9_1.txt")
 -> BRN2PrintWifi(PRINTUSEDRATE true)
