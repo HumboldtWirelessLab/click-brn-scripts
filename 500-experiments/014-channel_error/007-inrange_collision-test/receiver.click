@@ -1,8 +1,12 @@
 #define DEBUGLEVEL 2
 
-#define RAWDUMP
-#define CERR
-#define CST
+#define CST cst
+
+#if WIFITYPE == 802
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
+#else
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#endif
 
 // include unter helper/measurement/etc/click
 
@@ -50,13 +54,39 @@ filter_tx[1]
 Script(
  wait 1,
 // read wifidevice/ced.stats,
- wait 8,
- read cnt.count,
- read cnt.byte_count
-);
-
-Script(
- wait 1,
+ write cnt.reset 1,
+ wait 5,
  read wifidevice/cst.stats,
- loop
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats,
+ write cnt.reset 1,
+ wait 5,
+ read wifidevice/cst.stats,
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats,
+ write cnt.reset 1,
+ wait 5,
+ read wifidevice/cst.stats,
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats,
+ write cnt.reset 1,
+ wait 5,
+ read wifidevice/cst.stats,
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats,
+ write cnt.reset 1,
+ wait 5,
+ read wifidevice/cst.stats,
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats
 );

@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
-#define RAWDUMP
-#define CST
+//#define RAWDUMP
+//#define CST
 
 //include unter helper/measurement/etc/click
 
@@ -16,9 +16,9 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE PACKETSIZE_PARAMS, RATE RATE_PARAMS, MAXSEQ 500000, BURST BURST_PARAMS, ACTIVE true)
-//-> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
-  -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
+ps::BRN2PacketSource(SIZE PACKETSIZE_PARAMS, RATE RATE_PARAMS, MAXSEQ 500000, BURST 1, ACTIVE true)
+  -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
+//-> EtherEncap(0x8086, deviceaddress, 06-1B-B1-05-44-EE)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
 //-> BRN2PrintWifi("Sender", TIMESTAMP true)
   -> SetTXRates(RATE0 2, TRIES0 7, TRIES1 0, TRIES2 0, TRIES3 0)
