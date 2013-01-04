@@ -33,3 +33,43 @@ ps::BRN2PacketSource(SIZE PACKETSIZE_PARAMS, RATE RATE_PARAMS, MAXSEQ 500000, BU
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> discard::Discard;
+
+Script(
+ wait 1,
+ // read wifidevice/ced.stats,
+ write cnt.reset 1,
+ wait 5,
+ read wifidevice/cst.stats,
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats,
+ write cnt.reset 1,
+ wait 5,
+ read wifidevice/cst.stats,
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats,
+ write cnt.reset 1,
+ wait 5,
+ read wifidevice/cst.stats,
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats,
+ write cnt.reset 1,
+ wait 5,
+ read wifidevice/cst.stats,
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats,
+ write cnt.reset 1,
+ wait 5,
+ read wifidevice/cst.stats,
+ wait 5,
+ read cnt.count,
+ read cnt.byte_count,
+ read wifidevice/cst.stats
+);
