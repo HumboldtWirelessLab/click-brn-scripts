@@ -1,30 +1,12 @@
 #!/bin/bash
 
-#BO_START_MIN=4
-#BO_START_MAX=4
-#BO_END_MIN=512
-#MUL_STEP=1
-#ADD_STEP=8
-
 CWMIN=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 )
-CWMAX=( 8 16 24 32 40 48 56 64 80 96 112 128 160 192 224 256 320 384 448 512 )
-#CWMAX=( 4 8 12 16 20 24 28 32 40 48 56 64 80 96 112 128 160 192 224 256 )
+#CWMAX=( 8 16 24 32 40 48 56 64 80 96 112 128 160 192 224 256 320 384 448 512 )
+CWMAX=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 )
 NO_NODES_VECTOR="2 4 6 8 10"
 #NO_NODES_VECTOR="10"
 PACKET_SIZE_VECTOR="1500 500"
 RATE_VECTOR="125"
-
-#CWMIN=( 4 8 12 16 20 24 28 32 40 48 56 64 80 96 112 128 160 192 224 256 )
-#CWMAX=( 4 8 12 16 20 24 28 32 40 48 56 64 80 96 112 128 160 192 224 256 )
-#NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10"
-#PACKET_SIZE_VECTOR="1500"
-#RATE_VECTOR="125 62 12"
-
-#CWMIN=( 4 8 )
-#CWMAX=( 4 8 )
-#NO_NODES_VECTOR="4"
-#PACKET_SIZE_VECTOR="1500"
-#RATE_VECTOR="125"
 
 REP=1
 NUM=1
@@ -33,6 +15,12 @@ NUM=1
 #echo $PACKET_SIZE_VECTOR
 
 #for rate in $RATES; do
+
+if [ "x$SIM" = "x1" ]; then
+  cp nodes.sim nodes
+else
+  cp nodes.testbed nodes
+fi
 
 CURRENT_RUNMODE=DRIVER
 
@@ -81,7 +69,11 @@ for non in $NO_NODES_VECTOR ; do
           else
 
             if [ ! -e $NUM ]; then
-              RUNMODE=$CURRENT_RUNMODE run_measurement.sh sender_and_receiver.des $NUM
+              if [ "x$SIM" = "x1" ]; then
+                SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
+              else
+                RUNMODE=$CURRENT_RUNMODE run_measurement.sh sender_and_receiver.des $NUM
+              fi
 
               echo "NUM=$NUM" > $NUM/params
               echo "NO_NODES=$non" >> $NUM/params
@@ -117,3 +109,5 @@ let NUM=NUM-1
 #tar cvfj all_sim.tar.bz2 `seq $NUM` > /dev/null 2>&1
 
 #rm -rf `seq $NUM`
+
+rm nodes
