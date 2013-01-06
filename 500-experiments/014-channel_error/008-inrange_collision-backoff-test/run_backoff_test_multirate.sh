@@ -3,9 +3,15 @@
 CWMIN=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 )
 #CWMAX=( 8 16 24 32 40 48 56 64 80 96 112 128 160 192 224 256 320 384 448 512 )
 CWMAX=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 )
-NO_NODES_VECTOR="2 4 6 8 10"
-#NO_NODES_VECTOR="10"
-PACKET_SIZE_VECTOR="1500 500"
+
+if [ "x$SIM" = "x1" ]; then
+  NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25"
+else
+  NO_NODES_VECTOR="2 4 6 8 10"
+fi
+
+PACKET_SIZE_VECTOR="1500"
+#PACKET_SIZE_VECTOR="1500 500"
 RATE_VECTOR="125"
 
 REP=1
@@ -22,13 +28,31 @@ else
   cp nodes.testbed nodes
 fi
 
+if [ "x$SIM" = "x1" ]; then
+  CHANNEL_MODEL="shadowing11b tworayground01b"
+else
+  CHANNEL_MODEL="real"
+fi
+
+PKT_TARGET="USE_BROADCAST USE_UNICAST"
+
 CURRENT_RUNMODE=DRIVER
 
-for non in $NO_NODES_VECTOR ; do
+for cm in $CHANNEL_MODEL; do
 
-  cat sender_and_receiver.mes.tmpl | sed "s#NONODES#$non#g" > sender_and_receiver.mes
+ cp sender_and_receiver.des.tmpl sender_and_receiver.des
+ echo "" >> sender_and_receiver.des
+ echo "RADIO=$cm" >> sender_and_receiver.des
 
-  for p_s in $PACKET_SIZE_VECTOR ; do
+ for target in $PKT_TARGET; do
+
+  echo "#define $target" > config.h
+
+  for non in $NO_NODES_VECTOR ; do
+
+   cat sender_and_receiver.mes.tmpl | sed "s#NONODES#$non#g" > sender_and_receiver.mes
+
+   for p_s in $PACKET_SIZE_VECTOR ; do
 
     for rate in $RATE_VECTOR ; do
 
@@ -82,6 +106,8 @@ for non in $NO_NODES_VECTOR ; do
               echo "BACKOFF_MAX=$cwmax" >> $NUM/params
               echo "SEED=$NUM" >> $NUM/params
               echo "RATE=$rate" >> $NUM/params
+              echo "TARGET=$target" >> $NUM/params
+              echo "CHANNEL_MODEL=$cm" >> $NUM/params
               cp monitor.802 $NUM
             fi
 
@@ -100,14 +126,21 @@ for non in $NO_NODES_VECTOR ; do
 
     done
     rm -f sender.click
+   done
+   rm -f sender_and_receiver.mes
   done
-  rm -f sender_and_receiver.mes
+
+ #ende target
+ done
+
+ rm config.h
+
+#ende channel model
 done
 
-let NUM=NUM-1
 
+#let NUM=NUM-1
 #tar cvfj all_sim.tar.bz2 `seq $NUM` > /dev/null 2>&1
-
 #rm -rf `seq $NUM`
 
-rm nodes
+rm nodes config.h sender_and_receiver.des
