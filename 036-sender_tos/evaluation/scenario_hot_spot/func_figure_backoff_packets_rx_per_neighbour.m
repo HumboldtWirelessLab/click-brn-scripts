@@ -14,9 +14,9 @@ function [handler_figure] = func_figure_backoff_packets_rx_per_neighbour(figure_
             hplots(1,i) = plot(vector_backoff_window_sizes_unique(:),matrix_backoff_no_packets_rx_avg(i,:),'LineWidth',2);           
         end
         grid on
-        title(str_title);
-        xlabel('\bf Backoff-Fenstergröße');
-        ylabel('\bf Anzahl empfangener Pakete im Mittel');
+        title(str_title,'FontSize',14,'FontWeight','bold');
+        xlabel('\bf{Backoff-Fenstergröße}');
+        ylabel('\bf{Anzahl empfangener Pakete im Mittel}');
         %set(hplots,'LineWidth',2)
         h_xlabel = get(gca,'XLabel');
         set(h_xlabel,'FontSize',16); 
@@ -29,7 +29,7 @@ function [handler_figure] = func_figure_backoff_packets_rx_per_neighbour(figure_
             legend_txt(1,i) = {string};
         end
         handler_legend = legend(hplots,legend_txt,'Location','NorthEastOutside');
-        set(get(handler_legend,'title'),'String',{'\bf Anzahl von 802.11-Nachbarstationen'}) 
+        set(get(handler_legend,'title'),'String',{'\bf{Anzahl von 802.11-Nachbarstationen}'}) 
         set(handler_legend,'FontSize',12)
         set(get(handler_legend,'title'),'FontSize',13);
     hold off
