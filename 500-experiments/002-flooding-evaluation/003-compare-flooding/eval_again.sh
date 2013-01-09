@@ -18,9 +18,12 @@ case "$SIGN" in
       ;;
 esac
 
-for i in `ls -d *MBit*`; do
-  (cd  $i/; rm -rf evaluation)
-done
+
+if [ "x$KEEP_EVAL" = "x" ]; then
+  for i in `ls -d *MBit*`; do
+    (cd  $i/; rm -rf evaluation)
+  done
+fi
 
 MAX_THREADS=14
 NUM=0
@@ -33,7 +36,7 @@ echo -n "" > $DIR/evaluation_finish
 
 for i in `ls -d *MBit*`; do
 
-  (cd  $i/; rm -rf evaluation; ADDEVALUATION="evaluation/eval.sh network_info flooding_info flow_info" sh ./eval_again.sh; cd $DIR; echo $NUM >> $DIR/evaluation_finish ) &
+  (cd  $i/; rm -rf evaluation; ADDEVALUATION="evaluation/eval.sh network_info flooding_info flow_info" sh ./eval_again.sh; cd $DIR; tar cjf $i.tar.bz2 $i; mkdir -p $i.new/evaluation/flooding_info/; cp $i/params $i.new/; cp $i/evaluation/flooding_info/floodingstats.csv $i.new/evaluation/flooding_info/; rm -rf $i; mv $i.new $i; echo $NUM >> $DIR/evaluation_finish ) &
 
   let NUM=NUM+1
 

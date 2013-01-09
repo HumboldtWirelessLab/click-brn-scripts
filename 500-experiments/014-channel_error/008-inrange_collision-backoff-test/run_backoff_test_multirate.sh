@@ -10,7 +10,8 @@ else
   NO_NODES_VECTOR="2 4 6 8 10"
 fi
 
-PACKET_SIZE_VECTOR="1500"
+PACKET_SIZE_VECTOR="500"
+#PACKET_SIZE_VECTOR="1500"
 #PACKET_SIZE_VECTOR="1500 500"
 RATE_VECTOR="125"
 
@@ -92,6 +93,12 @@ for cm in $CHANNEL_MODEL; do
             echo "$non $p_s $cwmin $cw_index"
           else
 
+            if [ -e $NUM ]; then
+              if [ "x$SIM" = "x1" ] && [ ! -e $NUM/time.stats ]; then
+                rm -rf $NUM
+              fi
+            fi
+
             if [ ! -e $NUM ]; then
               if [ "x$SIM" = "x1" ]; then
                 SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
@@ -143,4 +150,4 @@ done
 #tar cvfj all_sim.tar.bz2 `seq $NUM` > /dev/null 2>&1
 #rm -rf `seq $NUM`
 
-rm nodes config.h sender_and_receiver.des
+rm -f nodes config.h sender_and_receiver.des

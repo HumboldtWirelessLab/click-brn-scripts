@@ -21,7 +21,6 @@ esac
 . $CONFIGFILE
 . $RESULTDIR/params
 
-
 CHANNEL_MODEL=`echo $CHANNEL_MODEL | sed -e "s#real#0#g" -e "s#shadowing11b#1#g" -e "s#tworayground01b#2#g"`
 PKT_TARGET=`echo $PKT_TARGET | sed -e "s#USE_BROADCAST#0#g" -e "s#USE_UNICAST#1#g"`
 
@@ -67,11 +66,11 @@ fi
 xsltproc $DIR/channelload.xslt $RECEIVER_XML > $RESULTDIR/receiver_info.mat
 
 for i in `cat $RECEIVERLOG | grep -A 1 "cnt.count" | grep -v "cnt.count"`; do
-  echo "$NUM,$NO_NODES,$PACKETSIZE,$BACKOFF,$BACKOFF_MAX,$SEED,$RATE,$i" > $RESULTDIR/receiver_cnt.mat
+  echo "$NUM,$NO_NODES,$PACKETSIZE,$BACKOFF,$BACKOFF_MAX,$SEED,$RATE,$i,$PKT_TARGET,$CHANNEL_MODEL" > $RESULTDIR/receiver_cnt.mat
 done
 
 for i in `cat $RECEIVERLOG | grep -A 1 "cnt.byte_count" | grep -v "cnt.byte_count"`; do
-    echo "$NUM,$NO_NODES,$PACKETSIZE,$BACKOFF,$BACKOFF_MAX,$SEED,$RATE,$i" > $RESULTDIR/receiver_byte_cnt.mat
+    echo "$NUM,$NO_NODES,$PACKETSIZE,$BACKOFF,$BACKOFF_MAX,$SEED,$RATE,$i,$PKT_TARGET,$CHANNEL_MODEL" > $RESULTDIR/receiver_byte_cnt.mat
 done
 
 exit 0

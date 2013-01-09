@@ -5,7 +5,8 @@ FLOODALGOS="simple probability mpr"
 
 FLOODINGPASSIVACK="0 1"
 
-FLOODINGUNICAST="0 1 2"
+FLOODINGUNICAST="0 2"
+#FLOODINGUNICAST="0 1 2"
 #FLOODINGUNICAST="0"
 
 PROB_ARRAY=( 95 )
@@ -22,6 +23,13 @@ NUM=1
 if [ "x$DATARATE" = "x" ]; then
   echo "Set DATARATE. Use DATARATE=x ./start.sh"
   exit 1
+fi
+
+if [ "x$PLACEMENT" != "x" ]; then
+  MAX_PLACEMENT=$PLACEMENT
+  MIN_PLACEMENT=$PLACEMENT
+else
+  MIN_PLACEMENT=1
 fi
 
 if [ "x$SIM" = "x1" ]; then
@@ -53,7 +61,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
    continue
  fi
 
- for pl in `seq 1 $MAX_PLACEMENT`; do
+ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
    if [ "x$SIM" = "x1" ]; then
      cat placements_npart.dat | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
@@ -194,7 +202,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
  done
 
  if [ $NUM -ge $LIMIT ]; then
-   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h nodes.sim placement.txt
+   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt
    exit 0
  fi
 
@@ -202,4 +210,4 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
 done
 
-rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h nodes.sim placement.txt
+rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt
