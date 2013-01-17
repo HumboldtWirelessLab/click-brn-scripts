@@ -2,7 +2,7 @@
 
 #define RAWDUMP
 #define CERR
-#define CST
+#define CST cst
 
 // include unter helper/measurement/etc/click
 
