@@ -23,14 +23,20 @@ esac
 
 CHANNEL_MODEL=`echo $CHANNEL_MODEL | sed -e "s#real#0#g" -e "s#shadowing11b#1#g" -e "s#tworayground01b#2#g"`
 PKT_TARGET=`echo $PKT_TARGET | sed -e "s#USE_BROADCAST#0#g" -e "s#USE_UNICAST#1#g"`
+TARGET=`echo $TARGET | sed -e "s#USE_BROADCAST#0#g" -e "s#USE_UNICAST#1#g"`
 
 if [ "x$CHANNEL_MODEL" = "x" ]; then
   CHANNEL_MODEL="-1"
 fi
 
 if [ "x$PKT_TARGET" = "x" ]; then
-  PKT_TARGET="-1"
+  if [ "x$TARGET" != "x" ]; then
+    PKT_TARGET=$TARGET
+  else
+    PKT_TARGET="-1"
+  fi
 fi
+
 
 if [ "x$MODE" = "xsim" ]; then
 
@@ -50,9 +56,9 @@ fi
 RECEIVER=`cat $NODETABLE | grep "receiver.click" | awk '{print $1}'`
 
 if [ "x$MODE" = "xsim" ]; then
-  RECEIVERLOG=`cat $NODETABLE | grep "receiver.click" | awk '{print $8}'`
-else
   RECEIVERLOG=$RESULTDIR/measurement.log
+else
+  RECEIVERLOG=`cat $NODETABLE | grep "receiver.click" | awk '{print $8}'`
 fi
 
 RECEIVER_XML=$RESULTDIR/receiver.xml
