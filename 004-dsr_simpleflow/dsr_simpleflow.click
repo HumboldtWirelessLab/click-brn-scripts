@@ -1,4 +1,4 @@
-#define DEBUGLEVEL 2
+##define DEBUGLEVEL 4
 
 //#define DSR_ID_CACHE
 //#define WIFIDEV_LINKSTAT_DEBUG
@@ -62,7 +62,7 @@ ff[1]
 brn_clf[1]
 //-> Print("rx")
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(HEADROOM 192, DEBUG DEBUGLEVEL)
+-> sf::BRN2SimpleFlow(HEADROOM 192, ROUTINGPEEK routing/routing/routing_peek, LT lt, DEBUG 4)
 -> BRN2EtherEncap(USEANNO true, DEBUG DEBUGLEVEL)
 //-> Print("Out")
 -> [0]routing;
