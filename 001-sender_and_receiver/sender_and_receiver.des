@@ -13,6 +13,7 @@ NODEPLACEMENT=string
 #next is needed to use own placementfile
 #NODEPLACEMENT=file
 NODEPLACEMENTOPTS="relative"
+#FIELDSIZE=40
 FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR

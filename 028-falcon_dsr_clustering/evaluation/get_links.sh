@@ -41,8 +41,7 @@ echo "digraph G {" > linksmetric.dot.tmp
 
 for n in $NODES; do
   NUM=`echo $n | awk '{print strtonum("0x"$1)'}`
-  NODENUM=`expr $NUM - 1`
-  NODE=`cat $RESULTDIR/nodes.mac | grep " $NODENUM$" | awk '{print $1}'`
+  NODE=`cat $RESULTDIR/nodes.mac | grep " $NUM$" | awk '{print $1}'`
 #  echo "$n $NUM $NODE"
   X=`cat $RESULTDIR/placementfile.plm | grep "$NODE " | awk '{print $2}'`
   X=`calc $X / 50 | sed "s#^[[:space:]]*~##g"`

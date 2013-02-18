@@ -1,6 +1,6 @@
 #define DEBUGLEVEL 2
 
-#define CST
+#define CST cst
 
 // include unter helper/measurement/etc/click
 

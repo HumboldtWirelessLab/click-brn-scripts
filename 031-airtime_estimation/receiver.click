@@ -1,5 +1,5 @@
 #define DEBUGLEVEL 2
-#define CST 1
+#define CST cst
 
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
