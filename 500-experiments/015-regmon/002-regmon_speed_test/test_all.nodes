@@ -1,0 +1,18 @@
+#!/bin/sh
+
+
+#NODES="commander105 wendy106"
+NODES="foobar103"
+# ranger104 commander105 wendy106"
+
+for i in $NODES; do
+
+  cat sender_and_receiver.mes.tmpl | sed "s#PARAM_NODE#$i#g" > sender_and_receiver.mes
+  ./speed_test.sh
+  mkdir $i
+  mv `ls | grep -e "^[0-9]*$"` $i
+  (cd $i; sh ../eval_all.sh > regman_data_all.dat)
+
+done
+
+rm -f ./interval sender_and_receiver.mes
