@@ -1,5 +1,7 @@
 #define DEBUGLEVEL 2
 
+#include "config.h"
+
 //#define RAWDUMP
 
 #define CST cst
@@ -24,11 +26,18 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 ps::BRN2PacketSource(SIZE PACKETSIZE_PARAMS, RATE RATE_PARAMS, MAXSEQ 500000, BURST 1, ACTIVE true)
+#ifdef USE_BROADCAST
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
-//-> EtherEncap(0x8086, deviceaddress, 06-1B-B1-05-44-EE)
+#else
+#ifdef SIMULATION
+  -> EtherEncap(0x8086, deviceaddress, 00-00-00-00-00-01 )
+#else
+  -> EtherEncap(0x8086, deviceaddress, 06-1B-B1-05-3B-A2 )
+#endif
+#endif
   -> WifiEncap(0x00, 0:0:0:0:0:0)
 //-> BRN2PrintWifi("Sender", TIMESTAMP true)
-  -> SetTXRates(RATE0 2, TRIES0 7, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
@@ -37,39 +46,24 @@ ps::BRN2PacketSource(SIZE PACKETSIZE_PARAMS, RATE RATE_PARAMS, MAXSEQ 500000, BU
 Script(
  wait 1,
  // read wifidevice/ced.stats,
- write cnt.reset 1,
  wait 5,
  read wifidevice/cst.stats,
  wait 5,
- read cnt.count,
- read cnt.byte_count,
  read wifidevice/cst.stats,
- write cnt.reset 1,
  wait 5,
  read wifidevice/cst.stats,
  wait 5,
- read cnt.count,
- read cnt.byte_count,
  read wifidevice/cst.stats,
- write cnt.reset 1,
  wait 5,
  read wifidevice/cst.stats,
  wait 5,
- read cnt.count,
- read cnt.byte_count,
  read wifidevice/cst.stats,
- write cnt.reset 1,
  wait 5,
  read wifidevice/cst.stats,
  wait 5,
- read cnt.count,
- read cnt.byte_count,
  read wifidevice/cst.stats,
- write cnt.reset 1,
  wait 5,
  read wifidevice/cst.stats,
  wait 5,
- read cnt.count,
- read cnt.byte_count,
  read wifidevice/cst.stats
 );

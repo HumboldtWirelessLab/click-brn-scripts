@@ -5,7 +5,8 @@ FLOODALGOS="simple probability mpr"
 
 FLOODINGPASSIVACK="0 1"
 
-FLOODINGUNICAST="0 1 2"
+FLOODINGUNICAST="0 2"
+#FLOODINGUNICAST="0 1 2"
 #FLOODINGUNICAST="0"
 
 PROB_ARRAY=( 95 )
@@ -24,12 +25,21 @@ if [ "x$DATARATE" = "x" ]; then
   exit 1
 fi
 
+if [ "x$PLACEMENT" != "x" ]; then
+  MAX_PLACEMENT=$PLACEMENT
+  MIN_PLACEMENT=$PLACEMENT
+else
+  MIN_PLACEMENT=1
+fi
+
 if [ "x$SIM" = "x1" ]; then
-  cat placements_npart.dat | grep -e "^1 " | sed -e "s#^1 ##g" > placement.txt
-  cat placement.txt | awk '{print $1}' > nodes.sim
   NODESFILE=nodes.sim
+  if [ "x$MAX_PLACEMENT" = "x" ]; then
+    MAX_PLACEMENT=`cat placements_npart.dat | awk '{print $1}' | sort -nu | tail -n 1`
+  fi
 else
   NODESFILE=nodes.measurement
+  MAX_PLACEMENT=1
 fi
 
 if [ "x$LIMIT" = "x" ]; then
@@ -51,7 +61,14 @@ for i in `cat $NODESFILE | grep -v "#"`; do
    continue
  fi
 
- for flunic in $FLOODINGUNICAST; do
+ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
+
+   if [ "x$SIM" = "x1" ]; then
+     cat placements_npart.dat | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
+     cat placement.txt | awk '{print $1}' > nodes.sim
+   fi
+
+   for flunic in $FLOODINGUNICAST; do
 
      for al in $FLOODALGOS; do
 
@@ -60,7 +77,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
        while [ $DONE_ALL_FOR_ALG -eq 0 ]; do
 
-       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_"$al
+       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al
 
        case "$al" in
          "simple")
@@ -71,7 +88,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
                     PROBINDEX=0
                   fi
                   MEASUREMENTDIR="$MEASUREMENTDIR""_p_"${PROB_ARRAY[$PROBINDEX]}
-                  echo "#define FLOODING_DEBUG 4" > flooding_config.h
+                  echo "#define FLOODING_DEBUG 2" > flooding_config.h
                   echo "#define PROBABILITYFLOODING_FWDPROBALILITY ${PROB_ARRAY[$PROBINDEX]}" >> flooding_config.h
                   echo "#define PRO_FL" >> flooding_config.h
                   ;;
@@ -152,6 +169,8 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
         echo "UNICASTSTRATEGY=$flunic" >> $MEASUREMENTDIR/params
 
+        echo "PLACEMENT=$pl" >> $MEASUREMENTDIR/params
+
        fi
 
        case "$al" in
@@ -178,12 +197,12 @@ for i in `cat $NODESFILE | grep -v "#"`; do
     if [ -f ./finish ]; then
       exit
     fi
+  done
 
  done
 
-
  if [ $NUM -ge $LIMIT ]; then
-   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h
+   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt
    exit 0
  fi
 
@@ -191,4 +210,4 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
 done
 
-rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h nodes.sim placement.txt
+rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt

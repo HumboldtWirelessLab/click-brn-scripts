@@ -77,7 +77,7 @@ for non in $NO_NODES_VECTOR ; do
             echo "NO_NODES=$non" >> $NUM/params
             echo "PACKETSIZE=$p_s" >> $NUM/params
             echo "BACKOFF=$cwmin" >> $NUM/params
-            echo "BACKOFF_MAX=$non" >> $NUM/params
+            echo "BACKOFF_MAX=$cwmax" >> $NUM/params
             echo "SEED=$NUM" >> $NUM/params
             echo "RATE=$rate" >> $NUM/params
             cp monitor.802 $NUM

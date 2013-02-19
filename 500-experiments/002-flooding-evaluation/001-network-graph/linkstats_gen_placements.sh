@@ -41,7 +41,7 @@ for i in `seq 1 $NOPLM`; do
 
   MAX_CLUSTER_SIZE=`cat $i/evaluation/network_info/clustersize.csv | tail -n 1 | sed "s#,# #g" | awk '{print $2}'`
 
-  if [ $MAX_CLUSTER_SIZE -eq 100 ]; then
+  if [ $MAX_CLUSTER_SIZE -eq 200 ]; then
     cat $i/placementfile.plm | awk -v NUM=$NUM '{print NUM" "$0}' >> placements.dat
     for g in `(cd $i/evaluation/network_info; ls graph_psr_*)`; do
       r=`echo $g | sed "s#_# #g" | awk '{print $3}'`

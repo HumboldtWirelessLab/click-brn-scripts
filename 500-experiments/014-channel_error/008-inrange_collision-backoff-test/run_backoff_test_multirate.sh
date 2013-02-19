@@ -1,11 +1,20 @@
 #!/bin/bash
 
-CWMIN=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 )
+CWMIN=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 288 320 352 384 416 448 480 512 )
 #CWMAX=( 8 16 24 32 40 48 56 64 80 96 112 128 160 192 224 256 320 384 448 512 )
-CWMAX=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 )
-NO_NODES_VECTOR="2 4 6 8 10"
-#NO_NODES_VECTOR="10"
-PACKET_SIZE_VECTOR="1500 500"
+CWMAX=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 288 320 352 384 416 448 480 512 )
+
+if [ "x$SIM" = "x1" ]; then
+  NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25"
+#  NO_NODES_VECTOR="2 15 25"
+#  NO_NODES_VECTOR="2"
+else
+  NO_NODES_VECTOR="2 4 6 8 10"
+fi
+
+PACKET_SIZE_VECTOR="500"
+#PACKET_SIZE_VECTOR="1500"
+#PACKET_SIZE_VECTOR="1500 500"
 RATE_VECTOR="125"
 
 REP=1
@@ -16,19 +25,44 @@ NUM=1
 
 #for rate in $RATES; do
 
+if [ "x$PLACEMENTFILE" = "x" ]; then
+  PLACEMENTFILE=placementfile.plm.small
+fi
+
+cp $PLACEMENTFILE placementfile.plm
+
 if [ "x$SIM" = "x1" ]; then
+  cat placementfile.plm | awk '{print $1}' > nodes.sim
   cp nodes.sim nodes
 else
   cp nodes.testbed nodes
 fi
 
+if [ "x$SIM" = "x1" ]; then
+  CHANNEL_MODEL="shadowing11b tworayground01b"
+else
+  CHANNEL_MODEL="real"
+fi
+
+PKT_TARGET="USE_BROADCAST USE_UNICAST"
+
 CURRENT_RUNMODE=DRIVER
 
-for non in $NO_NODES_VECTOR ; do
+for cm in $CHANNEL_MODEL; do
 
-  cat sender_and_receiver.mes.tmpl | sed "s#NONODES#$non#g" > sender_and_receiver.mes
+ cp sender_and_receiver.des.tmpl sender_and_receiver.des
+ echo "" >> sender_and_receiver.des
+ echo "RADIO=$cm" >> sender_and_receiver.des
 
-  for p_s in $PACKET_SIZE_VECTOR ; do
+ for target in $PKT_TARGET; do
+
+  echo "#define $target" > config.h
+
+  for non in $NO_NODES_VECTOR ; do
+
+   cat sender_and_receiver.mes.tmpl | sed "s#NONODES#$non#g" > sender_and_receiver.mes
+
+   for p_s in $PACKET_SIZE_VECTOR ; do
 
     for rate in $RATE_VECTOR ; do
 
@@ -68,9 +102,15 @@ for non in $NO_NODES_VECTOR ; do
             echo "$non $p_s $cwmin $cw_index"
           else
 
+            if [ -e $NUM ]; then
+              if [ "x$SIM" = "x1" ] && [ ! -e $NUM/time.stats ]; then
+                rm -rf $NUM
+              fi
+            fi
+
             if [ ! -e $NUM ]; then
               if [ "x$SIM" = "x1" ]; then
-                SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
+                SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 PREPARE_ONLY=1 run_sim.sh ns sender_and_receiver.des $NUM
               else
                 RUNMODE=$CURRENT_RUNMODE run_measurement.sh sender_and_receiver.des $NUM
               fi
@@ -82,6 +122,8 @@ for non in $NO_NODES_VECTOR ; do
               echo "BACKOFF_MAX=$cwmax" >> $NUM/params
               echo "SEED=$NUM" >> $NUM/params
               echo "RATE=$rate" >> $NUM/params
+              echo "TARGET=$target" >> $NUM/params
+              echo "CHANNEL_MODEL=$cm" >> $NUM/params
               cp monitor.802 $NUM
             fi
 
@@ -100,14 +142,22 @@ for non in $NO_NODES_VECTOR ; do
 
     done
     rm -f sender.click
+   done
+   rm -f sender_and_receiver.mes
   done
-  rm -f sender_and_receiver.mes
+
+ #ende target
+ done
+
+ rm config.h
+
+#ende channel model
 done
 
-let NUM=NUM-1
-
+#let NUM=NUM-1
 #tar cvfj all_sim.tar.bz2 `seq $NUM` > /dev/null 2>&1
-
 #rm -rf `seq $NUM`
 
-rm nodes
+rm -f nodes config.h sender_and_receiver.des
+
+sh ./run_para_sim.sh

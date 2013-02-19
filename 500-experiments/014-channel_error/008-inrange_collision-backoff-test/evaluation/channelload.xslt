@@ -43,7 +43,16 @@
         <xsl:value-of select="@std_rssi" /><xsl:text>,</xsl:text>
         <xsl:value-of select="@min_rssi" /><xsl:text>,</xsl:text>
         <xsl:value-of select="@max_rssi" /><xsl:text>,</xsl:text>
-        <xsl:value-of select="@pkt_cnt" />
+        <xsl:value-of select="@pkt_cnt" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="../../mac/@rx_retry_pkt" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="../../mac/@tx_retry_pkt" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="../../mac_percentage/@busy" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="../../mac_percentage/@rx" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="../../mac_percentage/@tx" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="@missed_seq" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="../../phy/@channel" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="../../../@ptktarget" /><xsl:text>,</xsl:text>
+        <xsl:value-of select="../../../@channelmodel" />
         <xsl:value-of select="$newline" />
         <xsl:apply-templates />
     </xsl:template>

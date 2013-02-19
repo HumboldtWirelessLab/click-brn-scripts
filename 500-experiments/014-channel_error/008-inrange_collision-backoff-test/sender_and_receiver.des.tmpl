@@ -1,10 +1,10 @@
 NAME=backoff
 SIMULATOR=ns2
 #RADIO=shadowing11b
-RADIO=tworayground01b
+#RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=700
+TIME=70
 
 NODEPLACEMENTFILE=placementfile.plm
 #NODEPLACEMENTFILE=placement.default
@@ -18,10 +18,9 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATIONSDIR=WORKDIR
+EVALUATIONSDIR=WORKDIR/evaluation
 EVALUATIONSDIRPOSTFIX=_evaluation
-EVALUATION=""
-#EVALUATION="evaluation/eval.sh"
+EVALUATION="evaluation/eval.sh evaluation/drop_nsfiles.sh status_compression"
 
 GPS=no
 NOTICE=no
