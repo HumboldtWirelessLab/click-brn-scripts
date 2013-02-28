@@ -15,6 +15,7 @@ ps::BRN2PacketSource(SIZE PARAM_DISPS, INTERVAL PARAM_DISPI, MAXSEQ 500000, BURS
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTXRates(RATE0 2, TRIES0 7, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> SetTXPower(PARAM_DISTXPOWER)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> discard::Discard;
