@@ -64,7 +64,7 @@ dht[1]
 
 brn_clf[3]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow()
+-> sf::BRN2SimpleFlow(ROUTINGPEEK dart/routing_peek)
 -> BRN2EtherEncap(USEANNO true)
 -> Print("Foo")
 -> [0]dart;
