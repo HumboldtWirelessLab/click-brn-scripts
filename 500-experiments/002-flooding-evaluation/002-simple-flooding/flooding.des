@@ -3,12 +3,13 @@ SIMULATOR=ns2
 RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
+NAME2MAC=yes
 
 TIME=200
 
-NODEPLACEMENTFILE=placement.default
+NODEPLACEMENTFILE=placement.txt
 NODETABLE=flooding.mes
-NODEPLACEMENT=grid
+NODEPLACEMENT=string
 NODEPLACEMENTOPTS="relative"
 FIELDSIZE=RXRANGE
 
@@ -17,8 +18,8 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
-EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph network_info flow_info flooding_info"
-#EVALUATION="evaluation/copy_tmp.sh embrace_xml"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph network_info flooding_info flow_info"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression"
 
 GPS=no
 NOTICE=no
