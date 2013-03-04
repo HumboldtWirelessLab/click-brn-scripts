@@ -71,7 +71,7 @@ brn_clf[3]
 -> BRN2EtherEncap()
 -> [0]routing;
 
-routing[0] /*-> Print("Falcon out")*/ -> BRN2EtherEncap(USEANNO true) -> Print("hawk out ether") -> [0]device_wifi;
+routing[0] -> [0]device_wifi;
 routing[1] -> Label_brnether;
 
 Idle 
