@@ -32,8 +32,7 @@ fi
 cp $PLACEMENTFILE placementfile.plm
 
 if [ "x$SIM" = "x1" ]; then
-  cat placementfile.plm | awk '{print $1}' > nodes.sim
-  cp nodes.sim nodes
+  cat placementfile.plm | awk '{print $1}' > nodes
 else
   cp nodes.testbed nodes
 fi

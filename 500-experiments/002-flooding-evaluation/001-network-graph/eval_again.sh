@@ -18,7 +18,11 @@ case "$SIGN" in
       ;;
 esac
 
-for i in `seq 0 8`; do
-#  (cd PARAMS_$i/1/; rm -rf evaluation; sh ./eval_again.sh)
-  (cd PARAMS_$i/1/; sh ./eval_again.sh)
+#for i in `seq 0 8`; do
+##  (cd PARAMS_$i/1/; rm -rf evaluation; sh ./eval_again.sh)
+#  (cd PARAMS_$i/1/; sh ./eval_again.sh)
+#done
+
+for i in `seq 50`; do
+  (cd $i/; rm -rf evaluation; sh ./eval_again.sh)
 done

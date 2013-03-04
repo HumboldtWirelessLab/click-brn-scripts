@@ -36,8 +36,7 @@ echo -n "" > $DIR/evaluation_finish
 
 for i in `ls -d *MBit*`; do
 
-  #(cd  $i/; rm -rf evaluation; ADDEVALUATION="evaluation/eval.sh network_info flooding_info flow_info" sh ./eval_again.sh; cd $DIR; tar cjf $i.tar.bz2 $i; mkdir -p $i.new/evaluation/flooding_info/; cp $i/params $i.new/; cp $i/evaluation/flooding_info/floodingstats.csv $i.new/evaluation/flooding_info/; rm -rf $i; mv $i.new $i; echo $NUM >> $DIR/evaluation_finish ) &
-  (cd  $i/; rm -rf evaluation; ADDEVALUATION="evaluation/eval.sh network_info flooding_info flow_info" sh ./eval_again.sh; echo $NUM >> $DIR/evaluation_finish ) &
+  (cd  $i/; rm -rf evaluation; ADDEVALUATION="evaluation/eval.sh network_info flooding_info flow_info" sh ./eval_again.sh; cd $DIR; tar cjf $i.tar.bz2 $i; mkdir -p $i.new/evaluation/flooding_info/; cp $i/params $i.new/; cp $i/evaluation/flooding_info/floodingstats.csv $i.new/evaluation/flooding_info/; rm -rf $i; mv $i.new $i; echo $NUM >> $DIR/evaluation_finish ) &
 
   let NUM=NUM+1
 
@@ -61,3 +60,5 @@ while [ $LINES -ne $NUM ]; do
 done
 
 rm -f $DIR/evaluation_finish placement.txt
+
+(cd evaluation/; ./eval_all.sh ../)
