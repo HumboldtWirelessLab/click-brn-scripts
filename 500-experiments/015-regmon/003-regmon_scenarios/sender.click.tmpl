@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
-//#define TMPDUMP
-//#define RAWDUMP
+#define TMPDUMP
+#define RAWDUMP
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -14,11 +14,14 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 2200, INTERVAL PARAM_TXINTERVAL, MAXSEQ 500000, BURST 1, ACTIVE true)
+ps::BRN2PacketSource(SIZE PARAM_PKTSIZE, INTERVAL PARAM_TXINTERVAL, MAXSEQ 500000, BURST PARAM_TXBURST, ACTIVE false)
+  //-> EtherEncap(0x8086, deviceaddress, 01-02-03-04-05-06)
+  //-> EtherEncap(0x8086, deviceaddress, 06-16-E6-3C-96-CB)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTXRates(RATE0 PARAM_TXRATE, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(PARAM_TXPOWER)
+  //-> SetRTS(RTS true)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> discard::Discard;
@@ -29,3 +32,10 @@ ps2::BRN2PacketSource(SIZE 33, INTERVAL 1000, MAXSEQ 500000, BURST 1, ACTIVE tru
   -> SetTXRates(RATE0 12, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(63)
   -> wifioutq;
+
+Script(
+ wait 5,
+ write ps.active true,
+ wait 20,
+ write ps.active false
+);

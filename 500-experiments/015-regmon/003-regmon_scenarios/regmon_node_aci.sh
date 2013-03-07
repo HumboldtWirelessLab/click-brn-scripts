@@ -49,10 +49,16 @@ sysctl dev.wifi0.cu_update_mode >> /tmp/regmon_$NODENAME.log
 sysctl dev.wifi0.regmon_interval >> /tmp/regmon_$NODENAME.log
 
 
-sleep 15
+sleep 7
+iwconfig ath0 channel 42
+
+sleep 8
 
 cat /sys/kernel/debug/regmon_data > /tmp/regmon_data_$NODENAME
 
-#sleep 2
-
 mv /tmp/debugfs_$NODENAME.log /tmp/regmon_$NODENAME.log /tmp/regmon_data_$NODENAME $FINALRESULTDIR/
+
+iwconfig ath0 channel 46
+
+
+

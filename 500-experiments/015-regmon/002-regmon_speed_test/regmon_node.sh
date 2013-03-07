@@ -47,7 +47,7 @@ sysctl dev.wifi0.regmon_interval >> /tmp/regmon.log
 
 sleep 10
 
-cat /sys/kernel/debug/regmon_data > /tmp/regmon_data
+cat /sys/kernel/debug/regmon_data_0 > /tmp/regmon_data
 
 sleep 2
 

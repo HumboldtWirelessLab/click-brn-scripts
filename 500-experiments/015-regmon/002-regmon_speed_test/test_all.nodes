@@ -2,7 +2,7 @@
 
 
 #NODES="commander105 wendy106"
-NODES="foobar103"
+NODES="seismo151"
 # ranger104 commander105 wendy106"
 
 for i in $NODES; do

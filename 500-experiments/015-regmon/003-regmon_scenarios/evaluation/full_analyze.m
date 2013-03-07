@@ -11,7 +11,7 @@ xx = 001;
 % end in ringbuffer
 yy = 11500; %big
 yy = 8000; 
-yy = 99000; 
+yy = 10000; 
 
 %
 % Do not touch
@@ -50,7 +50,7 @@ yreg = loadhwdata(regmonfile);
 
 % some checks
 if (isempty(ydump))
-    ydump = zeros(2,11);
+    ydump = zeros(2,13);
 end
     
 % consider only OK
@@ -102,7 +102,7 @@ ydumppart = ydump(ydump(:,7) >= min(timereg) & ydump(:,7) <= max(timereg),:);
 %
 % TEST
 %
-figure; 
+%figure;
 
 plot(timereg, busy, '+r', timereg, rx, '+b', timereg, tx, '+g'); %timereg
 dumprg = [ydumppart(:,7) ydumppart(:,7) + ydumppart(:,airTimeCol) ydumppart(:,2) ydumppart(:,11)];
