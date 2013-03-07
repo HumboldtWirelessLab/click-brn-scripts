@@ -64,12 +64,12 @@ dht[1]
 
 brn_clf[3]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow()
+-> sf::BRN2SimpleFlow(ROUTINGPEEK dart/routing_peek, DEBUG 4)
 -> BRN2EtherEncap(USEANNO true)
 -> Print("Foo")
 -> [0]dart;
 
-dart[0] /*-> Print("Dart out")*/ -> BRN2EtherEncap() /*-> Print("Dart out ether")*/ -> [0]device_wifi;
+dart[0] -> [0]device_wifi;
 dart[1] -> Label_brnether;
 
 Idle 

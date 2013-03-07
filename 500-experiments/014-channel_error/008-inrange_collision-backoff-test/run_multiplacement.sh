@@ -27,4 +27,9 @@ for p in $PLACEMENTS; do
   tar cvfj $FINALDIR.tar.bz2 $PFILE $FINALDIR
   rm -rf $FINALDIR
 
+  if [ "$p" = "random" ]; then
+    rm -f $PFILE
+  else
+
 done
+

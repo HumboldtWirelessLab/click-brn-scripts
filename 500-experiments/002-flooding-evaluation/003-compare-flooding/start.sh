@@ -1,13 +1,18 @@
 #!/bin/sh
 
-FLOODALGOS="simple probability mpr"
+if [ "x$PLACEMENTFILE" = "x" ]; then
+  PLACEMENTFILE=placements_npart.dat
+fi
+
+#FLOODALGOS="simple probability mpr"
+FLOODALGOS="simple"
 #FLOODALGOS="mpr"
 
 FLOODINGPASSIVACK="0 1"
 
-FLOODINGUNICAST="0 2"
+#FLOODINGUNICAST="0 1 2 3 4"
 #FLOODINGUNICAST="0 1 2"
-#FLOODINGUNICAST="0"
+FLOODINGUNICAST="0"
 
 PROB_ARRAY=( 95 )
 #PROB_ARRAY=( 60 70 75 80 85 90 95 100 )
@@ -34,8 +39,9 @@ fi
 
 if [ "x$SIM" = "x1" ]; then
   NODESFILE=nodes.sim
+  cat $PLACEMENTFILE | awk '{print $2}' | sort -u | sort -n > $NODESFILE
   if [ "x$MAX_PLACEMENT" = "x" ]; then
-    MAX_PLACEMENT=`cat placements_npart.dat | awk '{print $1}' | sort -nu | tail -n 1`
+    MAX_PLACEMENT=`cat $PLACEMENTFILE | awk '{print $1}' | sort -u | sort -n | tail -n 1`
   fi
 else
   NODESFILE=nodes.measurement
@@ -43,12 +49,15 @@ else
 fi
 
 if [ "x$LIMIT" = "x" ]; then
-  LIMIT=`cat $NODESFILE | grep -v "#" | wc -l`
+  LIMIT=`cat $NODESFILE | grep -v "#" | wc -w`
+  let NO_NODES=NODES-1
 fi
 
 CURRENTRUNMODE=REBOOT
 
 RUNMODE_RESET_COUNT=0
+
+echo "Placementfile: $PLACEMENTFILE MAXPL: $MAX_PLACEMENT START: $START LIMIT: $LIMIT"
 
 for i in `cat $NODESFILE | grep -v "#"`; do
 
@@ -64,7 +73,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
  for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
    if [ "x$SIM" = "x1" ]; then
-     cat placements_npart.dat | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
+     cat $PLACEMENTFILE | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
      cat placement.txt | awk '{print $1}' > nodes.sim
    fi
 
@@ -101,12 +110,12 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
        MEASUREMENTDIR="$MEASUREMENTDIR""_unicast_"$flunic
 
-       if [ $flunic -gt 0 ]; then
+       #if [ $flunic -gt 0 ]; then
          echo "#define BCAST2UNIC" >> flooding_config.h
          echo "#define BCAST2UNIC_STRATEGY $flunic" >> flooding_config.h
-       fi
+       #fi
 
-       echo "$i $al $PROBINDEX"
+       echo "$i $al $PROBINDEX $NUM $LIMIT"
 
        if [ ! -e $MEASUREMENTDIR ]; then
          if [ "x$SIM" = "x" ]; then
@@ -150,7 +159,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
          else
            #mkdir $MEASUREMENTDIR
-           run_sim.sh ns flooding.des $MEASUREMENTDIR
+           PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
          fi
 
          if [ "x$SIM" = "x" ]; then
@@ -202,7 +211,12 @@ for i in `cat $NODESFILE | grep -v "#"`; do
  done
 
  if [ $NUM -ge $LIMIT ]; then
-   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt
+   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
+
+   if [ "x$SIM" = "x1" ]; then
+     sh ./run_para_sim.sh
+   fi
+
    exit 0
  fi
 
@@ -210,4 +224,8 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
 done
 
-rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt
+rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
+
+if [ "x$SIM" = "x1" ]; then
+  sh ./run_para_sim.sh
+fi

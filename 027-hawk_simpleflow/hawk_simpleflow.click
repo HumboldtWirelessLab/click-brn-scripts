@@ -1,6 +1,8 @@
 #define DEBUGLEVEL 2
 
 #define BRNFEEDBACK
+#define USEHAWK
+
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -65,11 +67,11 @@ dht[1]
 
 brn_clf[3]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow()
+-> sf::BRN2SimpleFlow(ROUTINGPEEK routing/routing_peek, DEBUG 4)
 -> BRN2EtherEncap()
 -> [0]routing;
 
-routing[0] /*-> Print("Falcon out")*/ -> BRN2EtherEncap(USEANNO true) -> Print("hawk out ether") -> [0]device_wifi;
+routing[0] -> [0]device_wifi;
 routing[1] -> Label_brnether;
 
 Idle 
