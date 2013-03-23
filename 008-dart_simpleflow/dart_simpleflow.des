@@ -1,10 +1,10 @@
 NAME=dartflow
 SIMULATOR=ns2
-#RADIO=shadowing11b
-RADIO=tworayground01b
+RADIO=shadowing11b
+#RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=92
+TIME=202
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=dart_simpleflow.mes
