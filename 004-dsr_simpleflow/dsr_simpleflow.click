@@ -76,7 +76,7 @@ Script(
   write routing/routing/err_forwarder.debug 4,
 #endif
   wait 100,
-//  read lt.links,
+  read lt.links,
 //  read device_wifi/link_stat.bcast_stats,
   wait 10,
   read routing/routingtable.stats,

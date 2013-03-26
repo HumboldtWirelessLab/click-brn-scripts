@@ -64,7 +64,7 @@ dht[1]
 
 brn_clf[3]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(ROUTINGPEEK dart/routing_peek, DEBUG 4)
+-> sf::BRN2SimpleFlow(ROUTINGPEEK dart/routing_peek,LT lt, DEBUG 4)
 -> BRN2EtherEncap(USEANNO true)
 -> Print("Foo")
 -> [0]dart;
@@ -81,7 +81,7 @@ Idle
 Script(
   wait 30,
   //read lt.links,
-  wait 30, 
+  wait 70, 
   read lt.links,
   //read dht/dhtrouting.routing_info,
   wait 20, 

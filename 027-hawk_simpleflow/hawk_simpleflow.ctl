@@ -1,2 +1,2 @@
 #TIME	NODE(S)	DEVICE	MODE	ELEMENT			HANDLER		VALUE
-85	sk1 	ath0	write	sf			add_flow	FIRSTNODE:eth LASTNODE:eth 1000 100 2 5000 true
+85	FIRSTNODE	ath0	write	sf			add_flow	FIRSTNODE:eth LASTNODE:eth 1000 400 2 5000 true
