@@ -41,7 +41,7 @@ done < links.all
 echo "}" >> $EVALUATIONSDIR/linksmetric.dot.tmp
 
 cat $EVALUATIONSDIR/linksmetric.dot.tmp | sed $FULLSED > $EVALUATIONSDIR/linksmetric.dot
-#dot -Tpng $EVALUATIONSDIR/linksmetric.dot > $EVALUATIONSDIR/linksmetric.png
+dot -Tpng $EVALUATIONSDIR/linksmetric.dot > $EVALUATIONSDIR/linksmetric.png 2> /dev/null
 dot -Teps $EVALUATIONSDIR/linksmetric.dot > $EVALUATIONSDIR/linksmetric.eps 2> /dev/null
 
 if [ $? -ne 0 ]; then
@@ -60,7 +60,7 @@ cat links.all | sort -u | awk '{print "\"" $1 "\" -> \"" $2 "\" [label=\"1\"];"}
 echo "}" >> $EVALUATIONSDIR/links.dot.tmp
 
 cat $EVALUATIONSDIR/links.dot.tmp | sed $FULLSED > $EVALUATIONSDIR/links.dot
-#dot -Tpng $EVALUATIONSDIR/links.dot > $EVALUATIONSDIR/links.png
+dot -Tpng $EVALUATIONSDIR/links.dot > $EVALUATIONSDIR/links.png 2> /dev/null
 dot -Teps $EVALUATIONSDIR/links.dot > $EVALUATIONSDIR/links.eps 2> /dev/null
 
 if [ $? -ne 0 ]; then

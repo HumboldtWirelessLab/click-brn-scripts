@@ -56,7 +56,7 @@ echo "}" >> links.dot.tmp
 
 cat links.dot.tmp | sed $FULLSED > links.dot
 #dot -Tpng links.dot > links.png
-#neato -Tpng links.dot > links.png
+neato -Tpng links.dot > links.png 2> /dev/null
 
 neato -Teps links.dot > links.eps 2> /dev/null
 
@@ -101,7 +101,7 @@ done
 echo "}" >> linksmetric.dot.tmp
 
 cat linksmetric.dot.tmp | sed $FULLSED > linksmetric.dot
-#neato -Tpng linksmetric.dot > linksmetric.png
+neato -Tpng linksmetric.dot > linksmetric.png 2> /dev/null
 neato -Teps linksmetric.dot > linksmetric.eps 2> /dev/null
 
 if [ $? -ne 0 ]; then
