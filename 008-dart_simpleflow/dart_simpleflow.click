@@ -1,5 +1,8 @@
 #define DEBUGLEVEL 2
 
+#define DHTDART
+#define ROUTINGHAWK
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
@@ -19,65 +22,49 @@ route_maint::RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE rt, RO
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
+dht::DHT(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 3000, DEBUG 4);
+routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat, DHT dht);
 
+
+/*
 dht::DHT_DART(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 3000, DEBUG 4);
 dhtstorage::DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 4 );
 dart::DART(id, dht/dhtroutingtable, dhtstorage/dhtstorage, dht/dhtrouting);
+*/
 
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
 -> brn_clf::Classifier(    0/BRN_PORT_DHTROUTING,  //DHT-Routing
                            0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
-                           0/BRN_PORT_DART,        //DART
+                           0/BRN_PORT_ROUTING,     //DART
                            0/BRN_PORT_FLOW,        //SimpleFlow
                              -  );//other
-                                    
+
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
 
-brn_clf[0]
-//-> Print("Routing-Packet",100)
--> BRN2Decap()
--> [0]dht[0]
--> dht_r_all::Counter()
-//-> Print("out Routing-Packet")
--> [0]dart;
 
-brn_clf[1]
-//-> Print("Storage-Packet")
--> BRN2Decap()
--> dhtstorage
--> dht_s::Counter()
-//-> Print("Storage-Packet-out")
--> [0]dart;
+brn_clf[1] -> [0]dht;
+brn_clf[2] -> [1]dht;
+
+dht[0] -> [0]device_wifi;
+dht[1] -> [0]routing;
 
 brn_clf[2] -> [1]dart;
 
 brn_clf[4] -> Discard;
 
-dht[1]
-//-> Print("routing-Packet-out")
--> dht_r_neighbour::Counter()
--> [0]device_wifi;
 
 brn_clf[3]
 -> BRN2Decap()
 -> sf::BRN2SimpleFlow(ROUTINGPEEK dart/routing_peek,LT lt, DEBUG 4)
 -> BRN2EtherEncap(USEANNO true)
 -> Print("Foo")
--> [0]dart;
+-> [0]routing;
 
-dart[0] -> [0]device_wifi;
-dart[1] -> Label_brnether;
-
-Idle 
-->[1]device_wifi;
-
-Idle -> [2]dart;
-Idle -> [3]dart;
-Idle -> [4]dart;
+Idle -> [1]device_wifi;
 
 Script(
   wait 30,

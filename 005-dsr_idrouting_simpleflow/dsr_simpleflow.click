@@ -27,7 +27,7 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 lpr::LPRLinkProbeHandler(LINKSTAT device_wifi/link_stat, METRIC device_wifi/etx_metric, ACTIVE false);
 
-routing::ROUTING(ID id, ETTHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
+routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
 
 #ifndef SIMULATION
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
@@ -48,6 +48,7 @@ routing[3] -> Discard;
 
 brn_clf[0] -> [1]routing;
 Idle -> [3]routing;
+Idle -> [4]routing;
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
