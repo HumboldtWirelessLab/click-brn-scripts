@@ -75,8 +75,9 @@ dart[1] -> Label_brnether;
 Idle 
 ->[1]device_wifi;
 
-Idle
--> [2]dart;
+Idle -> [2]dart;
+Idle -> [3]dart;
+Idle -> [4]dart;
 
 Script(
   wait 30,
