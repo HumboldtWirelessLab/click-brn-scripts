@@ -69,6 +69,7 @@ brn_clf[3]
 /* PASSIV (Overhear) */
 
 device_wifi[2]
+  -> Print("NODENAME: Passive:")
   -> BRN2EtherDecap()
   -> overhear_brn_clf::Classifier( 0/BRN_PORT_ROUTING,  //Routing
                                    -  );//other

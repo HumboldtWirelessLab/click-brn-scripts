@@ -35,7 +35,6 @@ device_wifi
                            0/BRN_PORT_HAWK,        //Hawk
                            0/BRN_PORT_FLOW,        //SimpleFlow
                              -  );//other
-                                    
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
@@ -77,8 +76,9 @@ routing[1] -> Label_brnether;
 Idle 
 ->[1]device_wifi;
 
-Idle
--> [2]routing;
+Idle -> [2]routing;
+Idle -> [3]routing;
+Idle -> [4]routing;
 
 device_wifi[3] -> ff::FilterFailures() -> Discard;
 ff[1] -> Print("TXFAILED",100) -> Discard;

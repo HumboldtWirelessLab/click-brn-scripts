@@ -1,9 +1,11 @@
-#define DEBUGLEVEL 2
+#include "config.click"
+
+
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
-#include "routing/geor.click"
+#include "routing/routing.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -14,58 +16,59 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-geor::GEOR(ID id, LT lt, LINKSTAT device_wifi/link_stat, DEBUG 2); 
+routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
+
+#ifndef SIMULATION
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+#endif
 
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
-//-> Print("Foo",100)
-  -> tothisnode::BRN2ToThisNode(NODEIDENTITY id)
-  -> brn_clf::Classifier( 0/BRN_PORT_GEOROUTING,  //Geor
-                          0/BRN_PORT_FLOW,        //SimpleFlow
-                             -  );//other
+  -> brn_clf::Classifier(    0/BRN_PORT_ROUTING, //Routing
+                             0/BRN_PORT_FLOW );  //Simpleflow
 
-tothisnode[1] 
-  -> brn_clf;
 
-tothisnode[2]
-  -> Discard;
+routing[0] -> [0]device_wifi;
+routing[1] -> [1]device_wifi;
+routing[2] -> Label_brnether;
+routing[3] -> Discard;
 
-Idle
-  -> [1]device_wifi;
+brn_clf[0] -> [1]routing;
+device_wifi[1] -> Label_brnether;;
 
-brn_clf[0]
-  -> [1]geor;
+device_wifi[3]
+  -> ff::FilterFailures()
+  -> BRN2EtherDecap()
+  -> Classifier( 0/BRN_PORT_ROUTING )
+  -> Print("NODENAME: Success")
+  -> [4]routing;
 
-geor[0]
-//-> Print("GOT PACKET")
-  -> Label_brnether;
-
-geor[1]
-  -> [0]device_wifi;;
+ff[1]
+  -> BRN2EtherDecap()
+  -> Classifier( 0/BRN_PORT_ROUTING )
+  -> Print("NODENAME: TX Failed")
+  -> [2]routing;
 
 brn_clf[1]
-  -> BRN2Decap()
-  -> sf::BRN2SimpleFlow()
-  -> BRN2EtherEncap(USEANNO true)
-  -> [0]geor;
+-> BRN2Decap()
+-> sf::BRN2SimpleFlow(HEADROOM 192, DEBUG DEBUGLEVEL)
+-> SetTimestamp()
+-> BRN2EtherEncap(USEANNO true, DEBUG DEBUGLEVEL)
+-> [0]routing;
 
-brn_clf[2]->Discard;
-                                    
-device_wifi[1]
-//  -> Print("BRN-In")
-  -> Discard;
+
+/* PASSIV (Overhear) */
 
 device_wifi[2]
-//  -> Print("BRN-In")
+  -> BRN2EtherDecap()
+  -> overhear_brn_clf::Classifier( 0/BRN_PORT_ROUTING,  //Routing
+                                   -  );//other
+
+  overhear_brn_clf[0]
+  -> [3]routing;
+
+  overhear_brn_clf[1]
   -> Discard;
 
-Idle
-  ->[2]geor;
-
-Idle
-  ->[3]geor;
-
-Script(
-  write geor/gps.cart_coord NODEPOSITIONX NODEPOSITIONY NODEPOSITIONZ
-); 
+#include "script.click"
