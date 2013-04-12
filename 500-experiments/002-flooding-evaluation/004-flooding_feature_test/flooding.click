@@ -1,6 +1,9 @@
 #define DEBUGLEVEL 2
 
+#define FLOODING_DEBUG 4
+
 #include "flooding.config"
+
 
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define PRO_FL
@@ -16,6 +19,8 @@
 //#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000"
 #define LINKPROBE_PROBES                                       "2 100"
 #define DISABLE_LP_POWER
+
+#define FOREIGNRXSTATS
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
