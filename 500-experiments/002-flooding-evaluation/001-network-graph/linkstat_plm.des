@@ -7,8 +7,11 @@ TIME=350
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=linkstat_plm.mes
-NODEPLACEMENT=npart
-NODEPLACEMENTOPTS="relative"
+#NODEPLACEMENT=npart
+#NODEPLACEMENTOPTS="relative"
+NODEPLACEMENT=multibox_placement.sh
+#"X=xlen Y=ylen B=no_boxes L=len_between_boxes LN=no_nodes_on_bridge $0"
+NODEPLACEMENTOPTS="400 200 5 330 5"
 FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR

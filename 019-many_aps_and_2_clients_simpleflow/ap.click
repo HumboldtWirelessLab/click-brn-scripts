@@ -45,8 +45,8 @@ brn_clf[0]
 
 dsr[0]
   -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-  
-dsr[1] 
+
+dsr[1]
   //-> Print("DSR[1]-out")
   -> SetEtherAddr(SRC deviceaddress)
   //-> Print("DSR-Ether-OUT")
@@ -68,6 +68,7 @@ Idle -> [2]dsr;
 brn_clf[1] -> Discard;
 
 Idle -> [3]dsr;
+Idle -> [4]dsr;
 
 Script(
   wait 10,

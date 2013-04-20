@@ -1,0 +1,6 @@
+#define DEBUGLEVEL 2
+
+#define BRNFEEDBACK
+#define ROUTINGBROADCAST
+//#define PRO_FL
+//#define BCAST2UNIC

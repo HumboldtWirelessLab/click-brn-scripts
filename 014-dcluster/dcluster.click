@@ -14,7 +14,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-routing::ROUTING(ID id, ETTHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
+routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
 
 Idle
   -> dc::DCluster(NODEIDENTITY id, LINKSTAT device_wifi/link_stat, DISTANCE 1, DEBUG 4)
@@ -35,11 +35,10 @@ Idle -> [0]routing;
 brn_clf[0] -> [1]routing;
 Idle -> [2]routing;      //no error, so Idle as input
 Idle -> [3]routing;
-		
+Idle -> [4]routing;
+
 device_wifi[1] -> BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
-		                    
-
 
 brn_clf[1] -> Discard;
 

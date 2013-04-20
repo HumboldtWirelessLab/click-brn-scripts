@@ -25,9 +25,8 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-routing::ROUTING(ID id, ETTHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
-
 dht::DHT(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 3000, DEBUG 2);
+routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
 
 dhtstoragetest :: DHTStorageTest( DHTSTORAGE dht/dhtstorage/dhtstorage, STARTTIME 0, INTERVAL 1000, COUNTKEYS 0, WRITE false, RETRIES 1, REPLICA 0, DEBUG 2);
 
@@ -56,6 +55,7 @@ routing[3] -> Discard;
 brn_clf[0] -> [1]routing;
 Idle -> [2]routing;
 Idle -> [3]routing;
+Idle -> [4]routing;
 
 brn_clf[1] -> [0]dht;
 brn_clf[2] -> [1]dht;
@@ -66,7 +66,7 @@ dht[1] -> [0]routing;
 Script(
 wait 119,
 wait 119,
-read dht/dht/dhtrouting.routing_info,
+read dht/dhtrouting/dhtrouting.routing_info,
 wait 1,
 read lt.links,
 wait 20,

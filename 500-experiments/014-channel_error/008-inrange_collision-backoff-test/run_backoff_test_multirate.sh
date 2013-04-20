@@ -1,11 +1,13 @@
 #!/bin/bash
 
-CWMIN=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 )
+CWMIN=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 288 320 352 384 416 448 480 512 )
 #CWMAX=( 8 16 24 32 40 48 56 64 80 96 112 128 160 192 224 256 320 384 448 512 )
-CWMAX=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 )
+CWMAX=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 288 320 352 384 416 448 480 512 )
 
 if [ "x$SIM" = "x1" ]; then
   NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25"
+#  NO_NODES_VECTOR="2 15 25"
+#  NO_NODES_VECTOR="2"
 else
   NO_NODES_VECTOR="2 4 6 8 10"
 fi
@@ -23,8 +25,14 @@ NUM=1
 
 #for rate in $RATES; do
 
+if [ "x$PLACEMENTFILE" = "x" ]; then
+  PLACEMENTFILE=placementfile.plm.small
+fi
+
+cp $PLACEMENTFILE placementfile.plm
+
 if [ "x$SIM" = "x1" ]; then
-  cp nodes.sim nodes
+  cat placementfile.plm | awk '{print $1}' > nodes
 else
   cp nodes.testbed nodes
 fi
@@ -101,7 +109,7 @@ for cm in $CHANNEL_MODEL; do
 
             if [ ! -e $NUM ]; then
               if [ "x$SIM" = "x1" ]; then
-                SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 run_sim.sh ns sender_and_receiver.des $NUM
+                SEED=$NUM LOGLEVEL=0 FORCE_DIR=1 PREPARE_ONLY=1 run_sim.sh ns sender_and_receiver.des $NUM
               else
                 RUNMODE=$CURRENT_RUNMODE run_measurement.sh sender_and_receiver.des $NUM
               fi
@@ -145,9 +153,10 @@ for cm in $CHANNEL_MODEL; do
 #ende channel model
 done
 
-
 #let NUM=NUM-1
 #tar cvfj all_sim.tar.bz2 `seq $NUM` > /dev/null 2>&1
 #rm -rf `seq $NUM`
 
 rm -f nodes config.h sender_and_receiver.des
+
+sh ./run_para_sim.sh

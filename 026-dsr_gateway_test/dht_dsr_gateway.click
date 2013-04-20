@@ -46,7 +46,7 @@ device_wifi
                            0/BRN_PORT_DHTROUTING,  //DHT-Routing
                            0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
                              -  );//other
-                                    
+
 brn_clf[0] -> [1]dsr;
 
 device_wifi[1] -> BRN2EtherDecap() -> brn_clf;
@@ -54,6 +54,7 @@ device_wifi[2] -> Discard;
 
 Idle -> [2]dsr;
 Idle -> [3]dsr;
+Idle -> [4]dsr;
 
 brn_clf[1]
 //-> Print("Routing-Packet")

@@ -5,7 +5,7 @@ RADIO=shadowing11b
 FORGEINNODES=no
 NAME2MAC=yes
 
-TIME=200
+TIME=720
 
 NODEPLACEMENTFILE=placement.txt
 NODETABLE=flooding.mes
@@ -19,7 +19,8 @@ LOGFILE=measurement.log
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
 #EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph network_info flooding_info flow_info"
-EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml"
 
 GPS=no
 NOTICE=no
