@@ -1,12 +1,13 @@
 #!/bin/sh
 # ------------ Test Input -------------------------------
-if [ "$#" -eq 6 ] ; then
+if [ "$#" -eq 7 ] ; then
      RESULTDIR_HELPER="$1"
      DIR="$2"
      CONFIGFILE="$3"
      INRANGE_MAT_TMP=$4 #inrange.mat.tmp
      INRANGE_CNT_MAT_TMP=$5 #inrange_cnt.mat.tmp
      INRANGE_BYTE_CNT_MAT_TMP=$6 #inrange_byte_cnt.mat.tmp
+     MEASUREMENT_DEBUGGING=$7 #to justify errors etc
 else
     echo " "
     echo "Usage: Please do the following comand:"
@@ -63,18 +64,31 @@ fi
 # Parse Nodetable, which is specified in $CONFIGFILE
 NODETABLE=`echo $NODETABLE | awk -F "/" '{print $NF}'` 
 RECEIVER=`cat $RESULTDIR/$NODETABLE | grep "receiver.click" | awk '{print $1}'`
-
+#echo $NODETABLE
+#echo "R $RECEIVER"
+#echo "M $RESULTDIR/$MEASUREMENT_LOG"
 if [ "x$MODE" = "xsim" ]; then
   RECEIVERLOG=`cat $RESULTDIR/$NODETABLE | grep "receiver.click" | awk '{print $8}'`
 else 
-  RECEIVERLOG=`cat $RESULTDIR/$MEASUREMENT_LOG | grep "receiver.click" | awk -F "receiver.click." '{print $2".log"}'` #Parse measurement.log for receiver 
+	
+  		RECEIVERLOG=`cat $RESULTDIR/$MEASUREMENT_LOG | grep "receiver.click" | awk -F "receiver.click." '{print $2".log"}'` #Parse measurement.log for receiver 
 fi
-
+#DEBUGGING_START if there are failure in the testbed output (File does not exist)
+RECEIVERLOG2=''
+for i in $RECEIVERLOG; do
+	if [ -f "$RESULTDIR/$i" ]; then
+		RECEIVERLOG2="$RECEIVERLOG2 $i" 
+	else
+		echo "<error><fileNotExisting>$RESULTDIR/$i</fileNotExisting></error>" >> $MEASUREMENT_DEBUGGING
+	fi
+done
+RECEIVERLOG=$RECEIVERLOG2
+#DEBUGGING_END
 echo "<evaluation>" > $RESULTDIR/$RECEIVER_XML
 for i in $RECEIVERLOG; do
-  		echo "<channelloadmeasurement num='$NUM' no_nodes='$NO_NODES' packetsize='$PACKETSIZE' backoff='$BACKOFF' backoff_max='$BACKOFF_MAX' seed='$SEED' rate='$RATE' ptktarget='$PKT_TARGET' channelmodel='$CHANNEL_MODEL' >" >> $RESULTDIR/$RECEIVER_XML
-  		cat $RESULTDIR/$i | egrep "[:space:]*<" >> $RESULTDIR/$RECEIVER_XML
-  		echo "</channelloadmeasurement>" >> $RESULTDIR/$RECEIVER_XML
+  	echo "<channelloadmeasurement num='$NUM' no_nodes='$NO_NODES' packetsize='$PACKETSIZE' backoff='$BACKOFF' backoff_max='$BACKOFF_MAX' seed='$SEED' rate='$RATE' ptktarget='$PKT_TARGET' channelmodel='$CHANNEL_MODEL' >" >> $RESULTDIR/$RECEIVER_XML
+  	cat $RESULTDIR/$i | egrep "[:space:]*<" >> $RESULTDIR/$RECEIVER_XML
+  	echo "</channelloadmeasurement>" >> $RESULTDIR/$RECEIVER_XML
 done
 echo "</evaluation>" >> $RESULTDIR/$RECEIVER_XML
 
