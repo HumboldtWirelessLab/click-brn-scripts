@@ -38,6 +38,10 @@ while [ -e $ALLRESDIR/$DIRNUM ]; do
   if [ -f $ALLRESDIR/$DIRNUM/params ]; then
     . $ALLRESDIR/$DIRNUM/params
 
+    if [ -f $ALLRESDIR/$DIRNUM/measurement.log.bz2 ]; then
+      bzip2 -d $ALLRESDIR/$DIRNUM/measurement.log.bz2
+    fi
+
     if [ -f $ALLRESDIR/$DIRNUM/sender_and_receiver.des.real ]; then
       CONFIGFILE=$ALLRESDIR/$DIRNUM/sender_and_receiver.des.real RESULTDIR=$ALLRESDIR/$DIRNUM $DIR/eval.sh
     else
@@ -52,6 +56,14 @@ while [ -e $ALLRESDIR/$DIRNUM ]; do
       MAX_NO_NODES=$NO_NODES
       MAX_NO_NODES_DIR=$DIRNUM
     fi
+
+    if [ -f $ALLRESDIR/$DIRNUM/measurement.log ]; then
+      if [ ! -f $ALLRESDIR/$DIRNUM/measurement.log.bz2 ]; then
+        bzip2 -z $ALLRESDIR/$DIRNUM/measurement.log
+      fi
+      rm -f $ALLRESDIR/$DIRNUM/measurement.log
+    fi
+
   fi
 
   let DIRNUM=DIRNUM+1
