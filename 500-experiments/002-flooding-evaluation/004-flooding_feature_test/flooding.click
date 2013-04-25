@@ -97,6 +97,7 @@ Script(
   read flooding/fl.stats,
   read flooding/fl.forward_table,
   read flooding/unicfl.stats,
+  read flooding/fl_passive_ack.stats,
   read sf.stats
 );
 
@@ -106,6 +107,6 @@ Script(
 Script(
   wait 100,
   write flooding/flp.mpr_algo,
-  read flooding/flp.flooding_info
+  read flooding/flp.flooding_info,
 );
 #endif
