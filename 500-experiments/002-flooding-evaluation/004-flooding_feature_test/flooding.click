@@ -107,6 +107,6 @@ Script(
 Script(
   wait 100,
   write flooding/flp.mpr_algo,
-  read flooding/flp.flooding_info
+  read flooding/flp.flooding_info,
 );
 #endif

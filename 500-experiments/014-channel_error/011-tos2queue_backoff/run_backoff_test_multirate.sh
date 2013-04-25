@@ -1,29 +1,25 @@
 #!/bin/bash
 
-CWMIN=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 288 320 352 384 416 448 480 512 1024 2048 )
-#CWMAX=( 8 16 24 32 40 48 56 64 80 96 112 128 160 192 224 256 320 384 448 512 )
-CWMAX=( 4  8 12 16 20 24 28 32 40 48  56  64  80  96 112 128 160 192 224 256 288 320 352 384 416 448 480 512 1024 2048)
+#1. Queue
+#Queue 0, 2, 3 wird errechnet
+boa=('0' '32' '64' '128' '128' '128' '256' '256' '256' '256' '256' '256' '256' '512' '512' '512' '512' '512' '512' '512' '512' '512' '512' '512' '512' '512');
 
 if [ "x$SIM" = "x1" ]; then
   NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25"
-#  NO_NODES_VECTOR="2 15 25"
-#  NO_NODES_VECTOR="2"
+#  NO_NODES_VECTOR="2 10 25"
 else
   NO_NODES_VECTOR="2 4 6 8 10"
 fi
 
-PACKET_SIZE_VECTOR="500 1500 2000"
-#PACKET_SIZE_VECTOR="1500"
-#PACKET_SIZE_VECTOR="1500 500"
+TOSTOQUEUE="0 1"
+#TOSTOQUEUE="1"
+
+PACKET_SIZE_VECTOR="1500"
+
 RATE_VECTOR="125"
 
 REP=1
 NUM=1
-
-#echo $NO_NODES_VECTOR
-#echo $PACKET_SIZE_VECTOR
-
-#for rate in $RATES; do
 
 if [ "x$PLACEMENTFILE" = "x" ]; then
   PLACEMENTFILE=placementfile.plm.small
@@ -39,6 +35,7 @@ fi
 
 if [ "x$SIM" = "x1" ]; then
   CHANNEL_MODEL="shadowing11b tworayground01b"
+#  CHANNEL_MODEL="shadowing11b"
 else
   CHANNEL_MODEL="real"
 fi
@@ -46,6 +43,8 @@ fi
 PKT_TARGET="USE_BROADCAST USE_UNICAST"
 
 CURRENT_RUNMODE=DRIVER
+
+for ttq in $TOSTOQUEUE; do
 
 for cm in $CHANNEL_MODEL; do
 
@@ -67,38 +66,41 @@ for cm in $CHANNEL_MODEL; do
 
       cat sender.click.tmpl | sed "s#PACKETSIZE_PARAMS#$p_s#g" | sed "s#RATE_PARAMS#$rate#g" > sender.click
 
-      rm -f  monitor.802
-
-      #echo ${#CWMIN[@]}
-
-      for cw_index in `seq ${#CWMIN[@]}` ; do
+      rm -f monitor.802
 
         cp monitor.802.tmpl monitor.802
 
-        let cwi=cw_index-1
+        if [ $ttq -eq 0 ]; then
+          echo "CWMIN=\"15 15 15 15\"" >>  monitor.802
+          echo "CWMAX=\"1023 1023 1023 1023\""  >>  monitor.802
+          echo "AIFS=\"2 2 2 2\""  >>  monitor.802
+          echo "#define TOS2QUEUEMAPPER_STRATEGY 0" >> config.h
+        else
+          #echo "CWMIN=\"15 15 15 15\"" >>  monitor.802
+          cwmin=${boa[$non]};
+          #echo "$cwmin"
+          let cwmin=cwmin/2;
+          echo -n "CWMIN=\"" >>  monitor.802
 
-        cwmin=${CWMIN[$cwi]}
-        cwmax=${CWMAX[$cwi]}
+          for i in `seq 4`; do
+            let  cwmin_set=cwmin-1
+            echo -n "$cwmin_set" >>  monitor.802
+            if [ $i -lt 4 ]; then
+              echo -n " " >>  monitor.802
+            fi
+            let cwmin=cwmin\*2
+          done
 
-        echo -n "CWMIN=\"" >>  monitor.802
-
-        for i in `seq 4`; do
-          echo -n "$cwmin "  >>  monitor.802
-        done
-        echo "\""  >>  monitor.802
-
-        echo -n "CWMAX=\""  >>  monitor.802
-        for i in `seq 4`; do
-          echo -n "$cwmax "  >>  monitor.802
-        done
-        echo "\""  >>  monitor.802
-
-        echo "AIFS=\"2 2 2 2\""  >>  monitor.802
+          echo "\"" >>  monitor.802
+          echo "CWMAX=\"2047 2047 2047 2047\""  >>  monitor.802
+          echo "AIFS=\"2 2 2 2\""  >>  monitor.802
+          echo "#define TOS2QUEUEMAPPER_STRATEGY 1" >> config.h
+        fi
 
         for r in `seq $REP`; do
 
           if [ "x$TEST" = "x1" ]; then
-            echo "$non $p_s $cwmin $cw_index"
+            echo "$non $p_s $ttq"
           else
 
             if [ -e $NUM ]; then
@@ -119,6 +121,7 @@ for cm in $CHANNEL_MODEL; do
               echo "PACKETSIZE=$p_s" >> $NUM/params
               echo "BACKOFF=$cwmin" >> $NUM/params
               echo "BACKOFF_MAX=$cwmax" >> $NUM/params
+              echo "TOS2QUEUEMAPPER_STRATEGY=$ttq" >> $NUM/params
               echo "SEED=$NUM" >> $NUM/params
               echo "RATE=$rate" >> $NUM/params
               echo "TARGET=$target" >> $NUM/params
@@ -133,11 +136,9 @@ for cm in $CHANNEL_MODEL; do
           if [ -f finish ]; then
             exit 0
           fi
-
         done
 
         rm -f  monitor.802
-      done
 
     done
     rm -f sender.click
@@ -151,6 +152,7 @@ for cm in $CHANNEL_MODEL; do
  rm config.h
 
 #ende channel model
+done
 done
 
 #let NUM=NUM-1
