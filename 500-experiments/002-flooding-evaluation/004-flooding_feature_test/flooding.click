@@ -92,7 +92,7 @@ Script(
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats,
   wait 10,
-  //write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 51000 true, //flooding_init
+  //write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 1000 true, //flooding_init   51000
   wait 60,
   read flooding/fl.stats,
   read flooding/fl.forward_table,
