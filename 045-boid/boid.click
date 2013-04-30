@@ -72,6 +72,7 @@ device_wifi[2]
 
 gpsmap::GPSMap();
 gps::GPS(GPSMAP gpsmap);
+gpslph::GPSLinkprobeHandler(LINKSTAT device_wifi/link_stat, GPS gps, GPSMAP gpsmap);
 mob::Mobility();
 boid::Boid(GPS gps, GPSMAP gpsmap, MOBILITY mob, CHANNELSTATS device_wifi/wifidevice/cst,
            RADIUS 50,
@@ -86,6 +87,8 @@ boid::Boid(GPS gps, GPSMAP gpsmap, MOBILITY mob, CHANNELSTATS device_wifi/wifide
 Script(
   wait 20,
   read gps.cart_coord,
+  read gpsmap.map,
+  read device_wifi/wifidevice/cst.stats,
   loop
  );
 
