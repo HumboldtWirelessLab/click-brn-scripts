@@ -13,9 +13,9 @@ if [ "x$RECV_PACKETS" = "x" ]; then
   RECV_PACKETS=0
 fi
 
-echo -n "Send $SEND_PACKETS packet, received $ECHO_PACKETS packets and $RECV_PACKETS echo packets are received."
+echo -n "Send $SEND_PACKETS packet, received $RECV_PACKETS packets and $ECHO_PACKETS echo packets are received."
 
-if [ $ECHO_PACKETS -gt 0 ]; then
+if [ $RECV_PACKETS -gt 0 ]; then
   echo " OK !"
   exit 0
 else

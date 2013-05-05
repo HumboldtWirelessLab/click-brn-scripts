@@ -90,6 +90,9 @@ bc[1]
 Idle
 -> [2]bc;
 
+Idle
+-> [4]bc;
+
 toMeAfterRouting[0]
   //-> Print("Routing-out: For ME")
   -> brn_ether_decap;

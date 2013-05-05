@@ -1,17 +1,11 @@
-#define DEBUGLEVEL 2
+#include "config.click"
 
-//#define WIFIDEV_LINKSTAT_DEBUG
-#define ENABLE_BATMAN_DEBUG
 
-//#define CST cst
-//#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
-
-#define BRNFEEDBACK
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
-#include "routing/batman.click"
+#include "routing/routing.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -22,7 +16,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-batman::BATMAN(id,lt);
+routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
 
 #ifndef SIMULATION
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
@@ -31,66 +25,50 @@ sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
-  -> brn_clf::Classifier(    0/BRN_PORT_BATMAN,  //BATMAN
-                             0/BRN_PORT_FLOW,    //SimpleFlow
-                               -  );//other
-                                    
-brn_clf[0]
-//  -> Print("NODENAME: Batman-Packet", TIMESTAMP true)
-  -> [1]batman;
+  -> brn_clf::Classifier(    0/BRN_PORT_ROUTING, //Routing
+                             0/BRN_PORT_FLOW );  //Simpleflow
 
-device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
-device_wifi[2] -> Discard;
-device_wifi[3] -> ff::FilterFailures() -> Discard;
-ff[1] /*-> Print("TxFailed")*/ -> BRN2EtherDecap() -> [2]batman;
+
+routing[0] -> [0]device_wifi;
+routing[1] -> [1]device_wifi;
+routing[2] -> Label_brnether;
+routing[3] -> Discard;
+
+brn_clf[0] -> [1]routing;
+device_wifi[1] -> Label_brnether;;
+
+device_wifi[3]
+  -> ff::FilterFailures()
+  -> BRN2EtherDecap()
+  -> Classifier( 0/BRN_PORT_ROUTING )
+  -> Print("NODENAME: Success")
+  -> [4]routing;
+
+ff[1]
+  -> BRN2EtherDecap()
+  -> Classifier( 0/BRN_PORT_ROUTING )
+  -> Print("NODENAME: TX Failed")
+  -> [2]routing;
 
 brn_clf[1]
-//-> Print("rx")
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(HEADROOM 192)
--> BRN2EtherEncap(USEANNO true)
--> [0]batman;
+-> sf::BRN2SimpleFlow(HEADROOM 192, DEBUG DEBUGLEVEL)
+-> SetTimestamp()
+-> BRN2EtherEncap(USEANNO true, DEBUG DEBUGLEVEL)
+-> [0]routing;
 
-brn_clf[2]
+
+/* PASSIV (Overhear) */
+
+device_wifi[2]
+  -> BRN2EtherDecap()
+  -> overhear_brn_clf::Classifier( 0/BRN_PORT_ROUTING,  //Routing
+                                   -  );//other
+
+  overhear_brn_clf[0]
+  -> [3]routing;
+
+  overhear_brn_clf[1]
   -> Discard;
 
-batman[0]
-  -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-
-batman[1]
-//-> Print("DSR-Ether-OUT")
-  -> [0]device_wifi;
-
-toMeAfterDsr[0]
-//-> Print("DSR-out: For ME")
-  -> Label_brnether; 
-  
-toMeAfterDsr[1]
-//-> Print("DSR-out: Broadcast")
-  -> Discard;
-
-toMeAfterDsr[2]
-//-> Print("DSR-out: Foreign/Client")
-  -> [1]device_wifi;
-
-Idle
--> [3]batman;
-
-Script(
-//  write sf.debug 4,
-#ifdef ENABLE_BATMAN_DEBUG
-  write batman/bofwd.debug 4,
-  write batman/bf.debug 4,
-  write batman/br.debug 4,
-#endif
-//  wait 40,
-//  read batman/brt.nodes,
-    wait 200,
-    read batman/brt.nodes,
-    wait 17,
-    read batman/bfd.info,    
-    wait 1,
-    read batman/bofwd.links,    
-    wait 1,
-    stop
-);
+#include "script.click"

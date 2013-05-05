@@ -42,11 +42,11 @@ INRANGE_BYTE_CNT_MAT='inrange_byte_cnt.mat'
 INRANGE_MAT_HEADER='inrange_mat.header'
 INRANGE_CNT_MAT_HEADER='inrange_cnt_mat.header'
 INRANGE_BYTE_CNT_MAT_HEADER='inrange_byte_cnt_mat.header'
-
+MEASUREMENT_DEBUGGING='measurement_debugging.xml'
 > $INRANGE_MAT_TMP
 > $INRANGE_CNT_MAT_TMP
 > $INRANGE_BYTE_CNT_MAT_TMP
-
+> $MEASUREMENT_DEBUGGING
 
 TEST_DIRNUM=0
 ARRAY_MISSED_NUMBERS=""
@@ -55,8 +55,10 @@ if [ "x$1" = "x" ]; then
 	DIRECTORIES=`find . -maxdepth 1 -type d | grep "\./[0-9]" | grep -v "-" | awk -F "/" '{print $2}' | sort -g`
 elif [ "x$1" = "x../" ];then
 	DIRECTORIES=`find "$ALLRESDIR" -maxdepth 1 -type d  | awk -F "/" '{print $NF}'  | grep -v "-" | grep -v "[a-z;A-Z]" | sort -g`
-
+else 
+	DIRECTORIES=`find "$ALLRESDIR" -maxdepth 1 -type d  | awk -F "/" '{print $NF}'  | grep -v "-" | grep -v "[a-z;A-Z]" | sort -g`
 fi
+
 for i in $DIRECTORIES; do
 	DIRNUM=$i
 	TEST_DIRNUM=`expr $TEST_DIRNUM + 1` 
@@ -70,9 +72,9 @@ for i in $DIRECTORIES; do
 	done
 	if [ -f $ALLRESDIR/$DIRNUM/params ]; then
 		if [ -f $ALLRESDIR/$DIRNUM/sender_and_receiver.des.real ]; then
-		 	    $DIR/eval_helper.sh $ALLRESDIR/$DIRNUM $DIR $ALLRESDIR/$DIRNUM/sender_and_receiver.des.real $INRANGE_MAT_TMP $INRANGE_CNT_MAT_TMP $INRANGE_BYTE_CNT_MAT_TMP
+		 	    $DIR/eval_helper.sh "$ALLRESDIR/$DIRNUM" "$DIR" "$ALLRESDIR/$DIRNUM/sender_and_receiver.des.real" "$INRANGE_MAT_TMP" "$INRANGE_CNT_MAT_TMP" "$INRANGE_BYTE_CNT_MAT_TMP" "$MEASUREMENT_DEBUGGING"
     		else
-      			 $DIR/eval_helper.sh $ALLRESDIR/$DIRNUM $DIR $ALLRESDIR/$DIRNUM/sender_and_receiver.des.ns2 $INRANGE_MAT_TMP $INRANGE_CNT_MAT_TMP $INRANGE_BYTE_CNT_MAT_TMP
+      			 $DIR/eval_helper.sh "$ALLRESDIR/$DIRNUM" "$DIR" "$ALLRESDIR/$DIRNUM/sender_and_receiver.des.ns2" "$INRANGE_MAT_TMP" "$INRANGE_CNT_MAT_TMP" "$INRANGE_BYTE_CNT_MAT_TMP" "$MEASUREMENT_DEBUGGING"
     		fi
     		cat $ALLRESDIR/$DIRNUM/$INRANGE_MAT_TMP >> $INRANGE_MAT_TMP
     		cat $ALLRESDIR/$DIRNUM/$INRANGE_CNT_MAT_TMP >> $INRANGE_CNT_MAT_TMP
@@ -130,13 +132,11 @@ VAR_INRANGE_CNT_MAT=`cat $INRANGE_CNT_MAT | wc -l`
 VAR_INRANGE_BYTE_CNT_MAT_TMP=`cat $INRANGE_BYTE_CNT_MAT_TMP | wc -l`
 VAR_INRANGE_BYTE_CNT_MAT=`cat $INRANGE_BYTE_CNT_MAT | wc -l`
 
-
-
-echo "MISSING DIRECTORY-SEQUENZNUMBER = $ARRAY_MISSED_NUMBERS" 
-echo "Total lines in:" 
-echo "$INRANGE_MAT_TMP = $VAR_INRANGE_MAT_TMP	$INRANGE_MAT = $VAR_INRANGE_MAT	$INRANGE_OUTSORTED_MAT = $VAR_INRANGE_OUTSORTED_MAT"
-echo "$INRANGE_CNT_MAT_TMP =  $VAR_INRANGE_CNT_MAT_TMP	$INRANGE_CNT_MAT =  $VAR_INRANGE_CNT_MAT"
-echo "$INRANGE_BYTE_CNT_MAT_TMP = $VAR_INRANGE_BYTE_CNT_MAT_TMP	$INRANGE_BYTE_CNT_MAT = $VAR_INRANGE_BYTE_CNT_MAT"
+#echo "MISSING DIRECTORY-SEQUENZNUMBER = $ARRAY_MISSED_NUMBERS" 
+#echo "Total lines in:" 
+#echo "$INRANGE_MAT_TMP = $VAR_INRANGE_MAT_TMP	$INRANGE_MAT = $VAR_INRANGE_MAT	$INRANGE_OUTSORTED_MAT = $VAR_INRANGE_OUTSORTED_MAT"
+#echo "$INRANGE_CNT_MAT_TMP =  $VAR_INRANGE_CNT_MAT_TMP	$INRANGE_CNT_MAT =  $VAR_INRANGE_CNT_MAT"
+#echo "$INRANGE_BYTE_CNT_MAT_TMP = $VAR_INRANGE_BYTE_CNT_MAT_TMP	$INRANGE_BYTE_CNT_MAT = $VAR_INRANGE_BYTE_CNT_MAT"
 
 rm -f $INRANGE_MAT_2_TMP 
 rm -rf $ALLRESDIR/*.tmp
