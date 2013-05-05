@@ -1,8 +1,12 @@
 #define DEBUGLEVEL 2
 
 #define BRNFEEDBACK
-#define USEHAWK
-
+//#define USEHAWK                  //Linkprobes enthalten nur Finger 
+//#define FIRSTDST true            // Vor Weiterleiten zum Finger nach einer dirketen Route pruefen
+//#define BETTERFINGER true       //besseren Finger suchen(benoetigt SUCCFORWARD)
+//#define SUCC_HINT		//wenn neuer predecessor, dem alten mitteilen
+//#define SUCCFORWARD_WITH_HINT   //SUCC_HINT + SUCCFORWARD
+//#define SUCCFORWARD         //bis zum neuen Successor weiterleiten
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -23,7 +27,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 0);
 
 device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 5000, UPDATEINT 2000, DEBUG 2);
+dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 5000, DEBUG 2);
 dhtstorage::DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2 );
 routing::HAWK(id, dht/dhtroutingtable, dhtstorage/dhtstorage, dht/dhtrouting, lt, dht/dhtlprh, dht, DEBUG 0);
 
@@ -71,7 +75,7 @@ brn_clf[3]
 -> BRN2EtherEncap()
 -> [0]routing;
 
-routing[0] -> [0]device_wifi;
+routing[0] -> Print("NODENAME:Try to send") -> [0]device_wifi;
 routing[1] -> Label_brnether;
 
 Idle 
@@ -81,11 +85,14 @@ Idle
 -> [2]routing;
 
 device_wifi[3] -> ff::FilterFailures() -> Discard;
-ff[1] -> Print("TXFAILED",100) -> Discard;
+ff[1] -> Print("NODENAME:TXFAILED",100) -> Discard;
 
 Script(
-
-wait 240,
+wait 50,
+read lt.links,
+wait 50,
+read lt.links,
+wait 460,
 //read dht/dhtrouting.routing.info,  
 //wait 260,
 wait 48,

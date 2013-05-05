@@ -1,4 +1,6 @@
 #define DEBUGLEVEL 2
+//#define EXPAND_NEIGHBOURHOOD
+//#define OPT_ROUTING
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -77,9 +79,9 @@ Idle
 
 Idle
 -> [2]dart;
-
+//with 80 nodes dart needs 125 seconds for building the overlay
 Script(
-  wait 30,
+  wait 50,
   //read lt.links,
   wait 70, 
   read lt.links,

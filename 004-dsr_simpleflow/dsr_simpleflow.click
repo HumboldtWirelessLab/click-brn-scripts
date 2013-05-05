@@ -48,7 +48,6 @@ routing[3] -> Discard;
 
 brn_clf[0] -> [1]routing;
 Idle -> [3]routing;
-Idle -> [4]routing;
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
