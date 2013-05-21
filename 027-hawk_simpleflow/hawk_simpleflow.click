@@ -1,5 +1,6 @@
 #define DEBUGLEVEL 2
 
+//#define RAWDUMP
 #define BRNFEEDBACK
 //#define USEHAWK                  //Linkprobes enthalten nur Finger 
 //#define FIRSTDST true            // Vor Weiterleiten zum Finger nach einer dirketen Route pruefen
