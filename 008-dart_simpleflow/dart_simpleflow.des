@@ -4,7 +4,7 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=160
+TIME=202
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=dart_simpleflow.mes
