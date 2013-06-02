@@ -3,7 +3,7 @@
 //#define RAWDUMP
 
 #define CST cst
-#define TOS2QUEUEMAPPER_STRATEGY 4
+#define TOS2QUEUEMAPPER_STRATEGY 6
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -67,7 +67,8 @@ sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
   wait 30,
-  read wifidevice/tosq.stats
+  read wifidevice/tosq.stats,
+  read wifidevice/cst.stats,
   //read sys_info.systeminfo,
   //read id.version
 );
