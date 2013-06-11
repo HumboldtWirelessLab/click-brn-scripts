@@ -1,13 +1,12 @@
 #define DEBUGLEVEL 2
 
-#define FLOODING_DEBUG 4
+#define FLOODING_DEBUG 2
 
 #include "flooding.config"
 
-
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define PRO_FL
-#define RAWDUMP
+//#define RAWDUMP
 #define BRNFEEDBACK
 
 #define DEFAULT_DATARETRIES 11
