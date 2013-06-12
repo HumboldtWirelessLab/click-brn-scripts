@@ -1,5 +1,5 @@
 #define DEBUGLEVEL 2
-//#include "config.click"
+#include "config.click"
 
 //#define RAWDUMP
 

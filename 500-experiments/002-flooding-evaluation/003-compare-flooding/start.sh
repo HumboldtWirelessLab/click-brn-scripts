@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ "x$PLACEMENTFILE" = "x" ]; then
   PLACEMENTFILE=placements_npart.dat
@@ -8,17 +8,23 @@ fi
 FLOODALGOS="simple"
 #FLOODALGOS="mpr"
 
-#FLOODINGPASSIVACK="0 1"
-FLOODINGPASSIVACK="0"
-
-#FLOODINGUNICAST="0 4 5 6"
-FLOODINGUNICAST="0 "
-#FLOODINGUNICAST="1"
-
-PROB_ARRAY=( 95 85)
+PROB_ARRAY=( 95 85 )
 #PROB_ARRAY=( 60 70 75 80 85 90 95 100 )
 #PROB_ARRAY=( 70 80 90 100 )
 PROB_ARRAY_SIZE=${#PROB_ARRAY[@]}
+
+
+FLOODINGPASSIVACK_RETRIES="0 2"
+
+
+FLOODINGUNICAST="0 4"
+#FLOODINGUNICAST_PRESELECTION="0 1 2"
+FLOODINGUNICAST_PRESELECTION="1 2"
+#FLOODINGUNICAST_REJECT_EMPTYCS="true false"
+FLOODINGUNICAST_REJECT_EMPTYCS="true false"
+#FLOODINGUNICAST_PEER_METRIC="0 1 2 3 4 5"
+FLOODINGUNICAST_PEER_METRIC="0"
+
 
 if [ "x$START" = "x" ]; then
   START=1
@@ -64,6 +70,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
  if [ $NUM -lt $START ]; then
    let NUM=NUM+1
+#   echo "$NUM"
    continue
  fi
 
@@ -80,14 +87,37 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
    for flunic in $FLOODINGUNICAST; do
 
-     for al in $FLOODALGOS; do
+     if [ "x$flunic" = "x0" ]; then
+       FLOODINGUNICAST_PRESELECTION_F="0"
+       FLOODINGUNICAST_REJECT_EMPTYCS_F="false"
+       FLOODINGUNICAST_PEER_METRIC_F="0"
+     else
+       FLOODINGUNICAST_PRESELECTION_F=$FLOODINGUNICAST_PRESELECTION
+       FLOODINGUNICAST_REJECT_EMPTYCS_F=$FLOODINGUNICAST_REJECT_EMPTYCS
+       FLOODINGUNICAST_PEER_METRIC_F=$FLOODINGUNICAST_PEER_METRIC
+     fi
 
+   for flunic_pres in $FLOODINGUNICAST_PRESELECTION_F; do
+   for flunic_reject in $FLOODINGUNICAST_REJECT_EMPTYCS_F; do
+   for flunic_peer in $FLOODINGUNICAST_PEER_METRIC_F; do
+
+    for fl_pa_ret in $FLOODINGPASSIVACK_RETRIES; do
+
+#FLOODINGPASSIVACK="0 1"
+#FLOODINGPASSIVACK_RETRIES="0 1 2"
+
+#FLOODINGUNICAST="0 4"
+#FLOODINGUNICAST_PRESELECTION="0 1 2"
+#FLOODINGUNICAST_REJECT_EMPTYCS="true false"
+#FLOODINGUNICAST_PEER_METRIC="0 1 2 3 4 5"
+
+     for al in $FLOODALGOS; do
 
        DONE_ALL_FOR_ALG=0
 
        while [ $DONE_ALL_FOR_ALG -eq 0 ]; do
 
-       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al
+       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret
 
        case "$al" in
          "simple")
@@ -111,12 +141,16 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
        MEASUREMENTDIR="$MEASUREMENTDIR""_unicast_"$flunic
 
-       #if [ $flunic -gt 0 ]; then
+       if [ $flunic -gt 0 ]; then
          echo "#define BCAST2UNIC" >> flooding_config.h
          echo "#define BCAST2UNIC_STRATEGY $flunic" >> flooding_config.h
-       #fi
+         echo "#define BCAST2UNIC_PRESELECTION_STRATEGY $flunic_pres" >> flooding_config.h
+         echo "#define BCAST2UNIC_REJECTONEMPTYCS $flunic_reject" >> flooding_config.h
+         echo "#define BCAST2UNIC_UCASTPEERMETRIC $flunic_peer" >> flooding_config.h
+         echo "#define FLOODING_PASSIVE_ACK_RETRIES $fl_pa_ret" >> flooding_config.h
+       fi
 
-       echo "$i $al $PROBINDEX $NUM $LIMIT"
+       echo "$i $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret"
 
        if [ ! -e $MEASUREMENTDIR ]; then
          if [ "x$SIM" = "x" ]; then
@@ -181,6 +215,11 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
         echo "PLACEMENT=$pl" >> $MEASUREMENTDIR/params
 
+        echo "UNICAST_PRESELECTION_STRATEGY=$flunic_pres" >> $MEASUREMENTDIR/params
+        echo "UNICAST_REJECTONEMPTYCS=$flunic_reject" >> $MEASUREMENTDIR/params
+        echo "UNICAST_UCASTPEERMETRIC=$flunic_peer" >> $MEASUREMENTDIR/params
+        echo "FLOODING_PASSIVE_ACK_RETRIES=$fl_pa_ret" >> $MEASUREMENTDIR/params
+
        fi
 
        case "$al" in
@@ -210,23 +249,27 @@ for i in `cat $NODESFILE | grep -v "#"`; do
   done
 
  done
+ done
+ done
+ done
+ done
 
  if [ $NUM -ge $LIMIT ]; then
    rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
 
    if [ "x$SIM" = "x1" ]; then
-     sh ./run_para_sim.sh
+     /bin/bash ./run_para_sim.sh
    fi
 
    exit 0
  fi
 
  let NUM=NUM+1
-
+# echo "$NUM"
 done
 
 rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
 
 if [ "x$SIM" = "x1" ]; then
-  sh ./run_para_sim.sh
+  /bin/bash ./run_para_sim.sh
 fi

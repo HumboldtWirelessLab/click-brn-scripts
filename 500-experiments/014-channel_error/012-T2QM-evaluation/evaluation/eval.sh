@@ -20,20 +20,36 @@ esac
 
 . $CONFIGFILE
 
+FILLUPTO=25
+
 if [ ! -e $EVALUATIONSDIR ]; then
   mkdir -p $EVALUATIONSDIR
 fi
 
 if [ "$MODE" = "sim" ]; then
+
+  if [ -f $RESULTDIR/measurement.log.bz2 ]; then
+    ( cd $RESULTDIR; bzip2 -d -k measurement.log.bz2 )
+  fi
+
   if [ -f $RESULTDIR/measurement.log ]; then
     OVERALL=`cat $RESULTDIR/measurement.log | grep "OKP" | wc -l`
     echo "Overall: $OVERALL"
     echo -n "$OVERALL" > $EVALUATIONSDIR/result.txt
+    NODES=0
     for i in `cat $RESULTDIR/nodes.mac | awk '{print $3}'`; do
       NODEP=`cat $RESULTDIR/measurement.log | grep "OKP" | grep $i | wc -l`
       echo "$i: $NODEP"
       echo -n ",$NODEP" >> $EVALUATIONSDIR/result.txt
+      let NODES=NODES+1
     done
+    while [ $NODES -lt $FILLUPTO ]; do
+      echo -n ",0" >> $EVALUATIONSDIR/result.txt
+      let NODES=NODES+1
+    done
+  fi
+  if [ -f $RESULTDIR/measurement.log.bz2 ]; then
+    ( cd $RESULTDIR; rm measurement.log )
   fi
 fi
 
