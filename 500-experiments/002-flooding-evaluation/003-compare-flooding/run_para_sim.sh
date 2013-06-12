@@ -31,10 +31,18 @@ for i in `find -name run_again.sh`; do
 
   SIMDIR=`dirname $i`
 
-  (cd  $SIMDIR/;sh ./run_again.sh > run_again.log 2>&1; sh ./eval_again.sh > eval_again.log 2>&1; cd $DIR; echo $NUM >> $DIR/sim_finish ) &
-  echo "$NUM" >> $DIR/sim_run
+  if [ -f $SIMDIR/time.stats ]; then
+    FILESIZE=`wc -c $SIMDIR/time.stats | awk '{print $1}'`
+  else
+    FILESIZE=0
+  fi
 
-  let NUM=NUM+1
+  if [ $FILESIZE -eq 0 ]; then
+    (cd  $SIMDIR/;sh ./run_again.sh > run_again.log 2>&1; sh ./eval_again.sh > eval_again.log 2>&1; cd $DIR; echo $NUM >> $DIR/sim_finish ) &
+     echo "$NUM" >> $DIR/sim_run
+
+     let NUM=NUM+1
+  fi
 
   SIM_RUN=`cat $DIR/sim_run | wc -l`
   SIM_FIN=`cat $DIR/sim_finish | wc -l`

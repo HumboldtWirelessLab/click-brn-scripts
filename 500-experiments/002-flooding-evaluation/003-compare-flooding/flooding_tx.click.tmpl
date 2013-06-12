@@ -87,9 +87,9 @@ Script(
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats,
   wait 10,
-  write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 510000 true, //flooding_init 51000
-  wait 600,
-//  wait 60,
+  write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 51000 true, //flooding_init 51000  //51000 -> 100Pkt
+//  wait 600,
+  wait 60,
   read flooding/fl.stats,
   read flooding/fl.forward_table,
   read flooding/unicfl.stats,
@@ -100,7 +100,7 @@ Script(
 
 #ifdef MPR_STATS
 Script(
-  wait 100,
+  wait 184,
   write flooding/flp.mpr_algo,
   read flooding/flp.flooding_info
 );
