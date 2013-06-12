@@ -15,8 +15,11 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
     EXTRAINFO=$FWDPROBALILITY
 
     ALGORITHMID=`echo $ALGORITHM | sed $ALGSEDARG`
+    UNICAST_REJECTONEMPTYCS=`echo $UNICAST_REJECTONEMPTYCS | sed -e "s#true#1#g" | sed -e "s#false#0#g"`
 
-    cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv | sed "s#,# #g" | awk -v ALG=$ALGORITHMID -v N=$SIMID -v E=$EXTRAINFO -v L=$UNICASTSTRATEGY '{print N" "ALG" "E" "L" "$3" "$4" "$6" "$7" "$1}' >> result_flooding.dat
+    INFO="$SIM $UNICASTSTRATEGY $PLACEMENT $UNICAST_PRESELECTION_STRATEGY $UNICAST_REJECTONEMPTYCS $UNICAST_UCASTPEERMETRIC $FLOODING_PASSIVE_ACK_RETRIES"
+
+    cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv | sed "s#,# #g" | awk -v ALG=$ALGORITHMID -v N=$SIMID -v I="$INFO" -v E=$EXTRAINFO -v L=$UNICASTSTRATEGY '{print N" "I" "ALG" "E" "L" "$3" "$4" "$6" "$7" "$1}' >> result_flooding.dat
   fi
 
 done

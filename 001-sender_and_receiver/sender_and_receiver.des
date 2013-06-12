@@ -4,6 +4,9 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
+#DISABLE_NAM=1
+#DISABLE_TR=1
+
 TIME=5
 
 NODEPLACEMENTFILE=placementfile.plm

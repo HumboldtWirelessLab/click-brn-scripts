@@ -3,17 +3,18 @@
 if [ "x$SIM" = "x1" ]; then
   NO_NODES_VECTOR="2 3 4"
   #NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25"
+  #NO_NODES_VECTOR="2 4 6 8 10 12 14 16"
 else
   NO_NODES_VECTOR="2 4 6 8 10"
 fi
 
-TOSTOQUEUE="0 1"
+TOSTOQUEUE="0 2 3 4 5 6"
 
 PACKET_SIZE_VECTOR="1500"
 
 RATE_VECTOR="125"
 
-REP=1
+REP=3
 NUM=1
 
 if [ "x$SIM" = "x1" ]; then
@@ -24,7 +25,7 @@ fi
 
 if [ "x$SIM" = "x1" ]; then
 #  CHANNEL_MODEL="shadowing11b tworayground01b"
-   CHANNEL_MODEL="tworayground01b"
+   CHANNEL_MODEL="shadowing11b tworayground01b"
 #  CHANNEL_MODEL="shadowing11b"
 else
   CHANNEL_MODEL="real"
@@ -44,7 +45,8 @@ for ttq in $TOSTOQUEUE; do
 
   for target in $PKT_TARGET; do
 
-   echo "#define $target" > config.h
+   echo "#define $target" > config.click
+   echo "#define TOS2QUEUEMAPPER_STRATEGY $ttq" >> config.click
 
    for non in $NO_NODES_VECTOR ; do
 
@@ -83,6 +85,7 @@ for ttq in $TOSTOQUEUE; do
               echo "RATE=$rate" >> $NUM/params
               echo "TARGET=$target" >> $NUM/params
               echo "CHANNEL_MODEL=$cm" >> $NUM/params
+              echo "REP=$r" >> $NUM/params
               cp monitor $NUM
             fi
 
@@ -106,7 +109,7 @@ for ttq in $TOSTOQUEUE; do
   #ende target
   done
 
-  rm config.h
+  rm config.click
 
  #ende channel model
  done
@@ -119,3 +122,7 @@ done
 rm -f nodes config.h backoff.des
 
 sh ./run_para_sim.sh
+
+(cd evaluation; ./eval_all.sh)
+
+exit 0
