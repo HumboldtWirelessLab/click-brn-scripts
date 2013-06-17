@@ -1,6 +1,6 @@
 #define DEBUGLEVEL 2
 
-#define FLOODING_DEBUG 2
+#define FLOODING_DEBUG 4
 
 #include "flooding.config"
 
