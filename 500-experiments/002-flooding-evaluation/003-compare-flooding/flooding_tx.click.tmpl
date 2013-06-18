@@ -2,19 +2,22 @@
 
 #include "flooding_config.h"
 
+#define FLOODING_MAXNBMETRIC 400
+
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define PRO_FL
 //#define RAWDUMP
+
 #define BRNFEEDBACK
 
-#define DEFAULT_DATARETRIES 11
+#define DEFAULT_DATARETRIES 1
 
 #define CST cst
 
-#define LINKPROBE_PERIOD                                         2000
-#define LINKPROBE_TAU                                          100000
+#define LINKPROBE_PERIOD                                           2000
+#define LINKPROBE_TAU                                            100000
 //#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000"
-#define LINKPROBE_PROBES                                       "2 100"
+#define LINKPROBE_PROBES                                        "2 100"
 #define DISABLE_LP_POWER
 
 #include "brn/helper.inc"
@@ -57,7 +60,6 @@ brn_clf[2] -> Discard;
 
 brn_clf[1]
   -> [1]flooding[1]
-  -> rdq::RandomDelayQueue(MINDELAY 2, MAXDELAY 5, DIFFDELAY 5)
   -> [0]device_wifi;
 
 flooding[0] -> Label_brnether;
