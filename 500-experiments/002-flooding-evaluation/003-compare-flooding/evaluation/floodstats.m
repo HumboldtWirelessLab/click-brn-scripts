@@ -145,11 +145,13 @@ fn = max(fn, 0.25); %(fn(:)<0.25) = 0.25;
 D = reach_bp(2,:);
 Z = (D.^A)./(fn.^(1/B));
 
-figure;
+h=figure;
 boxplot(Z,reach_bp(1,:));
 title('Utility');
 ylabel('Utility');
 xlabel('Flooding');
 grid on;
+saveas(h, 'utility.png' ,'png'); 
+
 end
 end
