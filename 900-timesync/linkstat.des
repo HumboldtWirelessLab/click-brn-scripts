@@ -1,25 +1,23 @@
-NAME=receiver
+NAME=linkchannelstat
 SIMULATOR=ns2
 RADIO=shadowing11b
-#RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=10
+TIME=60
 
 NODEPLACEMENTFILE=placement.default
-NODETABLE=sender_and_receiver.mes
-NODEPLACEMENT=string
-#NODEPLACEMENT=grid
-FIELDSIZE=30
+NODETABLE=linkstat.mes
+NODEPLACEMENT=grid
+NODEPLACEMENTOPTS="relative"
+FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-
-EVALUATION="tmp_rawdump_copy evaluation/eval.sh"
+#EVALUATION="grep_xml evaluation/eval.sh"
+EVALUATION="embrace_xml evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
-EVALUATIONSDIRPOSTFIX=_evaluation
 
 GPS=no
 NOTICE=no
