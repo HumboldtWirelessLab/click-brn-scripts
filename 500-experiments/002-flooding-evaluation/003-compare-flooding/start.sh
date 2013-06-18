@@ -14,16 +14,18 @@ PROB_ARRAY=( 95 85 )
 PROB_ARRAY_SIZE=${#PROB_ARRAY[@]}
 
 
-FLOODINGPASSIVACK_RETRIES="0 2"
-
+FLOODINGPASSIVACK_RETRIES="0 1 2 3 4 5"
 
 FLOODINGUNICAST="0 4"
+
 #FLOODINGUNICAST_PRESELECTION="0 1 2"
-FLOODINGUNICAST_PRESELECTION="1 2"
+FLOODINGUNICAST_PRESELECTION="0 2"
+
 #FLOODINGUNICAST_REJECT_EMPTYCS="true false"
-FLOODINGUNICAST_REJECT_EMPTYCS="true false"
-#FLOODINGUNICAST_PEER_METRIC="0 1 2 3 4 5"
-FLOODINGUNICAST_PEER_METRIC="0"
+FLOODINGUNICAST_REJECT_EMPTYCS="true"
+
+FLOODINGUNICAST_PEER_METRIC="0 4"
+#FLOODINGUNICAST_PEER_METRIC="0"
 
 
 if [ "x$START" = "x" ]; then
@@ -46,9 +48,18 @@ fi
 
 if [ "x$SIM" = "x1" ]; then
   NODESFILE=nodes.sim
-  cat $PLACEMENTFILE | awk '{print $2}' | sort -u | sort -n > $NODESFILE
-  if [ "x$MAX_PLACEMENT" = "x" ]; then
-    MAX_PLACEMENT=`cat $PLACEMENTFILE | awk '{print $1}' | sort -u | sort -n | tail -n 1`
+
+  if [ "x$GRID" = "x1" ]; then
+    echo -n "" > $NODESFILE
+    for i in `seq 1 36`; do
+      echo "sk$i" >> $NODESFILE
+    done
+    MAX_PLACEMENT=1
+  else
+    cat $PLACEMENTFILE | awk '{print $2}' | sort -u | sort -n > $NODESFILE
+    if [ "x$MAX_PLACEMENT" = "x" ]; then
+      MAX_PLACEMENT=`cat $PLACEMENTFILE | awk '{print $1}' | sort -u | sort -n | tail -n 1`
+    fi
   fi
 else
   NODESFILE=nodes.measurement
@@ -81,8 +92,10 @@ for i in `cat $NODESFILE | grep -v "#"`; do
  for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
    if [ "x$SIM" = "x1" ]; then
-     cat $PLACEMENTFILE | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
-     cat placement.txt | awk '{print $1}' > nodes.sim
+     if [ "x$GRID" = "x" ]; then
+       cat $PLACEMENTFILE | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
+       cat placement.txt | awk '{print $1}' > nodes.sim
+     fi
    fi
 
    for flunic in $FLOODINGUNICAST; do
@@ -141,14 +154,12 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
        MEASUREMENTDIR="$MEASUREMENTDIR""_unicast_"$flunic
 
-       if [ $flunic -gt 0 ]; then
-         echo "#define BCAST2UNIC" >> flooding_config.h
-         echo "#define BCAST2UNIC_STRATEGY $flunic" >> flooding_config.h
-         echo "#define BCAST2UNIC_PRESELECTION_STRATEGY $flunic_pres" >> flooding_config.h
-         echo "#define BCAST2UNIC_REJECTONEMPTYCS $flunic_reject" >> flooding_config.h
-         echo "#define BCAST2UNIC_UCASTPEERMETRIC $flunic_peer" >> flooding_config.h
-         echo "#define FLOODING_PASSIVE_ACK_RETRIES $fl_pa_ret" >> flooding_config.h
-       fi
+       echo "#define BCAST2UNIC" >> flooding_config.h
+       echo "#define BCAST2UNIC_STRATEGY $flunic" >> flooding_config.h
+       echo "#define BCAST2UNIC_PRESELECTION_STRATEGY $flunic_pres" >> flooding_config.h
+       echo "#define BCAST2UNIC_REJECTONEMPTYCS $flunic_reject" >> flooding_config.h
+       echo "#define BCAST2UNIC_UCASTPEERMETRIC $flunic_peer" >> flooding_config.h
+       echo "#define FLOODING_PASSIVE_ACK_RETRIES $fl_pa_ret" >> flooding_config.h
 
        echo "$i $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret"
 
@@ -180,6 +191,8 @@ for i in `cat $NODESFILE | grep -v "#"`; do
          cat flooding_tx.click.tmpl | grep -v "flooding_init" > flooding.click
          cat flooding_tx.click.tmpl | sed "s#NODEMACADDR#$MAC#g" > flooding_tx.click
 
+         cp flooding.des.tmpl flooding.des
+         echo "SEED=$NUM" >> flooding.des
 
          if [ "x$SIM" = "x" ]; then
            RUNMODE=$CURRENTRUNMODE run_measurement.sh flooding.des $MEASUREMENTDIR
@@ -194,7 +207,11 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
          else
            #mkdir $MEASUREMENTDIR
-           PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
+           if [ "x$GRID" = "x" ]; then
+             PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
+           else
+             PREPARE_ONLY=1 run_sim.sh ns flooding_grid.des $MEASUREMENTDIR
+           fi
          fi
 
          if [ "x$SIM" = "x" ]; then
@@ -268,7 +285,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 # echo "$NUM"
 done
 
-rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
+rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim flooding.des
 
 if [ "x$SIM" = "x1" ]; then
   /bin/bash ./run_para_sim.sh
