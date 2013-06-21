@@ -20,6 +20,9 @@ FORWARD_NEW=17;
 SENT=18;
 RECEIVED=19;
 COLLISIONS=20;
+MACRETRIES=21;
+NBMETRIC=22;
+PIGGYBACK=23
 
 data=load(filename);
 size(data)
@@ -31,26 +34,35 @@ size(data)
 % FLOODING_NET_RETRIES
 % ALGORITHMID (simple/mpr/prob)
 % EXTRAINFO (Algo, e.g. probab)
+% MACRETRIES
+% NBMETRIC
 
 data=[ data';zeros(1,size(data,1)) ]';
-params=unique(data(:,[3 5 6 7 8 9 10]),'rows')
+params=unique(data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK]),'rows')
+
+%get wanted params
+params=params(find(params(:,5) ~= 4),:)
 %size(params)
 
 RESULT_REACH=2;
 RESULT_SENT=3;
 RESULT_RECEIVED=4;
 RESULT_COLLISIONS=5;
+RESULT_SENT_PER_NODE=6;
 
-result=zeros(size(params,1),5);
+result=zeros(size(params,1),6);
 reach_bp = [];
 sent_bp = [];
 received_bp = [];
+
+max_no_nodes=max(data(:,NO_NODES));
+max_src_pkt=max(data(:,SOURCE_NEW));
 
 for r = 1:size(params,1)
     
     p=params(r,:);
        
-    p_data=data(strmatch(p,data(:,[3 5 6 7 8 9 10])),:);
+    p_data=data(strmatch(p,data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK])),:);
     %size(p_data)
 
     result(r,1)=r;
@@ -65,12 +77,25 @@ for r = 1:size(params,1)
     received_bp = [ received_bp [ ones(1,size(p_data,1))*r ; p_data(:,RECEIVED)' ]];
 
     result(r,RESULT_COLLISIONS)=mean(p_data(:,COLLISIONS));
+    
+    size(p_data)
+    
+    result(r,RESULT_SENT_PER_NODE)=(result(r,RESULT_SENT) / (max_no_nodes * result(r,RESULT_REACH) * max_src_pkt));
 
 end
 
 plot = 1;
+size(result,1)
+size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
 
-reach=reshape(result(:,RESULT_REACH), size(result,1)/size(unique(params(:,[1 2 3 4]),'rows'),1),size(unique(params(:,[1 2 3 4]),'rows'),1));
+s1 = size(result,1)/size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1);
+s2 = size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1);
+
+s1 = 3;
+s2 = 4;
+
+
+reach=reshape(result(:,RESULT_REACH), s1, s2);
 h=figure();
 bar(reach','grouped');
 title('Reachability (mean)');
@@ -79,12 +104,13 @@ xlabel('Flooding');
 ylim([0.2 1.05]);
 grid on;
 
-saveas(h, 'reach_barplot.png' ,'png');      
+saveas(h, 'reach_barplot.png' ,'png');
+saveas(h, 'reach_barplot.fig', 'fig');
 
 
 if (plot == 1)
     
-collision=reshape(result(:,RESULT_COLLISIONS), size(result,1)/size(unique(params(:,[1 2 3 4]),'rows'),1),size(unique(params(:,[1 2 3 4]),'rows'),1));
+collision=reshape(result(:,RESULT_COLLISIONS), s1, s2);
 h=figure;
 bar(collision','grouped');
 title('Collision (mean)');
@@ -92,9 +118,9 @@ ylabel('Collisions');
 xlabel('Flooding');
 grid on;
 saveas(h, 'collision_barplot.png' ,'png');      
+saveas(h, 'collision_barplot.fig', 'fig');
 
-
-pkt_sent=reshape(result(:,RESULT_SENT), size(result,1)/size(unique(params(:,[1 2 3 4]),'rows'),1),size(unique(params(:,[1 2 3 4]),'rows'),1));
+pkt_sent=reshape(result(:,RESULT_SENT), s1, s2);
 h=figure;
 bar(pkt_sent','grouped');
 title('Pkts sent (mean)');
@@ -102,6 +128,18 @@ ylabel('Pkts sent');
 xlabel('Flooding');
 grid on;
 saveas(h, 'sent_barplot.png' ,'png');      
+saveas(h, 'sent_barplot.fig', 'fig');
+
+pkt_sent=reshape(result(:,RESULT_SENT_PER_NODE), s1, s2);
+h=figure;
+bar(pkt_sent','grouped');
+title('Pkts sent per node and flooding (mean)');
+ylabel('Pkts sent per node and flooding'
+);
+xlabel('Flooding');
+grid on;
+saveas(h, 'sent_per_node_barplot.png' ,'png');
+saveas(h, 'sent_per_node_barplot.fig', 'fig');
 
 figure;
 boxplot(reach_bp(2,:),reach_bp(1,:));

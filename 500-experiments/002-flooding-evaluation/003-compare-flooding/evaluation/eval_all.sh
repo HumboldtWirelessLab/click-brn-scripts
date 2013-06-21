@@ -29,7 +29,7 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
       fi
     fi
 
-    cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv | sed "s#,# #g" | awk -v ALG=$ALGORITHMID -v N=$SIMID -v I="$INFO" -v E=$EXTRAINFO -v L=$UNICASTSTRATEGY -v C=$COLLISIONEN '{print N" "I" "ALG" "E" "L" "$3" "$10" "$2" "$1" "$7" "$9" "$6" "$5" "C}' >> result_flooding.dat
+    cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv | sed "s#,# #g" | awk -v ALG=$ALGORITHMID -v N=$SIMID -v I="$INFO" -v E=$EXTRAINFO -v L=$UNICASTSTRATEGY -v C=$COLLISIONEN -v MR=$MACRETRIES -v MET=$FLOODING_MAXNBMETRIC -v PP=$FLOODING_LASTNODES_PP '{print N" "I" "ALG" "E" "L" "$3" "$10" "$2" "$1" "$7" "$9" "$6" "$5" "C" "MR" "MET" "PP }' >> result_flooding.dat
 
   fi
 

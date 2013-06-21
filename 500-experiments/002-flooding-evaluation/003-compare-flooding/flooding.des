@@ -30,3 +30,4 @@ LOS=no
 
 CONTROLSOCKET=yes
 #CONTROLFILE=flooding.ctl
+SEED=5

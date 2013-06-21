@@ -13,20 +13,30 @@ PROB_ARRAY=( 95 85 )
 #PROB_ARRAY=( 70 80 90 100 )
 PROB_ARRAY_SIZE=${#PROB_ARRAY[@]}
 
-
-FLOODINGPASSIVACK_RETRIES="0 1 2 3 4 5"
+FLOODINGPASSIVACK_RETRIES="0 2 5"
 
 FLOODINGUNICAST="0 4"
 
 #FLOODINGUNICAST_PRESELECTION="0 1 2"
-FLOODINGUNICAST_PRESELECTION="0 2"
+FLOODINGUNICAST_PRESELECTION="2"
 
 #FLOODINGUNICAST_REJECT_EMPTYCS="true false"
 FLOODINGUNICAST_REJECT_EMPTYCS="true"
 
-FLOODINGUNICAST_PEER_METRIC="0 4"
+FLOODINGUNICAST_PEER_METRIC="4"
+#FLOODINGUNICAST_PEER_METRIC="0 3 4"
 #FLOODINGUNICAST_PEER_METRIC="0"
 
+#result_flooding_20130621a.dat
+MAC_TRIES="3 7 11"
+#MAC_TRIES="3 7 11"
+
+#result_flooding_20130621a.dat
+NB_METRIC="800"
+
+#result_flooding_20130621d.dat
+PIGGYBACK="2"
+#PIGGYBACK="0 2 4 8"
 
 if [ "x$START" = "x" ]; then
   START=1
@@ -104,10 +114,16 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        FLOODINGUNICAST_PRESELECTION_F="0"
        FLOODINGUNICAST_REJECT_EMPTYCS_F="false"
        FLOODINGUNICAST_PEER_METRIC_F="0"
+       MAC_TRIES_F="1"
+       NB_METRIC_F="0"
+       PIGGYBACK_F="0"
      else
        FLOODINGUNICAST_PRESELECTION_F=$FLOODINGUNICAST_PRESELECTION
        FLOODINGUNICAST_REJECT_EMPTYCS_F=$FLOODINGUNICAST_REJECT_EMPTYCS
        FLOODINGUNICAST_PEER_METRIC_F=$FLOODINGUNICAST_PEER_METRIC
+       MAC_TRIES_F=$MAC_TRIES
+       NB_METRIC_F=$NB_METRIC
+       PIGGYBACK_F=$PIGGYBACK
      fi
 
    for flunic_pres in $FLOODINGUNICAST_PRESELECTION_F; do
@@ -115,6 +131,9 @@ for i in `cat $NODESFILE | grep -v "#"`; do
    for flunic_peer in $FLOODINGUNICAST_PEER_METRIC_F; do
 
     for fl_pa_ret in $FLOODINGPASSIVACK_RETRIES; do
+    for fl_mac_ret in $MAC_TRIES_F; do
+    for fl_nb_met in $NB_METRIC_F; do
+    for fl_piggy in $PIGGYBACK_F; do
 
 #FLOODINGPASSIVACK="0 1"
 #FLOODINGPASSIVACK_RETRIES="0 1 2"
@@ -130,7 +149,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 
        while [ $DONE_ALL_FOR_ALG -eq 0 ]; do
 
-       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret
+       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy
 
        case "$al" in
          "simple")
@@ -160,8 +179,12 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        echo "#define BCAST2UNIC_REJECTONEMPTYCS $flunic_reject" >> flooding_config.h
        echo "#define BCAST2UNIC_UCASTPEERMETRIC $flunic_peer" >> flooding_config.h
        echo "#define FLOODING_PASSIVE_ACK_RETRIES $fl_pa_ret" >> flooding_config.h
+       echo "#define DEFAULT_DATARETRIES $fl_mac_ret" >> flooding_config.h
+       echo "#define DEFAULT_DATARETRIES $fl_mac_ret" >> flooding_config.h
+       echo "#define FLOODING_MAXNBMETRIC $fl_nb_met" >> flooding_config.h
+       echo "#define FLOODING_LASTNODES_PP $fl_piggy" >> flooding_config.h
 
-       echo "$i $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret"
+       echo "$i $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy"
 
        if [ ! -e $MEASUREMENTDIR ]; then
          if [ "x$SIM" = "x" ]; then
@@ -236,6 +259,10 @@ for i in `cat $NODESFILE | grep -v "#"`; do
         echo "UNICAST_REJECTONEMPTYCS=$flunic_reject" >> $MEASUREMENTDIR/params
         echo "UNICAST_UCASTPEERMETRIC=$flunic_peer" >> $MEASUREMENTDIR/params
         echo "FLOODING_PASSIVE_ACK_RETRIES=$fl_pa_ret" >> $MEASUREMENTDIR/params
+        echo "MACRETRIES=$fl_mac_ret" >> $MEASUREMENTDIR/params
+        echo "FLOODING_MAXNBMETRIC=$fl_nb_met" >> $MEASUREMENTDIR/params
+        echo "FLOODING_LASTNODES_PP=$fl_piggy" >> $MEASUREMENTDIR/params
+        echo "SEED=$NUM" >> $MEASUREMENTDIR/params
 
        fi
 
@@ -264,7 +291,9 @@ for i in `cat $NODESFILE | grep -v "#"`; do
       exit
     fi
   done
-
+ done
+ done
+ done
  done
  done
  done
