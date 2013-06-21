@@ -6,6 +6,7 @@
 
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define PRO_FL
+#define MPR_FL
 //#define RAWDUMP
 #define BRNFEEDBACK
 
@@ -53,7 +54,7 @@ Idle -> [1]device_wifi;
 brn_clf[0]
 //-> Print("rx")
   -> BRN2Decap()
-  -> sf::BRN2SimpleFlow(HEADROOM 192,  ROUTINGPEEK flooding/routing_peek, DEBUG 2)
+  -> sf::BRN2SimpleFlow(HEADROOM 192, ROUTINGPEEK flooding/routing_peek, LT lt, DEBUG 4)
   -> BRN2EtherEncap(USEANNO true)
   -> [0]flooding;
 
@@ -87,11 +88,10 @@ ffilter[1] -> [2]flooding; //feedback success
 Script(
   wait 100,
   wait 5,
-  read lt.links,
-  read device_wifi/link_stat.bcast_stats,
-  read device_wifi/wifidevice/cst.stats,
+//  read lt.links,
+//  read device_wifi/link_stat.bcast_stats,
+//  read device_wifi/wifidevice/cst.stats,
   wait 10,
-  //write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 1000 true, //flooding_init   51000
   wait 60,
   read flooding/fl.stats,
   read flooding/fl.forward_table,
