@@ -134,8 +134,7 @@ pkt_sent=reshape(result(:,RESULT_SENT_PER_NODE), s1, s2);
 h=figure;
 bar(pkt_sent','grouped');
 title('Pkts sent per node and flooding (mean)');
-ylabel('Pkts sent per node and flooding'
-);
+ylabel('Pkts sent per node and flooding');
 xlabel('Flooding');
 grid on;
 saveas(h, 'sent_per_node_barplot.png' ,'png');
