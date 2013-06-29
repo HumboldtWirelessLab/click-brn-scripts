@@ -192,8 +192,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        echo "#define BCAST2UNIC_REJECTONEMPTYCS $flunic_reject" >> flooding_config.h
        echo "#define BCAST2UNIC_UCASTPEERMETRIC $flunic_peer" >> flooding_config.h
        echo "#define FLOODING_PASSIVE_ACK_RETRIES $fl_pa_ret" >> flooding_config.h
-       echo "#define DEFAULT_DATARETRIES $fl_mac_ret" >> flooding_config.h
-       echo "#define DEFAULT_DATARETRIES $fl_mac_ret" >> flooding_config.h
+       echo "#define DEFAULT_DATATRIES $fl_mac_ret" >> flooding_config.h
        echo "#define FLOODING_MAXNBMETRIC $fl_nb_met" >> flooding_config.h
        echo "#define FLOODING_LASTNODES_PP $fl_piggy" >> flooding_config.h
        echo "#define BCAST2UNIC_FORCERESPONSIBILITY $fl_forceresp" >> flooding_config.h

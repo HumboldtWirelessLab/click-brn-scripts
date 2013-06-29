@@ -4,13 +4,9 @@
 
 #include "flooding.config"
 
-//#define WIFIDEV_LINKSTAT_DEBUG
-//#define PRO_FL
-#define MPR_FL
-//#define RAWDUMP
+#define PRIO_QUEUE
+#define RAWDUMP
 #define BRNFEEDBACK
-
-#define DEFAULT_DATARETRIES 11
 
 #define CST cst
 
@@ -21,6 +17,9 @@
 #define DISABLE_LP_POWER
 
 #define FOREIGNRXSTATS
+
+#define PRO_FL
+//#define MPR_FL
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -62,7 +61,12 @@ brn_clf[2] -> Discard;
 
 brn_clf[1]
   -> [1]flooding[1]
-  -> rdq::RandomDelayQueue(MINDELAY 2, MAXDELAY 5, DIFFDELAY 5)
+  -> Print("ToDev",30)
+#ifdef PRIO_QUEUE
+  -> [2]device_wifi;
+
+  Idle()
+#endif
   -> [0]device_wifi;
 
 flooding[0] -> Label_brnether;
