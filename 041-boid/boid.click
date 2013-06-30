@@ -74,13 +74,18 @@ gpsmap::GPSMap();
 gps::GPS(GPSMAP gpsmap);
 gpslph::GPSLinkprobeHandler(LINKSTAT device_wifi/link_stat, GPS gps, GPSMAP gpsmap);
 mob::Mobility();
-boid::Boid(GPS gps, GPSMAP gpsmap, MOBILITY mob, CHANNELSTATS device_wifi/wifidevice/cst,
-           RADIUS 50,
-           SEPERATIONSFACTOR 1000,
-           COHESIONFACTOR -20,
-           STEERLIMIT 10000,
-           GRAVITATIONFACTOR 100000,
-           SPEED 4,
+
+boid_behavior::BoidBehaviorSimple(CHANNELSTATS device_wifi/wifidevice/cst,
+                                  RADIUS 50,
+                                  SEPERATIONSFACTOR 1000,
+                                  COHESIONFACTOR -20,
+                                  STEERLIMIT 10000,
+                                  GRAVITATIONFACTOR 100000,
+                                  SPEED 4,
+                                  DEBUG 4);
+
+boid::Boid(BEHAVIOR boid_behavior,
+           GPS gps, GPSMAP gpsmap, MOBILITY mob,
            INTERVAL 50,  //in ms
            DEBUG 4);
 
