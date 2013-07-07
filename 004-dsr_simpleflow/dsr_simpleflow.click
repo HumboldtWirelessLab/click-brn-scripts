@@ -1,6 +1,6 @@
 #include "config.click"
 
-
+#define ROUTING_PERFORMANCE_CNT
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -72,4 +72,16 @@ device_wifi[2]
   overhear_brn_clf[1]
   -> Discard;
 
+#ifdef ROUTING_PERFORMANCE_CNT
+  routing_pkt_cnt::BrnCompoundHandler(HANDLER "routing/routing_in_cnt_mecl.count routing/routing_in_cnt_brn.count routing/routing_in_cnt_passive.count routing/routing_out_cnt_brn.count routing/routing_out_cnt_cl.count routing/routing_out_cnt_me.count routing/routing_out_cnt_bcast.count");
+  routing_byte_cnt::BrnCompoundHandler(HANDLER "routing/routing_in_cnt_mecl.byte_count routing/routing_in_cnt_brn.byte_count routing/routing_in_cnt_passive.byte_count routing/routing_out_cnt_brn.byte_count routing/routing_out_cnt_cl.byte_count routing/routing_out_cnt_me.byte_count routing/routing_out_cnt_bcast.byte_count");
+#endif
+
+Script(
+wait 130,
+read routing_pkt_cnt.read,
+read routing_byte_cnt.read
+);
+
 #include "script.click"
+
