@@ -32,12 +32,19 @@ for i in `find -name run_again.sh`; do
   SIMDIR=`dirname $i`
 
   if [ -f $SIMDIR/time.stats ]; then
-    FILESIZE=`wc -c $SIMDIR/time.stats | awk '{print $1}'`
+    TERMBYSIG=`cat $SIMDIR/time.stats | grep "terminated by signal" | wc -l`
+    if [ $TERMBYSIG -eq 0 ]; then
+      FILESIZE=`wc -c $SIMDIR/time.stats | awk '{print $1}'`
+    else
+      FILESIZE=0
+    fi
   else
     FILESIZE=0
   fi
 
   if [ $FILESIZE -eq 0 ]; then
+    echo $SIMDIR
+    echo $SIMDIR >> foo
     (cd  $SIMDIR/;sh ./run_again.sh > run_again.log 2>&1; sh ./eval_again.sh > eval_again.log 2>&1; cd $DIR; echo $NUM >> $DIR/sim_finish ) &
      echo "$NUM" >> $DIR/sim_run
 
