@@ -45,7 +45,7 @@ device_wifi
 device_wifi[1] -> Label_brnether;
 device_wifi[2] -> Discard;
 device_wifi[3] -> ff::FilterFailures() -> Discard;
-ff[1] -> Print("TxFailed") -> BRN2EtherDecap() -> Discard;
+ff[1] -> /*Print("TxFailed") ->*/ BRN2EtherDecap() -> Discard;
 
 
 routing[0] -> [0]device_wifi;
