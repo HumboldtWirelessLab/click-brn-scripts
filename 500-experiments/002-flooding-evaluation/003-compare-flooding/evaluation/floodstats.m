@@ -22,7 +22,11 @@ RECEIVED=19;
 COLLISIONS=20;
 MACRETRIES=21;
 NBMETRIC=22;
-PIGGYBACK=23
+PIGGYBACK=23;
+FRESP=24;
+USEASS=25;
+MAXDELAY=26;
+SEED=27;
 
 data=load(filename);
 size(data)
@@ -38,7 +42,7 @@ size(data)
 % NBMETRIC
 
 data=[ data';zeros(1,size(data,1)) ]';
-params=unique(data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK]),'rows')
+params=unique(data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY]),'rows')
 
 %get wanted params
 params=params(find(params(:,5) ~= 4),:)
@@ -62,7 +66,7 @@ for r = 1:size(params,1)
     
     p=params(r,:);
        
-    p_data=data(strmatch(p,data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK])),:);
+    p_data=data(strmatch(p,data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY])),:);
     %size(p_data)
 
     result(r,1)=r;
@@ -91,9 +95,8 @@ size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
 s1 = size(result,1)/size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1);
 s2 = size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1);
 
-s1 = 3;
-s2 = 4;
-
+s1 = 2;
+s2 = 1;
 
 reach=reshape(result(:,RESULT_REACH), s1, s2);
 h=figure();
