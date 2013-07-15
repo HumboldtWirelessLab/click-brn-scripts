@@ -1,6 +1,6 @@
 #define DEBUGLEVEL 2
 
-#define FLOODING_DEBUG 4
+#define FLOODING_DEBUG 2
 
 #include "flooding.config"
 
@@ -18,7 +18,7 @@
 
 #define FOREIGNRXSTATS
 
-#define PRO_FL
+//#define PRO_FL
 //#define MPR_FL
 
 #include "brn/helper.inc"
@@ -53,7 +53,7 @@ Idle -> [1]device_wifi;
 brn_clf[0]
 //-> Print("rx")
   -> BRN2Decap()
-  -> sf::BRN2SimpleFlow(HEADROOM 192, ROUTINGPEEK flooding/routing_peek, LT lt, DEBUG 4)
+  -> sf::BRN2SimpleFlow(HEADROOM 256, ROUTINGPEEK flooding/routing_peek, LT lt, DEBUG 2)
   -> BRN2EtherEncap(USEANNO true)
   -> [0]flooding;
 
@@ -61,7 +61,7 @@ brn_clf[2] -> Discard;
 
 brn_clf[1]
   -> [1]flooding[1]
-  -> Print("ToDev",30)
+  //-> Print("NODENAME ToDev",30)
 #ifdef PRIO_QUEUE
   -> [2]device_wifi;
 
