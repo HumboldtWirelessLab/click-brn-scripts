@@ -5,7 +5,7 @@
 #include "flooding.config"
 
 #define PRIO_QUEUE
-#define RAWDUMP
+//#define RAWDUMP
 #define BRNFEEDBACK
 
 #define CST cst
@@ -25,6 +25,7 @@
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
 #include "routing/broadcastflooding.click"
+#include "routing/routing.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -36,6 +37,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 flooding::BROADCASTFLOODING(ID id, LT lt);
+routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
@@ -44,7 +46,9 @@ device_wifi
   -> BRN2EtherDecap()
   -> brn_clf::Classifier(    0/BRN_PORT_FLOW,         //Simpleflow
                              0/BRN_PORT_FLOODING,     //Flooding
+                             0/BRN_PORT_ROUTING,      //Routing
                                -  );                  //other
+
 
 device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
 
@@ -57,37 +61,57 @@ brn_clf[0]
   -> BRN2EtherEncap(USEANNO true)
   -> [0]flooding;
 
-brn_clf[2] -> Discard;
-
 brn_clf[1]
   -> [1]flooding[1]
-  //-> Print("NODENAME ToDev",30)
-#ifdef PRIO_QUEUE
   -> [2]device_wifi;
-
-  Idle()
-#endif
-  -> [0]device_wifi;
 
 flooding[0] -> Label_brnether;
 
+
+brn_clf[2] -> [1]routing;
+
+
+routing[0] -> [0]device_wifi;
+routing[1] -> [1]device_wifi;
+routing[3] -> Discard;
+
+
+brn_clf[3] -> Discard;
+
 device_wifi[2] 
   -> BRN2EtherDecap()
-  -> foreign_clf::Classifier( 0/BRN_PORT_FLOODING )
+  -> foreign_clf::Classifier( 0/BRN_PORT_FLOODING,
+                              0/BRN_PORT_ROUTING )
   -> [3]flooding;
 
-#ifdef BRNFEEDBACK
+foreign_clf[1]
+  -> [3]routing;
+
 device_wifi[3]
-#else
-  Idle()
-#endif
   //-> Print("Feedback")
   -> BRN2EtherDecap()
-  -> Classifier( 0/BRN_PORT_FLOODING)
-  -> ffilter::FilterFailures()
+  -> fb_filter::Classifier( 0/BRN_PORT_FLOODING,
+                 0/BRN_PORT_ROUTING)
+  -> ffilter_flood::FilterFailures()
   -> [4]flooding; //feedback failure
 
-ffilter[1] -> [2]flooding; //feedback success
+ffilter_flood[1] -> [2]flooding; //feedback success
+
+fb_filter[1]
+  -> ffilter_routing::FilterFailures()
+  -> [4]routing; //feedback failure
+
+ffilter_routing[1] -> [2]routing; //feedback success
+
+routing[2]
+  -> BRN2EtherDecap()
+  -> BRN2Decap()
+  -> unicastsf::BRN2SimpleFlow(HEADROOM 256, ROUTINGPEEK routing/routing/routing_peek, LT lt, DEBUG 2)
+  -> BRN2EtherEncap(USEANNO true)
+  -> [0]routing;
+
+
+
 
 Script(
   wait 100,
