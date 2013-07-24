@@ -36,9 +36,10 @@ echo -n "" > $DIR/evaluation_finish
 
 for i in `ls -d *MBit*`; do
 
-  #ADDEVALUATION="evaluation/eval.sh network_info flooding_info flow_info"
-  ADDEVALUATION="flooding_info"
-  (cd $i/; if [ -f measurement.log.bz2 ]; then rm -f measurement.log; bzip2 -k -d measurement.log.bz2; fi; ADDEVALUATION="$ADDEVALUATION" /bin/bash ./eval_again.sh; if [ -f measurement.log.bz2 ]; then rm -f measurement.log; fi; echo $NUM >> $DIR/evaluation_finish ) &
+  ADDEVALUATION="network_info flooding_info flow_info evaluation/eval_post.sh"
+  #ADDEVALUATION="flooding_info"
+  PREEVALUATION="evaluation/eval.sh"
+  (cd $i/; PREEVALUATION="$PREEVALUATION" ADDEVALUATION="$ADDEVALUATION" /bin/bash ./eval_again.sh; echo $NUM >> $DIR/evaluation_finish ) &
 
   let NUM=NUM+1
 
