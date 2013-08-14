@@ -29,7 +29,7 @@ fi
 if [ "x$SETNAME" = "xweak" ]; then
 
   TXPOWERS="36 34 32 30 28 26 24 22 20 18 16 14 12 10 9 8 7 6 5 4 2"
-  TXRATES="12"
+  TXRATES="12 18 48 72"
 
   RUNMODE=ENVIRONMENT
 
@@ -93,9 +93,10 @@ fi
 
 if [ "x$SETNAME" = "xinrange" ]; then
 
-  TXPOWERS="36 34 32 30 28 26 24 22 20 18 16 14 12 10 8 6 4 2"
-  #TXPOWERS="36 12"
-  TXRATES="2 12"
+  #TXPOWERS="36 34 32 30 28 26 24 22 20 18 16 14 12 10 8 6 4 2"
+  #TXRATES="2 12"
+  TXPOWERS="36 30 25"
+  TXRATES="12 18 24 36 24"
 
   RUNMODE=ENVIRONMENT
 
@@ -105,8 +106,9 @@ if [ "x$SETNAME" = "xinrange" ]; then
       CHANNELS="14"
       TXBURST=1
     else
-      CHANNELS="46 13"
-      TXBURST=6
+      CHANNELS="46"
+      #CHANNELS="46 13"
+      TXBURST=`calc round\(4\*$r/12\) | awk '{print $1}'`
     fi
 
     for c in $CHANNELS; do

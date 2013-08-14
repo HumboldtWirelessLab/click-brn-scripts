@@ -4,33 +4,29 @@ clear;
 %dir = 'weak_signal/weak_power.30.rate.12/evaluation/';
 
 % params
-txpower = 28;%26;%26;
-bitrate = 18;%9;%6;
+txpower = 20;
+bitrate = 12;
+channel = 46;
 
 %dir = ['weak_signal/weak_power.', int2str(txpower), '.rate.', int2str(bitrate*2), '/evaluation/'];
-%dir = ['aci/aci_base/evaluation/'];
-%dir = ['aci/aci_acitwolinks/evaluation/']; % TOP!!!
-%dir = ['aci/aci_power.36/evaluation/'];
-%dir = ['aci/aci_noacilink/evaluation/'];
-    
+
 %dir = ['../hiddennode_power_001/hiddennode_power.20.distpower.35/evaluation/'];
 %dir = ['../inrange_002/inrange_power.36.rate.12/evaluation/'];
 %dir = ['../inrange_003_5Ghz_6MBit/inrange_power.12.rate.12/evaluation/'];
 %dir = ['../inrange_004_2.4Ghz_6MBit/inrange_power.12.rate.12/evaluation/'];
 %dir = ['../inrange_005_2.4Ghz_1MBit/inrange_power.12.rate.2/evaluation/'];
 %dir = ['../inrange_channel_14.rate.2/inrange_power.2.rate.2/evaluation/'];
-dir = ['../inrange_channel_13.rate.12/inrange_power.36.rate.12/evaluation/'];
-%dir = ['../inrange_channel_46.rate.12/inrange_power.26.rate.12/evaluation/'];
-
-% RX node
-%rx_node_names = {'foobar103', 'commander105'};
-rx_node_names = {'commander105', 'foobar103'};
+%dir = ['../inrange_channel_', int2str(channel), '.rate.', int2str(bitrate), '/inrange_power.', int2str(txpower), '.rate.', int2str(bitrate), '/evaluation/'];
+%dir = ['../inrange_channel_46.rate.12/inrange_power.26.rate.12/evaluation/']%rx_node_names = {'commander105', 'foobar103'};%, 'seismo151'};
 %rx_node_names = {'commander105', 'seismo158', 'foobar103'};
 %rx_node_names = {'commander105', 'seismo176'};
-%rx_node_names = {'foobar103', 'seismo176', 'commander105'};
+rx_node_names = {'foobar103', 'seismo176', 'commander105'};
+rx_node_names = {'foobar103', 'commander105'};
 %rx_node_names = {'commander105', 'seismo176', 'foobar103','seismo158'};
 %rx_node_names = {'commander105', 'seismo162', 'foobar103','seismo158'};
 %rx_node_names = {'foobar103'};
+
+dir = ['../aci_power_001/aci_power.20.distpower.27/evaluation/'];
 
 ydumps = {};
 sync_v = {};
@@ -63,7 +59,7 @@ for kk=1:size(rx_node_names,2)
     
     % sync vector
     sync_v{kk} = ydumps{kk}(ydumps{kk}(:,2) == 0 & ydumps{kk}(:,5) == 69,[7 11]);
-    sync_v{kk} = sync_v{kk}(2:end,:);
+    sync_v{kk} = sync_v{kk}(3:end-2,:);
 end
 
 
@@ -171,9 +167,9 @@ xx = 1;
 yy = size(yreg,1);
 if (1)
     % start in ringbuffer
-    xx = 20001;
+    xx = 50001;
     % end in ringbuffer
-    yy = 25000;
+    yy = 55000;
 end
 
 % points in reg file
@@ -249,13 +245,15 @@ if (1)
     
 end
 
+print([rx_node_names{1},'_channel_', int2str(channel), '_power_', int2str(txpower), '_rate_', int2str(bitrate), '_range_', int2str(xx), '_', int2str(yy),'.png'],'-dpng');
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Detector
 %
-if (0)
+if (1)
     % Samples for range: xx = 5000 and yy = 10000;
     not_rx_packets = [589 590 592 593 594 595 596 597 598 599 600 601 602 603 604 605 606 607 608 609];
 
@@ -284,7 +282,7 @@ if (0)
        rx_all = [rx_all mean(rx_buckets{ii})];
     end
 
-    if (0)
+    if (1)
        figure; 
        distributionPlot(busy_buckets);
        title('Busy Reg of ACI corrupted');
@@ -321,7 +319,7 @@ if (0)
        rx_all = [rx_all mean(rx_buckets{ii})];
     end
 
-    if (0)
+    if (1)
        figure; 
        distributionPlot(busy_buckets);
        title('Busy Reg of OK');
@@ -329,4 +327,5 @@ if (0)
        boxplot([rx_all; busy_all]');
        title('RX/Busy Reg of OK');
     end
+    
 end
