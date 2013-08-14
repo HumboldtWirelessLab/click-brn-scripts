@@ -7,6 +7,8 @@
 #define PRIO_QUEUE
 //#define RAWDUMP
 #define BRNFEEDBACK
+#define ROUTING_TXFEEDBACK
+#define FOREIGNRXSTATS
 
 #define CST cst
 
@@ -16,10 +18,10 @@
 #define LINKPROBE_PROBES                                       "2 100"
 #define DISABLE_LP_POWER
 
-#define FOREIGNRXSTATS
-
 //#define PRO_FL
 //#define MPR_FL
+
+//#define DISBALE_BCASTWIFIDUPS
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -66,7 +68,7 @@ brn_clf[1]
   -> [2]device_wifi;
 
 flooding[0] -> Label_brnether;
-
+flooding[2] -> Print("NODENAME: FloodingFeedback",20) -> Discard;
 
 brn_clf[2] -> [1]routing;
 
@@ -74,7 +76,6 @@ brn_clf[2] -> [1]routing;
 routing[0] -> [0]device_wifi;
 routing[1] -> [1]device_wifi;
 routing[3] -> Discard;
-
 
 brn_clf[3] -> Discard;
 
@@ -106,12 +107,15 @@ ffilter_routing[1] -> [2]routing; //feedback success
 routing[2]
   -> BRN2EtherDecap()
   -> BRN2Decap()
-  -> unicastsf::BRN2SimpleFlow(HEADROOM 256, ROUTINGPEEK routing/routing/routing_peek, LT lt, DEBUG 2)
+  -> unicastsf::BRN2SimpleFlow(HEADROOM 256, ROUTINGPEEK routing/routing/routing_peek, LT lt, DEBUG 4)
   -> BRN2EtherEncap(USEANNO true)
   -> [0]routing;
 
-
-
+routing[4]
+  -> Print("NODENAME: Routingfeedback",50,TIMESTAMP true)
+  -> BRN2EtherDecap()
+  -> BRN2Decap()
+  -> [1]unicastsf;
 
 Script(
   wait 100,
