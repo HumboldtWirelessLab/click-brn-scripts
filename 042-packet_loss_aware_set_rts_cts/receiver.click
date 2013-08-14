@@ -1,10 +1,10 @@
 #define DEBUGLEVEL 2
 
-#define RAWDUMP
-#define CERR
-#define CST
+#define CST cst
+#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
-// include unter helper/measurement/etc/click
+#define RAWDUMP
+//#define RAWDUMPSNAPLEN 100
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -18,10 +18,8 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 Idle
   -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
   -> filter_tx :: FilterTX()
-
   -> error_clf :: WifiErrorClassifier()
-//  -> Print("NODENAME RX")
-  -> BRN2PrintWifi("Receiver (NODENAME) RX OKPacket", TIMESTAMP true)
+  -> BRN2PrintWifi("OKPacket (NODENAME)", TIMESTAMP true)
   -> discard::Discard;
 
 error_clf[1]
@@ -56,8 +54,12 @@ filter_tx[1]
   -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
   -> discard;
 
- 
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+
 Script(
- wait 1,
- read wifidevice/ced.stats
+ wait 5,
+ read sys_info.systeminfo,
+ read id.version,
+ read error_clf.stats,
+ read wifidevice/cst.stats
 );

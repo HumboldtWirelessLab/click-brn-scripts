@@ -80,48 +80,7 @@ device_wifi[2]
   overhear_brn_clf[0]
   -> [3]routing;
 
-<<<<<<< HEAD
-brn_clf[3]
--> BRN2Decap()
--> sf::BRN2SimpleFlow(ROUTINGPEEK dart/routing_peek,LT lt, DEBUG 4)
--> BRN2EtherEncap(USEANNO true)
--> Print("Foo")
--> [0]dart;
-
-dart[0] -> [0]device_wifi;
-dart[1] -> Label_brnether;
-
-Idle 
-->[1]device_wifi;
-
-Idle
--> [2]dart;
-//with 80 nodes dart needs 125 seconds for building the overlay
-Script(
-  wait 50,
-  //read lt.links,
-  wait 70, 
-  read lt.links,
-  //read dht/dhtrouting.routing_info,
-  wait 20, 
-  //read  dhtstorage.db_size,
-  //read  dhtstoragetest.stats,
-  read  dht/dhtrouting.routing_info,
-  wait 10,
-  //read  dhtstorage/dhtstorage.db_size,
-  //read  dhtstoragetest.stats,
-  //read  dht/dhtrouting.routing_info
-  //read dht_r_all.count,
-  //read dht_r_all.byte_count,
-  //read dht_r_neighbour.count,
-  //read dht_r_neighbour.byte_count,
-  //read dht_s.count,
-  //read dht_s.byte_count,
-  read  sf.stats
-);
-=======
   overhear_brn_clf[1]
   -> Discard;
 
 #include "script.click"
->>>>>>> da8e212f1555982d38e78a38b9dbe1f857e47db2

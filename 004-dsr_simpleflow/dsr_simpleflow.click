@@ -1,6 +1,6 @@
 #include "config.click"
 
-
+#define ROUTING_PERFORMANCE_CNT
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -72,4 +72,11 @@ device_wifi[2]
   overhear_brn_clf[1]
   -> Discard;
 
+Script(
+wait 130,
+read routing/routing_pkt_cnt.read,
+read routing/routing_byte_cnt.read
+);
+
 #include "script.click"
+

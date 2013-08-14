@@ -1,0 +1,27 @@
+NAME=receiver
+SIMULATOR=ns2
+#RADIO=RADIOMODELL
+FORGEINNODES=no
+
+TIME=31
+
+NODEPLACEMENTFILE=placement.plm
+NODETABLE=backoff.mes
+NODEPLACEMENT=file
+#NODEPLACEMENT=grid
+FIELDSIZE=150
+
+LOGDIR=WORKDIR
+LOGFILE=measurement.log
+
+RESULTDIR=WORKDIR
+#EVALUATION="evaluation/eval.sh dump_compression status_compression"
+EVALUATION="embrace_xml evaluation/eval.sh dump_compression status_compression"
+EVALUATIONSDIR=WORKDIR/evaluation
+EVALUATIONSDIRPOSTFIX=_evaluation
+
+GPS=no
+NOTICE=no
+LOS=no
+
+CONTROLSOCKET=yes

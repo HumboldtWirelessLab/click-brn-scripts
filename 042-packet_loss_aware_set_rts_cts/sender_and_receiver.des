@@ -1,32 +1,29 @@
 NAME=receiver
 SIMULATOR=ns2
-#RADIO=shadowing11b
-RADIO=tworayground01b
+RADIO=shadowing11b
+#RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=2
+TIME=5
 
-#NODEPLACEMENTFILE=placement.default
+NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=sender_and_receiver.mes
-#NODEPLACEMENT=string
-#NODEPLACEMENT=grid
 NODEPLACEMENT=string
+#NODEPLACEMENT=grid
+#next is needed to use own placementfile
+#NODEPLACEMENT=file
 NODEPLACEMENTOPTS="relative"
-#FIELDSIZE=10
+#FIELDSIZE=40
 FIELDSIZE=RXRANGE
-
-
-#NODEPLACEMENT=string
-#FIELDSIZE=500
-#FIELDSIZE=RxRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
+EVALUATION="evaluation/eval.sh dump_compression status_compression"
+#EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
 EVALUATIONSDIRPOSTFIX=_evaluation
-EVALUATION="evaluation/eval.sh"
 
 GPS=no
 NOTICE=no

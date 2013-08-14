@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 GREPARG=`find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|'`
 GREPARG="\"$GREPARG-foo\""
