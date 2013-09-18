@@ -11,7 +11,8 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 1460, INTERVAL 20, MAXSEQ 500000, BURST 2, ACTIVE true)
+Idle()
+  -> sf::BRN2SimpleFlow(DEBUG 4)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> BRN2PrintWifi("Sender", TIMESTAMP true)
@@ -55,3 +56,7 @@ error_clf[7]
 filter_tx[1]
   -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
   -> discard;
+
+Script(
+  write sf.add_flow 00:00:00:00:00:00 ff:ff:ff:ff:ff:ff 20 1500 0 10000 true 2 0,
+);

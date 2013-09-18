@@ -1,9 +1,11 @@
 #define DEBUGLEVEL 2
 
+#define PRIO_QUEUE
+#define RAWDUMP
 //#define WIFIDEV_LINKSTAT_DEBUG
 #define ENABLE_DSR_DEBUG
 
-//#define BRNFEEDBACK
+#define BRNFEEDBACK
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
@@ -31,11 +33,13 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(DEBUG 2)
-//-> SetTimestamp()
-//-> Print(TIMESTAMP true)
+-> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2)
+-> SetTimestamp() -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
--> [0]device_wifi;
+-> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+-> WifiEncap(0x00, 0:0:0:0:0:0)
+-> NotifierQueue(500)
+-> [2]device_wifi;
 
 brn_clf[1] -> Discard;
 
@@ -51,3 +55,4 @@ device_wifi[3]
 #endif
 
 Idle -> [1]device_wifi;
+Idle -> [0]device_wifi;

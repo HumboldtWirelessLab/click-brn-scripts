@@ -18,7 +18,7 @@ infra_client
   -> Print("rx")
   -> BRN2Decap()
   -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:00:00,
-                        RATE 1000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
+                        INTERVAL 1000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
   -> BRN2EtherEncap()
   -> infra_client;
  

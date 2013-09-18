@@ -13,11 +13,9 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-Idle() ->
-ps::BRN2PacketSource(SIZE 1460, INTERVAL 10, MAXSEQ 500000, BURST 1, ACTIVE true)
-//-> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
-//-> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
-  -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
+Idle()
+  -> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2)
+  -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
 //  -> BRN2PrintWifi("Sender", TIMESTAMP true)
   -> SetTXRates(RATE0 2, TRIES0 7, TRIES1 0, TRIES2 0, TRIES3 0)
@@ -29,8 +27,6 @@ ps::BRN2PacketSource(SIZE 1460, INTERVAL 10, MAXSEQ 500000, BURST 1, ACTIVE true
   -> error_clf :: WifiErrorClassifier()
 //  -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
   -> discard::Discard;
-
-ps[1] -> Discard;
 
 error_clf[1]
   -> BRN2PrintWifi("CRCerror", TIMESTAMP true)
@@ -67,6 +63,7 @@ filter_tx[1]
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
+  write sf.add_flow 00:00:00:00:00:03 ff:ff:ff:ff:ff:ff 10 1500 0 5000 true 1 0,
   wait 5,
   read sys_info.systeminfo,
   read id.version
