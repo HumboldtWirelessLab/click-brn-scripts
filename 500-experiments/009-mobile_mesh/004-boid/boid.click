@@ -5,6 +5,7 @@
 #include "device/wifidev_linkstat.click"
 #include "routing/routing.click"
 
+
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
@@ -76,11 +77,11 @@ gpslph::GPSLinkprobeHandler(LINKSTAT device_wifi/link_stat, GPS gps, GPSMAP gpsm
 mob::Mobility();
 
 boid_behavior::BoidBehaviorSimple(CHANNELSTATS device_wifi/wifidevice/cst,
-                                  RADIUS 100,
-                                  SEPERATIONSFACTOR 10000,
-                                  COHESIONFACTOR -20,
-                                  STEERLIMIT 10000,
-                                  GRAVITATIONFACTOR 1000000,
+                                  RADIUS BOID_RADIUS,
+                                  SEPERATIONSFACTOR BOID_SEPERATIONSFACTOR,
+                                  COHESIONFACTOR BOID_COHESIONFACTOR,
+                                  STEERLIMIT BOID_STEERLIMIT,
+                                  GRAVITATIONFACTOR BOID_GRAVITATIONFACTOR,
                                   SPEED 4,
                                   DEBUG 4);
 
