@@ -50,7 +50,8 @@ sysctl dev.wifi0.regmon_interval >> /tmp/regmon_$NODENAME.log
 
 
 sleep 7
-iwconfig ath0 channel 42
+#iwconfig ath0 channel 42
+iwconfig ath0 channel 14
 
 sleep 8
 

@@ -3,6 +3,8 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 #define ENABLE_DSR_DEBUG
 
+//#define BRNFEEDBACK
+
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
@@ -39,5 +41,13 @@ brn_clf[1] -> Discard;
 
 device_wifi[1] -> BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
+
+#ifdef BRNFEEDBACK
+device_wifi[3]
+  -> BRN2EtherDecap()
+  -> Classifier( 0/BRN_PORT_FLOW )
+  -> BRN2Decap()
+  -> [1]sf;
+#endif
 
 Idle -> [1]device_wifi;

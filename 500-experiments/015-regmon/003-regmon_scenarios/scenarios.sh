@@ -111,6 +111,7 @@ PASSIVERECEIVER=""
 
 ACIRECEIVER=""
 ACISENDER=""
+ACIRECEIVERNOREG=""
 
 NOSYNCSENDER=""
 
@@ -253,8 +254,23 @@ case "$s" in
         DISPKTSIZE=0
         ;;
     "micro")
-        SENDER=""
-        RECEIVER="foobar103"
+        SENDER="seismo158"
+        RECEIVER=""
+        PASSIVERECEIVER=""
+        TXINTERVAL=1000
+        PKTSIZE=2200
+        TXBURST=1
+        DISRUPTER=""
+        DISTXINTERVAL=12
+        DISPKTSIZE=2200
+        DISTXBURST=1
+        ACIRECEIVER="foobar103 commander105"
+        ACIRECEIVERNOREG="seismo151"
+        ACISENDER=""
+        ;;
+    "microlink")
+        SENDER="seismo158"
+        RECEIVER=""
         PASSIVERECEIVER=""
         TXINTERVAL=12
         PKTSIZE=2200
@@ -263,6 +279,10 @@ case "$s" in
         DISTXINTERVAL=12
         DISPKTSIZE=2200
         DISTXBURST=1
+        ACIRECEIVER="foobar103"
+        ACIRECEIVERNOREG="seismo151"
+        ACISENDER="commander105"
+        TXRATE=2
         ;;
       *)
         echo "Unknown scenario"
@@ -309,6 +329,11 @@ done
 
 for i in $ACIRECEIVER; do
   echo "$i DEV0 BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION - monitor - receiver.click LOGDIR/NODENAME.NODEDEVICE.log CONFIGDIR/regmon_node_aci.sh LOGDIR/app_NODENAME.log" >> sender_and_receiver.mes
+  #echo "$i DEV0 BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION - monitor - receiver.click /dev/null CONFIGDIR/regmon_node_aci.sh /dev/null" >> sender_and_receiver.mes
+done
+
+for i in $ACIRECEIVERNOREG; do
+  echo "$i DEV0 BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION - monitor - receiver.click LOGDIR/NODENAME.NODEDEVICE.log CONFIGDIR/channelswitch_node_aci.sh LOGDIR/app_NODENAME.log" >> sender_and_receiver.mes
   #echo "$i DEV0 BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION - monitor - receiver.click /dev/null CONFIGDIR/regmon_node_aci.sh /dev/null" >> sender_and_receiver.mes
 done
 

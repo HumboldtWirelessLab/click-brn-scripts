@@ -21,7 +21,8 @@ esac
 export PATH=$PATH:/sbin:/usr/sbin/
 
 sleep 5
-iwconfig ath0 channel 42
+iwconfig ath0 channel 14
+#iwconfig ath0 channel 42
 sleep 20
 iwconfig ath0 channel 46
 
