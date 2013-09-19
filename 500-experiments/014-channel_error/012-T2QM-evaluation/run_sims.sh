@@ -8,9 +8,13 @@ else
   NO_NODES_VECTOR="2 4 6 8 10"
 fi
 
-TOSTOQUEUE="0 2 3 4 5 6"
+#TOSTOQUEUE="0 2 3 4 5 6"
+#TOSTOQUEUE="0 3 5"
+TOSTOQUEUE="0 3 5"
 
 PACKET_SIZE_VECTOR="1500"
+#PACKET_SIZE_VECTOR="700"
+#PACKET_SIZE_VECTOR="300 500 800 1100 1500"
 
 RATE_VECTOR="125"
 
@@ -24,9 +28,9 @@ else
 fi
 
 if [ "x$SIM" = "x1" ]; then
-#  CHANNEL_MODEL="shadowing11b tworayground01b"
-   CHANNEL_MODEL="shadowing11b tworayground01b"
-#  CHANNEL_MODEL="shadowing11b"
+#   CHANNEL_MODEL="shadowing11b tworayground01b"
+   CHANNEL_MODEL="shadowing11b"
+#   CHANNEL_MODEL="tworayground01b"
 else
   CHANNEL_MODEL="real"
 fi

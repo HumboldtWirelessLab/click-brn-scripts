@@ -3,7 +3,7 @@
 //#define RAWDUMP
 
 #define CST cst
-#define TOS2QUEUEMAPPER_STRATEGY 6
+#define TOS2QUEUEMAPPER_STRATEGY 2
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
