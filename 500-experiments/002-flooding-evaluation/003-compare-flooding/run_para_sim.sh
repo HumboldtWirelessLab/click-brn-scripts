@@ -44,12 +44,11 @@ for i in `find -name run_again.sh`; do
 
   if [ $FILESIZE -eq 0 ]; then
     echo $SIMDIR
-    echo $SIMDIR >> foo
     (cd  $SIMDIR/;sh ./run_again.sh > run_again.log 2>&1; sh ./eval_again.sh > eval_again.log 2>&1; cd $DIR; echo $NUM >> $DIR/sim_finish ) &
-     echo "$NUM" >> $DIR/sim_run
-
-     let NUM=NUM+1
+    echo "$NUM" >> $DIR/sim_run
   fi
+
+  let NUM=NUM+1
 
   SIM_RUN=`cat $DIR/sim_run | wc -l`
   SIM_FIN=`cat $DIR/sim_finish | wc -l`
@@ -58,7 +57,7 @@ for i in `find -name run_again.sh`; do
 
   while [ $SIM_DIFF -gt $MAX_THREADS ]; do
     sleep 5
-    echo -n -e "Finished $SIM_FIN of $COUNT_SIMS sims         \033[1G"
+    echo -n -e "Finished $NUM of $COUNT_SIMS sims         \033[1G"
     SIM_FIN=`cat $DIR/sim_finish | wc -l`
     let SIM_DIFF=SIM_RUN-SIM_FIN
   done
