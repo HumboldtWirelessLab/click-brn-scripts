@@ -91,10 +91,11 @@ boid::Boid(BEHAVIOR boid_behavior,
            DEBUG 4);
 
 Script(
-  wait 2,
+  wait 1,
   read gps.cart_coord,
   read gpsmap.map,
   read device_wifi/wifidevice/cst.stats,
+  read lt.links,
   loop
  );
 

@@ -2,7 +2,7 @@
 		#define BRNFEEDBACK
 		#define CST cst
 
-		#define BOID_RADIUS 150
+		#define BOID_RADIUS 90
 		#define BOID_SEPERATIONSFACTOR 10000
 		#define BOID_COHESIONFACTOR -20
 		#define BOID_STEERLIMIT 10000

@@ -1,0 +1,8 @@
+Erläuterung zur Simulation und Auswertung von 004-Boid.
+
+Der gesamte Vorgang mit ./start.sh "Verzeichnis" angeben, wobei "Verzeichnis" das Zielverzeichnis sein soll,
+in das die Simulationen gespeichert werden.
+
+Im Ordner MatLab finden sich die Matlab-scripte, welche durch start.sh in die jeweiligen Simu-Ordner verschoben
+werden und gleichzeitig an die jeweilige Simulation angepasst werden. geschieht per sed, also vorsichtig sein
+beim ändern von den scripten.
