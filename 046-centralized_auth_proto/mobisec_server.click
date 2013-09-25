@@ -22,8 +22,8 @@ routingmaint	:: RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE rou
 wifidev_ap		:: WIFIDEV_AP(DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", CHANNEL 5, LT lt);
 dsr				:: DSR(id, lt, wifidev_ap/etx_metric,routingmaint); // Routing 
 
-tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "SERVER", KEYDIR "CONFIGDIR/", DEBUG 2);
-KeyServer		:: KEYSERVER(PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, TLS tls, KEY_LIST_CARDINALITY 10, KEY_TIMEOUT 60000, START 10000 /* too fast ?? */, DEBUG 5);
+tls				:: TLS(ETHERADDRESS deviceaddress, /*KEYSERVER 00-00-00-00-00-01,*/ ROLE "SERVER", KEYDIR "CONFIGDIR/", DEBUG 2);
+keyserver		:: KeyServer(NODEID id, PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, TLS tls, KEY_LIST_CARDINALITY 10, KEY_TIMEOUT 60000, START 10000 /* too fast ?? */, DEBUG 5);
 
 
 
@@ -101,8 +101,7 @@ dsr[1]
 
 Idle -> [2]dsr;
 Idle -> [3]dsr;
-
-
+Idle -> [4]dsr;
 
 
 /********* Layer 3: Integration of MobiSEC-Module *********
@@ -118,7 +117,7 @@ to_MobiSEC_KeyServer :: Null()
 	-> from_MobiSEC_KeyServer :: Null();
 
 	tls[1] // decrypt message
-		-> KeyServer
+		-> keyserver
 		-> [1]tls; //encrypt message
 
 

@@ -37,10 +37,6 @@ Idle()
   -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
   -> discard::Discard;
 
-ps[1] -> Discard;
-
-
-
 error_clf[1]
   -> BRN2PrintWifi("CRCerror", TIMESTAMP true)
   -> discard;

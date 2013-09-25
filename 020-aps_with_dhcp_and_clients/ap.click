@@ -76,6 +76,7 @@ device_wifi[4]            //broadcast and no brn
     -> BRN2EtherDecap()
     -> Strip(28) // strip ip and udp
     -> Print("For DHCP-Server", TIMESTAMP true)
+    -> BRN2DHCPPrint(LABEL "NODENAME")
     -> dh
     -> UDPIPEncap(192.168.0.1, 67, 255.255.255.255, 68)
     -> EtherEncap(0x0800, deviceaddress , ff:ff:ff:ff:ff:ff)
