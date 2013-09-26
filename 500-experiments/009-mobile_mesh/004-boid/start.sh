@@ -78,7 +78,7 @@ do
 		
 		#matlab scripte konfigurieren
 		#to be implemented
-		sed s/"field = zeros($fieldSizePRE,$fieldSizePRE);"/"field = zeros($fieldSizePOST,$fieldSizePOST);"/ MatLab/gps.m > $method/$dirname/MatLab/gps.m
+		sed -e s/"field = zeros($fieldSizePRE,$fieldSizePRE);"/"field = zeros($fieldSizePOST,$fieldSizePOST);"/g MatLab/gps.m > $method/$dirname/MatLab/gps.m
 		
 		
 		#auswertung per matlab

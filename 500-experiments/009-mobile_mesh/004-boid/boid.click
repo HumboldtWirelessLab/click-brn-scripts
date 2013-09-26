@@ -102,6 +102,7 @@ Script(
 Script(
  wait 2,
  write boid.gravitation add 400 400 0 2000000,
+ read boid.gravitation,
  write boid.active true
 );
 
