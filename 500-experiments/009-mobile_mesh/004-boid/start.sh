@@ -16,6 +16,7 @@ speed=4;
 
 #stellschräubchen für die simulationen
 nodes=3;
+nodesBefore=3;
 maxnodes=6;
 radIncrements=5;
 
@@ -55,7 +56,11 @@ do
 		#define BOID_COHESIONFACTOR $cohesion
 		#define BOID_STEERLIMIT $steerlimit
 		#define BOID_GRAVITATIONFACTOR $gravitation
-		#define BOID_SPEED $speed" > config.click;
+		#define BOID_SPEED $speed 
+				
+		#define LINKPROBE_PERIOD 500
+		#define LINKPROBE_TAU 25000
+		#define DLINKPROBE_PROBES \"2 500\""> config.click;
 		
 		dirname="$nodes""Knoten""$radius""Radius";
 
@@ -72,19 +77,21 @@ do
 		
 		#generiere *.csv dateien
 		xsltproc gpscoords.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/gpscoords.csv;		
-		xsltproc gpsmap.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/gpsmap.csv;
-		xsltproc channelstats.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/channelstats.csv;
+		#xsltproc gpsmap.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/gpsmap.csv;
+		#xsltproc channelstats.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/channelstats.csv;
+		xsltproc linktable.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/linktables.csv;
 
 		
 		#matlab scripte konfigurieren
 		#to be implemented
-		sed -e s/"field = zeros($fieldSizePRE,$fieldSizePRE);"/"field = zeros($fieldSizePOST,$fieldSizePOST);"/g MatLab/gps.m > $method/$dirname/MatLab/gps.m
-		
+		sed -e s/"field = zeros($fieldSizePRE,$fieldSizePRE);"/"field = zeros($fieldSizePOST,$fieldSizePOST);"/g MatLab/Coverage.m > $method/$dirname/MatLab/Coverage.m;
+		sed -e s/"knoten = $(($nodesBefore*$nodesBefore));"/"knoten = $(($nodes*$nodes));"/g MatLab/Distances.m > $method/$dirname/MatLab/Distances.m;
 		
 		#auswertung per matlab
 		cd $method/$dirname/MatLab;
-		matlab -nodisplay < gps.m;
-		cd ../../..;
+		matlab -nodisplay < Coverage.m;
+		matlab -nodisplay < Distances.m;
+		cd ../../../;
 		
 		
 		#laufvariable incrementieren
@@ -95,8 +102,8 @@ do
 	
 	done
 	
+	nodesBefore=$nodes;
 	nodes=$(($nodes+1));
-	
 	
 done
 

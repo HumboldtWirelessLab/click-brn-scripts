@@ -93,14 +93,14 @@ boid::Boid(BEHAVIOR boid_behavior,
 Script(
   wait 1,
   read gps.cart_coord,
-  read gpsmap.map,
   read device_wifi/wifidevice/cst.stats,
   read lt.links,
   loop
  );
+	
 
 Script(
- wait 2,
+ wait 30,
  write boid.gravitation add 400 400 0 2000000,
  read boid.gravitation,
  write boid.active true
