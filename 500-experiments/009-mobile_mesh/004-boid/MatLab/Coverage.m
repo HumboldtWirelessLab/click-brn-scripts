@@ -14,15 +14,15 @@ fieldDummy = zeros(750,750);
 fieldResult = zeros(750,750);
 fieldSize = size(fieldMidRadius);
 gravitation = [400,400];
-
+knoten = 9;
 xrange = 65;
 %ende
 
 %todo: make radiant depeding on xrange!
 %IMPORTANT: inRadius < midRadius < outRadius has to be true!
 inRadius = 100;
-midRadius = 150;
-outRadius = 250;
+midRadius = 200;
+outRadius = 350;
 
 %initialize knot-counting variables
 knotsInRadius=0;
@@ -181,14 +181,25 @@ for I=1:n;
 	end
 end
 
+%output area
 
+plot(absInRadius);
+title('Absolute Anzahl von Knoten im Radius von 100m');
+xlabel('Zeit t');
+ylabel('Anzahl der Knoten');
+saveas(gcf, 'KnotsInRadius.jpg');
 
-out1 = plot(absInRadius);
-saveas(out1, 'KnotsInRadius.jpg');
-out2 = plot(absMidRadius);
-saveas(out2, 'KnotsMidRadius.jpg');
-out3 = plot(absOutRadius);
-saveas(out3, 'KnotsOutRadius.jpg');
+plot(absMidRadius);
+title('Absolute Anzahl von Knoten im Radius von 200m');
+xlabel('Zeit t');
+ylabel('Anzahl der Knoten');
+saveas(gcf, 'KnotsMidRadius.jpg');
+
+plot(absOutRadius);
+title('Absolute Anzahl von Knoten im Radius von 350m');
+xlabel('Zeit t');
+ylabel('Anzahl der Knoten');
+saveas(gcf, 'KnotsOutRadius.jpg');
 
 
 plot(absInRadius);
@@ -196,24 +207,45 @@ hold on;
 plot(absInRadius);
 hold on;
 plot(absInRadius);
-saveas(gcf, 'KnotsAllRadius.jpg');
 hold off
+title('Absolute Anzahl von Knoten in allen Radien');
+legend('Radius 100m','Radius 200m','Radius 350m');
+xlabel('Zeit t');
+ylabel('Anzahl der Knoten');
+saveas(gcf, 'KnotsAllRadius.jpg');
+
 
 plot(covInRadius);
 hold on;
 plot(covMidRadius);
 hold on;
 plot(covOutRadius);
-saveas(gcf, 'RelCovAllRadius.jpg');
 hold off
+title('Relative Abdeckung durch die Knoten in allen Radien');
+legend('Radius 100m','Radius 200m','Radius 350m');
+xlabel('Zeit t');
+ylabel('% - Abdeckung');
+saveas(gcf, 'RelCovAllRadius.jpg');
 
 
-out1 = plot(covInRadius);
-saveas(out1, 'RelCovInRadius.jpg');
-out2 = plot(covMidRadius);
-saveas(out2, 'RelCovMidRadius.jpg');
-out3 = plot(covOutRadius);
-saveas(out3, 'RelCovOutRadius.jpg');
+
+plot(covInRadius);
+title('Relative Abdeckung vom Radius 100m');
+xlabel('Zeit t');
+ylabel('% - Abdeckung');
+saveas(gcf, 'RelCovInRadius.jpg');
+
+plot(covMidRadius);
+title('Relative Abdeckung vom Radius 200m');
+xlabel('Zeit t');
+ylabel('% - Abdeckung');
+saveas(gcf, 'RelCovMidRadius.jpg');
+
+plot(covOutRadius);
+title('Relative Abdeckung vom Radius 350m');
+xlabel('Zeit t');
+ylabel('% - Abdeckung');
+saveas(gcf, 'RelCovOutRadius.jpg');
 
 csvwrite('RelCovInRadius.csv', covInRadius);
 csvwrite('RelCovMidRadius.csv', covMidRadius);

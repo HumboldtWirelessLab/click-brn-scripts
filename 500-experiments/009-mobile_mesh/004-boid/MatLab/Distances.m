@@ -3,28 +3,17 @@ tableSize = size(table);
 n = tableSize(1); % zeilen
 m = tableSize(2); % spalten
 
-links = csvread('linktables.csv');
-linkSize = size(links);
-
-t = 0; %zeit
-id = 0; %id vom knoten
-
 % start: hier greift start.sh per sed rein!
 knoten = 9;
 % ende
-
-crashes = 0;
-crash = [];
 
 %bounds for determining if a link is engaged or not
 linkUpperbound = 250;
 distanceUpperbound = 85;
 
-
 %plot histogram about how the distances are distributed
 A = table(:,2:m);
 A(A==0)=NaN;
-A(A>500)=NaN;
 N=[0:15:250];
 hist(A(:),N);
 saveas(gcf, 'DistanceDistribution.jpg');
@@ -36,8 +25,53 @@ distanceLinks(distanceLinks > distanceUpperbound)=0;
 distanceLinks(distanceLinks>0)=1;
 distanceLinks = [distanceTimeVektor, distanceLinks];
 
+%determine if the network is partitioned
+
+connected = 1;
+index = 0;
+parted = 0;
+partedSeries = [];
+
+for I=1:size(distanceLinks,1)
+
+	index = index + 1;
+	
+	for J=2:size(distanceLinks,2)
+		if ( distanceLinks(I,J) > 0 )
+			if ( any(connected==index))
+				if not ( any(connected==(J-1)) )
+					connected = [connected,J-1];
+				end
+			elseif ( any(connected==(J-1)) )
+				connected = [connected,index];
+			end
+		end
+	end
+	
+	if ( I == size(distanceLinks,1) )
+	
+	elseif not (distanceLinks(I,1) == distanceLinks(I+1,1))
+	for K=1:index
+		if not ( any(connected==K))
+			parted = 1;
+		end
+	end
+	partedSeries = [partedSeries, parted];
+	%re-initialize
+	index = 0;
+	connected = 1;
+	parted = 0;
+	end
+	
+end
+
+plot(partedSeries);
+saveas(gcf, 'partitionierung.jpg');
 
 %build linkmetric matrix
+links = csvread('linktables.csv');
+linkSize = size(links);
+
 metrikLinks = [];
 linkTimeVector = [];
 dummyMatrix = zeros(knoten, knoten);
@@ -54,6 +88,7 @@ for I=1:linkSize(1)
 	if ( I == linkSize(1) )
 	
 	elseif not (links(I,1) == links(I+1,1))
+	
 		%generate time-vector
 		linkTimeVector = links(I,1)*ones(knoten,1);
 		
@@ -104,6 +139,9 @@ for I=1:size(diffLinks,1)
 end
 
 % find crashes
+crashes = 0;
+crash = [];
+
 for I=1:n
 	for J=2:m
 	
@@ -126,12 +164,24 @@ for I=1:n
 end
 
 %output area
-out1 = plot(crash);
-saveas(out1, 'Crashes.jpg');
+plot(crash);
+title('Kollisionen');
+xlabel('Zeit t');
+ylabel('Zusammenstöße');
+saveas(gcf, 'Crashes.jpg');
 
-out2 = plot(faultseries);
-saveas(out2, 'WrongLinks.jpg');
-out3 = plot(metrikLinkseries);
-saveas(out3, 'metrikLinkseries.jpg');
-out4 = plot(distLinkseries);
-saveas(out4, 'distLinkseries.jpg');
+plot(faultseries);
+title('Falsche Links in der Linktabelle');
+xlabel('Zeit t');
+ylabel('Anzahl der falschen Links.');
+saveas(gcf, 'WrongLinks.jpg');
+
+plot(metrikLinkseries);
+saveas(gcf, 'metrikLinkseries.jpg');
+
+plot(distLinkseries);
+saveas(gcf, 'distLinkseries.jpg');
+
+
+
+

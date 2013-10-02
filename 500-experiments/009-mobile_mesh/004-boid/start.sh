@@ -13,22 +13,33 @@ steerlimit=10000;
 gravitation=1000000;
 speed=4;
 
+probe_period=1000;
+probe_tau=100000;
+
+seedInit=1;
+seedPre=1;
+seedPost=1;
+
+gravitationInit=400;
+gravitationPre=400;
+gravitationPost=400;
+
 
 #stellschräubchen für die simulationen
 nodes=3;
-nodesBefore=3;
 maxnodes=6;
 radIncrements=5;
 
 method="$1";
 nodeplm="cubic";
 
-fieldSizePRE=750;
-fieldSizePOST=750;
+fieldSize=750;
 
+# check for existing folders
 if [ -e "1" ]; then rm -rf "1"; fi
 if [ -e "$1" ]; then rm -rf "$1"; fi
 if [ -e "$method" ]; then rm -rf "$method"; fi
+
 
 while [ "$nodes" -lt "$maxnodes" ]
 do
@@ -40,6 +51,7 @@ do
 	
 	#simulationsparameter re-initialisieren
 	radius=30;
+	
 	
 	while [ "$I" -lt $radIncrements ]
 	do
@@ -58,9 +70,11 @@ do
 		#define BOID_GRAVITATIONFACTOR $gravitation
 		#define BOID_SPEED $speed 
 				
-		#define LINKPROBE_PERIOD 500
-		#define LINKPROBE_TAU 25000
+		#define LINKPROBE_PERIOD $probe_period
+		#define LINKPROBE_TAU $probe_tau
 		#define DLINKPROBE_PROBES \"2 500\""> config.click;
+		
+		
 		
 		dirname="$nodes""Knoten""$radius""Radius";
 
@@ -76,16 +90,14 @@ do
 		mv dummy $method/$dirname/measurement.xml;
 		
 		#generiere *.csv dateien
-		xsltproc gpscoords.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/gpscoords.csv;		
-		#xsltproc gpsmap.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/gpsmap.csv;
-		#xsltproc channelstats.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/channelstats.csv;
-		xsltproc linktable.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/linktables.csv;
+		xsltproc XSLT/gpscoords.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/gpscoords.csv;		
+		#xsltproc XSLT/channelstats.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/channelstats.csv;
+		xsltproc XSLT/linktable.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/linktables.csv;
 
 		
 		#matlab scripte konfigurieren
-		#to be implemented
-		sed -e s/"field = zeros($fieldSizePRE,$fieldSizePRE);"/"field = zeros($fieldSizePOST,$fieldSizePOST);"/g MatLab/Coverage.m > $method/$dirname/MatLab/Coverage.m;
-		sed -e s/"knoten = $(($nodesBefore*$nodesBefore));"/"knoten = $(($nodes*$nodes));"/g MatLab/Distances.m > $method/$dirname/MatLab/Distances.m;
+		sed -e s/"knoten = 9;"/"knoten = $(($nodes*$nodes));"/g -e s/"zeros(750,750);"/"zeros($fieldSize,$fieldSize);"/g MatLab/Coverage.m > $method/$dirname/MatLab/Coverage.m;
+		sed -e s/"knoten = 9;"/"knoten = $(($nodes*$nodes));"/g MatLab/Distances.m > $method/$dirname/MatLab/Distances.m;
 		
 		#auswertung per matlab
 		cd $method/$dirname/MatLab;
@@ -102,7 +114,6 @@ do
 	
 	done
 	
-	nodesBefore=$nodes;
 	nodes=$(($nodes+1));
 	
 done
