@@ -22,11 +22,11 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 gps::GPS();
-seismo::Seismo(GPS gps, PRINT false, RECORD true, SHORTTAGS true, DATAFILEPREFIX "CONFIGDIR/data/result_9.txt", DATAFILEINTERVAL 100, DEBUG 2);
+seismo::Seismo(GPS gps, PRINT false, RECORD true, SHORTTAGS true, DATAFILEPREFIX "CONFIGDIR/data/result_9.txt.", DATAFILEINTERVAL 100, DEBUG 2);
 
 longshortavg::SeismoDetectionLongShortAvg(LONGAVG 4000, SHORTAVG 100, RATIOTHRESHOLD 400, NORMALIZE 100, MAXALARM 15, ALARMTIMEDIST 550, DEBUG 2);
-cooperative::SeismoDetectionCooperative(ALGORITHMS longshortavg, MERGERANGE 1000, DEBUG 4);
-seismoreport::SeismoReporting(SEISMO seismo, ALGORITHMS "longshortavg cooperative", INTERVAL 500, DEBUG 4);
+cooperative::SeismoDetectionCooperative(ALGORITHMS longshortavg, MERGERANGE 1000, DEBUG 3);
+seismoreport::SeismoReporting(SEISMO seismo, ALGORITHMS "longshortavg cooperative", INTERVAL 100, DEBUG 3);
 
 
 Idle -> [1]seismo;
@@ -34,7 +34,7 @@ Idle -> [0]seismo;
 
 device_wifi
   -> Label_brnether::Null()
-  -> Print("RX",TIMESTAMP true)
+//  -> Print("RX",TIMESTAMP true)
   -> BRN2EtherDecap()
   -> brn_clf::Classifier( 0/BRN_PORT_SEISMO_COOPERATIVE, //Seismo
                                                    -  ); //other
@@ -46,7 +46,7 @@ brn_clf[0]
 -> SetTimestamp()
 //-> Print(TIMESTAMP true)
 -> EtherEncap(SRC deviceaddress, DST FF-FF-FF-FF-FF-FF, ETHERTYPE 0x8086)
--> Print(TIMESTAMP true)
+//-> Print(TIMESTAMP true)
 -> [0]device_wifi;
 
 brn_clf[1] -> Discard;

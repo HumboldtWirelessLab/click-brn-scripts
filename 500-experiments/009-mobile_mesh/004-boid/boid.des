@@ -10,14 +10,14 @@ NODEPLACEMENTFILE=boid.plm
 NODETABLE=boid.mes
 NODEPLACEMENT=file
 NODEPLACEMENTOPTS="relative"
-FIELDSIZE=750
+FIELDSIZE=1000
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATION="evaluation/eval.sh embrace_xml"
+EVALUATION="evaluation/eval.sh embrace_xml linkstat_graph"
 
 GPS=no
 NOTICE=no

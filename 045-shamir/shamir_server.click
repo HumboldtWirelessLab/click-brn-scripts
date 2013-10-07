@@ -90,9 +90,13 @@ Idle
 Idle
     -> [3]dsr;
 Idle
+    -> [4]dsr;
+Idle
     -> [2]bc;
 Idle
     -> [3]bc;
+Idle
+    -> [4]bc;
 
 wifidev[2]
     -> Discard;
