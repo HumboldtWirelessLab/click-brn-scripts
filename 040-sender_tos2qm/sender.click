@@ -3,7 +3,7 @@
 //#define RAWDUMP
 
 #define CST cst
-#define TOS2QUEUEMAPPER_STRATEGY 2
+#define TOS2QUEUEMAPPER_STRATEGY 0
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -59,7 +59,11 @@ error_clf[7]
 
 filter_tx[1]
   -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
-  -> discard;
+  -> WifiDecap()
+  -> BRN2EtherDecap()
+  -> BRN2Decap()
+  -> [1]sf;
+  //-> discard;
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
