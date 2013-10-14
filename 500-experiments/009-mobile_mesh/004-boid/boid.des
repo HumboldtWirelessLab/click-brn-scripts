@@ -4,8 +4,8 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=400
-SEED=1
+TIME=750
+SEED=2
 
 NODEPLACEMENTFILE=boid.plm
 NODETABLE=boid.mes
