@@ -13,9 +13,8 @@ infra_client
   -> BRN2EtherDecap()
   //-> Print("rx")
   -> BRN2Decap()
-  -> sf::BRN2SimpleFlow(SRCADDRESS deviceaddress, DSTADDRESS 00:0f:00:00:00:00,
-                        INTERVAL 1000 , SIZE 100, MODE 0, DURATION 20000,ACTIVE 0)
-  -> BRN2EtherEncap()
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:03 1000 100 0 20000 false")
+  -> BRN2EtherEncap(USEANNO true)
   -> infra_client;
  
   brn_ether_clf[1]

@@ -88,7 +88,7 @@ toMeAfterDsr[1] ->  Discard;
 toMeAfterDsr[2] ->  [1]device_wifi;
 
 Idle
--> sf::BRN2SimpleFlow( ACTIVE 0, HEADROOM 192 )
+-> sf::BRN2SimpleFlow(HEADROOM 192)
 -> UDPIPEncap(SRC 192.168.0.4, SPORT 30000, DST 10.10.0.2, DPORT 80, CHECKSUM true)
 -> EtherEncap(0x0800, deviceaddress, serviceaddress)
 -> [0]brngw[0]

@@ -15,9 +15,8 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-#EVALUATION="grep_xml evaluation/eval.sh"
-EVALUATION="embrace_xml evaluation/eval.sh"
-EVALUATIONSDIR=WORKDIR
+EVALUATION="network_info evaluation/eval.sh"
+EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no
 NOTICE=no
