@@ -66,7 +66,7 @@ brn_clf[0]
 
 brn_clf[1]
   -> [1]flooding[1]
-  -> WifiEncap(0x00, 0:0:0:0:0:0)
+//  -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> [2]device_wifi;
 
 flooding[0] -> Label_brnether;
@@ -123,7 +123,7 @@ Script(
   wait 100,
   wait 5,
 //  read lt.links,
-//  read device_wifi/link_stat.bcast_stats,
+  read device_wifi/link_stat.bcast_stats,
 //  read device_wifi/wifidevice/cst.stats,
   wait 10,
   wait 60,
