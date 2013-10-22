@@ -5,7 +5,7 @@
 #include "flooding.config"
 
 #define PRIO_QUEUE
-//#define RAWDUMP
+#define RAWDUMP
 #define BRNFEEDBACK
 #define ROUTING_TXFEEDBACK
 #define FOREIGNRXSTATS
@@ -65,6 +65,7 @@ brn_clf[0]
 
 brn_clf[1]
   -> [1]flooding[1]
+  -> data_rate::SetTXRates(RATE0 2, TRIES0 5, TRIES1 0, TRIES2 0, TRIES3 0)
   -> [2]device_wifi;
 
 flooding[0] -> Label_brnether;

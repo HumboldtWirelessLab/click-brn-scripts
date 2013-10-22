@@ -30,6 +30,8 @@ FLOODINGUNICAST_PEER_METRIC="0 3 4"
 #FLOODINGUNICAST_PEER_METRIC="0 3 4"
 #FLOODINGUNICAST_PEER_METRIC="0"
 
+FLOODINGABORTTX="true false"
+
 #result_flooding_20130621a.dat
 #MAC_TRIES="3 7 11 15"
 MAC_TRIES="3 7 11"
@@ -144,6 +146,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
    for flunic_reject in $FLOODINGUNICAST_REJECT_EMPTYCS_F; do
    for flunic_peer in $FLOODINGUNICAST_PEER_METRIC_F; do
 
+    for fl_abort_tx in $FLOODINGABORTTX; do
     for fl_pa_ret in $FLOODINGPASSIVACK_RETRIES; do
     for fl_mac_ret in $MAC_TRIES_F; do
     for fl_nb_met in $NB_METRIC_F; do
@@ -202,6 +205,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        echo "#define BCAST2UNIC_FORCERESPONSIBILITY $fl_forceresp" >> flooding_config.h
        echo "#define BCAST2UNIC_USEASSIGNINFO $fl_useassign" >> flooding_config.h
        echo "#define BCAST_RNDDELAYQUEUE_MAXDELAY $fl_maxdelay" >> flooding_config.h
+       echo "#define BCAST_ENABLE_ABORT_TX $fl_abort_tx" >> flooding_config.h
 
        echo "$i $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay"
 
@@ -283,6 +287,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
         echo "BCAST2UNIC_FORCERESPONSIBILITY=$fl_forceresp" >> $MEASUREMENTDIR/params
         echo "BCAST2UNIC_USEASSIGNINFO=$fl_useassign" >> $MEASUREMENTDIR/params
         echo "BCAST_RNDDELAYQUEUE_MAXDELAY=$fl_maxdelay" >> $MEASUREMENTDIR/params
+        echo "BCAST_ENABLE_ABORT_TX=$fl_abort_tx" >> $MEASUREMENTDIR/params
 
        fi
 
@@ -311,6 +316,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
       exit
     fi
   done
+ done
  done
  done
  done
