@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./simsetrc_small
+. ./simsetrc
 
 if [ "x$START" = "x" ]; then
   START=1

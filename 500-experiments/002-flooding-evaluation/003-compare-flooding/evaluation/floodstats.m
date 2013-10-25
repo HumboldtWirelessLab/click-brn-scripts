@@ -27,6 +27,7 @@ FRESP=24;
 USEASS=25;
 MAXDELAY=26;
 SEED=27;
+TXABORT=28;
 
 data=load(filename);
 size(data)
@@ -42,11 +43,11 @@ size(data)
 % NBMETRIC
 
 data=[ data';zeros(1,size(data,1)) ]';
-params=unique(data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY]),'rows')
+params=unique(data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY TXABORT]),'rows')
 
 %get wanted params
-params=params(find(params(:,5) ~= 4),:)
-params=params(find((params(:,11) == 0) | (params(:,12) == 1)) ,:)
+%params=params(find(params(:,5) ~= 4),:)
+%params=params(find((params(:,11) == 0) | (params(:,12) == 1)) ,:)
 
 %size(params)
 
@@ -68,7 +69,7 @@ for r = 1:size(params,1)
     
     p=params(r,:);
        
-    p_data=data(strmatch(p,data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY])),:);
+    p_data=data(strmatch(p,data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY TXABORT])),:);
     %size(p_data)
 
     result(r,1)=r;
@@ -92,13 +93,15 @@ end
 
 plot = 1;
 size(result,1)
-size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1);
+size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
 
-s1 = size(result,1)/size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1);
-s2 = size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1);
+%s1 = size(result,1)/size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
+%s2 = size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
 
-s1 = 3;
-s2 = 14;
+s1 = 6;
+s2 = 9;
+size(result)
+result
 
 reach=reshape(result(:,RESULT_REACH), s1, s2);
 h=figure();
