@@ -5,7 +5,7 @@
 #include "flooding.config"
 
 #define PRIO_QUEUE
-#define RAWDUMP
+//#define RAWDUMP
 #define BRNFEEDBACK
 #define ROUTING_TXFEEDBACK
 #define FOREIGNRXSTATS
