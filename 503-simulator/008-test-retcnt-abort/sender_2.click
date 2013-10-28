@@ -16,7 +16,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-  sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 1000 1500 0 5000 true 1 10", DEBUG 4)  //VAR_RATE VAR_PSIZE
+  sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 1000 1500 0 50000 true 1 20", DEBUG 4)  //VAR_RATE VAR_PSIZE
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTimestamp()
@@ -66,8 +66,6 @@ error_clf[7]
 filter_tx[1]
   -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
   -> discard;
-
-sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
   wait 6,

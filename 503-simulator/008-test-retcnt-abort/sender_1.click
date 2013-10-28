@@ -4,27 +4,40 @@
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
 #define RAWDUMP
-//#define RAWDUMPSNAPLEN 100
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", CWMIN CWMINPARAM, CWMAX CWMAXPARAM, AIFS AIFSPARAM);
+
+wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-Idle
-  -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
+  sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 1000 1500 0 50000 true 1 10", DEBUG 4)  //VAR_RATE VAR_PSIZE
+  -> BRN2EtherEncap(USEANNO true)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> SetTimestamp()
+  -> SetTXRates(RATE0 2, TRIES0 9, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> SetTXPower(13)
+  -> wifioutq::NotifierQueue(10)
+  -> SetTimestamp()
+  -> BRN2PrintWifi("Sender (NODENAME)", TIMESTAMP true)
+  -> wifidevice
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
-  -> BRN2PrintWifi("OKPacket (NODENAME)", TIMESTAMP true)
-  -> discard::Discard;
+  -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
+  -> WifiDecap()
+  -> BRN2EtherDecap()
+  -> BRN2Decap()
+  -> sf;
+
 
 error_clf[1]
   -> BRN2PrintWifi("CRCerror", TIMESTAMP true)
-  -> discard;
+  -> discard::Discard;
 
 error_clf[2]
   -> BRN2PrintWifi("PHYerror", TIMESTAMP true)
@@ -54,3 +67,7 @@ filter_tx[1]
   -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
   -> discard;
 
+Script(
+  wait 6,
+  read sf.stats
+);

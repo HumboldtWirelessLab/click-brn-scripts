@@ -16,7 +16,7 @@ if [ -f $RESULTDIR/$RECEIVER.$DEVICE.raw.dump ]; then
     RETRIES_FEEDBACK=`fromdump.sh $RESULTDIR/sk$i.eth0.raw.dump | grep "TXFeedback" | sed "s#fail##g" | sed "s#abort##g" | sed "s#retry##g" | awk '{ sum += $19; sum += 1 } END { print sum }'`
     ABORT_FEEDBACK=`fromdump.sh $RESULTDIR/sk$i.eth0.raw.dump | grep "TXFeedback" | grep abort | wc -l`
     let RETRIES_FEEDBACK=RETRIES_FEEDBACK-ABORT_FEEDBACK
-    echo "$PACKETS $PACKETS_RETRY $RETRIES_FEEDBACK"
+    echo "$PACKETS $PACKETS_RETRY $RETRIES_FEEDBACK $ABORT_FEEDBACK"
     if [ $PACKETS -ne $RETRIES_FEEDBACK ]; then
       let ERRORS=ERRORS+1
     fi
