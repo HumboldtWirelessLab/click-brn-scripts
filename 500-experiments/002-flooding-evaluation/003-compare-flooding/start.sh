@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./simsetrc
+. ./simsetrc_small
 
 if [ "x$START" = "x" ]; then
   START=1
@@ -79,7 +79,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        FLOODINGUNICAST_REJECT_EMPTYCS_F="false"
        FLOODINGUNICAST_PEER_METRIC_F="0"
        MAC_TRIES_F="1"
-       NB_METRIC_F="0"
+       NB_METRIC_F=$NB_METRIC
        PIGGYBACK_F="0"
        BCAST2UNIC_FORCERESPONSIBILITY_F="false"
        BCAST2UNIC_USEASSIGNINFO_F="false"
@@ -139,6 +139,11 @@ for i in `cat $NODESFILE | grep -v "#"`; do
          "mpr")
                  echo "#define MPR_STATS" > flooding_config.h
                  echo "#define MPR_FL" >> flooding_config.h
+                 ;;
+
+         "mst")
+                 echo "#define MST_FL" > flooding_config.h
+                 echo "#define FLOODING_DEBUG 4" >> flooding_config.h
                  ;;
 
        esac
@@ -258,6 +263,9 @@ for i in `cat $NODESFILE | grep -v "#"`; do
          "mpr")
                  DONE_ALL_FOR_ALG=1
                  ;;
+         "mst")
+                 DONE_ALL_FOR_ALG=1
+                 ;;
        esac
 
 
@@ -282,7 +290,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
  done
 
  if [ $NUM -ge $LIMIT ]; then
-   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
+#   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
 
    if [ "x$SIM" = "x1" ]; then
      /bin/bash ./run_para_sim.sh
@@ -295,7 +303,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 # echo "$NUM"
 done
 
-rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim flooding.des
+#rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim flooding.des
 
 if [ "x$SIM" = "x1" ]; then
   /bin/bash ./run_para_sim.sh
