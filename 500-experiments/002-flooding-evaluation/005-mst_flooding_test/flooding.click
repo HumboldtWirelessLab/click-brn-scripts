@@ -66,6 +66,7 @@ brn_clf[0]
 
 brn_clf[1]
   -> [1]flooding[1]
+  -> SetTXRates(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0)
 //  -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> [2]device_wifi;
 

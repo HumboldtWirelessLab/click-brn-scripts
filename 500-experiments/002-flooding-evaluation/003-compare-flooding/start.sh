@@ -292,7 +292,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
  done
 
  if [ $NUM -ge $LIMIT ]; then
-#   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
+   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
 
    if [ "x$SIM" = "x1" ]; then
      /bin/bash ./run_para_sim.sh
@@ -305,7 +305,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
 # echo "$NUM"
 done
 
-#rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim flooding.des
+rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim flooding.des
 
 if [ "x$SIM" = "x1" ]; then
   /bin/bash ./run_para_sim.sh
