@@ -11,13 +11,6 @@ knoten = 9;
 linkUpperbound = 250;
 distanceUpperbound = 85;
 
-%plot histogram about how the distances are distributed
-A = table(:,2:m);
-A(A==0)=NaN;
-N=[0:15:250];
-hist(A(:),N);
-saveas(gcf, 'DistanceDistribution.jpg');
-
 %determine if Link is established or not
 distanceTimeVektor = table(:,1);
 distanceLinks = table(:,2:m);
@@ -64,9 +57,6 @@ for I=1:size(distanceLinks,1)
 	end
 	
 end
-
-plot(partedSeries);
-saveas(gcf, 'partitionierung.jpg');
 
 %build linkmetric matrix
 links = csvread('linktables.csv');
@@ -164,24 +154,50 @@ for I=1:n
 end
 
 %output area
-plot(crash);
+
+%plot histogram about how the distances are distributed
+A = table(:,2:m);
+A(A==0)=NaN;
+N=[0:15:250];
+h1 = figure;
+hist(A(:),N);
+set(gca, 'FontSize', 16);
+title('Verteilung der Distanzen zwischen den Knoten');
+xlabel('Distanz in Meter');
+ylabel('Vorkommen der Distanzen');
+saveas(gcf, 'DistanceDistribution', 'jpg');
+
+
+plot(partedSeries, 'LineWidth', 2);
+title('Partitionierung des Netzwerkes');
+set(gca, 'YTickLabel', {'','Partitioniert'});
+set(gca, 'YTick', 0:1:2);
+xlabel('Zeit t in Sekunden');
+saveas(gcf, 'partitionierung.jpg');
+
+plot(crash, 'LineWidth', 2);
 title('Kollisionen');
-xlabel('Zeit t');
-ylabel('Zusammenstöße');
+set(gca, 'YTick', 0:1:2); 
+xlabel('Zeit t in Sekunden');
+ylabel('Anzahl der Kollisionen');
 saveas(gcf, 'Crashes.jpg');
 
-plot(faultseries);
+plot(faultseries, 'LineWidth', 2);
 title('Falsche Links in der Linktabelle');
-xlabel('Zeit t');
-ylabel('Anzahl der falschen Links.');
+xlabel('Zeit t in Sekunden');
+ylabel('Anzahl der falschen Links');
 saveas(gcf, 'WrongLinks.jpg');
 
-plot(metrikLinkseries);
+plot(metrikLinkseries, 'LineWidth', 2);
+title('Links in der Linktabelle');
+xlabel('Zeit t in Sekunden');
+ylabel('Anzahl der Links');
 saveas(gcf, 'metrikLinkseries.jpg');
 
-plot(distLinkseries);
+plot(distLinkseries, 'LineWidth', 2);
+title('Existierende Links zwischen den Knoten');
+xlabel('Zeit t in Sekunden');
+ylabel('Anzahl der Links');
 saveas(gcf, 'distLinkseries.jpg');
-
-
 
 
