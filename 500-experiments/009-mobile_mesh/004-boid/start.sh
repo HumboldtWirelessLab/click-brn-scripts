@@ -6,39 +6,53 @@ dirname="";
 I=0;
 
 #initiale steuerungsfaktoren
-radius=30;
+radius=60;
 separation=10000;
 cohesion=-20;
 steerlimit=10000;
 gravitation=1000000;
 speed=4;
 
+probe_period=200;
+probe_tau=4000;
+
+gravitationXInit=400;
+gravitationYInit=400;
+gravitationX=400;
+gravitationY=400;
+
+plmStartX=50;
+plmStartY=50;
+
 
 #stellschräubchen für die simulationen
 nodes=3;
 maxnodes=6;
-radIncrements=5;
+radIncrements=3;
 
 method="$1";
 nodeplm="cubic";
 
-fieldSizePRE=750;
-fieldSizePOST=750;
+fieldSize=750;
+fieldSizeInit=750;
 
+# check for existing folders
 if [ -e "1" ]; then rm -rf "1"; fi
 if [ -e "$1" ]; then rm -rf "$1"; fi
 if [ -e "$method" ]; then rm -rf "$method"; fi
 
+
 while [ "$nodes" -lt "$maxnodes" ]
 do
 	#initiale platzierung der knoten in der boid.plm generieren
-	placement.sh $nodes $nodeplm 50 50;
+	placement.sh $nodes $nodeplm $plmStartX $plmStartY;
 	
 	#laufvariable re-initialisieren
 	I=0;
 	
 	#simulationsparameter re-initialisieren
-	radius=30;
+	radius=60;
+	
 	
 	while [ "$I" -lt $radIncrements ]
 	do
@@ -55,11 +69,23 @@ do
 		#define BOID_COHESIONFACTOR $cohesion
 		#define BOID_STEERLIMIT $steerlimit
 		#define BOID_GRAVITATIONFACTOR $gravitation
-		#define BOID_SPEED $speed" > config.click;
+		#define BOID_SPEED $speed 
+				
+		#define LINKPROBE_PERIOD $probe_period
+		#define LINKPROBE_TAU $probe_tau
+		#define DLINKPROBE_PROBES \"2 500\""> config.click;
+		
+		
 		
 		dirname="$nodes""Knoten""$radius""Radius";
-
+		
+		sed -i s/"write boid.gravitation add $gravitationXInit $gravitationYInit 0 2000000,"/"write boid.gravitation add $gravitationX $gravitationY 0 2000000,"/g boid.click;
+		sed -i s/"FIELDSIZE=$fieldSizeInit"/"FIELDSIZE=$fieldSize"/g boid.des;
+		
 		run_sim.sh;
+		
+		sed -i s/"FIELDSIZE=$fieldSize"/"FIELDSIZE=$fieldSizeInit"/g boid.des;
+		sed -i s/"write boid.gravitation add $gravitationX $gravitationY 0 2000000,"/"write boid.gravitation add $gravitationXInit $gravitationYInit 0 2000000,"/g boid.click;
 		
 		if [ ! -e "$method" ]; then mkdir "$method"; fi
 		if [ -e 1 ]; then mv 1 $method/$dirname; fi
@@ -71,20 +97,20 @@ do
 		mv dummy $method/$dirname/measurement.xml;
 		
 		#generiere *.csv dateien
-		xsltproc gpscoords.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/gpscoords.csv;		
-		xsltproc gpsmap.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/gpsmap.csv;
-		xsltproc channelstats.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/channelstats.csv;
+		xsltproc XSLT/gpscoords.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/gpscoords.csv;		
+		#xsltproc XSLT/channelstats.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/channelstats.csv;
+		xsltproc XSLT/linktable.xsl $method/$dirname/measurement.xml > $method/$dirname/MatLab/linktables.csv;
 
 		
 		#matlab scripte konfigurieren
-		#to be implemented
-		sed s/"field = zeros($fieldSizePRE,$fieldSizePRE);"/"field = zeros($fieldSizePOST,$fieldSizePOST);"/ MatLab/gps.m > $method/$dirname/MatLab/gps.m
-		
+		sed -e s/"gravitation = \[400,400\];"/"gravitation = \[$gravitationX,$gravitationY\];"/g -e s/"knoten = 9;"/"knoten = $(($nodes*$nodes));"/g -e s/"zeros($fieldSizeInit,$fieldSizeInit);"/"zeros($fieldSize,$fieldSize);"/g MatLab/Coverage.m > $method/$dirname/MatLab/Coverage.m;
+		sed -e s/"knoten = 9;"/"knoten = $(($nodes*$nodes));"/g MatLab/Distances.m > $method/$dirname/MatLab/Distances.m;
 		
 		#auswertung per matlab
 		cd $method/$dirname/MatLab;
-		matlab -nodisplay < gps.m;
-		cd ../../..;
+		matlab -nodisplay < Coverage.m;
+		matlab -nodisplay < Distances.m;
+		cd ../../../;
 		
 		
 		#laufvariable incrementieren
@@ -96,7 +122,13 @@ do
 	done
 	
 	nodes=$(($nodes+1));
+	fieldSize=$(($fieldSize+250));
 	
+	gravitationX=$(($gravitationX+100));
+	gravitationY=$(($gravitationY+100));
+	
+	plmStartX=$(($plmStartX+25));
+	plmStartY=$(($plmStartY+25));
 	
 done
 
