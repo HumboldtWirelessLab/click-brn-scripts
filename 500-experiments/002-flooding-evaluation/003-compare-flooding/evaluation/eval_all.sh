@@ -2,7 +2,7 @@
 
 RESULTDIR=$1
 
-ALGSEDARG="-e s#simple#0#g -e s#probability#1#g -e s#mpr#2#g"
+ALGSEDARG="-e s#simple#0#g -e s#probability#1#g -e s#mpr#2#g" -e s#mst#3#g"
 
 echo -n "" > result_flooding.dat
 
