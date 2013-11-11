@@ -1,6 +1,9 @@
 #!/bin/bash
 
 #USE: SIM=1 DATARATE=1 LIMIT=1 GRID=1 ./start.sh
+#USE: SIM=1 DATARATE=1 LIMIT=5 PLACEMENTFILE="placements_random.dat" PLACEMENT=1 ./start.sh
+#
+#for i in `ls -d 1_MBit*`; do echo $i; cat $i/evaluation/flooding_info/floodingstats.csv | awk -F, '{print $6" "$2}'; done
 
 . ./simsetrc_small
 
