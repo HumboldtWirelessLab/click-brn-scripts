@@ -17,11 +17,10 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 Idle()
-  -> sf::BRN2SimpleFlow(DEBUG 2)
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 1000 1500 0 5000 true 1 0", DEBUG 4)  //VAR_RATE VAR_PSIZE
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-//-> SetTimestamp()
-//-> BRN2PrintWifi("Sender (NODENAME)", TIMESTAMP true)
+  -> SetTimestamp()
   -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
   -> wifioutq::NotifierQueue(10)
@@ -68,10 +67,6 @@ filter_tx[1]
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
-  write sf.add_flow 00:00:00:00:00:02 00:00:00:00:00:01 12 1500 0 5000 true 1 0,
-  //write sf.add_flow 00:00:00:00:00:02 00:00:00:00:00:01 VAR_RATE VAR_PSIZE 0 5000 true 1 0,
-// wait 1,
-//   read wifioutq.notifier_state,
   wait 5,
   read sys_info.systeminfo,
   read id.version,

@@ -4,7 +4,7 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=350
+TIME=280
 
 NODEPLACEMENTFILE=boid.plm
 NODETABLE=boid.mes
@@ -17,7 +17,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation/
-EVALUATION="embrace_xml boid evaluation/eval.sh"
+EVALUATION="boid evaluation/eval.sh"
 
 GPS=no
 NOTICE=no

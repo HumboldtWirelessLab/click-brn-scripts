@@ -50,8 +50,8 @@ is_assoc_req 	:: Classifier(0/a0%f0 /* disassoc */, 0/00%f0 /* assoc */, -);
 
 
 // Application elements
-tls				:: TLS(ETHERADDRESS deviceaddress, KEYSERVER 00-00-00-00-00-01, ROLE "CLIENT", KEYDIR "CONFIGDIR/", DEBUG 2);
-BackboneNode	:: BACKBONE_NODE(NODEID id, PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, TLS tls, DEV_CLIENT wifidev_client/client/isc, AP_Q ap_outq, CLIENT_Q client_outq, START 10000, KEY_TIMEOUT 60000, DEVICE_CONTROL_UP switch_up, DEVICE_CONTROL_DOWN switch_down, DEVICE_CONTROL_DOWN2 switch_down2, DEBUG 5);
+tls				:: TLS(ETHERADDRESS deviceaddress, ROLE "CLIENT", KEYDIR "CONFIGDIR/", DEBUG 2);
+backbonenode	:: BackboneNode(NODEID id, KEYSERVER 00-00-00-00-00-01, PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifidev_ap/wep/wep_encap, WEPDECAP wifidev_ap/wep/wep_decap, TLS tls, DEV_CLIENT wifidev_client/client/isc, AP_Q ap_outq, CLIENT_Q client_outq, START 10000, KEY_TIMEOUT 60000, DEVICE_CONTROL_UP switch_up, DEVICE_CONTROL_DOWN switch_down, DEVICE_CONTROL_DOWN2 switch_down2, DEBUG 5);
 
 
 
@@ -178,6 +178,7 @@ dsr[1]
 
 Idle -> [2]dsr;
 Idle -> [3]dsr;
+Idle -> [4]dsr;
 
 /*********************************************************/		
 /*********************************************************/
@@ -201,7 +202,7 @@ to_MobiSEC_BackboneNode :: Null()
 
 	// The main application sits on top of TLS 
 	tls[1] // decrypt message
-		-> BackboneNode
+		-> backbonenode
 		-> [1]tls; //encrypt message
 
 /***** Integration of MobiSEC (connection with wifidev_client) *******/
