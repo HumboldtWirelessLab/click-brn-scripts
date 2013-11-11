@@ -4,8 +4,8 @@
 
 rm -f $EVALUATIONSDIR/measurement.xml
 
-if [ -f measurement.log.bz2 ]; then
-  rm -f measurement.log;
+if [ -f $RESULTDIR/measurement.log.bz2 ]; then
+  rm -f $RESULTDIR/measurement.log;
 fi
 
 exit 0

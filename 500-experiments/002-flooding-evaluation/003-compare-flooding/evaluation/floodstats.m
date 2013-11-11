@@ -29,6 +29,10 @@ MAXDELAY=26;
 SEED=27;
 TXABORT=28;
 
+plot = 1;
+s1 = 3;
+s2 = 18;
+
 data=load(filename);
 size(data)
 
@@ -43,12 +47,23 @@ size(data)
 % NBMETRIC
 
 data=[ data';zeros(1,size(data,1)) ]';
-params=unique(data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY TXABORT]),'rows')
+%                       1                           2                       3                         4                       5                6        7          8         9         10      11     12        13     14
+params=unique(data(:,[UNICASTSTRATEGY UNICAST_PRESELECTION_STRATEGY UNICAST_REJECTONEMPTYCS UNICAST_UCASTPEERMETRIC FLOODING_NET_RETRIES ALGORITHMID EXTRAINFO  MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY TXABORT]),'rows')
 
+params
 %get wanted params
-%params=params(find(params(:,5) ~= 4),:)
-%params=params(find((params(:,11) == 0) | (params(:,12) == 1)) ,:)
+params=params(find(params(:,13) == 5),:)
+params=params(find(params(:,13) == 5),:);                                             %maxdelay
+params=params(find((params(:,10) == 0) | (params(:,10) == 10)) ,:);                    %piggybag
+params=params(find((params(:,8) == 0) | (params(:,8) == 1) | (params(:,8) == 3) | (params(:,8) == 5)) ,:);  %MAC_retries
+params=params(find((params(:,5) == 0)) ,:);
+params=params(find((params(:,3) ~= 0) | (params(:,1) == 0)) ,:);
 
+
+%params=params(find((params(:,2) == 0)) ,:);
+%params=params(find((params(:,4) == 0)) ,:);
+
+params
 %size(params)
 
 RESULT_REACH=2;
@@ -91,17 +106,18 @@ for r = 1:size(params,1)
 
 end
 
-plot = 1;
 size(result,1)
 size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
 
 %s1 = size(result,1)/size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
 %s2 = size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
 
-s1 = 6;
-s2 = 9;
+%s1 = 3;
+%s2 = 6;
 size(result)
-result
+%result
+
+result(:,[1 RESULT_REACH])
 
 reach=reshape(result(:,RESULT_REACH), s1, s2);
 h=figure();

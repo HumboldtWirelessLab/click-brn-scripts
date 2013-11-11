@@ -59,10 +59,6 @@ for i in `cat $NODESFILE | grep -v "#"`; do
    continue
  fi
 
- if [ "x$i" = "xpc113" ]; then
-   continue
- fi
-
  for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
    if [ "x$SIM" = "x1" ]; then
@@ -79,10 +75,11 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        FLOODINGUNICAST_REJECT_EMPTYCS_F="false"
        FLOODINGUNICAST_PEER_METRIC_F="0"
        MAC_TRIES_F="1"
-       NB_METRIC_F="0"
+       NB_METRIC_F=$NB_METRIC
        PIGGYBACK_F="0"
        BCAST2UNIC_FORCERESPONSIBILITY_F="false"
        BCAST2UNIC_USEASSIGNINFO_F="false"
+       FLOODINGABORTTX_F="0"
      else
        FLOODINGUNICAST_PRESELECTION_F=$FLOODINGUNICAST_PRESELECTION
        FLOODINGUNICAST_REJECT_EMPTYCS_F=$FLOODINGUNICAST_REJECT_EMPTYCS
@@ -92,13 +89,14 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        PIGGYBACK_F=$PIGGYBACK
        BCAST2UNIC_FORCERESPONSIBILITY_F=$BCAST2UNIC_FORCERESPONSIBILITY
        BCAST2UNIC_USEASSIGNINFO_F=$BCAST2UNIC_USEASSIGNINFO
+       FLOODINGABORTTX_F=$FLOODINGABORTTX
      fi
 
    for flunic_pres in $FLOODINGUNICAST_PRESELECTION_F; do
    for flunic_reject in $FLOODINGUNICAST_REJECT_EMPTYCS_F; do
    for flunic_peer in $FLOODINGUNICAST_PEER_METRIC_F; do
 
-    for fl_abort_tx in $FLOODINGABORTTX; do
+    for fl_abort_tx in $FLOODINGABORTTX_F; do
     for fl_pa_ret in $FLOODINGPASSIVACK_RETRIES; do
     for fl_mac_ret in $MAC_TRIES_F; do
     for fl_nb_met in $NB_METRIC_F; do
@@ -106,14 +104,6 @@ for i in `cat $NODESFILE | grep -v "#"`; do
     for fl_forceresp in $BCAST2UNIC_FORCERESPONSIBILITY_F; do
     for fl_useassign in $BCAST2UNIC_USEASSIGNINFO_F; do
     for fl_maxdelay in $BCAST_RNDDELAYQUEUE_MAXDELAY; do
-
-#FLOODINGPASSIVACK="0 1"
-#FLOODINGPASSIVACK_RETRIES="0 1 2"
-
-#FLOODINGUNICAST="0 4"
-#FLOODINGUNICAST_PRESELECTION="0 1 2"
-#FLOODINGUNICAST_REJECT_EMPTYCS="true false"
-#FLOODINGUNICAST_PEER_METRIC="0 1 2 3 4 5"
 
      for al in $FLOODALGOS; do
 
