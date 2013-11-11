@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. ./simsetrc
+#USE: SIM=1 DATARATE=1 LIMIT=1 GRID=1 ./start.sh
+
+. ./simsetrc_small
 
 if [ "x$START" = "x" ]; then
   START=1
@@ -131,6 +133,11 @@ for i in `cat $NODESFILE | grep -v "#"`; do
                  echo "#define MPR_FL" >> flooding_config.h
                  ;;
 
+         "mst")
+                 echo "#define MST_FL" > flooding_config.h
+                 echo "#define FLOODING_DEBUG 4" >> flooding_config.h
+                 ;;
+
        esac
 
        MEASUREMENTDIR="$MEASUREMENTDIR""_unicast_"$flunic
@@ -246,6 +253,9 @@ for i in `cat $NODESFILE | grep -v "#"`; do
                   fi
                   ;;
          "mpr")
+                 DONE_ALL_FOR_ALG=1
+                 ;;
+         "mst")
                  DONE_ALL_FOR_ALG=1
                  ;;
        esac

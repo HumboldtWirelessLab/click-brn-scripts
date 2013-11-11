@@ -4,20 +4,21 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=350
+TIME=750
+SEED=2
 
 NODEPLACEMENTFILE=boid.plm
 NODETABLE=boid.mes
 NODEPLACEMENT=file
 NODEPLACEMENTOPTS="relative"
-FIELDSIZE=1000
+FIELDSIZE=750
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATION="evaluation/eval.sh embrace_xml linkstat_graph"
+EVALUATION="evaluation/eval.sh embrace_xml boid"
 
 GPS=no
 NOTICE=no
