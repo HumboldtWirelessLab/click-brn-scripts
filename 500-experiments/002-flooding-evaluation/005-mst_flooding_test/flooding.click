@@ -5,7 +5,7 @@
 #include "flooding.config"
 
 #define PRIO_QUEUE
-#define RAWDUMP
+//#define RAWDUMP
 #define BRNFEEDBACK
 #define ROUTING_TXFEEDBACK
 #define FOREIGNRXSTATS
@@ -23,6 +23,10 @@
 //#define MST_FL
 
 //#define DISBALE_BCASTWIFIDUPS
+
+//#ifndef BCAST_ENABLE_ABORT_TX
+#define BCAST_ENABLE_ABORT_TX 3
+//#endif
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
