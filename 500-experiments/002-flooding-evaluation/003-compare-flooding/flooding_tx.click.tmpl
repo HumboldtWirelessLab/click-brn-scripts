@@ -9,6 +9,7 @@
 
 #define CST cst
 
+#define PRIO_QUEUE
 #define LINKPROBE_PERIOD                                           2000
 #define LINKPROBE_TAU                                            100000
 //#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000"
@@ -55,6 +56,10 @@ brn_clf[2] -> Discard;
 
 brn_clf[1]
   -> [1]flooding[1]
+  -> data_rate::SetTXRates(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> [2]device_wifi;
+
+Idle()
   -> [0]device_wifi;
 
 flooding[0] -> Label_brnether;
@@ -84,7 +89,7 @@ Script(
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats,
   wait 10,
-  write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 51000 true, //flooding_init 51000  //51000 -> 100Pkt
+  write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 5000 true, //flooding_init 51000  //51000 -> 100Pkt
 //  wait 600,
   wait 60,
   read flooding/fl.stats,

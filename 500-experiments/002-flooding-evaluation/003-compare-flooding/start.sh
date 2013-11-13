@@ -1,54 +1,11 @@
 #!/bin/bash
 
-if [ "x$PLACEMENTFILE" = "x" ]; then
-  PLACEMENTFILE=placements_npart.dat
-fi
+#USE: SIM=1 DATARATE=1 LIMIT=1 GRID=1 ./start.sh
+#USE: SIM=1 DATARATE=1 LIMIT=5 PLACEMENTFILE="placements_random.dat" PLACEMENT=1 ./start.sh
+#
+#for i in `ls -d 1_MBit*`; do echo $i; cat $i/evaluation/flooding_info/floodingstats.csv | awk -F, '{print $6" "$2}'; done
 
-#FLOODALGOS="simple probability mpr"
-FLOODALGOS="simple"
-#FLOODALGOS="mpr"
-
-PROB_ARRAY=( 95 85 )
-#PROB_ARRAY=( 60 70 75 80 85 90 95 100 )
-#PROB_ARRAY=( 70 80 90 100 )
-PROB_ARRAY_SIZE=${#PROB_ARRAY[@]}
-
-#FLOODINGPASSIVACK_RETRIES="0 2 5 8 10"
-FLOODINGPASSIVACK_RETRIES="2 5"
-#FLOODINGPASSIVACK_RETRIES="2"
-
-FLOODINGUNICAST="0 4"
-#FLOODINGUNICAST="4"
-
-#FLOODINGUNICAST_PRESELECTION="0 1 2"
-FLOODINGUNICAST_PRESELECTION="1 2"
-
-#FLOODINGUNICAST_REJECT_EMPTYCS="true false"
-FLOODINGUNICAST_REJECT_EMPTYCS="true"
-
-FLOODINGUNICAST_PEER_METRIC="0 3 4"
-#FLOODINGUNICAST_PEER_METRIC="0 3 4"
-#FLOODINGUNICAST_PEER_METRIC="0"
-
-FLOODINGABORTTX="true false"
-
-#result_flooding_20130621a.dat
-#MAC_TRIES="3 7 11 15"
-MAC_TRIES="3 7 11"
-#MAC_TRIES="7"
-
-#result_flooding_20130621a.dat
-NB_METRIC="800"
-
-#result_flooding_20130621d.dat
-#PIGGYBACK="2 5"
-##PIGGYBACK="0 2 4 8"
-PIGGYBACK="5 10"
-
-BCAST2UNIC_FORCERESPONSIBILITY="true"
-BCAST2UNIC_USEASSIGNINFO="true"
-BCAST_RNDDELAYQUEUE_MINDELAY="1"
-BCAST_RNDDELAYQUEUE_MAXDELAY="5 15 25 50"
+. ./simsetrc_small
 
 if [ "x$START" = "x" ]; then
   START=1
@@ -107,10 +64,6 @@ for i in `cat $NODESFILE | grep -v "#"`; do
    continue
  fi
 
- if [ "x$i" = "xpc113" ]; then
-   continue
- fi
-
  for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
    if [ "x$SIM" = "x1" ]; then
@@ -127,10 +80,11 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        FLOODINGUNICAST_REJECT_EMPTYCS_F="false"
        FLOODINGUNICAST_PEER_METRIC_F="0"
        MAC_TRIES_F="1"
-       NB_METRIC_F="0"
+       NB_METRIC_F=$NB_METRIC
        PIGGYBACK_F="0"
        BCAST2UNIC_FORCERESPONSIBILITY_F="false"
        BCAST2UNIC_USEASSIGNINFO_F="false"
+       FLOODINGABORTTX_F="0"
      else
        FLOODINGUNICAST_PRESELECTION_F=$FLOODINGUNICAST_PRESELECTION
        FLOODINGUNICAST_REJECT_EMPTYCS_F=$FLOODINGUNICAST_REJECT_EMPTYCS
@@ -140,13 +94,14 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        PIGGYBACK_F=$PIGGYBACK
        BCAST2UNIC_FORCERESPONSIBILITY_F=$BCAST2UNIC_FORCERESPONSIBILITY
        BCAST2UNIC_USEASSIGNINFO_F=$BCAST2UNIC_USEASSIGNINFO
+       FLOODINGABORTTX_F=$FLOODINGABORTTX
      fi
 
    for flunic_pres in $FLOODINGUNICAST_PRESELECTION_F; do
    for flunic_reject in $FLOODINGUNICAST_REJECT_EMPTYCS_F; do
    for flunic_peer in $FLOODINGUNICAST_PEER_METRIC_F; do
 
-    for fl_abort_tx in $FLOODINGABORTTX; do
+    for fl_abort_tx in $FLOODINGABORTTX_F; do
     for fl_pa_ret in $FLOODINGPASSIVACK_RETRIES; do
     for fl_mac_ret in $MAC_TRIES_F; do
     for fl_nb_met in $NB_METRIC_F; do
@@ -155,21 +110,13 @@ for i in `cat $NODESFILE | grep -v "#"`; do
     for fl_useassign in $BCAST2UNIC_USEASSIGNINFO_F; do
     for fl_maxdelay in $BCAST_RNDDELAYQUEUE_MAXDELAY; do
 
-#FLOODINGPASSIVACK="0 1"
-#FLOODINGPASSIVACK_RETRIES="0 1 2"
-
-#FLOODINGUNICAST="0 4"
-#FLOODINGUNICAST_PRESELECTION="0 1 2"
-#FLOODINGUNICAST_REJECT_EMPTYCS="true false"
-#FLOODINGUNICAST_PEER_METRIC="0 1 2 3 4 5"
-
      for al in $FLOODALGOS; do
 
        DONE_ALL_FOR_ALG=0
 
        while [ $DONE_ALL_FOR_ALG -eq 0 ]; do
 
-       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay
+       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx
 
        case "$al" in
          "simple")
@@ -187,6 +134,11 @@ for i in `cat $NODESFILE | grep -v "#"`; do
          "mpr")
                  echo "#define MPR_STATS" > flooding_config.h
                  echo "#define MPR_FL" >> flooding_config.h
+                 ;;
+
+         "mst")
+                 echo "#define MST_FL" > flooding_config.h
+                 echo "#define FLOODING_DEBUG 4" >> flooding_config.h
                  ;;
 
        esac
@@ -304,6 +256,9 @@ for i in `cat $NODESFILE | grep -v "#"`; do
                   fi
                   ;;
          "mpr")
+                 DONE_ALL_FOR_ALG=1
+                 ;;
+         "mst")
                  DONE_ALL_FOR_ALG=1
                  ;;
        esac

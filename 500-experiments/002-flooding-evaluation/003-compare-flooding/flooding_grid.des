@@ -21,11 +21,12 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
-EVALUATION="evaluation/copy_tmp.sh status_compression"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml flooding_info network_info status_compression"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml flooding_info"
 
 GPS=no
 NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
-#CONTROLFILE=flooding.ctl
+CONTROLFILE=flooding.ctl
