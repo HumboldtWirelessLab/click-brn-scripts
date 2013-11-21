@@ -2,7 +2,7 @@
 
 RESULTDIR=$1
 
-ALGSEDARG="-e s#simple#0#g -e s#probability#1#g -e s#mpr#2#g" -e s#mst#3#g"
+ALGSEDARG="-e s#simple#0#g -e s#probability#1#g -e s#mpr#2#g -e s#mst#3#g"
 
 echo -n "" > result_flooding.dat
 
@@ -19,6 +19,8 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
     BCAST2UNIC_FORCERESPONSIBILITY=`echo $BCAST2UNIC_FORCERESPONSIBILITY | sed -e "s#true#1#g" | sed -e "s#false#0#g"`
     BCAST2UNIC_USEASSIGNINFO=`echo $BCAST2UNIC_USEASSIGNINFO | sed -e "s#true#1#g" | sed -e "s#false#0#g"`
     BCAST2UNIC_TXABORT=`echo $BCAST_ENABLE_ABORT_TX | sed -e "s#true#1#g" | sed -e "s#false#0#g"`
+
+
 
     INFO="$SIM $UNICASTSTRATEGY $PLACEMENT $UNICAST_PRESELECTION_STRATEGY $UNICAST_REJECTONEMPTYCS $UNICAST_UCASTPEERMETRIC $FLOODING_PASSIVE_ACK_RETRIES"
 
