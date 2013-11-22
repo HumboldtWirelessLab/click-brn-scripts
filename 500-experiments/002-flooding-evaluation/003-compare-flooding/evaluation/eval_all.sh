@@ -23,6 +23,8 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
     BCAST2UNIC_FIXCS=`echo $BCAST2UNIC_FIXCS | sed -e "s#true#1#g" | sed -e "s#false#0#g"`
 
 
+
+
     INFO="$SIM $UNICASTSTRATEGY $PLACEMENT $UNICAST_PRESELECTION_STRATEGY $UNICAST_REJECTONEMPTYCS $UNICAST_UCASTPEERMETRIC $FLOODING_PASSIVE_ACK_RETRIES"
 
     if [ -f $RESULTDIR/$d/simpleflooding.tr.bz2 ]; then
