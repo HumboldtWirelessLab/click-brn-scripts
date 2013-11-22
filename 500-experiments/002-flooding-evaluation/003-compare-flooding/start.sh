@@ -5,7 +5,16 @@
 #
 #for i in `ls -d 1_MBit*`; do echo $i; cat $i/evaluation/flooding_info/floodingstats.csv | awk -F, '{print $6" "$2}'; done
 
-. ./simsetrc_small
+if [ "x$MAINCONFIG" != "x" ]; then
+  . $MAINCONFIG
+fi
+
+
+if [ "x$CONFIG" = "x" ]; then
+  . ./simsetrc_small
+else
+  . $CONFIG
+fi
 
 if [ "x$START" = "x" ]; then
   START=1

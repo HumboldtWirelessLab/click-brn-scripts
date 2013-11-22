@@ -1,6 +1,6 @@
 %function floodstats_info(filename)
 
-filename = 'result_flooding_info.dat';
+filename = 'result_flooding_info_20131030.dat';
 
 NUM=1;
 
@@ -102,30 +102,34 @@ for nn=1:size(net_retries,1)
     all_sent = [];
     for ff=1:size(flIds,1)
         for ss=1:size(seeds,1)
-            fl_1 = method(method(:,FLOODINGID) == flIds(ff) & method(:,SEED) == seeds(ss),:);
+            fl_1 = method(method(:,FLOODINGID) == flIds(ff) & method(:,SEED) == seeds(ss) & ((method(:,SRCNODE) == method(:,RXNODE)) | (method(:,SRCNODE) == method(:,TXNODE))),:);
 
+            %size(fl_1)
+            %fl_1(:,[RXNODE TXNODE SRCNODE ])
             src_node = unique(fl_1(:,SRCNODE));
             assert(size(src_node,1) == 1 & size(src_node,2) == 1);
 
             start_time = min(fl_1(fl_1(:,RXNODE) == src_node,TIME));
 
             rx_times = fl_1(fl_1(:,RXNODE) ~= src_node, [RXNODE TIME]);
+            %size(rx_times)
             rx_nodes = unique(rx_times(:,1));
-
             reach = [reach; size(rx_nodes,1)];
 
-            delays = zeros(size(rx_nodes,1),1);
-            for ii=1:size(rx_nodes,1)
-                rx_node = rx_nodes(ii);
-                rx_time = min(rx_times(rx_times(:,1) == rx_node,2));
-
-                delays(ii) = rx_time - start_time;
-            end
+            delays = rx_times(:,2) - start_time;
             all_delays = [all_delays; delays];
             
-            all_sent = [all_sent; sum(fl_1(:,NOSENT))];
+            fl_1_sent_src = unique(fl_1(fl_1(:,SRCNODE) == fl_1(:,RXNODE),NOSENT));
+            fl_1_sent_fwd = fl_1(fl_1(:,SRCNODE) == fl_1(:,TXNODE),NOSENT);
+            
+            %size(fl_1_sent_src)
+            %size(fl_1_sent_fwd)
+
+            all_sent = [all_sent; (sum(fl_1_sent_src)+sum(fl_1_sent_fwd))];
         end
     end
+    
+    size(all_sent)
 
     reach = reach + 1; % include src
     reach = reach / size(unique(method(:,RXNODE)),1);
@@ -160,7 +164,7 @@ for mm=1:size(mac_retries,1)
         all_sent = [];
         for ff=1:size(flIds,1)
             for ss=1:size(seeds,1)
-                fl_1 = method(method(:,FLOODINGID) == flIds(ff) & method(:,SEED) == seeds(ss),:);
+                fl_1 = method(method(:,FLOODINGID) == flIds(ff) & method(:,SEED) == seeds(ss) & ((method(:,SRCNODE) == method(:,RXNODE)) | (method(:,SRCNODE) == method(:,TXNODE))),:);
 
                 src_node = unique(fl_1(:,SRCNODE));
                 assert(size(src_node,1) == 1 & size(src_node,2) == 1);
@@ -172,16 +176,17 @@ for mm=1:size(mac_retries,1)
 
                 reach = [reach; size(rx_nodes,1)];
 
-                delays = zeros(size(rx_nodes,1),1);
-                for ii=1:size(rx_nodes,1)
-                    rx_node = rx_nodes(ii);
-                    rx_time = min(rx_times(rx_times(:,1) == rx_node,2));
+                delays = rx_times(:,2) - start_time;
 
-                    delays(ii) = rx_time - start_time;
-                end
                 all_delays = [all_delays; delays];
+                
+                fl_1_sent_src = unique(fl_1(fl_1(:,SRCNODE) == fl_1(:,RXNODE),NOSENT));
+                fl_1_sent_fwd = fl_1(fl_1(:,SRCNODE) == fl_1(:,TXNODE),NOSENT);
+            
+                %size(fl_1_sent_src)
+                %size(fl_1_sent_fwd)
 
-                all_sent = [all_sent; sum(fl_1(:,NOSENT))];
+                all_sent = [all_sent; (sum(fl_1_sent_src)+sum(fl_1_sent_fwd))];
             end
         end
 
