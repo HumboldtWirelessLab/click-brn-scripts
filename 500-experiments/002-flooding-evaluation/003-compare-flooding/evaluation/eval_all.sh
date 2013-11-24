@@ -24,15 +24,7 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
 
     INFO="$SIM $UNICASTSTRATEGY $PLACEMENT $UNICAST_PRESELECTION_STRATEGY $UNICAST_REJECTONEMPTYCS $UNICAST_UCASTPEERMETRIC $FLOODING_PASSIVE_ACK_RETRIES"
 
-    if [ -f $RESULTDIR/$d/simpleflooding.tr.bz2 ]; then
-      COLLISIONEN=`bzcat $RESULTDIR/$d/simpleflooding.tr.bz2 | grep "COL" | wc -l`
-    else
-      if [ -f $RESULTDIR/$d/simpleflooding.tr ]; then
-        COLLISIONEN=`cat $RESULTDIR/$d/simpleflooding.tr | grep "COL" | wc -l`
-      else
-        COLLISIONEN=0
-      fi
-    fi
+    COLLISIONEN=`cat $EVALUATIONSDIR/collisionen`
 
     if [ -f $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv ]; then
       cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv | sed "s#,# #g" | awk -v ALG=$ALGORITHMID -v N=$SIMID -v I="$INFO" -v E=$EXTRAINFO -v L=$UNICASTSTRATEGY -v C=$COLLISIONEN -v MR=$MACRETRIES -v MET=$FLOODING_MAXNBMETRIC -v PP=$FLOODING_LASTNODES_PP -v FR=$BCAST2UNIC_FORCERESPONSIBILITY -v UA=$BCAST2UNIC_USEASSIGNINFO -v QD=$BCAST_RNDDELAYQUEUE_MAXDELAY -v S=$SEED -v TXA=$BCAST2UNIC_TXABORT -v FCS=$BCAST2UNIC_FIXCS -v EER=$BCAST_E2E_RETRIES '{print N" "I" "ALG" "E" "L" "$3" "$10" "$2" "$1" "$7" "$9" "$6" "$5" "C" "MR" "MET" "PP" "FR" "UA" "QD" "S" "TXA" "FCS" "ERR }' >> result_flooding.dat

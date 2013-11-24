@@ -22,7 +22,7 @@ LOGFILE=measurement.log
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
 #EVALUATION="evaluation/copy_tmp.sh embrace_xml flooding_info network_info status_compression"
-EVALUATION="evaluation/copy_tmp.sh embrace_xml flooding_info_2 compression_config status_compression evaluation/eval_post.sh"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml flooding_info evaluation/collision.sh compression_config status_compression evaluation/eval_post.sh"
 
 GPS=no
 NOTICE=no
