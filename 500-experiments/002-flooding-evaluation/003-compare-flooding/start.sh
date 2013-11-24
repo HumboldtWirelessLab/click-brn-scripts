@@ -9,7 +9,6 @@ if [ "x$MAINCONFIG" != "x" ]; then
   . $MAINCONFIG
 fi
 
-
 if [ "x$CONFIG" = "x" ]; then
   . ./simsetrc_small
 else
@@ -95,6 +94,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        BCAST2UNIC_USEASSIGNINFO_F="false"
        FLOODINGABORTTX_F="0"
        FIXCS_PARAMS_F="false"
+       FLOODING_E2E_RETRIES_F=$FLOODING_E2E_RETRIES
      else
        FLOODINGUNICAST_PRESELECTION_F=$FLOODINGUNICAST_PRESELECTION
        FLOODINGUNICAST_REJECT_EMPTYCS_F=$FLOODINGUNICAST_REJECT_EMPTYCS
@@ -106,6 +106,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        BCAST2UNIC_USEASSIGNINFO_F=$BCAST2UNIC_USEASSIGNINFO
        FLOODINGABORTTX_F=$FLOODINGABORTTX
        FIXCS_PARAMS_F=$FIXCS_PARAMS
+       FLOODING_E2E_RETRIES_F="0"
      fi
 
    for flunic_pres in $FLOODINGUNICAST_PRESELECTION_F; do
@@ -122,13 +123,15 @@ for i in `cat $NODESFILE | grep -v "#"`; do
     for fl_useassign in $BCAST2UNIC_USEASSIGNINFO_F; do
     for fl_maxdelay in $BCAST_RNDDELAYQUEUE_MAXDELAY; do
 
+    for fl_e2e in $FLOODING_E2E_RETRIES_F; do
+
      for al in $FLOODALGOS; do
 
        DONE_ALL_FOR_ALG=0
 
        while [ $DONE_ALL_FOR_ALG -eq 0 ]; do
 
-       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx"_"$flunic_fixcs
+       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx"_"$flunic_fixcs"_"$fl_e2e
 
        case "$al" in
          "simple")
@@ -171,8 +174,9 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        echo "#define BCAST_RNDDELAYQUEUE_MAXDELAY $fl_maxdelay" >> flooding_config.h
        echo "#define BCAST_ENABLE_ABORT_TX $fl_abort_tx" >> flooding_config.h
        echo "#define BCAST2UNIC_FIXCS $flunic_fixcs" >> flooding_config.h
+       echo "#define BCAST_E2E_RETRIES $fl_e2e" >> flooding_config.h
 
-       echo "$i $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay"
+       echo "$i $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e"
 
        if [ ! -e $MEASUREMENTDIR ]; then
          if [ "x$SIM" = "x" ]; then
@@ -254,6 +258,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
         echo "BCAST_RNDDELAYQUEUE_MAXDELAY=$fl_maxdelay" >> $MEASUREMENTDIR/params
         echo "BCAST_ENABLE_ABORT_TX=$fl_abort_tx" >> $MEASUREMENTDIR/params
         echo "BCAST2UNIC_FIXCS=$flunic_fixcs" >> $MEASUREMENTDIR/params
+        echo "BCAST_E2E_RETRIES=$fl_e2e" >> $MEASUREMENTDIR/params
 
        fi
 
@@ -298,9 +303,10 @@ for i in `cat $NODESFILE | grep -v "#"`; do
  done
  done
  done
+ done
 
  if [ $NUM -ge $LIMIT ]; then
-   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim
+   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim flooding.des
 
    if [ "x$SIM" = "x1" ]; then
      run_para_sim.sh
