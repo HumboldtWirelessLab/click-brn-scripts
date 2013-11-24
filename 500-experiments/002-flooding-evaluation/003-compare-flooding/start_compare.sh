@@ -14,7 +14,7 @@ case "$1" in
   "simple")
     CONFIG=config/sim_simple.conf
     ;;
-  "unicast"
+  "unicast")
     CONFIG=config/sim_unicast.conf
     ;;
   *)
