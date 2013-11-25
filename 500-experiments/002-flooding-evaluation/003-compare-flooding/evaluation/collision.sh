@@ -2,6 +2,10 @@
 
 . $CONFIGFILE
 
+if [ -f $EVALUATIONSDIR/collisionen ]; then
+  exit 0
+fi
+
 if [ -f $RESULTDIR/$d/simpleflooding.tr.bz2 ]; then
   COLLISIONEN=`bzcat $RESULTDIR/$d/simpleflooding.tr.bz2 | grep "COL" | wc -l`
   rm $RESULTDIR/$d/simpleflooding.tr.bz2
