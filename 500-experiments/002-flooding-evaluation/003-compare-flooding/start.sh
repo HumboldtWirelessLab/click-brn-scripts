@@ -64,15 +64,49 @@ RUNMODE_RESET_COUNT=0
 
 echo "Placementfile: $PLACEMENTFILE MAXPL: $MAX_PLACEMENT START: $START LIMIT: $LIMIT"
 
-for i in `cat $NODESFILE | grep -v "#"`; do
+FLOWTIME=110
+FLOWTIMESPACE=5
+INTERVAL=500
+DURATION=5
+DURATION_MS=5000
 
- if [ $NUM -lt $START ]; then
-   let NUM=NUM+1
-#   echo "$NUM"
-   continue
- fi
+echo -n "" > flooding.ctl
 
- for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
+for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT`; do
+   if [ "x$SIM" = "x" ]; then
+     MAC=`cat nodes.mac | grep $n | awk '{print $3}'`
+   else
+     mac_raw=`echo $n | sed "s#sk##g"`
+     m1=`expr $mac_raw / 256`
+     m2=`expr $mac_raw % 256`
+     m1h=$(echo "obase=16; $m1" | bc)
+     m2h=$(echo "obase=16; $m2" | bc)
+     if [ $m1 -lt 16 ]; then
+       m1h="0$m1h"
+     fi
+     if [ $m2 -lt 16 ]; then
+       m2h="0$m2h"
+     fi
+
+     MAC="00-00-00-00-$m1h-$m2h"
+   fi
+
+   echo "$FLOWTIME $n DEV0 write sf add_flow $MAC FF-FF-FF-FF-FF-FF $INTERVAL 100 0 $DURATION_MS true" >> flooding.ctl
+
+   let FLOWTIME=FLOWTIME+DURATION
+   let FLOWTIME=FLOWTIME+FLOWTIMESPACE
+
+done
+
+for n in `cat $NODESFILE | grep -v "#"`; do
+  echo "$FLOWTIME  $n DEV0 read flooding/fl stats" >> flooding.ctl
+  echo "$FLOWTIME  $n DEV0 read flooding/fl forward_table" >> flooding.ctl
+  echo "$FLOWTIME  $n DEV0 read flooding/unicfl stats" >> flooding.ctl
+  echo "$FLOWTIME  $n DEV0 read sf stats" >> flooding.ctl
+done
+let FLOWTIME=FLOWTIME+1
+
+for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
    if [ "x$SIM" = "x1" ]; then
      if [ "x$GRID" = "x" ]; then
@@ -176,37 +210,22 @@ for i in `cat $NODESFILE | grep -v "#"`; do
        echo "#define BCAST2UNIC_FIXCS $flunic_fixcs" >> flooding_config.h
        echo "#define BCAST_E2E_RETRIES $fl_e2e" >> flooding_config.h
 
-       echo "$i $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e"
+       echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e"
 
        if [ ! -e $MEASUREMENTDIR ]; then
-         if [ "x$SIM" = "x" ]; then
-           MAC=`cat nodes.mac | grep $i | awk '{print $3}'`
-         else
-           mac_raw=`echo $i | sed "s#sk##g"`
-           m1=`expr $mac_raw / 256`
-           m2=`expr $mac_raw % 256`
-           m1h=$(echo "obase=16; $m1" | bc)
-           m2h=$(echo "obase=16; $m2" | bc)
-           if [ $m1 -lt 16 ]; then
-              m1h="0$m1h"
-           fi
-           if [ $m2 -lt 16 ]; then
-              m2h="0$m2h"
-           fi
-
-           MAC="00-00-00-00-$m1h-$m2h"
-         fi
 
          if [ "x$SIM" = "x" ]; then
-           cat flooding.mes.tmpl | sed "s#TXFLOODNODE#$i#g" | sed "s#LOGDIR#/tmp#g" | sed "s#NODES#nodes.measurement#g" > flooding.mes
+           cat flooding.mes.tmpl | sed "s#LOGDIR#/tmp#g" | sed "s#NODES#nodes.measurement#g" > flooding.mes
          else
-           cat flooding.mes.tmpl | sed "s#TXFLOODNODE#$i#g" | sed "s#NODES#nodes.sim#g" > flooding.mes
+           cat flooding.mes.tmpl | sed "s#NODES#nodes.sim#g" > flooding.mes
          fi
 
-         cat flooding_tx.click.tmpl | grep -v "flooding_init" > flooding.click
-         cat flooding_tx.click.tmpl | sed "s#NODEMACADDR#$MAC#g" > flooding_tx.click
+         if [ "x$GRID" = "x" ]; then
+           cat flooding.des.tmpl | sed "s#FLOWTIME#$FLOWTIME#g" > flooding.des
+         else
+           cat flooding_grid.des.tmpl | sed "s#FLOWTIME#$FLOWTIME#g" > flooding.des
+         fi
 
-         cp flooding.des.tmpl flooding.des
          echo "SEED=$NUM" >> flooding.des
 
          if [ "x$SIM" = "x" ]; then
@@ -221,12 +240,7 @@ for i in `cat $NODESFILE | grep -v "#"`; do
            fi
 
          else
-           #mkdir $MEASUREMENTDIR
-           if [ "x$GRID" = "x" ]; then
-             PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
-           else
-             PREPARE_ONLY=1 run_sim.sh ns flooding_grid.des $MEASUREMENTDIR
-           fi
+           PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
          fi
 
          if [ "x$SIM" = "x" ]; then
@@ -303,23 +317,10 @@ for i in `cat $NODESFILE | grep -v "#"`; do
  done
  done
  done
- done
-
- if [ $NUM -ge $LIMIT ]; then
-   rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim flooding.des
-
-   if [ "x$SIM" = "x1" ]; then
-     run_para_sim.sh
-   fi
-
-   exit 0
- fi
-
  let NUM=NUM+1
-# echo "$NUM"
 done
 
-rm -f flooding.mes flooding.click flooding_tx.click flooding_config.h placement.txt nodes.sim flooding.des
+rm -f flooding_config.h placement.txt nodes.sim flooding.des
 
 if [ "x$SIM" = "x1" ]; then
   run_para_sim.sh
