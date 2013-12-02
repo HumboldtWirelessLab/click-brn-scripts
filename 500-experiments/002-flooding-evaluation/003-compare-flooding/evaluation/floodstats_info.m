@@ -1,4 +1,5 @@
 %function floodstats_info(simple_filename, e2e_filename, prop_filename)
+load('flooding_pre_data.dat','-mat');
 
 %ilename = 'result_flooding_info.dat';
 simple_filename = '20131127/result_flooding_info.dat.simple';
@@ -316,7 +317,9 @@ save('flooding_pre_data.dat','flood_xlb', 'e2e_xlb', 'prop_xlb', 'flood_delays',
 
 %%
 % plot
-h1 = figure(1);
+%h1 = figure(1);
+h1=figure('Position', [100 100 700 500]);
+
 xlb=[ flood_xlb; e2e_xlb; prop_xlb];
 xlbs = cell(size(xlb,1),1);
 for ii=1:size(xlb,1)
@@ -327,26 +330,215 @@ delays = [flood_delays; flood_e2e_delays; prop_delays];
 reach = [flood_reach; flood_e2e_reach; prop_reach];
 sent = [flood_sent; flood_e2e_sent;prop_sent];
 
+% filter
+idx = 1:21; %[1 4 8 9 10 11 15 16:27];
+
+d_med_val = zeros(1,size(idx,2));
+r_med_val = zeros(1,size(idx,2));
+s_med_val = zeros(1,size(idx,2));
+d_men_val = zeros(1,size(idx,2));
+r_men_val = zeros(1,size(idx,2));
+s_men_val = zeros(1,size(idx,2));
+for ii=1:size(idx,2)
+   d_med_val(ii) = median(delays(delays(:,2) == idx(ii),1));
+   r_med_val(ii) = median(reach(reach(:,2) == idx(ii),1));
+   s_med_val(ii) = median(sent(sent(:,2) == idx(ii),1));
+   
+   d_men_val(ii) = mean(delays(delays(:,2) == idx(ii),1));
+   r_men_val(ii) = mean(reach(reach(:,2) == idx(ii),1));
+   s_men_val(ii) = mean(sent(sent(:,2) == idx(ii),1));
+end
+
+dmap = ismember(delays(:,2), idx);
+
+% change
+xlbs{1} ='Baseline';
+% NET FL
+xlbs{2} ='1/0';
+xlbs{3} ='2/0';
+xlbs{4} ='3/0';
+xlbs{5} ='4/0';
+% E2E FL
+xlbs{6} ='0/1';
+xlbs{7} ='0/2';
+xlbs{8} ='0/3';
+xlbs{9} ='0/4';
+% Proposed FL
+for ii=10:24
+   xlbs{ii} = strrep(xlbs{ii}, '/0', ''); 
+end
 
 %subplot(1,3,1);
-boxplot(delays(:,1), delays(:,2), 'labels', xlbs);
-title('Delay in [ms]');
-xlabel('MAC/NET/E2E Retries');
+boxplot(delays(dmap,1), delays(dmap,2), 'labels', xlbs(idx));
+%xticklabel_rotate([1:5],45,xlbs(idx),'interpreter','none')
+
+%%
+%get the text labels
+textobjs=findobj(gca,'type','text');
+%rotate the text
+set(textobjs,'rotation',45);
+%change the font size
+set(textobjs,'fontsize',10);
+
+%change the position of the text
+offset_amount = [0 -10 0];
+temptextpositions = get(textobjs,'position');
+for n = 1 : length(textobjs)
+    set(textobjs(n),'position',get(textobjs(n),'position')+offset_amount);
+end
+
+%this makes it so that the labels will stay in the same relative position
+%on the figure, scaling when the figure is resized
+set(textobjs,'units','data');
+
+%code from source 1. This does something conceptually equivalent to 
+%removing the link that the text has to the boxplot, creating a copy of the
+%text, and deleting the original text. (correct me if I'm wrong).
+copyobj(textobjs,gca);
+delete(textobjs);
+
+% Create textbox
+annotation(h1,'textbox',...
+    [0.201428571428571 0.00899999999999999 0.225714285714286 0.056],...
+    'String',{'#NET/#E2E repetitions'},...
+    'FitBoxToText','off',...
+    'LineStyle','none');
+
+% Create textbox
+annotation(h1,'textbox',...
+    [0.518571428571427 0.00899999999999999 0.42 0.056],...
+    'String',{'Proposed (max. #MAC/#NET retries)'},...
+    'FitBoxToText','off',...
+    'LineStyle','none');
+
+% Create line
+annotation(h1,'line',[0.458571428571429 0.458571428571429],...
+    [0.91 0.022],'LineStyle','--');
+
+%%
+title('Delay');
+ylabel('Delay in [ms]');
+%xlabel('Flooding Schemes');%MAC/NET/E2E Retries');
 grid on;
+hold on
+plot(d_men_val(idx), 'gd', 'MarkerFaceColor','green');
+
 saveas(h1, 'delay.eps' ,'eps');
 
+rmap = ismember(reach(:,2), idx);
+
 %subplot(1,3,2);
-h2=figure(2);
-boxplot(reach(:,1), reach(:,2), 'labels', xlbs);
-title('Reachbility in [%]');
-xlabel('MAC/NET/E2E Retries');
+%h2=figure(2);
+h2=figure('Position', [100 100 700 500]);
+boxplot(reach(rmap,1), reach(rmap,2), 'labels', xlbs(idx));
+
+%%
+%get the text labels
+textobjs=findobj(gca,'type','text');
+%rotate the text
+set(textobjs,'rotation',45);
+%change the font size
+set(textobjs,'fontsize',10);
+
+%change the position of the text
+offset_amount = [0 -10 0];
+temptextpositions = get(textobjs,'position');
+for n = 1 : length(textobjs)
+    set(textobjs(n),'position',get(textobjs(n),'position')+offset_amount);
+end
+
+%this makes it so that the labels will stay in the same relative position
+%on the figure, scaling when the figure is resized
+set(textobjs,'units','data');
+
+%code from source 1. This does something conceptually equivalent to 
+%removing the link that the text has to the boxplot, creating a copy of the
+%text, and deleting the original text. (correct me if I'm wrong).
+copyobj(textobjs,gca);
+delete(textobjs);
+
+% Create textbox
+annotation(h2,'textbox',...
+    [0.201428571428571 0.00899999999999999 0.225714285714286 0.056],...
+    'String',{'#NET/#E2E repetitions'},...
+    'FitBoxToText','off',...
+    'LineStyle','none');
+
+% Create textbox
+annotation(h2,'textbox',...
+    [0.518571428571427 0.00899999999999999 0.42 0.056],...
+    'String',{'Proposed (max. #MAC/#NET retries)'},...
+    'FitBoxToText','off',...
+    'LineStyle','none');
+
+% Create line
+annotation(h2,'line',[0.458571428571429 0.458571428571429],...
+    [0.91 0.022],'LineStyle','--');
+
+%%
+title('Reachbility');
+ylabel('Reachbility in [%]');
+%xlabel('Flooding Schemes');
 grid on;
+hold on
+plot(r_men_val(idx), 'gd', 'MarkerFaceColor','green');
+
 saveas(h2, 'reach.eps' ,'eps');
 
+smap = ismember(sent(:,2), idx);
+
 %subplot(1,3,3);
-h3=figure(3);
-boxplot(sent(:,1), sent(:,2), 'labels', xlbs);
-title('No. MAC TX');
-xlabel('MAC/NET/E2E Retries');
+%h3=figure(3);
+h3=figure('Position', [100 100 700 500]);
+boxplot(sent(smap,1), sent(smap,2), 'labels', xlbs(idx));
+%%
+%get the text labels
+textobjs=findobj(gca,'type','text');
+%rotate the text
+set(textobjs,'rotation',45);
+%change the font size
+set(textobjs,'fontsize',10);
+
+%change the position of the text
+offset_amount = [0 -10 0];
+temptextpositions = get(textobjs,'position');
+for n = 1 : length(textobjs)
+    set(textobjs(n),'position',get(textobjs(n),'position')+offset_amount);
+end
+
+%this makes it so that the labels will stay in the same relative position
+%on the figure, scaling when the figure is resized
+set(textobjs,'units','data');
+
+%code from source 1. This does something conceptually equivalent to 
+%removing the link that the text has to the boxplot, creating a copy of the
+%text, and deleting the original text. (correct me if I'm wrong).
+copyobj(textobjs,gca);
+delete(textobjs);
+
+% Create textbox
+annotation(h3,'textbox',...
+    [0.201428571428571 0.00899999999999999 0.225714285714286 0.056],...
+    'String',{'#NET/#E2E repetitions'},...
+    'FitBoxToText','off',...
+    'LineStyle','none');
+
+% Create textbox
+annotation(h3,'textbox',...
+    [0.518571428571427 0.00899999999999999 0.42 0.056],...
+    'String',{'Proposed (max. #MAC/#NET retries)'},...
+    'FitBoxToText','off',...
+    'LineStyle','none');
+
+% Create line
+annotation(h3,'line',[0.458571428571429 0.458571428571429],...
+    [0.91 0.022],'LineStyle','--');
+%%
+title('Efficiency');
+ylabel('Total number of MAC transmissions');
+%xlabel('Flooding Schemes');
 grid on;
+hold on
+plot(s_men_val(idx), 'gd', 'MarkerFaceColor','green');
+
 saveas(h3, 'sent.eps' ,'eps');
