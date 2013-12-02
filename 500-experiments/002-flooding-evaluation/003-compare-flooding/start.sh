@@ -320,7 +320,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
  let NUM=NUM+1
 done
 
-rm -f flooding_config.h placement.txt nodes.sim flooding.des
+rm -f flooding_config.h placement.txt nodes.sim flooding.des flooding.mes flooding.ctl
 
 if [ "x$SIM" = "x1" ]; then
   run_para_sim.sh
