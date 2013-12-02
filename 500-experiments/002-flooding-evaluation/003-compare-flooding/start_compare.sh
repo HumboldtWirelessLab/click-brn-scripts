@@ -29,4 +29,11 @@ CONFIG=$CONFIG MAINCONFIG=$MAINCONFIG ./start.sh
 
 (cd evaluation; mv result_flooding.dat result_flooding.dat.$1; mv result_flooding_info.dat result_flooding_info.dat.$1)
 
+if  [ -f /mnt/data/flooding/ ]; then
+  mkdir $1
+  mv 1_MBit_* $1
+  tar cfv /mnt/data/flooding/$1.tar $1
+  rm -rf $1
+fi
+
 exit 0
