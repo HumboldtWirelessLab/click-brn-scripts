@@ -1,10 +1,15 @@
 %function floodstats_info(simple_filename, e2e_filename, prop_filename)
-load('flooding_pre_data.dat','-mat');
+load_data = 0
 
+if ( load_data == 1 )
+  load('flooding_pre_data.dat','-mat');
+end
+
+basedir=''
 %ilename = 'result_flooding_info.dat';
-simple_filename = '20131127/result_flooding_info.dat.simple';
-e2e_filename = '20131127/result_flooding_info.dat.e2e';
-prop_filename = '20131127/result_flooding_info.dat.unicast';
+simple_filename = strcat(basedir,'result_flooding_info.dat.simple');
+e2e_filename = strcat(basedir,'result_flooding_info.dat.e2e');
+prop_filename = strcat(basedir,'result_flooding_info.dat.unicast');
 
 NUM=1;
 
@@ -311,9 +316,14 @@ if (~exist('prop_sent'))
   end
 end
 
-clear data;
+if (~exist('data'))
+  nonode = unique(fl_1(:,RXNODE));
+  clear data;
+end
 
-save('flooding_pre_data.dat','flood_xlb', 'e2e_xlb', 'prop_xlb', 'flood_delays', 'flood_e2e_delays', 'prop_delays', 'flood_reach', 'flood_e2e_reach', 'prop_reach', 'flood_sent', 'flood_e2e_sent','prop_sent');
+if ( load_data == 0 )
+  save('flooding_pre_data.dat','flood_xlb', 'e2e_xlb', 'prop_xlb', 'flood_delays', 'flood_e2e_delays', 'prop_delays', 'flood_reach', 'flood_e2e_reach', 'prop_reach', 'flood_sent', 'flood_e2e_sent','prop_sent', 'nonodes');
+end
 
 %%
 % plot
@@ -328,7 +338,10 @@ end
 
 delays = [flood_delays; flood_e2e_delays; prop_delays];
 reach = [flood_reach; flood_e2e_reach; prop_reach];
-sent = [flood_sent; flood_e2e_sent;prop_sent];
+sent = [flood_sent; flood_e2e_sent; prop_sent];
+
+efficiency = sent;
+efficiency(:,1) = efficiency(:,1)./(reach(:,1)*nonodes); % mac-tx per node, which recv the flood
 
 % filter
 idx = 1:21; %[1 4 8 9 10 11 15 16:27];
@@ -336,17 +349,23 @@ idx = 1:21; %[1 4 8 9 10 11 15 16:27];
 d_med_val = zeros(1,size(idx,2));
 r_med_val = zeros(1,size(idx,2));
 s_med_val = zeros(1,size(idx,2));
+e_med_val = zeros(1,size(idx,2));
+
 d_men_val = zeros(1,size(idx,2));
 r_men_val = zeros(1,size(idx,2));
 s_men_val = zeros(1,size(idx,2));
+e_men_val = zeros(1,size(idx,2));
+
 for ii=1:size(idx,2)
    d_med_val(ii) = median(delays(delays(:,2) == idx(ii),1));
    r_med_val(ii) = median(reach(reach(:,2) == idx(ii),1));
    s_med_val(ii) = median(sent(sent(:,2) == idx(ii),1));
-   
+   e_med_val(ii) = median(efficiency(efficiency(:,2) == idx(ii),1));
+
    d_men_val(ii) = mean(delays(delays(:,2) == idx(ii),1));
    r_men_val(ii) = mean(reach(reach(:,2) == idx(ii),1));
    s_men_val(ii) = mean(sent(sent(:,2) == idx(ii),1));
+   e_men_val(ii) = mean(efficiency(efficiency(:,2) == idx(ii),1));
 end
 
 dmap = ismember(delays(:,2), idx);
@@ -423,7 +442,7 @@ grid on;
 hold on
 plot(d_men_val(idx), 'gd', 'MarkerFaceColor','green');
 
-saveas(h1, 'delay.eps' ,'eps');
+saveas(h1, 'delay.eps' ,'epsc');
 
 rmap = ismember(reach(:,2), idx);
 
@@ -483,7 +502,7 @@ grid on;
 hold on
 plot(r_men_val(idx), 'gd', 'MarkerFaceColor','green');
 
-saveas(h2, 'reach.eps' ,'eps');
+saveas(h2, 'reach.eps' ,'epsc');
 
 smap = ismember(sent(:,2), idx);
 
@@ -541,4 +560,62 @@ grid on;
 hold on
 plot(s_men_val(idx), 'gd', 'MarkerFaceColor','green');
 
-saveas(h3, 'sent.eps' ,'eps');
+saveas(h3, 'sent.eps' ,'epsc');
+
+emap = ismember(efficiency(:,2), idx);
+
+%subplot(1,3,3);
+%h3=figure(3);
+h4=figure('Position', [100 100 700 500]);
+boxplot(efficiency(emap,1), efficiency(emap,2), 'labels', xlbs(idx));
+%%
+%get the text labels
+textobjs=findobj(gca,'type','text');
+%rotate the text
+set(textobjs,'rotation',45);
+%change the font size
+set(textobjs,'fontsize',10);
+
+%change the position of the text
+offset_amount = [0 -10 0];
+temptextpositions = get(textobjs,'position');
+for n = 1 : length(textobjs)
+    set(textobjs(n),'position',get(textobjs(n),'position')+offset_amount);
+end
+
+%this makes it so that the labels will stay in the same relative position
+%on the figure, scaling when the figure is resized
+set(textobjs,'units','data');
+
+%code from source 1. This does something conceptually equivalent to 
+%removing the link that the text has to the boxplot, creating a copy of the
+%text, and deleting the original text. (correct me if I'm wrong).
+copyobj(textobjs,gca);
+delete(textobjs);
+
+% Create textbox
+annotation(h4,'textbox',...
+    [0.201428571428571 0.00899999999999999 0.225714285714286 0.056],...
+    'String',{'#NET/#E2E repetitions'},...
+    'FitBoxToText','off',...
+    'LineStyle','none');
+
+% Create textbox
+annotation(h4,'textbox',...
+    [0.518571428571427 0.00899999999999999 0.42 0.056],...
+    'String',{'Proposed (max. #MAC/#NET retries)'},...
+    'FitBoxToText','off',...
+    'LineStyle','none');
+
+% Create line
+annotation(h4,'line',[0.458571428571429 0.458571428571429],...
+    [0.91 0.022],'LineStyle','--');
+%%
+title('Efficiency');
+ylabel('Total number of MAC transmissions per reached node');
+%xlabel('Flooding Schemes');
+grid on;
+hold on
+plot(s_men_val(idx), 'gd', 'MarkerFaceColor','green');
+
+saveas(h4, 'efficiency.eps' ,'epsc');
