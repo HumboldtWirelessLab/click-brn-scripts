@@ -1,11 +1,14 @@
 %function floodstats_info(simple_filename, e2e_filename, prop_filename)
+
+%basedir='/mnt/data/flooding/20131127/'
+basedir='/mnt/data/flooding/20131127/'
+
 load_data = 0
 
 if ( load_data == 1 )
-  load('flooding_pre_data.dat','-mat');
+  load(strcat(basedir,'flooding_pre_data.dat'),'-mat');
 end
 
-basedir=''
 %ilename = 'result_flooding_info.dat';
 simple_filename = strcat(basedir,'result_flooding_info.dat.simple');
 e2e_filename = strcat(basedir,'result_flooding_info.dat.e2e');
@@ -138,7 +141,7 @@ if (~exist('flood_sent'))
             %size(fl_1_sent_src)
             %size(fl_1_sent_fwd)
 
-            all_sent = [all_sent; (sum(fl_1_sent_src)+sum(fl_1_sent_fwd))];
+            all_sent = [all_sent; sum(fl_1_sent_fwd)];
         end
       end
     end
@@ -219,7 +222,7 @@ if (~exist('flood_e2e_sent'))
             fl_1_sent_src = unique(fl_1(fl_1(:,SRCNODE) == fl_1(:,RXNODE),NOSENT));
             fl_1_sent_fwd = fl_1(fl_1(:,SRCNODE) == fl_1(:,TXNODE),NOSENT);
 
-            all_sent = [all_sent; (sum(fl_1_sent_src)+sum(fl_1_sent_fwd))];
+            all_sent = [all_sent; sum(fl_1_sent_fwd)];
         end
       end
     end
@@ -272,7 +275,7 @@ if (~exist('prop_sent'))
         reach = [];
         all_sent = [];
 
-        prop_xlb = [ prop_xlb; [ mac_retries(mm) net_retries_prop(nn) 0 ]];
+        prop_xlb = [ prop_xlb; [ (mac_retries(mm)-1) net_retries_prop(nn) 0 ]];
 
         for ff=1:size(flIds,1)
             for ss=1:size(seeds,1)
@@ -299,7 +302,7 @@ if (~exist('prop_sent'))
                 %size(fl_1_sent_src)
                 %size(fl_1_sent_fwd)
 
-                all_sent = [all_sent; (sum(fl_1_sent_src)+sum(fl_1_sent_fwd))];
+                all_sent = [all_sent; sum(fl_1_sent_fwd)];
              end
           end
         end
@@ -316,9 +319,9 @@ if (~exist('prop_sent'))
   end
 end
 
-if (~exist('data'))
-  nonode = unique(fl_1(:,RXNODE));
-  clear data;
+if (~exist('nonodes'))
+  nonodes = length(unique(fl_1(:,RXNODE)));
+  load_data = 0;
 end
 
 if ( load_data == 0 )
