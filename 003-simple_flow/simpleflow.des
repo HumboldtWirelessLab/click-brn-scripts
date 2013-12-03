@@ -17,7 +17,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATION="evaluation/eval.sh"
+EVALUATION="embrace_xml evaluation/eval.sh"
 
 GPS=no
 NOTICE=no

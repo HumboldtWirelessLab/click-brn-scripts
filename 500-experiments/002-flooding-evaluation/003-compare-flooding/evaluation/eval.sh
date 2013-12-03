@@ -7,6 +7,4 @@ if [ -f $RESULTDIR/measurement.log.bz2 ]; then
   (cd $RESULTDIR; bzip2 -k -d measurement.log.bz2 )
 fi
 
-#rm -f $RESULTDIR/*.eth0
-
 exit 0

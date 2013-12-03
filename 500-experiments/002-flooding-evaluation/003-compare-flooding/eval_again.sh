@@ -36,12 +36,7 @@ echo -n "" > $DIR/evaluation_finish
 
 for i in `ls -d *MBit*`; do
 
-  ADDEVALUATION="evaluation/eval.sh embrace_xml flooding_info flow_info evaluation/eval_post.sh"
-  #ADDEVALUATION="evaluation/eval.sh embrace_xml network_info flooding_info flow_info evaluation/eval_post.sh"
-  #ADDEVALUATION="evaluation/eval.sh embrace_xml network_info flooding_info flooding_info_2 flow_info evaluation/eval_post.sh"
-  #ADDEVALUATION="evaluation/eval.sh embrace_xml flooding_info evaluation/eval_post.sh"
-  #ADDEVALUATION="embrace_xml flooding_info evaluation/eval_post.sh"
-  #PREEVALUATION="evaluation/eval.sh"
+  #ADDEVALUATION="evaluation/eval.sh flooding_info_2 flow_info evaluation/eval_post.sh"
   (cd $i/; PREEVALUATION="$PREEVALUATION" ADDEVALUATION="$ADDEVALUATION" /bin/bash ./eval_again.sh; echo $NUM >> $DIR/evaluation_finish ) &
 
   let NUM=NUM+1

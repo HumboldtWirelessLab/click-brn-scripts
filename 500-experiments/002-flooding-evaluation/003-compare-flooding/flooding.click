@@ -88,14 +88,14 @@ Script(
   read lt.links,
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats,
-  wait 10,
-  write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 5000 true, //flooding_init 51000  //51000 -> 100Pkt
+//  wait 10,
+//  write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 50000 true, //flooding_init 51000  //51000 -> 100Pkt
 //  wait 600,
-  wait 60,
-  read flooding/fl.stats,
-  read flooding/fl.forward_table,
-  read flooding/unicfl.stats,
-  read sf.stats
+//  wait 60,
+//  read flooding/fl.stats,
+//  read flooding/fl.forward_table,
+//  read flooding/unicfl.stats,
+//  read sf.stats
 );
 
 // 5 + 10 + 60 + TAU = 185

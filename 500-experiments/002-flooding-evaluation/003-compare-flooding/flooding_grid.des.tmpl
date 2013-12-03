@@ -7,8 +7,7 @@ NAME2MAC=yes
 
 DISABLE_NAM=1
 
-#TIME=720
-TIME=185
+TIME=FLOWTIME
 
 NODEPLACEMENTFILE=placement.txt
 NODETABLE=flooding.mes
@@ -21,8 +20,8 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
-#EVALUATION="evaluation/copy_tmp.sh embrace_xml flooding_info network_info status_compression"
-EVALUATION="evaluation/copy_tmp.sh embrace_xml flooding_info"
+EVALUATION="evaluation/copy_tmp.sh flooding_info evaluation/collision.sh"
+#EVALUATION="$EVALUATION compression_config status_compression evaluation/eval_post.sh"
 
 GPS=no
 NOTICE=no

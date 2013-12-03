@@ -28,6 +28,7 @@ USEASS=25;
 MAXDELAY=26;
 SEED=27;
 TXABORT=28;
+FIXCS=29;
 
 plot = 1;
 s1 = 3;
