@@ -17,12 +17,12 @@ cm_string={'real';'shadow';'2ray'};
 target_string={'bcast';'ucast'};
 tqm_string={ 'off';'on'};
 %ps_string={'200', '400', '800', '1200', '1500'};
-%ps_string={'1500'};
+ps_string={'1500'};
 %ps_string={'750', '1500'};
 %ps_string={'500', '1000', '1500'};
 %ps_string={'100', '200', '400', '800', '1250', '1500'};
 %ps_string={'200', '800', '1500'};
-ps_string={'150', '700', '1500'};
+%ps_string={'375', '750', '1500'};
 
 
 sim_duration = 30;
@@ -38,25 +38,25 @@ cmodel=unique(a(:,CHANNELMODEL));
 all_targets=[1];
 tqmmodes=unique(a(:,TTQM_STRATEGY));
 
-%plot_cols=['b';'g';'r';'c';'m';'k';'y'];
-%tqmmodes=[0 2 3 4 5 6 7]';
+%plot_cols=['b';'g';'r';'c';'k';'m';'y'];
+%tqmmodes=[2 3 4 5 7 8 9]';
 
-plot_cols=['b';'r';'m';'g'];
-tqmmodes=[0 2 3 4]';
+%plot_cols=['b';'r';'m';'g';'c'];
+%tqmmodes=[2 3 4 8 9]';
 
-%plot_cols=['b';'r';'m';'g'];
-%tqmmodes=[0 3 2 4]';
+%plot_cols=['b';'r';'g';'m'];
+%tqmmodes=[8 3 5 9]';
 
-%plot_cols=['b';'m'];
-%tqmmodes=[0 3]';
+plot_cols=['b';'r';'m'];
+tqmmodes=[8 3 5]';
 
 %plot_cols=['b';'r'];
-%tqmmodes=[0 3]';
+%tqmmodes=[8 5]';
 
 %plot_cols=['b'];
 %tqmmodes=[0];
 
-schemes = {'802.11','direct','max. tp','channel load aware','target pkt loss','learning','target diff rx tx busy','neighbours'};
+schemes = {'old 802.11','direct','max. tp','busy aware','target pkt loss','learning','target diff rx tx busy','neighbours','802.11','tx aware'};
 
 scheme_labels = {};
 
@@ -149,7 +149,7 @@ for ps_i = 1:size(all_ps,1)
         h2=figure();
         for tqm_i = 1:size(tqmmodes,1)
           plot(no_nodes, result_avg_backoff(:,tqm_i), strcat(plot_cols(tqm_i)), 'LineWidth', 1.2);
-          strVals = strtrim(cellstr(num2str([round(result_avg_backoff(:,tqm_i))],'%d')));
+          %strVals = strtrim(cellstr(num2str([round(result_avg_backoff(:,tqm_i))],'%d')));
           %text(no_nodes, result_avg_backoff(:,tqm_i), strVals, 'VerticalAlignment','top');
 
           %bkoffs = [bkoffs; result_avg_backoff(:, tqm_i)'];
@@ -197,7 +197,7 @@ for ps_i = 1:size(all_ps,1)
 
 
         for tqm_i = 1:size(tqmmodes,1)
-          plot(no_nodes, result_avg_tp(:,tqm_i), plot_cols(tqm_i));
+          plot(no_nodes, result_avg_tp(:,tqm_i), plot_cols(tqm_i), 'LineWidth', 1.2);
           %bar(no_nodes, result_avg_tp(:,tqm_i));
           hold on;
         end
@@ -252,7 +252,9 @@ for ps_i = 1:size(all_ps,1)
 
         h4=figure();
         for tqm_i = 1:size(tqmmodes,1)
-          plot(no_nodes, result_avg_collision(:,tqm_i),plot_cols(tqm_i));
+          % devide collisions by 2 because they get counted as doubles.
+          % see receiver.tr for an exeperiment and eval.sh
+          plot(no_nodes, result_avg_collision(:,tqm_i)/2,plot_cols(tqm_i), 'LineWidth', 1.2);
           hold on;
         end
 
@@ -310,7 +312,7 @@ for ps_i = 1:size(all_ps,1)
         hold on;
         %tp_big_legend = legend(findobj(gca,'Tag','Box'), 'off','max. Throughput','channelload aw.','target packetloss','learning','diff rxtx busy', 'location', 'northeast');
         %tp_big_legend = legend(findobj(gca,'Tag','Box'), 'diff rxtx busy', 'learning', 'target packetloss', 'channelload aw.', 'max. Throughput', 'off', 'location', 'northeast');
-        legend(findobj(gca,'Tag','Box'), scheme_labels, 'location', 'northeast');
+        legend(findobj(gca,'Tag','Box'), fliplr(scheme_labels), 'location', 'northeast');
 
         %ylim([0 800]);
         %legend('boxon');
@@ -320,14 +322,14 @@ for ps_i = 1:size(all_ps,1)
         grid on;
 
         if (with_leading_zero == 1)
-          fname=strcat('node_tp_', target_string(all_targets(tar_i)) , '_channelmodel_', cm_string(cmodel(cm_i)),'_ps_0',ps_string(ps_i),'.png');
+          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i),'.png');
           saveas(h5, fname{1} ,'png');
-          fname=strcat('node_tp_', target_string(all_targets(tar_i)) , '_channelmodel_', cm_string(cmodel(cm_i)),'_ps_0',ps_string(ps_i),'.eps');
+          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i),'.eps');
           saveas(h5, fname{1}, 'epsc');
         else
-          fname=strcat('node_tp_', target_string(all_targets(tar_i)) , '_channelmodel_', cm_string(cmodel(cm_i)),'_ps_',ps_string(ps_i),'.png');
+          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i),'.png');
           saveas(h5, fname{1} ,'png');
-          fname=strcat('node_tp_', target_string(all_targets(tar_i)) , '_channelmodel_', cm_string(cmodel(cm_i)),'_ps_',ps_string(ps_i),'.eps');
+          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i),'.eps');
           saveas(h5, fname{1}, 'epsc');
         end
 
@@ -352,7 +354,7 @@ if (foo == 1)
     h6=figure();
 
     bar(all_ps, tps, 1.0, 'grouped');
-    set(gca, 'XDir', 'reverse');
+    %set(gca, 'XDir', 'reverse');
 
     legend(findobj(gca,'Tag','Box'), scheme_labels, 'location', 'northeast');
     title(strcat({'Sum Throughput per Packet Size for '}, {nodes}, {' Senders'}));
