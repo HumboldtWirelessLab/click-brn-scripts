@@ -210,6 +210,10 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
        echo "#define BCAST2UNIC_FIXCS $flunic_fixcs" >> flooding_config.h
        echo "#define BCAST_E2E_RETRIES $fl_e2e" >> flooding_config.h
 
+       if [ "x$flunic" = "x0" ]; then
+         echo "#define BCAST_FPA_ABORTONFINISH false" >> flooding_config.h
+       fi
+
        echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e"
 
        if [ ! -e $MEASUREMENTDIR ]; then
