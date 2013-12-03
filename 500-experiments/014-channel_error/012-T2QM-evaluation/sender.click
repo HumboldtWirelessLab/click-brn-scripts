@@ -4,10 +4,14 @@
 //#define RAWDUMP
 
 #define CST cst
+//#define CST_STATS_DURATION 500
+
 
 #ifndef TOS2QUEUEMAPPER_STRATEGY
-#define TOS2QUEUEMAPPER_STRATEGY 6
+#define TOS2QUEUEMAPPER_STRATEGY 0
 #endif
+
+#define USE_RTS_CTS 1
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -20,20 +24,19 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-Idle() ->
-ps::BRN2PacketSource(SIZE 1460, INTERVAL 10, MAXSEQ 500000, BURST 1, ACTIVE true)
-  -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
+Idle()
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 0 1500 0 30000 true 1 0", FLOWSTARTRANDOM 50, DEBUG 2)
+  -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTXRates(RATE0 2, TRIES0 7, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
+  -> Brn2_SetRTSCTS(DEBUG 2)
   //-> SetPacketAnno(TOS 1)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
   -> discard::Discard;
-
-ps[1] -> Discard;
 
 error_clf[1]
   -> BRN2PrintWifi("CRCerror", TIMESTAMP true)
@@ -63,9 +66,16 @@ error_clf[7]
   -> BRN2PrintWifi("UNKNOWNerror", TIMESTAMP true)
   -> discard;
 
+//filter_tx[1]
+//  -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
+//  -> discard;
+
 filter_tx[1]
   -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
-  -> discard;
+  -> WifiDecap()
+  -> BRN2EtherDecap()
+  -> BRN2Decap()
+  -> [1]sf;
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
@@ -73,6 +83,7 @@ Script(
   wait 30,
   read wifidevice/tosq.stats,
   read wifidevice/cst.stats,
+  read sf.stats
   //read sys_info.systeminfo,
   //read id.version
 );

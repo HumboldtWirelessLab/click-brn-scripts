@@ -5,7 +5,10 @@ FORGEINNODES=no
 
 TIME=31
 
-NODEPLACEMENTFILE=placement.plm
+#NODEPLACEMENTFILE=placement.plm
+#NODEPLACEMENTFILE=placements/grid-cluster.plm
+  NODEPLACEMENTFILE=placements/hn.plm
+
 NODETABLE=backoff.mes
 NODEPLACEMENT=file
 #NODEPLACEMENT=grid
@@ -15,8 +18,11 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
+
 #EVALUATION="evaluation/eval.sh dump_compression status_compression"
-EVALUATION="embrace_xml evaluation/eval.sh dump_compression status_compression"
+#EVALUATION="embrace_xml evaluation/eval.sh"
+  EVALUATION="embrace_xml evaluation/eval.sh dump_compression status_compression"
+
 EVALUATIONSDIR=WORKDIR/evaluation
 EVALUATIONSDIRPOSTFIX=_evaluation
 
@@ -25,3 +31,4 @@ NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
+#CONTROLFILE=simpleflow.ctl

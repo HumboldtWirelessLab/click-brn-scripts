@@ -22,6 +22,8 @@ echo -n "" > backoffusage.mat
 
 for i in `ls -d ../[0-9]*`; do
 
+  (cd $i; sh ./eval_again.sh)
+
   . $i/params
 
   CHANNEL_MODEL=`echo $CHANNEL_MODEL | sed -e "s#real#0#g" -e "s#shadowing11b#1#g" -e "s#tworayground01b#2#g" | sed -e "s#shadowing01b#3#g"`

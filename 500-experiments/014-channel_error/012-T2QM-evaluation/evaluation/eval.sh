@@ -20,7 +20,7 @@ esac
 
 . $CONFIGFILE
 
-FILLUPTO=25
+FILLUPTO=50
 
 if [ ! -e $EVALUATIONSDIR ]; then
   mkdir -p $EVALUATIONSDIR
@@ -34,12 +34,12 @@ if [ "$MODE" = "sim" ]; then
 
   if [ -f $RESULTDIR/measurement.log ]; then
     OVERALL=`cat $RESULTDIR/measurement.log | grep "OKP" | wc -l`
-    echo "Overall: $OVERALL"
+    #echo "Overall: $OVERALL"
     echo -n "$OVERALL" > $EVALUATIONSDIR/result.txt
     NODES=0
     for i in `cat $RESULTDIR/nodes.mac | awk '{print $3}'`; do
       NODEP=`cat $RESULTDIR/measurement.log | grep "OKP" | grep $i | wc -l`
-      echo "$i: $NODEP"
+      #echo "$i: $NODEP"
       echo -n ",$NODEP" >> $EVALUATIONSDIR/result.txt
       let NODES=NODES+1
     done
@@ -52,6 +52,10 @@ if [ "$MODE" = "sim" ]; then
     ( cd $RESULTDIR; rm measurement.log )
   fi
 fi
+
+# get collision count
+COLS=`bzcat -q $RESULTDIR/receiver.tr.bz2 | grep COL | wc -l`
+echo -n ",$COLS" >> $EVALUATIONSDIR/result.txt
 
 RES=`cat $EVALUATIONSDIR/result.txt`
 xsltproc --stringparam result "$RES" $DIR/t2qm_queue_usage.xslt $EVALUATIONSDIR/measurement.xml > $EVALUATIONSDIR/queueusage.csv
