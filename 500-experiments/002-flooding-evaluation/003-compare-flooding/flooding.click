@@ -7,7 +7,6 @@
 
 #define BRNFEEDBACK
 
-#define DISABLE_TOS2QUEUEMAPPER
 #define CST cst
 
 #define PRIO_QUEUE
