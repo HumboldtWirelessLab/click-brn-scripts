@@ -1,7 +1,11 @@
 %function floodstats_info(simple_filename, e2e_filename, prop_filename)
 
-%basedir='/mnt/data/flooding/20131127/'
-basedir='/mnt/data/flooding/20131127/'
+if (~exist('basedir'))
+  basedir='/mnt/data/flooding/20131127/'
+  %basedir='/mnt/data/flooding/20131130/'
+else
+  basedir
+end
 
 load_data = 0
 
