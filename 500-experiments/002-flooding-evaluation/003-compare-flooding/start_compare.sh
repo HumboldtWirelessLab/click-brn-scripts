@@ -17,6 +17,12 @@ case "$1" in
   "unicast")
     CONFIG=config/sim_unicast.conf
     ;;
+  "prob")
+    CONFIG=config/sim_prob.conf
+    ;;
+  "mpr")
+    CONFIG=config/sim_mpr.conf
+    ;;
   *)
     echo "Unknown option: $1"
     exit 0
