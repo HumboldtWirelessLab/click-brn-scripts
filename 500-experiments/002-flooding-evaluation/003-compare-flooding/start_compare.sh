@@ -34,6 +34,8 @@ if  [ -f /mnt/data/flooding/ ]; then
   mv 1_MBit_* $1
   tar cfv /mnt/data/flooding/$1.tar $1
   rm -rf $1
+else
+  rm -rf 1_MBit_*
 fi
 
 exit 0
