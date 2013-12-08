@@ -16,6 +16,10 @@
 #define LINKPROBE_PROBES                                        "2 100"
 #define DISABLE_LP_POWER
 
+#ifndef RTSCTS_STRATEGY
+#define RTSCTS_STRATEGY 0
+#endif
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
@@ -57,6 +61,7 @@ brn_clf[2] -> Discard;
 brn_clf[1]
   -> [1]flooding[1]
   -> data_rate::SetTXRates(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> Brn2_SetRTSCTS(STRATEGY RTSCTS_STRATEGY)
   -> [2]device_wifi;
 
 Idle()

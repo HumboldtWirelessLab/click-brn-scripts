@@ -17,6 +17,9 @@ case "$1" in
   "unicast")
     CONFIG=config/sim_unicast.conf
     ;;
+  "rtscst")
+    CONFIG=config/sim_unicast_rtscts.conf
+    ;;
   "prob")
     CONFIG=config/sim_prob.conf
     ;;

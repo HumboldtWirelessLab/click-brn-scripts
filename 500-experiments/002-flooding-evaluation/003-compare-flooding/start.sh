@@ -212,6 +212,10 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
        if [ "x$flunic" = "x0" ]; then
          echo "#define BCAST_FPA_ABORTONFINISH false" >> flooding_config.h
+       else
+         if [ "x$RTSCTS_STRATEGY" != "x" ]; then
+           echo "#define RTSCTS_STRATEGY $RTSCTS_STRATEGY" >> flooding_config.h
+         fi
        fi
 
        echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e"
