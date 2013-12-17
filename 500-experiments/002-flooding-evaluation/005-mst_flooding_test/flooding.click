@@ -1,6 +1,6 @@
 #define DEBUGLEVEL 2
 
-#define FLOODING_DEBUG 4
+#define FLOODING_DEBUG 2
 
 #include "flooding.config"
 
@@ -21,6 +21,7 @@
 //#define PRO_FL
 //#define MPR_FL
 #define MST_FL
+#define CIRCLE_DATA circles_konvertiert/circles3_3
 #define MST_BD
 
 //#define DISBALE_BCASTWIFIDUPS

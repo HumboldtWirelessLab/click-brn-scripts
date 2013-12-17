@@ -21,6 +21,8 @@
 //#define PRO_FL
 //#define MPR_FL
 #define MST_FL
+#define CIRCLE_DATA circles_konvertiert/circles1_1
+#define MST_BD
 
 //#define DISBALE_BCASTWIFIDUPS
 
