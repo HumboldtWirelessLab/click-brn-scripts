@@ -21,7 +21,7 @@
 //#define PRO_FL
 //#define MPR_FL
 #define MST_FL
-#define CIRCLE_DATA 62_4_cluster/62_4_cluster_20_85_5000
+#define CIRCLE_DATA 62_4_cluster/circles1_1
 #define MST_BD
 
 //#define DISBALE_BCASTWIFIDUPS

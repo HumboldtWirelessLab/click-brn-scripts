@@ -74,5 +74,5 @@ if (asy):
 
 if (normal):
 	for i in range(0,len(node_x)):
-		print("sk"+str(i+1)+" "+str(node_x[i])+" "+str(node_y[i]))
+		print("sk"+str(i+1)+" "+str(node_x[i])+" "+str(node_y[i])+" 0")
 		
