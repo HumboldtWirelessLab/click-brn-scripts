@@ -1,6 +1,6 @@
 #define DEBUGLEVEL 2
 
-#define FLOODING_DEBUG 2
+#define FLOODING_DEBUG 4
 
 #include "flooding.config"
 
@@ -20,7 +20,8 @@
 
 //#define PRO_FL
 //#define MPR_FL
-//#define MST_FL
+#define MST_FL
+#define MST_BD
 
 //#define DISBALE_BCASTWIFIDUPS
 
