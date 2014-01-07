@@ -12,8 +12,9 @@ brnrs::BrnAutoRateFallback();
 rs::SetTXPowerRate(RT brnrates, MAXPOWER 16, RATESELECTION brnrs);
 
 //rs::SetTXRates(RATE0 72, TRIES0 1, RATE1 36, TRIES1 1, RATE2 22, TRIES2 1, RATE3 2, TRIES3 1)
-
-ps::BRN2PacketSource(SIZE 118, INTERVAL 5, MAXSEQ 500000, BURST 1, ACTIVE true)
+Idle()
+-> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 1000 1500 0 5000 true 1 0", DEBUG 4)  //VAR_RATE VAR_PSIZE
+//ps::BRN2PacketSource(SIZE 118, INTERVAL 5, MAXSEQ 500000, BURST 1, ACTIVE true)
 -> EtherEncap(0x8086, 00:00:00:00:00:01, 00:00:00:00:00:02)
 -> WifiEncap(0x00, 0:0:0:0:0:0)
 -> rs
@@ -26,8 +27,8 @@ ps::BRN2PacketSource(SIZE 118, INTERVAL 5, MAXSEQ 500000, BURST 1, ACTIVE true)
 
 Script(
   wait 1,
-  read rs.info,
-  read brnrates.rates,
+//  read rs.info,
+//  read brnrates.rates,
 //  read rs.rates,
   read sd.psr,
   stop
