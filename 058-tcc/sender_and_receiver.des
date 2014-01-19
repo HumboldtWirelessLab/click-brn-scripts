@@ -4,21 +4,29 @@ RADIO=shadowing11b
 #RADIO=tworayground01b
 FORGEINNODES=no
 
+#DISABLE_NAM=1
+#DISABLE_TR=1
+
 TIME=5
 
-NODEPLACEMENTFILE=placement.default
+NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=sender_and_receiver.mes
 NODEPLACEMENT=string
 #NODEPLACEMENT=grid
-FIELDSIZE=30
+#next is needed to use own placementfile
+#NODEPLACEMENT=file
+NODEPLACEMENTOPTS="relative"
+#FIELDSIZE=40
+FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
+#EVALUATION="evaluation/eval.sh dump_compression status_compression compression_config"
+EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
 EVALUATIONSDIRPOSTFIX=_evaluation
-EVALUATION="evaluation/eval.sh"
 
 GPS=no
 NOTICE=no
@@ -26,7 +34,7 @@ LOS=no
 
 CONTROLSOCKET=yes
 
-MULTIREPEAT="3"
+MULTIREPEAT="5"
 MULTIWAIT=0
 MULTIRUNMODE=REBOOT
 
