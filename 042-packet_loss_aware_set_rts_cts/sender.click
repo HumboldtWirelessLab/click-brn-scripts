@@ -3,9 +3,8 @@
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
-#define RAWDUMP
-
 #define USE_RTS_CTS
+#define PLE
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -31,51 +30,18 @@ Idle()
   -> BRN2PrintWifi("Sender (NODENAME)", TIMESTAMP true)
   -> wifidevice
   -> filter_tx :: FilterTX()
-  -> error_clf :: WifiErrorClassifier()
-  -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
+//  -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
   -> discard::Discard;
 
-error_clf[1]
-  -> BRN2PrintWifi("CRCerror", TIMESTAMP true)
-  -> discard;
-
-error_clf[2]
-  -> BRN2PrintWifi("PHYerror", TIMESTAMP true)
-  -> discard;
-
-error_clf[3]
-  -> BRN2PrintWifi("FIFOerror", TIMESTAMP true)
-  -> discard;
-
-error_clf[4]
-  -> BRN2PrintWifi("DECRYPTerror", TIMESTAMP true)
-  -> discard;
-
-error_clf[5]
-  -> BRN2PrintWifi("MICerror", TIMESTAMP true)
-  -> discard;
-
-error_clf[6]
-  -> BRN2PrintWifi("ZEROerror", TIMESTAMP true)
-  -> discard;
-
-error_clf[7]
-  -> BRN2PrintWifi("UNKNOWNerror", TIMESTAMP true)
-  -> discard;
-
 filter_tx[1]
-  -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
+//  -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
   -> discard;
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
   write sf.add_flow 00:00:00:00:00:02 00:00:00:00:00:01 12 1500 0 5000 true 1 0,
-// wait 1,
-//   read wifioutq.notifier_state,
   wait 5,
-  read sys_info.systeminfo,
-  read id.version,
-  read wireless.deviceinfo,
-  read wifidevice/cst.stats
+  read wifidevice/pli.print,
+  read wifidevice/ple.stats
 );
