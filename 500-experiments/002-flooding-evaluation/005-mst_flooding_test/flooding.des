@@ -5,7 +5,7 @@ RADIO=shadowing11b
 FORGEINNODES=no
 NAME2MAC=yes
 
-TIME=1300
+TIME=2550
 
 NODEPLACEMENTFILE=97_5_clusters.plm
 NODETABLE=flooding.mes
