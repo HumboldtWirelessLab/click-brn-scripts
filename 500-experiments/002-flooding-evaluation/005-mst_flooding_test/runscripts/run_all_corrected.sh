@@ -31,8 +31,8 @@ runscripts/corrected_runs/prepare_all_97_bd.sh;
 runscripts/corrected_runs/prepare_all_97_sd.sh;
 run_para_sim.sh;
 
-tar -czvf 97_5_clustersims.tgz 97_5_cluster_*;
-rm -rf 97_5_cluster_*;
+tar -czvf 97_5_clustersims.tgz 97_5_clusters_*;
+rm -rf 97_5_clusters_*;
 echo "97_5_cluster finished";
 
 runscripts/corrected_runs/prepare_all_multibox1_bd.sh;
