@@ -20,8 +20,8 @@
 
 //#define PRO_FL
 //#define MPR_FL
-//#define MST_FL
-//#define CIRCLE_DATA 62_4_cluster/circles1_1
+#define MST_FL
+#define CIRCLE_DATA msts/msts_mean/multibox3_mst.txt
 //#define MST_BD
 
 //#define DISBALE_BCASTWIFIDUPS

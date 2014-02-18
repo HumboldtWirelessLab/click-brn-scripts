@@ -133,12 +133,12 @@ Script(
   read device_wifi/link_stat.bcast_stats,
 //  read device_wifi/wifidevice/cst.stats,
   wait 10,
-  wait 60,
-  read flooding/fl.stats,
-  read flooding/fl.forward_table,
-  read flooding/unicfl.stats,
-  read flooding/fl_passive_ack.stats,
-  read sf.stats
+  wait 60
+  //read flooding/fl.stats,
+  //read flooding/fl.forward_table,
+  //read flooding/unicfl.stats,
+  //read flooding/fl_passive_ack.stats,
+  //read sf.stats
 );
 
 // 5 + 10 + 60 + TAU = 185
