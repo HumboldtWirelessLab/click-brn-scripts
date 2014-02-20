@@ -42,29 +42,29 @@ sed 's/circles1_1/97_5_clusters_mst.txt/g' < controlfiles/flooding_min_mst.click
 PREPARE_ONLY=1 run_sim.sh ns flooding.des 97_5_clusters_mst_min;
 echo 'Finished 97_5_clusters';
 
-cp multibox1/flooding.ctl flooding.ctl;
-cp multibox1/flooding.des flooding.des;
-cp multibox1/flooding.mes flooding.mes;
-cp multibox1/multibox1.plm multibox1.plm;
+#cp multibox1/flooding.ctl flooding.ctl;
+#cp multibox1/flooding.des flooding.des;
+#cp multibox1/flooding.mes flooding.mes;
+#cp multibox1/multibox1.plm multibox1.plm;
 
-sed 's/circles1_1/multibox1_mst.txt/g' < controlfiles/flooding_min_mst.click > flooding.click;
-PREPARE_ONLY=1 run_sim.sh ns flooding.des multibox1_mst_min;
-echo 'Finished multibox1';
+#sed 's/circles1_1/multibox1_mst.txt/g' < controlfiles/flooding_min_mst.click > flooding.click;
+#PREPARE_ONLY=1 run_sim.sh ns flooding.des multibox1_mst_min;
+#echo 'Finished multibox1';
 
-cp multibox2/flooding.ctl flooding.ctl;
-cp multibox2/flooding.des flooding.des;
-cp multibox2/flooding.mes flooding.mes;
-cp multibox2/multibox2.plm multibox2.plm;
+#cp multibox2/flooding.ctl flooding.ctl;
+#cp multibox2/flooding.des flooding.des;
+#cp multibox2/flooding.mes flooding.mes;
+#cp multibox2/multibox2.plm multibox2.plm;
 
-sed 's/circles1_1/multibox2_mst.txt/g' < controlfiles/flooding_min_mst.click > flooding.click;
-PREPARE_ONLY=1 run_sim.sh ns flooding.des multibox2_mst_min;
-echo 'Finished multibox2';
+#sed 's/circles1_1/multibox2_mst.txt/g' < controlfiles/flooding_min_mst.click > flooding.click;
+#PREPARE_ONLY=1 run_sim.sh ns flooding.des multibox2_mst_min;
+#echo 'Finished multibox2';
 
-cp multibox3/flooding.ctl flooding.ctl;
-cp multibox3/flooding.des flooding.des;
-cp multibox3/flooding.mes flooding.mes;
-cp multibox3/multibox3.plm multibox3.plm;
+#cp multibox3/flooding.ctl flooding.ctl;
+#cp multibox3/flooding.des flooding.des;
+#cp multibox3/flooding.mes flooding.mes;
+#cp multibox3/multibox3.plm multibox3.plm;
 
-sed 's/circles1_1/multibox3_mst.txt/g' < controlfiles/flooding_min_mst.click > flooding.click;
-PREPARE_ONLY=1 run_sim.sh ns flooding.des multibox3_mst_min;
-echo 'Finished multibox3';
+#sed 's/circles1_1/multibox3_mst.txt/g' < controlfiles/flooding_min_mst.click > flooding.click;
+#PREPARE_ONLY=1 run_sim.sh ns flooding.des multibox3_mst_min;
+#echo 'Finished multibox3';

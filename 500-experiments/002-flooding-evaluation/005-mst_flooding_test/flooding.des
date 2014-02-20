@@ -5,7 +5,7 @@ RADIO=shadowing11b
 FORGEINNODES=no
 NAME2MAC=yes
 
-TIME=221
+TIME=1301
 
 NODEPLACEMENTFILE=placement.txt
 NODETABLE=flooding.mes

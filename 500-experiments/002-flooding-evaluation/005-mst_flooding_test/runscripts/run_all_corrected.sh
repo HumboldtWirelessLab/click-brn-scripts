@@ -35,29 +35,29 @@ tar -czvf 97_5_clustersims.tgz 97_5_clusters_*;
 rm -rf 97_5_clusters_*;
 echo "97_5_cluster finished";
 
-runscripts/corrected_runs/prepare_all_multibox1_bd.sh;
-runscripts/corrected_runs/prepare_all_multibox1_sd.sh;
-run_para_sim.sh;
+#runscripts/corrected_runs/prepare_all_multibox1_bd.sh;
+#runscripts/corrected_runs/prepare_all_multibox1_sd.sh;
+#run_para_sim.sh;
 
-tar -czvf multibox1sims.tgz multibox1_*;
-rm -rf multibox1_*;
-echo "multibox1 finished";
+#tar -czvf multibox1sims.tgz multibox1_*;
+#rm -rf multibox1_*;
+#echo "multibox1 finished";
 
-runscripts/corrected_runs/prepare_all_multibox2_bd.sh;
-runscripts/corrected_runs/prepare_all_multibox2_sd.sh;
-run_para_sim.sh;
+#runscripts/corrected_runs/prepare_all_multibox2_bd.sh;
+#runscripts/corrected_runs/prepare_all_multibox2_sd.sh;
+#run_para_sim.sh;
 
-tar -czvf multibox2sims.tgz multibox2_*;
-rm -rf multibox2_*;
-echo "multibox2 finished";
+#tar -czvf multibox2sims.tgz multibox2_*;
+#rm -rf multibox2_*;
+#echo "multibox2 finished";
 
-runscripts/corrected_runs/prepare_all_multibox3_bd.sh;
-runscripts/corrected_runs/prepare_all_multibox3_sd.sh;
-run_para_sim.sh;
+#runscripts/corrected_runs/prepare_all_multibox3_bd.sh;
+#runscripts/corrected_runs/prepare_all_multibox3_sd.sh;
+#run_para_sim.sh;
 
-tar -czvf multibox3sims.tgz multibox3_*;
-rm -rf multibox3_*;
-echo "multibox3 finished";
+#tar -czvf multibox3sims.tgz multibox3_*;
+#rm -rf multibox3_*;
+#echo "multibox3 finished";
 
 runscripts/corrected_runs/prepare_all_mst_max.sh;
 runscripts/corrected_runs/prepare_all_mst_mean.sh;
