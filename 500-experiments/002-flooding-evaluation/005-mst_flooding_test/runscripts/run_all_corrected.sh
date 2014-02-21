@@ -64,7 +64,7 @@ runscripts/corrected_runs/prepare_all_mst_mean.sh;
 run_para_sim.sh;
 
 tar -czvf mstmean_sims.tgz *mst_mean;
-tar -czvf mstmax_sims.tgz *mst_,ax;
+tar -czvf mstmax_sims.tgz *mst_max;
 rm -rf *mst_*;
 echo "mst_max and mst_mean finished";
 
