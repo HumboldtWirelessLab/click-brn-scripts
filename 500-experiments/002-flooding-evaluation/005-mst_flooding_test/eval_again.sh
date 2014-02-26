@@ -1,0 +1,2 @@
+#!/bin/sh
+MODE=sim SIM=ns CONFIGDIR=/home/yetinam/Dokumente/brn-tools/click-brn-scripts/500-experiments/002-flooding-evaluation/005-mst_flooding_test/. CONFIGFILE=/home/yetinam/Dokumente/brn-tools/click-brn-scripts/500-experiments/002-flooding-evaluation/005-mst_flooding_test/flooding.des.ns2 RESULTDIR=/home/yetinam/Dokumente/brn-tools/click-brn-scripts/500-experiments/002-flooding-evaluation/005-mst_flooding_test /home/yetinam/Dokumente/brn-tools/./helper/simulation/bin/../../evaluation/bin/start_evaluation.sh 1>&1
