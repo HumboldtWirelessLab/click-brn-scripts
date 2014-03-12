@@ -3,6 +3,8 @@
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
+//#define USE_RTS_CTS
+
 #define RAWDUMP
 
 #include "brn/helper.inc"
@@ -23,6 +25,7 @@ Idle()
   -> SetTimestamp()
   -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
+  -> SetRTS(false)
   -> wifioutq::NotifierQueue(10)
   -> SetTimestamp()
   -> BRN2PrintWifi("Sender (NODENAME)", TIMESTAMP true)
@@ -71,5 +74,6 @@ Script(
   read sys_info.systeminfo,
   read id.version,
   read wireless.deviceinfo,
-  read wifidevice/cst.stats
+  read wifidevice/cst.stats,
+  read sf.stats
 );

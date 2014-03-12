@@ -3,6 +3,10 @@
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
+#define LINKPROBE_PERIOD   1000
+#define LINKPROBE_TAU      50000
+#define LINKPROBE_PROBES   "2 100 4 100 11 100 22 100"
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
