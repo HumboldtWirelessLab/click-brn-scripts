@@ -5,7 +5,7 @@
 
 #define LINKPROBE_PERIOD   1000
 #define LINKPROBE_TAU      50000
-#define LINKPROBE_PROBES   "2 100 4 100 11 100 22 100"
+#define LINKPROBE_PROBES   "2 100 4 100 11 100 22 100 48 100 72 100 108 100"
 
 #include "brn/helper.inc"
 #include "brn/brn.click"

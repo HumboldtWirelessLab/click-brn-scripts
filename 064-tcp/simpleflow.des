@@ -1,0 +1,27 @@
+NAME=simpleflow
+SIMULATOR=ns2
+#RADIO=shadowing11b
+RADIO=tworayground01b
+FORGEINNODES=no
+
+TIME=13
+
+NODEPLACEMENTFILE=placement.default
+NODETABLE=simpleflow.mes
+NODEPLACEMENT=string
+NODEPLACEMENTOPTS="relative"
+FIELDSIZE=RXRANGE
+
+LOGDIR=WORKDIR
+LOGFILE=measurement.log
+
+RESULTDIR=WORKDIR
+EVALUATIONSDIR=WORKDIR
+EVALUATION="embrace_xml evaluation/eval.sh"
+
+GPS=no
+NOTICE=no
+LOS=no
+
+CONTROLSOCKET=yes
+CONTROLFILE=simpleflow.ctl
