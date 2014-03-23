@@ -1,7 +1,7 @@
 NAME=receiver
 SIMULATOR=ns2
 RADIO=shadowing
-#RADIO=tworayground01b
+#RADIO=tworayground
 FORGEINNODES=no
 
 #DISABLE_NAM=1

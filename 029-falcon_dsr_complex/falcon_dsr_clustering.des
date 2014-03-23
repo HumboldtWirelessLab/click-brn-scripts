@@ -1,7 +1,7 @@
 NAME=falcon_dsr_clustering
 SIMULATOR=ns2
-#RADIO=shadowing11b
-RADIO=tworayground11b
+#RADIO=shadowing
+RADIO=tworayground
 FORGEINNODES=no
 
 TIME=100
