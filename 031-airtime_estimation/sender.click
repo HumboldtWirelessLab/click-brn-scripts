@@ -13,7 +13,7 @@ rawdevice
   -> BRN2PrintWifi("Feedback", TIMESTAMP true)
   -> Discard;
 
-rate::SetTXRates(RATE0 22, RATE1 2, RATE2 0, RATE3 0, TRIES0 3, TRIES1 3, TRIES2 0, TRIES3 0)
+rate::SetTXRate(RATE 22, TRIES 3)
 -> wifioutq::NotifierQueue(50)
 -> rawdevice;
 

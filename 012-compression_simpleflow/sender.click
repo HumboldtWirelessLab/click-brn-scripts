@@ -31,7 +31,7 @@ Idle
 #endif
   -> cnt_tx_comp::Counter()
   -> wifien::WifiEncap(0x00, 0:0:0:0:0:0)
-  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> SetTXRate(RATE 2, TRIES 1)
   -> rawdevice;
 
 pdc

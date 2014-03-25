@@ -39,7 +39,7 @@ brn_clf[0]
 -> SetTimestamp()
 -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
--> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+-> SetTXRate(RATE 2, TRIES 1)
 -> NotifierQueue(500)
 -> [2]device_wifi;
 
