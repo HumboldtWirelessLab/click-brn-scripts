@@ -9,11 +9,12 @@ NODE=8;
 BACKOFF=9;
 BOUSAGE=10;
 BOEXP=11;
-PKTS_OVERALL=12;
+LASTUSE=12;
+PKTS_OVERALL=13;
 %COLLISIONS=38;
-COLLISIONS=63;
+COLLISIONS=64;
 
-cm_string={'real';'shadow';'2ray'};
+cm_string={'real';'shadow11b';'2ray';'shadow01b'};
 target_string={'bcast';'ucast'};
 tqm_string={ 'off';'on'};
 %ps_string={'200', '400', '800', '1200', '1500'};
@@ -25,7 +26,7 @@ ps_string={'1500'};
 %ps_string={'375', '750', '1500'};
 
 
-sim_duration = 30;
+sim_duration = 120;
 
 print=1;
 a=load('backoffusage.mat','-ASCII');
@@ -38,23 +39,32 @@ cmodel=unique(a(:,CHANNELMODEL));
 all_targets=[1];
 tqmmodes=unique(a(:,TTQM_STRATEGY));
 
-%plot_cols=['b';'g';'r';'c';'k';'m';'y'];
-%tqmmodes=[2 3 4 5 7 8 9]';
+%plot_cols=['b';'g';'c';'m';'k';'r'];
+%tqmmodes=[2 3 5 7 8 9]';
 
-%plot_cols=['b';'r';'m';'g';'c'];
-%tqmmodes=[2 3 4 8 9]';
+%plot_cols=['b';'m';'k';'r'];
+%tqmmodes=[2 7 8 9]';
 
 %plot_cols=['b';'r';'g';'m'];
 %tqmmodes=[8 3 5 9]';
 
-plot_cols=['b';'r';'m'];
-tqmmodes=[8 3 5]';
+%plot_cols=['m';'r';'g';'k';'c'];
+%tqmmodes=[2 3 7 8 9]';
 
-%plot_cols=['b';'r'];
-%tqmmodes=[8 5]';
+%plot_cols=['r';'m';'k';'b'];
+%tqmmodes=[5 7 8 9]';
 
-%plot_cols=['b'];
-%tqmmodes=[0];
+%plot_cols=['r';'k';'m'];
+%tqmmodes=[5 8 9]';
+
+%plot_cols=['b';'m';'k';'r'];
+%tqmmodes=[2 7 8 9]';
+
+plot_cols=['c';'k';'r'];
+tqmmodes=[5 8 9]';
+
+%plot_cols=['k'];
+%tqmmodes=[8];
 
 schemes = {'old 802.11','direct','max. tp','busy aware','target pkt loss','learning','target diff rx tx busy','neighbours','802.11','tx aware'};
 
@@ -63,6 +73,13 @@ scheme_labels = {};
 for ii = 1:size(tqmmodes, 1)
   scheme_labels = union(scheme_labels, schemes{tqmmodes(ii)+1}, 'stable');
 end
+
+
+plot_bo = 0;
+plot_colls = 0;
+plot_jfi = 1;
+plot_sumtp = 1;
+plot_nodetp = 0;
 
 %                                                     TP     FAIR  Backoff
 % blue  BACKOFF_STRATEGY_OFF                     0    +      +++   +++
@@ -92,7 +109,8 @@ for ps_i = 1:size(all_ps,1)
   for cm_i = 1:size(cmodel,1)
     for tar_i = 1:size(all_targets,1)
 
-      result_avg_tp=zeros(size(no_nodes,1),size(tqmmodes,1));
+      result_avg_tp=cell(size(no_nodes,1),size(tqmmodes,1));
+
       result_avg_backoff=zeros(size(no_nodes,1),size(tqmmodes,1));
       jfn = zeros(size(no_nodes,1),size(tqmmodes,1));
 
@@ -111,9 +129,17 @@ for ps_i = 1:size(all_ps,1)
           nodes_data=data(find((data(:,TTQM_STRATEGY) == tqmmodes(tqm_i)) & (data(:,NO_NODES) == no_nodes(non_i))), :);
 
           zero_bo_nodes_data=nodes_data(find((nodes_data(:,BACKOFF) == 0) & (nodes_data(:,NODE) == MIN_NODE_NUM)), :);
+
           SIMNUMS=unique(nodes_data(:,NUM));
 
-          result_avg_tp(non_i,tqm_i) = mean(zero_bo_nodes_data(:,PKTS_OVERALL));
+          overall_pkts = zero_bo_nodes_data(:, PKTS_OVERALL);
+          overall_tp_kbit = (8 * (all_ps(ps_i)+38) * overall_pkts) / (1024*sim_duration);
+          %confidence = 1.6449 * (std(overall_tp_kbit)) / sqrt(length(overall_tp_kbit));    % 1.6449: Quantil der Standardnormalverteilung für 95%tige Sicherheit
+          confidence = (std(overall_tp_kbit)) / sqrt(length(overall_tp_kbit));    % standard error
+
+          %result_avg_tp(non_i,tqm_i) = mean(zero_bo_nodes_data(:,PKTS_OVERALL));
+          result_avg_tp{non_i,tqm_i} = [mean(overall_tp_kbit); confidence];
+
           result_avg_backoff(non_i,tqm_i) = sum(nodes_data(:,BACKOFF).*nodes_data(:,BOUSAGE)) / sum(nodes_data(:,BOUSAGE));
           result_avg_collision(non_i, tqm_i) = mean(zero_bo_nodes_data(:,COLLISIONS));
 
@@ -141,11 +167,8 @@ for ps_i = 1:size(all_ps,1)
       end
 
 
-      plot_all=1;
-      if ( plot_all == 1 )
-
+      if (plot_bo == 1)
         bkoffs = [];
-
         h2=figure();
         for tqm_i = 1:size(tqmmodes,1)
           plot(no_nodes, result_avg_backoff(:,tqm_i), strcat(plot_cols(tqm_i)), 'LineWidth', 1.2);
@@ -166,7 +189,8 @@ for ps_i = 1:size(all_ps,1)
         grid on;
         %ylim([0 50]);
         %set(gca, 'XTick', [no_nodes(1):1:no_nodes(size(no_nodes, 1))]);
-        set(gca, 'XTick', [no_nodes]);
+        %set(gca, 'XTick', [no_nodes]);
+        set(gca, 'XTick', [2,5,10,15,20,25,30]);
 
         if (with_leading_zero == 1)
           fname=strcat('avg_bo_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.png');
@@ -179,36 +203,43 @@ for ps_i = 1:size(all_ps,1)
           fname=strcat('avg_bo_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.eps');
           saveas(h2, fname{1}, 'epsc');
         end
+      end
 
-
+      if (plot_sumtp == 1)
         h1=figure();
         % all_ps(ps_i) == payload size, payload size + 38 -> real pkt size
         % result_avg_tp = mean(OK Packets from measurement.log)
         % 8 for bytes to bits since pkt size is in bytes
         % 1024 to get kilobits, sim_duration to get kbit/s
-        result_avg_tp =  8 * (all_ps(ps_i)+38) * result_avg_tp / (1024*sim_duration);
 
+        %result_avg_tp =  (8 * (all_ps(ps_i)+38) * result_avg_tp) / (1024*sim_duration);
 
         %avg_tp_for_max_no_nodes = result_avg_tp(size(result_avg_tp, 1),:);
         %tps = [tps; avg_tp_for_max_no_nodes];
 
+        result_avg_tp_mat = cell2mat(result_avg_tp);
 
-        avg_tps{end+1} = result_avg_tp;
+        %avg_tps{end+1} = result_avg_tp;
 
 
         for tqm_i = 1:size(tqmmodes,1)
-          plot(no_nodes, result_avg_tp(:,tqm_i), plot_cols(tqm_i), 'LineWidth', 1.2);
+          tmp = result_avg_tp_mat(:, tqm_i);
+          avg_tps = tmp(1:2:length(tmp));
+          conf_intervals = tmp(2:2:length(tmp));
+          %plot(no_nodes, result_avg_tp(:,tqm_i), plot_cols(tqm_i), 'LineWidth', 1.2);
           %bar(no_nodes, result_avg_tp(:,tqm_i));
+          errorbar(no_nodes, avg_tps, conf_intervals, plot_cols(tqm_i));
           hold on;
         end
         title('Sum. Throughput');
-        ylabel('sum. Throughput (kbit/s)')
+        ylabel('Sum. Throughput (kbit/s)')
         xlabel('No. Nodes');
-        ylim([0 1000]);
+        ylim([650 925]);
         %legend(findobj(gca,'Tag','Box'),'off','max. Throughput','channelload aw.','target packetloss','learning','diff rxtx busy', 'location', 'southeast');
         legend(findobj(gca,'Tag','Box'),scheme_labels, 'location', 'southeast');
         grid on;
-        set(gca, 'XTick', [no_nodes]);
+        %set(gca, 'XTick', [no_nodes]);
+        set(gca, 'XTick', [2,5,10,15,20,25,30]);
 
         if (with_leading_zero == 1)
           fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.png');
@@ -221,7 +252,9 @@ for ps_i = 1:size(all_ps,1)
           fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.eps');
           saveas(h1, fname{1}, 'epsc');
         end
+      end
 
+      if (plot_jfi == 1)
         h3=figure();
         for tqm_i = 1:size(tqmmodes,1)
           plot(no_nodes, jfn(:,tqm_i),plot_cols(tqm_i), 'LineWidth', 1.2);
@@ -232,9 +265,10 @@ for ps_i = 1:size(all_ps,1)
         xlabel('No. Nodes');
         %legend(findobj(gca,'Tag','Box'),'off','max. Throughput','channelload aw.','target packetloss','learning','diff rxtx busy', 'location', 'southeast');
         legend(findobj(gca,'Tag','Box'),scheme_labels, 'location', 'southeast');
-        ylim([0 1]);
+        ylim([0.7 1]);
         grid on;
-        set(gca, 'XTick', [no_nodes]);
+        %set(gca, 'XTick', [no_nodes]);
+        set(gca, 'XTick', [1,5,10,15,20,25,30]);
 
         if (with_leading_zero == 1)
           fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.png');
@@ -247,9 +281,9 @@ for ps_i = 1:size(all_ps,1)
           fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.eps');
           saveas(h3, fname{1}, 'epsc');
         end
+      end
 
-
-
+      if (plot_colls == 1)
         h4=figure();
         for tqm_i = 1:size(tqmmodes,1)
           % devide collisions by 2 because they get counted as doubles.
@@ -268,7 +302,8 @@ for ps_i = 1:size(all_ps,1)
         grid on;
         %ylim([0 30]);
         %set(gca, 'XTick', [no_nodes(1):1:no_nodes(size(no_nodes, 1))]);
-        set(gca, 'XTick', [no_nodes]);
+        %set(gca, 'XTick', [no_nodes]);
+        set(gca, 'XTick', [2,5,10,15,20,25,30]);
 
         if (with_leading_zero == 1)
           fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.png');
@@ -281,31 +316,30 @@ for ps_i = 1:size(all_ps,1)
           fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.eps');
           saveas(h4, fname{1}, 'epsc');
         end
-
       end
 
 
-      nodes_tp_big_m = [];
+      if (plot_nodetp == 1)
+        nodes_tp_big_m = [];
 
-      for tqm_i = 1:size(tqmmodes,1)
-        %h4=figure();
-        %%size(squeeze(nodes_tp(tqm_i,:,:))')
-        %%size(no_nodes)
-        %boxplot(squeeze(nodes_tp(tqm_i,:,:))',no_nodes);
-        %hold on;
-        nodes_tp_big_m = [ nodes_tp_big_m; squeeze(nodes_tp(tqm_i,:,:)) ];
-        %nodes_tp_big_m = [ squeeze(nodes_tp(tqm_i,:,:)); nodes_tp_big_m ];
-      end
+        for tqm_i = 1:size(tqmmodes,1)
+          %h4=figure();
+          %%size(squeeze(nodes_tp(tqm_i,:,:))')
+          %%size(no_nodes)
+          %boxplot(squeeze(nodes_tp(tqm_i,:,:))',no_nodes);
+          %hold on;
+          nodes_tp_big_m = [ nodes_tp_big_m; squeeze(nodes_tp(tqm_i,:,:)) ];
+          %nodes_tp_big_m = [ squeeze(nodes_tp(tqm_i,:,:)); nodes_tp_big_m ];
+        end
 
-      nodes_tp_big_m =  8 * (all_ps(ps_i)+32) * nodes_tp_big_m / (1024*sim_duration);
+        nodes_tp_big_m =  8 * (all_ps(ps_i)+32) * nodes_tp_big_m / (1024*sim_duration);
 
-      nodes_tp_labes = repmat(no_nodes',1,size(tqmmodes,1));
+        nodes_tp_labes = repmat(no_nodes',1,size(tqmmodes,1));
 
-      %size(nodes_tp_big_m)
-      %size(nodes_tp_labes)
-      %repmat(no_nodes',size(tqmmodes,1),1)
+        %size(nodes_tp_big_m)
+        %size(nodes_tp_labes)
+        %repmat(no_nodes',size(tqmmodes,1),1)
 
-      if ( plot_all == 1 )
         nodes_tp_group_labes = reshape(repmat(tqmmodes',size(no_nodes,1),1),size(no_nodes,1)*size(tqmmodes,1),1)';
         h5=figure();
         boxplot(nodes_tp_big_m',{nodes_tp_labes,nodes_tp_group_labes},'colors',repmat(plot_cols,1,size(tqmmodes,1)),'factorgap',[10 2],'labelverbosity','minor');
@@ -315,11 +349,14 @@ for ps_i = 1:size(all_ps,1)
         legend(findobj(gca,'Tag','Box'), fliplr(scheme_labels), 'location', 'northeast');
 
         %ylim([0 800]);
+        %ylim([0 500]);
+        ylim([0 1050]);
         %legend('boxon');
         title('Nodes throughput');
         ylabel('Throughput (kbit/s)')
         xlabel('No. Nodes');
         grid on;
+        set(gca, 'XTick', [2,5,10,15,20,25,30]);
 
         if (with_leading_zero == 1)
           fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i),'.png');
@@ -332,15 +369,15 @@ for ps_i = 1:size(all_ps,1)
           fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i),'.eps');
           saveas(h5, fname{1}, 'epsc');
         end
-
       end
+
     end
   end
 
 end
 
-foo = 1;
-if (foo == 1)
+
+if (length(all_ps) ~= 1)
   for ii = 1:length(no_nodes)
     tps = [];
 

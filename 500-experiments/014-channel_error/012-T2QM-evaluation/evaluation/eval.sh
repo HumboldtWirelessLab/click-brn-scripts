@@ -33,7 +33,7 @@ if [ "$MODE" = "sim" ]; then
   fi
 
   if [ -f $RESULTDIR/measurement.log ]; then
-    OVERALL=`cat $RESULTDIR/measurement.log | grep "OKP" | wc -l`
+    OVERALL=`cat $RESULTDIR/measurement.log | grep "OKP" | grep "data" | wc -l`
     #echo "Overall: $OVERALL"
     echo -n "$OVERALL" > $EVALUATIONSDIR/result.txt
     NODES=0
@@ -60,10 +60,12 @@ echo -n ",$COLS" >> $EVALUATIONSDIR/result.txt
 RES=`cat $EVALUATIONSDIR/result.txt`
 xsltproc --stringparam result "$RES" $DIR/t2qm_queue_usage.xslt $EVALUATIONSDIR/measurement.xml > $EVALUATIONSDIR/queueusage.csv
 xsltproc --stringparam result "$RES" $DIR/t2qm_backoff_usage.xslt $EVALUATIONSDIR/measurement.xml > $EVALUATIONSDIR/backoffusage.csv
+xsltproc --stringparam result "" $DIR/t2qm_bo_values.xslt $EVALUATIONSDIR/measurement.xml > $EVALUATIONSDIR/bo_values.csv
 
 echo "" >> $EVALUATIONSDIR/result.txt
 
 cat $EVALUATIONSDIR/queueusage.csv | MAC2NUM=1 human_readable.sh $RESULTDIR/nodes.mac | sed -e "s#,# #g" > $EVALUATIONSDIR/queueusage.mat
 cat $EVALUATIONSDIR/backoffusage.csv | MAC2NUM=1 human_readable.sh $RESULTDIR/nodes.mac | sed -e "s#,# #g" > $EVALUATIONSDIR/backoffusage.mat
+cat $EVALUATIONSDIR/bo_values.csv | MAC2NUM=1 human_readable.sh $RESULTDIR/nodes.mac | sed -e "s#,# #g" > $EVALUATIONSDIR/bovalues.mat
 
 exit 0

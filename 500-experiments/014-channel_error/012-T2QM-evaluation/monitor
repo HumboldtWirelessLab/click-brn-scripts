@@ -22,12 +22,12 @@ MTU=7905
 #CWMAX="255 511 1023 2048"
 
 # allways 5 times + current favourite
-#CWMIN="15 31 63 127"
-#CWMAX="511 1023 2047 4095"
+  CWMIN="15 31 63 127"
+  CWMAX="511 1023 2047 4095"
 
 # always 5 times starting with 31
-CWMIN="31 63 127 255"
-CWMAX="1023 2047 4095 8192"
+#CWMIN="31 63 127 255"
+#CWMAX="1023 2047 4095 8192"
 
 # 5 times starting with 63
 #CWMIN="63 127 255 511"

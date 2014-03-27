@@ -4,14 +4,12 @@
 //#define RAWDUMP
 
 #define CST cst
-//#define CST_STATS_DURATION 500
 
+//#define CST_STATS_DURATION 500
 
 #ifndef TOS2QUEUEMAPPER_STRATEGY
 #define TOS2QUEUEMAPPER_STRATEGY 0
 #endif
-
-#define USE_RTS_CTS 1
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -25,17 +23,18 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 Idle()
-  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 0 1500 0 30000 true 1 0", FLOWSTARTRANDOM 50, DEBUG 2)
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 12 1500 0 120000 true 1 1000", FLOWSTARTRANDOM 50, DEBUG 2)
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTXRates(RATE0 2, TRIES0 7, TRIES1 0, TRIES2 0, TRIES3 0)
   -> SetTXPower(13)
-  -> Brn2_SetRTSCTS(DEBUG 2)
+  //-> SetRTS(RTS true)
   //-> SetPacketAnno(TOS 1)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
+  //-> BRN2PrintWifi("RCSender NODENAME", TIMESTAMP true)
   -> discard::Discard;
 
 error_clf[1]
@@ -80,8 +79,9 @@ filter_tx[1]
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
-  wait 30,
+  wait 121,
   read wifidevice/tosq.stats,
+  read wifidevice/tosq.BOs,
   read wifidevice/cst.stats,
   read sf.stats
   //read sys_info.systeminfo,

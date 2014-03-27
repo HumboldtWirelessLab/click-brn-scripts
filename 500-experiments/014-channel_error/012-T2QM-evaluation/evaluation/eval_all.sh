@@ -19,6 +19,7 @@ case "$SIGN" in
 esac
 
 echo -n "" > backoffusage.mat
+echo -n "" > bovalues.mat
 
 for i in `ls -d ../[0-9]*`; do
 
@@ -42,6 +43,7 @@ for i in `ls -d ../[0-9]*`; do
   PARAMS="$NUM $NO_NODES $PACKETSIZE $TOS2QUEUEMAPPER_STRATEGY $RATE $TARGET $CHANNEL_MODEL"
 
   cat $i/evaluation/backoffusage.mat | awk -v params="$PARAMS" '{print params" "$0}' >> backoffusage.mat
+  cat $i/evaluation/bovalues.mat | awk -v params="$PARAMS" '{print params" "$0}' >> bovalues.mat
 
 done
 
