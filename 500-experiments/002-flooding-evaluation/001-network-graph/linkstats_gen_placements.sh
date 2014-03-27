@@ -39,16 +39,16 @@ rm -f placements_adjmat*.dat
 
 for i in `seq 1 $NOPLM`; do
 
-  MAX_CLUSTER_SIZE=`cat $i/evaluation/network_info/clustersize.csv | tail -n 1 | sed "s#,# #g" | awk '{print $2}'`
+  NOCLUSTER=`cat $i/evaluation/network_info/cnt_partitions.csv | tail -n 1 | sed "s#,# #g" | awk '{print $1}'`
 
-  if [ $MAX_CLUSTER_SIZE -eq $NO_NODES ]; then
+  if [ $NOCLUSTER -eq 1 ]; then
     cat $i/placementfile.plm | awk -v NUM=$NUM '{print NUM" "$0}' >> placements.dat
-    for g in `(cd $i/evaluation/network_info; ls graph_psr_*)`; do
-      r=`echo $g | sed "s#_# #g" | awk '{print $3}'`
-      s=`echo $g | sed "s#_# #g" | awk '{print $4}'`
-      FNAME="placements_adjmat_""$r""_""$s"".dat"
-      cat $i/evaluation/network_info/$g | awk -v NUM=$NUM '{print NUM" "$0}' >> $FNAME
-    done
+    #for g in `(cd $i/evaluation/network_info; ls graph_psr_*)`; do
+    #  r=`echo $g | sed "s#_# #g" | awk '{print $3}'`
+    #  s=`echo $g | sed "s#_# #g" | awk '{print $4}'`
+    #  FNAME="placements_adjmat_""$r""_""$s"".dat"
+    #  cat $i/evaluation/network_info/$g | awk -v NUM=$NUM '{print NUM" "$0}' >> $FNAME
+    #done
     let NUM=NUM+1
   fi
 

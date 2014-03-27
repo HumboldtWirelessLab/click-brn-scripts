@@ -50,11 +50,11 @@ Idle
 ->[1]device_wifi;
 
 Script(
-  read device_wifi/link_stat.probes,
+//  read device_wifi/link_stat.probes,
   wait 300,
   read lt.links,
-  wait 5,
-  read device_wifi/link_stat.bcast_stats,
-  wait 5,
-  read device_wifi/wifidevice/cst.stats
+//  wait 5,
+//  read device_wifi/link_stat.bcast_stats,
+//  wait 5,
+//  read device_wifi/wifidevice/cst.stats
 );

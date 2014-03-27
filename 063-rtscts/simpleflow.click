@@ -1,6 +1,7 @@
 #define DEBUGLEVEL 2
 
 #define USE_RTS_CTS
+#define RTS_CTS_STRATEGY 6
 #define CERR
 #define PRIO_QUEUE
 #define RAWDUMP
@@ -40,7 +41,7 @@ brn_clf[0]
 -> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", FLOWSTARTRANDOM 99, DEBUG 2)
 //-> SetTimestamp() -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
--> SetTXRates(RATE0 2, TRIES0 7, TRIES1 0, TRIES2 0, TRIES3 0)
+-> SetTXRate(RATE 2, TRIES 7)
 -> NotifierQueue(500)
 -> [2]device_wifi;
 
