@@ -1,10 +1,10 @@
 NAME=receiver
 SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
+RADIO=shadowing
+#RADIO=tworayground
 FORGEINNODES=no
 
-TIME=5
+TIME=6
 
 NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=sender_and_receiver.mes
@@ -20,7 +20,7 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="evaluation/eval.sh dump_compression status_compression"
+EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR/evaluation
 EVALUATIONSDIRPOSTFIX=_evaluation
 

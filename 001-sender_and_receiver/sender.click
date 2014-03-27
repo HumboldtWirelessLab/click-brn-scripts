@@ -3,6 +3,8 @@
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
+//#define USE_RTS_CTS
+
 #define RAWDUMP
 
 #include "brn/helper.inc"
@@ -17,12 +19,13 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 Idle()
-  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 1000 1500 0 5000 true 1 0", DEBUG 4)  //VAR_RATE VAR_PSIZE
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 12 1500 0 5000 true 1 0", DEBUG 4)  //VAR_RATE VAR_PSIZE
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTimestamp()
-  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
-  -> SetTXPower(13)
+  -> SetTXRate(RATE 2, TRIES 1)
+  -> SetTXPower(24)
+  -> SetRTS(false)
   -> wifioutq::NotifierQueue(10)
   -> SetTimestamp()
   -> BRN2PrintWifi("Sender (NODENAME)", TIMESTAMP true)
@@ -71,5 +74,6 @@ Script(
   read sys_info.systeminfo,
   read id.version,
   read wireless.deviceinfo,
-  read wifidevice/cst.stats
+  read wifidevice/cst.stats,
+  read sf.stats
 );

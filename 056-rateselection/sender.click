@@ -21,14 +21,14 @@ rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22);
 rs_madwifi::BrnMadwifiRate();
 rs::BrnAutoRateFallback();
 
-ratesel::SetTXPowerRate(RT rates, MAXPOWER 20, RATESELECTION rs );
+ratesel::SetTXPowerRate( RATESELECTIONS "rs rs_madwifi", STRATEGY 4, RT rates);
 
 Idle()
   -> sf::BRN2SimpleFlow(DEBUG 2)
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> [0]ratesel[0]
-  -> SetTXPower(13)
+  -> SetTXPower(24)
   -> wifioutq::NotifierQueue(10)
   -> SetTimestamp()
   -> BRN2PrintWifi("Sender (NODENAME)", TIMESTAMP true)
@@ -76,8 +76,7 @@ Script(
   write rates.insert 00-00-00-00-00-02  2 4 11 12 18 22,
   wait 1,
   read rates.rates,
-  read ratesel.info,
-  stop
+  read ratesel.info
 );
 
 

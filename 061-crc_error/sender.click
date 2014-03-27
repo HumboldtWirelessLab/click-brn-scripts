@@ -20,8 +20,8 @@ Idle()
   -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 1000 1500 0 5000 true 1 0", DEBUG 2)  //VAR_RATE VAR_PSIZE
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-  -> SetTXRates(RATE0 2, TRIES0 7, TRIES1 0, TRIES2 0, TRIES3 0)
-  -> SetTXPower(13)
+  -> SetTXRate(RATE 2, TRIES 7)
+  -> SetTXPower(24)
   -> wifioutq::NotifierQueue(10)
   -> wifidevice
   -> discard::Discard;

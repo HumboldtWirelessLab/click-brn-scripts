@@ -1,0 +1,994 @@
+
+
+
+
+
+
+
+elementclass RAWDEV { DEVNAME $devname, DEVICE $device |
+
+  input[0]
+  -> rawdev_suppressor::Suppressor()
+  -> ToSimDevice($devname, ENCAP UNKNOWN, POLLING false, HAVETXFEEDBACKANNO true );
+
+
+
+  FromSimDevice($devname, SNAPLEN 8190, HEADROOM 192)
+
+
+
+
+
+  -> SetTimestamp()
+  -> BRN2SetDeviceAnno(DEVICE $device)
+  -> [0]output;
+}
+elementclass RAWWIFIDEV { DEVNAME $devname, DEVICE $device |
+
+
+
+  cst::ChannelStats(DEVICE $device, STATS_DURATION 1000, PROCFILE /simulation, PROCINTERVAL 1000, NEIGHBOUR_STATS true, FULL_STATS false, SAVE_DURATION 1000 );
+  rawdev::RAWDEV(DEVNAME $devname, DEVICE $device);
+
+
+
+  bo_maxtp::BoMaxThroughput(CHANNELSTATS cst, DEBUG 2);
+
+  bo_cla::BoChannelLoadAware(CHANNELSTATS cst, TARGETLOAD 90, TARGETDIFF 0, CAP 1, CST_SYNC 1, DEBUG 4);
+
+  bo_targetpl::BoTargetPacketloss(CHANNELSTATS cst, TARGETPL 10, DEBUG 4);
+
+  bo_nbs::BoNeighbours(CHANNELSTATS cst, DEBUG 4);
+
+  bo_learning::BoLearning(MIN_CWMIN 32, MAX_CWMIN 1024, STRICT 1, CAP 1, DEBUG 4);
+
+  bo_const::BoConstant(CHANNELSTATS cst, BO 32, DEBUG 4);
+  input[0]
+
+  -> WifiSeq()
+  -> tosq::Tos2QueueMapper( CWMIN "7 15 31 63", CWMAX "63 127 255 511", AIFS "2 2 2 2", STRATEGY 0, BO_SCHEMES "bo_maxtp bo_cla bo_targetpl bo_learning bo_nbs bo_const", DEBUG 2)
+  -> ExtraEncap()
+  -> rawdev;
+
+  rawdev
+  -> dev_decap::ExtraDecap()
+
+  -> cst
+  -> Tos2QueueMapperTXFeedback(TOS2QM tosq, DEBUG 2)
+
+
+
+  -> ForeignRxStats(DEVICE $device,TIMEOUT 5, DEBUG 2)
+
+  -> [0]output;
+}
+elementclass WIFIDEV { DEVNAME $devname, DEVICE $device, ETHERADDRESS $etheraddress, LT $lt |
+
+  availablerates::BrnAvailableRates(DEFAULT 2 4 11 22 12 18 24 36 48 72 96 108);
+  etx_metric :: BRN2ETXMetric($lt);
+
+
+  link_stat :: BRN2LinkStat(DEVICE $device,
+
+                            PERIOD 2000,
+
+
+
+
+                            TAU 100000,
+
+
+
+
+                            PROBES "2 100",
+
+
+
+                            RT availablerates,
+
+                            METRIC "etx_metric",
+                            DEBUG 0 );
+
+  dts::DistTimeSync(LINKSTAT link_stat, TIMEDRIFT -1, OFFSET -1, DEBUG 2);
+
+  brnToMe::BRN2ToThisNode(NODEIDENTITY id);
+  wifidevice::RAWWIFIDEV(DEVNAME $devname, DEVICE $device);
+
+  input[0]
+
+
+
+  -> data_power::BrnSetTXPower(DEVICE $device, POWER 16)
+
+  -> data_rate::SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> brnwifi::WifiEncap(0x00, 0:0:0:0:0:0)
+
+
+  -> data_queue::NotifierQueue(100)
+
+
+  -> data_suppressor::Suppressor()
+  -> [1]lp_data_scheduler::PrioSched()
+
+  -> [2]x_prio_q::PrioSched()
+
+
+
+  -> wifidevice
+
+  -> filter_tx :: FilterTX()
+
+
+
+  -> error_clf :: FilterPhyErr()
+
+
+
+  -> bcast_clf::Classifier(30/80860c0c,
+                           - );
+
+  bcast_clf[1]
+
+  -> WifiDupeFilter()
+
+  -> bcast_dup::Null();
+
+  bcast_clf[0]
+  -> bcast_dup
+
+
+  -> wififrame_clf :: Classifier( 1/40%40,
+                                  0/00%0f,
+                                      - );
+
+  filter_tx[1]
+
+
+
+
+
+  -> WifiDecap()
+  -> ig_feedback_clf :: Classifier( 12/8888, - );
+
+  ig_feedback_clf[1]
+
+
+
+
+
+
+  -> txfb_brn_clf :: Classifier( 12/8086, - )
+  -> brnfb_lsclf :: Classifier( 14/01, - )
+  -> Discard;
+
+  brnfb_lsclf[1]
+  -> [3]output;
+
+  txfb_brn_clf[1]
+
+  -> Discard;
+
+  wififrame_clf[0]
+    -> Discard;
+
+  wififrame_clf[1]
+    -> Discard;
+
+  wififrame_clf[2]
+
+    -> dts
+    -> WifiDecap()
+
+    -> brn_ether_clf :: Classifier( 12/8086, - )
+    -> lp_clf :: Classifier( 14/01, - )
+    -> BRN2EtherDecap()
+
+    -> link_stat
+
+    -> lp_etherencap::EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
+
+
+
+
+
+
+
+    -> lp_wifiencap::WifiEncap(0x00, 0:0:0:0:0:0)
+    -> lp_queue::FrontDropQueue(2)
+    -> lp_suppressor::Suppressor()
+    -> [0]lp_data_scheduler;
+
+  brn_ether_clf[1]
+
+  -> Discard;
+
+  lp_clf[1]
+  -> [1]data_suppressor[1]
+  -> brnToMe;
+  brnToMe[0] -> [0]output;
+  brnToMe[1] -> [1]output;
+  brnToMe[2] -> [2]output;
+
+  input[1] -> Discard;
+
+
+
+  input[2]
+
+  -> x_brnwifi::WifiEncap(0x00, 0:0:0:0:0:0)
+  -> [1]x_prio_q;
+
+  Idle()
+  -> ig_flow::BRN2SimpleFlow(EXTRADATA "Interferenzgraph", ELEMENTID 255, DEBUG 2);
+
+  ig_feedback_clf[0]
+  -> BRN2EtherDecap()
+  -> Classifier( 0/34 )
+  -> BRN2Decap()
+  -> [1]ig_flow
+  -> Print("packet")
+  -> EtherEncap(0x8888, $etheraddress, ff:ff:ff:ff:ff:ff)
+  -> WifiEncap(0x00, 0:0:0:0:0:0)
+  -> ig_rate :: SetTXRate(2)
+
+
+
+  -> ig_power :: BrnSetTXPower(DEVICE $device, POWER 16)
+
+  -> SetTimestamp()
+  -> ig_notifierqueue::NotifierQueue(500)
+  -> ig_suppressor::Suppressor()
+
+
+  -> [0]x_prio_q;
+
+
+
+  error_clf[1]
+
+  -> PrintCRCError(LABEL "CRC")
+
+
+  -> Discard;
+
+  link_stat[1]
+  -> Print("Linkstat error",200)
+  -> Discard;
+
+
+
+
+
+}
+elementclass BROADCASTFLOODING {ID $id, LT $lt |
+
+  fl_helper::FloodingHelper(LINKTABLE $lt, MAXNBMETRIC 500, CACHETIMEOUT 5000000, DEBUG 2);
+  flp::MSTFlooding(NODEIDENTITY $id, CIRCLEPATH "/home/yetinam/Dokumente/brn-tools/click-brn-scripts/500-experiments/002-flooding-evaluation/005-mst_flooding_test/./circles_konvertiert/circles1_1", BIDIRECTIONAL true, ONLY_PRE false, DEBUG 2);
+  fl_passive_ack::FloodingPassiveAck(NODEIDENTITY $id, FLOODINGHELPER fl_helper, DEFAULTRETRIES 5, DEFAULTINTERVAL 45, DEFAULTTIMEOUT 1000, ABORTONFINISHED true, DEBUG 2);
+
+  fl::Flooding(NODEIDENTITY $id, FLOODINGPOLICY flp, FLOODINGPASSIVEACK fl_passive_ack, ABORTTX 3, DEBUG 2);
+  unicfl :: UnicastFlooding(NODEIDENTITY $id, FLOODING fl, FLOODINGHELPER fl_helper, PRESELECTIONSTRATEGY 2, REJECTONEMPTYCS true, CANDSELECTIONSTRATEGY 4, UCASTPEERMETRIC 4, FORCERESPONSIBILITY true, USEASSIGNINFO true, FIXCS false, DEBUG 2);
+  fl_piggyback::FloodingPiggyback(NODEIDENTITY $id, FLOODING fl, FLOODINGHELPER fl_helper, LASTNODESPERPKT 5, DEBUG 2);
+
+  routing_peek::FloodingRoutingPeek(DEBUG 2);
+
+  input[0]
+  -> e2eretry::FloodingEnd2EndRetry(DEFAULTRETRIES 0, DEFAULTTIMEOUT 500, TIMETOLERANCE 20, DEBUG 2)
+  -> [0]fl;
+
+  input[1]
+
+  -> routing_peek
+  -> BRN2Decap()
+  -> [1]fl;
+
+  input[2]
+  -> BRN2Decap()
+  -> [2]fl;
+
+  fl[0]
+  -> [0]output;
+
+  fl[1]
+
+  -> rdq::RandomDelayQueue(MINDELAY 0, MAXDELAY 45, DIFFDELAY 5, TIMESTAMPANNOS true)
+
+
+  -> FrontDropQueue(100)
+
+
+  -> unicfl
+
+  -> fl_piggyback
+  -> setsrc::BRN2SetSrcForNeighbor(LINKTABLE $lt, USEANNO true)
+  -> BroadcastMultiplexer(NODEIDENTITY $id, USEANNO true)
+  -> BRN2EtherEncap(USEANNO true)
+
+  -> [1]output;
+
+  input[3]
+
+  -> [1]routing_peek[1]
+  -> BRN2Decap()
+  -> [4]fl;
+
+  input[4]
+
+  -> BRN2Decap()
+  -> [3]fl;
+
+
+  unicfl[1]
+  -> BRN2Decap()
+  -> [5]fl;
+
+
+  setsrc[1]
+  -> BRN2EtherEncap(USEANNO true)
+  -> Print("No Src for Dst",100)
+  -> Discard;
+
+
+  Idle -> [2]output;
+
+
+}
+elementclass DSR {$ID, $LT, $METRIC, $ROUTEMAINT |
+
+  dsr_decap :: BRN2DSRDecap();
+  dsr_encap :: BRN2DSREncap(NODEIDENTITY $ID, LINKTABLE $LT);
+
+  dsr_stats :: DSRStats(DEBUG 2);
+  querier :: BRN2RouteQuerier(NODEIDENTITY $ID, LINKTABLE $LT, DSRENCAP dsr_encap, DSRDECAP dsr_decap, METRIC $METRIC, ROUTEMAINTENANCE $ROUTEMAINT, DEBUG 2);
+
+
+  req_forwarder :: BRN2RequestForwarder(NODEIDENTITY $ID, LINKTABLE $LT, DSRDECAP dsr_decap, DSRENCAP dsr_encap, ROUTEQUERIER querier, MINMETRIC 5000, ENABLE_DELAY_QUEUE true, DEBUG 2,
+                                        LAST_HOP_OPT true, PASSIVE_ACK_RETRIES 2, PASSIVE_ACK_INTERVAL 0, FORCE_PASSIVE_ACK_RETRIES false);
+
+  rep_forwarder :: BRN2ReplyForwarder(NODEIDENTITY $ID, LINKTABLE $LT, DSRDECAP dsr_decap, ROUTEQUERIER querier, DSRENCAP dsr_encap);
+
+
+
+
+  src_forwarder :: BRN2SrcForwarder(NODEIDENTITY $ID, LINKTABLE $LT, DSRENCAP dsr_encap, ROUTEQUERIER querier, DSRDECAP dsr_decap, DEBUG 2);
+
+
+  err_forwarder :: BRN2ErrorForwarder(NODEIDENTITY $ID, LINKTABLE $LT, DSRENCAP dsr_encap, DSRDECAP dsr_decap, ROUTEQUERIER querier, DEBUG 2);
+  routing_peek :: DSRPeek(DEBUG 2);
+
+  feedback_handler :: DSRHandleFeedback(NODEIDENTITY $ID, DEBUG 2);
+
+  input[0]
+
+
+
+  -> querier[0]
+
+
+
+
+ -> BRN2EtherEncap()
+ -> [1]output;
+
+  querier[1]
+
+
+
+
+  -> [0]src_forwarder;
+
+  querier[2]
+  -> [0]output;
+
+  src_forwarder[0]
+
+
+
+
+  -> dsr_stats
+  -> BRN2EtherEncap(USEANNO true)
+  -> [1]output;
+
+  src_forwarder[1]
+
+
+
+
+  -> [0]output;
+
+  src_forwarder[2]
+
+
+
+  -> tee_to_err_fwd :: Tee()
+  -> Discard;
+
+  tee_to_err_fwd[1]
+  -> [0]err_forwarder;
+
+
+
+
+  input[1]
+  -> dsrclf :: Classifier( 6/01,
+                           6/02,
+                           6/03,
+                           6/04,
+                         );
+
+  dsrclf[0]
+
+
+
+
+  -> req_forwarder[0]
+
+
+
+
+  -> BRN2EtherEncap()
+  -> [1]output;
+
+  req_forwarder[1]
+
+
+
+
+  -> [0]rep_forwarder
+  -> BRN2EtherEncap()
+  -> [1]output;
+
+  dsrclf[1]
+
+
+
+
+  -> [1]rep_forwarder;
+
+  dsrclf[2]
+  -> [1]err_forwarder
+  -> BRN2EtherEncap()
+  -> [1]output;
+
+  dsrclf[3]
+  -> routing_peek
+
+
+
+  -> [1]src_forwarder;
+
+
+
+
+  input[2]
+
+  -> [1]feedback_handler[0]
+  -> [0]err_forwarder;
+
+  input[3] -> Discard;
+
+  input[4]
+
+  -> [0]feedback_handler;
+
+
+  feedback_handler[1] -> [2]output;
+
+
+
+
+}
+elementclass BATMAN {$ID, $LT |
+
+  brt::BatmanRoutingTable( NODEID $ID, LINKTABLE $LT, ORIGINATORMODE 1);
+
+  bos::BatmanOriginatorSource( BATMANTABLE brt, NODEID $ID, INTERVAL 2000);
+  bofwd::BatmanOriginatorForwarder( NODEID $ID, BATMANTABLE brt, DEBUG 2)
+
+  bf::BatmanForwarder( NODEID $ID, BATMANTABLE brt);
+  br::BatmanRouting(NODEID $ID, BATMANTABLE brt);
+
+  bfd::BatmanFailureDetection( NODEID $ID, BATMANTABLE brt, ACTIVE true);
+  bef::BatmanErrorForwarder( NODEID $ID, BATMANTABLE brt);
+
+  input[1]
+  -> BRN2Decap()
+  -> Print("sk3: BATMAN", TIMESTAMP true)
+  -> bc::Classifier( 0/10,
+                     0/20
+                  );
+
+  bc[0]
+  -> Print("Forward org")
+  -> bofwd
+  -> brnee::Null()
+  -> BRN2EtherEncap(USEANNO true)
+  -> [1]output;
+
+  bos
+  -> brnee;
+
+  bc[1]
+
+  -> bfd
+  -> bf;
+
+  bf[0]
+  -> [0]output;
+
+  bf[1]
+
+  -> brnee;
+
+  bf[2]
+  -> Print("RouteError",150)
+  -> Discard;
+
+  bfd[1]
+  -> Print("RouteFailure")
+  -> Discard;
+
+  input[0]
+  -> br;
+
+  br[0]
+
+  -> [0]output;
+
+  br[1]
+
+  -> brnee;
+
+  br[2]
+
+  -> Discard;
+
+  input[2]
+  -> [1]bfd[2]
+
+  -> brnee;
+
+  input[3] -> Discard;
+  input[4] -> Discard;
+
+
+  Idle -> [2]output;
+
+
+  Idle -> [0]bef[0] -> Discard;
+  Idle -> [1]bef[1] -> Discard;
+
+}
+
+
+
+
+elementclass BROADCASTROUTING {ID $id |
+
+  bcr::BrnBroadcastRouting(NODEIDENTITY $id);
+
+  input[0]
+  -> [0]bcr;
+
+  input[1]
+
+  -> BRN2Decap()
+  -> [1]bcr;
+
+  bcr[0]
+  -> [0]output;
+
+  bcr[1]
+
+  -> BRN2EtherEncap(USEANNO true)
+  -> [1]output;
+
+
+  Idle -> [2]output;
+
+
+}
+elementclass BROADCAST {ID $id, LT $lt |
+
+  bcf::BROADCASTFLOODING(ID $id, LT $lt);
+  bcr::BROADCASTROUTING(ID $id);
+
+  input[0]
+  -> bc_clf::Classifier( 0/ffffffffffff,
+                              - );
+
+  bc_clf[0]
+
+  -> [0]bcf;
+
+  bc_clf[1]
+
+  -> [0]bcr;
+
+  input[1]
+
+  -> bcr_clf::Classifier( 0/0c,
+                          0/0b,
+                          - );
+
+  bcr_clf[0]
+  -> [1]bcf;
+
+  bcr_clf[1]
+  -> [1]bcr;
+
+  bcr_clf[2]
+
+  -> Discard;
+
+  input[2] -> [2]bcf;
+
+  bcf[0]
+
+  -> bcrouting_clf::Classifier( 12/8086 14/0b,
+                                    - );
+
+  bcrouting_clf[0]
+  -> BRN2EtherDecap()
+
+  -> [1]bcr;
+
+  bcrouting_clf[1]
+
+  -> [0]output;
+
+  bcf[1]
+
+  -> [1]output;
+
+  bcr[0]
+
+  -> [0]output;
+
+  bcr[1]
+
+  -> [0]bcf;
+
+  input[3]
+  -> Classifier( 0/0c )
+  -> [3]bcf;
+
+  input[4]
+  -> [4]bcf;
+
+
+  bcr[2] -> Discard;
+  bcf[2] -> Discard;
+  Idle -> [2]output;
+
+
+}
+elementclass GEOR {ID $ID, LT $LT, LINKSTAT $LS, DEBUG $debug |
+
+  gps::GPS();
+
+  gpsmap::GPSMap(TIMEOUT 10000);
+  gpslph::GPSLinkprobeHandler(LINKSTAT $LS, GPS gps, GPSMAP gpsmap);
+
+  grt::GeorTable(GPS gps, GPSMAP gpsmap, LINKTABLE $LT, DEBUG 2);
+  gqu::GeorQuerier(NODEID $ID, GEORTABLE grt, DEBUG 2);
+  gfwd::GeorForwarder(NODEID id, GEORTABLE grt, DEBUG 2);
+
+  Idle
+  -> [1]gqu;
+
+  gqu[1]
+  -> Discard;
+
+  input[1]
+  -> BRN2Decap()
+  -> gfwd;
+
+  gfwd[0]
+  -> BRN2EtherEncap(USEANNO true)
+  -> [1]output;
+
+  gfwd[1]
+  -> BRN2EtherEncap(USEANNO true)
+
+  -> [0]output;
+
+  gfwd[2]
+  -> Discard;
+
+  input[0]
+  -> [0]gqu;
+
+  gqu[0]
+  -> BRN2EtherEncap(USEANNO true)
+  -> [1]output;
+
+  input[2] -> Discard;
+  input[3] -> Discard;
+  input[4] -> Discard;
+
+
+  Idle -> [2]output;
+
+
+}
+elementclass DART {$ID, $dhtroutingtable, $dhtstorage, $dhtrouting |
+
+  DartIDStore( NODEIDENTITY $ID, DHTSTORAGE $dhtstorage, DRT $dhtroutingtable, DEBUG 2);
+
+  dartidcache::DartIDCache();
+  dartroutequerier::DartRouteQuerier( NODEIDENTITY $ID, DHTSTORAGE $dhtstorage, DARTIDCACHE dartidcache, DRT $dhtroutingtable, DEBUG 4);
+
+
+
+  dartfwd::DartForwarder( NODEIDENTITY $ID, DARTIDCACHE dartidcache,OPT 0, DARTROUTING $dhtrouting, DRT $dhtroutingtable, DEBUG 4);
+
+  routing_peek :: DartRoutingPeek(DEBUG 4);
+
+  input[0]
+  -> dartroutequerier[0]
+
+  -> [1]dartfwd[0]
+  -> BRN2EtherEncap(USEANNO true)
+  -> [1]output;
+
+  input[1]
+  -> routing_peek
+  -> BRN2Decap()
+  -> [0]dartfwd;
+
+  dartfwd[1]
+  -> [0]output;
+
+  dartroutequerier[1]
+  -> Discard;
+
+  input[2]
+  -> Discard;
+
+  input[3]
+  -> Discard;
+
+  input[4]
+  -> Discard;
+
+
+  Idle -> [2]output;
+
+
+}
+elementclass HAWK {$ID, $dhtroutingtable, $dhtstorage, $dhtrouting, $lt, $lph, $dht, $debug |
+
+
+
+
+
+
+  rt::HawkRoutingtable(LPRH $lph, SUCCM $dht/dhtsuccessormaintenance, RTM $dht/dhtroutemaintenance, LINKTABLE $lt,USE_METRIC false, DEBUG 4);
+  hawkroutequerier::HawkRouteQuerier( NODEIDENTITY $ID, DHTSTORAGE $dhtstorage, DHTROUTING $dhtrouting, RT rt, FRT $dhtroutingtable, DEBUG 0);
+hawkfwd::HawkForwarder( NODEIDENTITY $ID, ROUTINGTABLE rt,FRT $dhtroutingtable, FALCONROUTING $dhtrouting,OPTSUCCESSORFORWARD false, OPTFIRSTDST false, OPTBETTERFINGER false, DEBUG 4);
+
+  routing_peek :: HawkRoutingPeek(DEBUG 0);
+
+  input[0]
+  -> hawkroutequerier[0]
+
+  -> [1]hawkfwd[0]
+  -> BRN2EtherEncap(USEANNO true)
+  -> [0]output;
+
+  input[1]
+  -> routing_peek
+  -> BRN2Decap()
+  -> [0]hawkfwd;
+
+  hawkfwd[1]
+  -> [1]output;
+
+  hawkroutequerier[1]
+  -> Discard;
+
+  input[2] -> Discard;
+  input[3] -> Discard;
+  input[4] -> Discard;
+
+
+  Idle -> [2]output;
+
+}
+elementclass ROUTING { ID $id, ETHERADDRESS $ea, LT $lt, METRIC $metric, LINKSTAT $linkstat |
+
+
+
+  routingtable::BrnRoutingTable(DEBUG 2, ACTIVE true, DROP 0 , SLICE 500 , TTL 10 );
+  routingalgo::Dijkstra(NODEIDENTITY $id, LINKTABLE $lt, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 2);
+  routingmaint::RoutingMaintenance(NODEIDENTITY $id, LINKTABLE $lt, ROUTETABLE routingtable, ROUTINGALGORITHM routingalgo, DEBUG 2);
+  routing::DSR($id, $lt, $metric, routingmaint);
+
+
+
+  input[0]
+
+
+
+    -> [0]routing;
+
+  input[1]
+
+
+
+    -> [1]routing;
+
+  input[2]
+    -> Print("sk3: Failed")
+    -> [2]routing;
+
+  input[3]
+
+
+
+    -> [3]routing;
+
+  input[4]
+    -> Print("sk3: Succ")
+    -> [4]routing;
+
+  routing[0]
+    -> toMeAfterRouting::BRN2ToThisNode(NODEIDENTITY id);
+
+  routing[1]
+
+    -> SetEtherAddr(SRC $ea)
+
+
+
+
+    -> [0]output;
+
+  toMeAfterRouting[2]
+
+
+
+    -> [1]output;
+
+  toMeAfterRouting[0]
+
+
+
+    -> [2]output;
+
+  toMeAfterRouting[1]
+
+
+
+    -> [3]output;
+
+
+   routing[2] -> [4]output;
+
+
+
+
+
+
+
+}
+
+BRNAddressInfo(deviceaddress eth0:eth);
+wireless::BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+
+id::BRN2NodeIdentity(NAME sk3, DEVICES wireless);
+
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
+
+device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+
+flooding::BROADCASTFLOODING(ID id, LT lt);
+routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
+
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+
+device_wifi
+  -> Label_brnether::Null()
+  -> BRN2EtherDecap()
+  -> brn_clf::Classifier( 0/34,
+                             0/0c,
+                             0/0a,
+                               - );
+
+
+device_wifi[1] -> BRN2EtherDecap() -> brn_clf;
+
+Idle -> [1]device_wifi;
+
+brn_clf[0]
+
+  -> BRN2Decap()
+  -> sf::BRN2SimpleFlow(HEADROOM 256, ROUTINGPEEK flooding/routing_peek, LT lt, DEBUG 2)
+  -> BRN2EtherEncap(USEANNO true)
+  -> [0]flooding;
+
+brn_clf[1]
+  -> [1]flooding[1]
+  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+
+  -> [2]device_wifi;
+
+flooding[0] -> Label_brnether;
+flooding[2] -> Print("sk3: FloodingFeedback",20) -> Discard;
+
+brn_clf[2] -> [1]routing;
+
+
+routing[0] -> [0]device_wifi;
+routing[1] -> [1]device_wifi;
+routing[3] -> Discard;
+
+brn_clf[3] -> Discard;
+
+device_wifi[2]
+  -> BRN2EtherDecap()
+  -> foreign_clf::Classifier( 0/0c,
+                              0/0a )
+  -> [3]flooding;
+
+foreign_clf[1]
+  -> [3]routing;
+
+device_wifi[3]
+
+  -> BRN2EtherDecap()
+  -> fb_filter::Classifier( 0/0c,
+                 0/0a)
+  -> ffilter_flood::FilterFailures()
+  -> [4]flooding;
+
+ffilter_flood[1] -> [2]flooding;
+
+fb_filter[1]
+  -> ffilter_routing::FilterFailures()
+  -> [4]routing;
+
+ffilter_routing[1] -> [2]routing;
+
+routing[2]
+  -> BRN2EtherDecap()
+  -> BRN2Decap()
+  -> unicastsf::BRN2SimpleFlow(HEADROOM 256, ROUTINGPEEK routing/routing/routing_peek, LT lt, DEBUG 4)
+  -> BRN2EtherEncap(USEANNO true)
+  -> [0]routing;
+
+routing[4]
+  -> Print("sk3: Routingfeedback",50,TIMESTAMP true)
+  -> BRN2EtherDecap()
+  -> BRN2Decap()
+  -> [1]unicastsf;
+
+Script(
+  wait 100,
+  wait 5,
+
+  read device_wifi/link_stat.bcast_stats,
+
+  wait 10,
+  wait 60
+
+
+
+
+
+);
+Script(wait 221,
+
+
+
+
+
+
+       stop);
+Script(wait 124, write  sf.add_flow 00-00-00-00-00-03 FF-FF-FF-FF-FF-FF 1000 100 0 11000 true);
+Script(wait 220, read flooding/fl.stats);
+Script(wait 220, read flooding/fl.forward_table);
+Script(wait 220, read flooding/fl_passive_ack.stats);
+Script(wait 220, read flooding/unicfl.stats);
+Script(wait 220, read sf.stats);

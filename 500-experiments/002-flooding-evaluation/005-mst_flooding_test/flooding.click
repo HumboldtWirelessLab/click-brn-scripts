@@ -21,8 +21,9 @@
 //#define PRO_FL
 //#define MPR_FL
 #define MST_FL
-#define CIRCLE_DATA 62_4_cluster/62_4_cluster_20_85_5000
+#define CIRCLE_DATA circles_konvertiert/circles1_1
 #define MST_BD
+//#define MST_PRE
 
 //#define DISBALE_BCASTWIFIDUPS
 
@@ -133,12 +134,12 @@ Script(
   read device_wifi/link_stat.bcast_stats,
 //  read device_wifi/wifidevice/cst.stats,
   wait 10,
-  wait 60,
-  read flooding/fl.stats,
-  read flooding/fl.forward_table,
-  read flooding/unicfl.stats,
-  read flooding/fl_passive_ack.stats,
-  read sf.stats
+  wait 60
+ // read flooding/fl.stats,
+ // read flooding/fl.forward_table,
+ // read flooding/unicfl.stats,
+ // read flooding/fl_passive_ack.stats,
+ // read sf.stats
 );
 
 // 5 + 10 + 60 + TAU = 185

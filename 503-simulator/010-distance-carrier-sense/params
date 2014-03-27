@@ -1,0 +1,2 @@
+VAR_RXRANGE=`seq 50 5 350`
+VAR_RADIO="tworayground shadowing"

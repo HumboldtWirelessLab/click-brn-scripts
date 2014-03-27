@@ -38,7 +38,7 @@ brn_clf[0]
 -> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2)
 -> SetTimestamp()
 -> BRN2EtherEncap(USEANNO true)
--> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+-> SetTXRate(RATE 2, TRIES 1)
 -> sf_queue::NotifierQueue(500);
 
 brn_clf[1]
@@ -46,7 +46,7 @@ brn_clf[1]
 -> coopcst
 -> EtherEncap(BRN_ETHERTYPE_HEX, deviceaddress, BRN_MAC_BROADCAST)
 //-> Print()
--> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+-> SetTXRate(RATE 2, TRIES 1)
 -> NotifierQueue(10)
 -> priosched::PrioSched()
 -> [2]device_wifi;
