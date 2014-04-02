@@ -56,8 +56,8 @@ elementclass WIFIDEV_AP { DEVICE $device, ETHERADDRESS $etheraddress, SSID $ssid
                             PERIOD             3000,
                             TAU               30000,
                             METRIC     "etx_metric",
-//                          PROBES  "2 250 22 1000",
-                            PROBES  "2 250",
+//                          PROBES  "2 250 24 22 1000 24",
+                            PROBES  "2 250 24",
                             RT           proberates);
 #endif
 
