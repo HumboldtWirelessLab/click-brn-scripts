@@ -82,12 +82,12 @@ boid_behavior::BoidBehaviorSimple(CHANNELSTATS device_wifi/wifidevice/cst,
                                   STEERLIMIT 10000,
                                   GRAVITATIONFACTOR 1000000,
                                   SPEED 4,
-                                  DEBUG 4);
+                                  DEBUG 2);
 
 boid::Boid(BEHAVIOR boid_behavior,
            GPS gps, GPSMAP gpsmap, MOBILITY mob,
            INTERVAL 50,  //in ms
-           DEBUG 4);
+           DEBUG 2);
 
 Script(
   wait 2,

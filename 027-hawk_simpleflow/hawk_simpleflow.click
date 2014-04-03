@@ -30,7 +30,7 @@ device_wifi::WIFIDEV(DEVNAME eth0, DEVICE wireless, ETHERADDRESS deviceaddress, 
 
 dht::DHT_FALCON(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 30000, UPDATEINT 5000, DEBUG 2);
 dhtstorage::DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 2 );
-routing::HAWK(id, dht/dhtroutingtable, dhtstorage/dhtstorage, dht/dhtrouting, lt, dht/dhtlprh, dht, DEBUG 0);
+routing::HAWK(id, dht/dhtroutingtable, dhtstorage/dhtstorage, dht/dhtrouting, lt, dht/dhtlprh, dht, DEBUG 2);
 
 device_wifi
 -> Label_brnether::Null()
@@ -75,7 +75,7 @@ brn_clf[3]
 -> BRN2EtherEncap()
 -> [0]routing;
 
-routing[0] -> Print("NODENAME:Try to send") -> [0]device_wifi;
+routing[0] /* -> Print("NODENAME:Try to send")*/ -> [0]device_wifi;
 routing[1] -> Label_brnether;
 
 Idle 

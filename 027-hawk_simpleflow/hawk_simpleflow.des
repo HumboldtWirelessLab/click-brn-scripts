@@ -4,6 +4,8 @@ RADIO=shadowing
 #RADIO=tworayground
 FORGEINNODES=no
 
+DISABLE_TRACE=1
+
 TIME=630
 
 NODEPLACEMENTFILE=placement.default
