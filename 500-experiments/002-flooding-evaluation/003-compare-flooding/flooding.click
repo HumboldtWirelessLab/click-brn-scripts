@@ -3,17 +3,19 @@
 #include "flooding_config.h"
 
 //#define WIFIDEV_LINKSTAT_DEBUG
-//#define RAWDUMP
+#define RAWDUMP
 
 #define BRNFEEDBACK
 
 #define CST cst
+#define CERR
+#define COOPCST
+#define COOPCST_STRING "device_wifi/cocst"
 
 #define PRIO_QUEUE
 #define LINKPROBE_PERIOD                                           2000
 #define LINKPROBE_TAU                                            100000
-//#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000"
-#define LINKPROBE_PROBES                                        "2 100"
+#define LINKPROBE_PROBES                   "2 200 24 2 200 23 11 200 24 11 200 23"
 #define DISABLE_LP_POWER
 
 #ifndef RTSCTS_STRATEGY
@@ -58,10 +60,19 @@ brn_clf[0]
 
 brn_clf[2] -> Discard;
 
+rtscts_packetsize::RtsCtsPacketSize(PACKETSIZE 32);
+rtscts_hiddennode::RtsCtsHiddenNode(HIDDENNODE device_wifi/wifidevice/hnd);
+rtscts_flooding::RtsCtsFlooding(FLOODING flooding/fl, FLOODINGHELPER flooding/fl_helper, HIDDENNODE device_wifi/wifidevice/hnd, DEBUG 4);
+
+rate_fix::BrnFixRate(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0);
+rate_flooding::BrnFloodingRate(FLOODING flooding/fl, FLOODINGHELPER flooding/fl_helper, LINKSTAT device_wifi/link_stat, CHANNELSTATS device_wifi/wifidevice/cst, STRATEGY 3, DEFAULTRETRIES 7, DEBUG 4);
+
+rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22 24 36 48 72 96 108);
+
 brn_clf[1]
   -> [1]flooding[1]
-  -> data_rate::SetTXRates(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0)
-  -> Brn2_SetRTSCTS(STRATEGY RTSCTS_STRATEGY)
+  -> data_rate::SetTXPowerRate(RATESELECTIONS "rate_fix rate_flooding", STRATEGY 5, RT rates, POWER 24, OFFSET -1)
+  -> setrtscts::Brn2_SetRTSCTS(STRATEGY RTSCTS_STRATEGY, RTSCTS_SCHEMES "rtscts_hiddennode rtscts_flooding", HEADER 2, DEBUG 4)
   -> [2]device_wifi;
 
 Idle()
@@ -90,17 +101,14 @@ ffilter[1] -> [2]flooding; //feedback success
 Script(
   wait 100,
   wait 5,
-  read lt.links,
+//read lt.links,
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats,
-//  wait 10,
-//  write sf.add_flow NODEMACADDR FF-FF-FF-FF-FF-FF 500 100 0 50000 true, //flooding_init 51000  //51000 -> 100Pkt
-//  wait 600,
-//  wait 60,
-//  read flooding/fl.stats,
-//  read flooding/fl.forward_table,
-//  read flooding/unicfl.stats,
-//  read sf.stats
+//read device_wifi/cocst.stats,
+//read device_wifi/wifidevice/hnd.stats,
+  wait 20,
+  read setrtscts.stats
+//read sf.stats
 );
 
 // 5 + 10 + 60 + TAU = 185
@@ -112,3 +120,4 @@ Script(
   read flooding/flp.flooding_info
 );
 #endif
+

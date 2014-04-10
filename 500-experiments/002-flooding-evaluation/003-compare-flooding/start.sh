@@ -129,6 +129,8 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
        FLOODINGABORTTX_F="0"
        FIXCS_PARAMS_F="false"
        FLOODING_E2E_RETRIES_F=$FLOODING_E2E_RETRIES
+       RTS_CTS_F="0"
+       BO_SCHEMES_F="0"
      else
        FLOODINGUNICAST_PRESELECTION_F=$FLOODINGUNICAST_PRESELECTION
        FLOODINGUNICAST_REJECT_EMPTYCS_F=$FLOODINGUNICAST_REJECT_EMPTYCS
@@ -141,6 +143,8 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
        FLOODINGABORTTX_F=$FLOODINGABORTTX
        FIXCS_PARAMS_F=$FIXCS_PARAMS
        FLOODING_E2E_RETRIES_F="0"
+       RTS_CTS_F=$RTS_CTS
+       BO_SCHEMES_F=$BO_SCHEMES
      fi
 
    for flunic_pres in $FLOODINGUNICAST_PRESELECTION_F; do
@@ -159,13 +163,16 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
     for fl_e2e in $FLOODING_E2E_RETRIES_F; do
 
+    for rtscts in $RTS_CTS_F; do
+    for bos in $BO_SCHEMES_F; do
+
      for al in $FLOODALGOS; do
 
        DONE_ALL_FOR_ALG=0
 
        while [ $DONE_ALL_FOR_ALG -eq 0 ]; do
 
-       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx"_"$flunic_fixcs"_"$fl_e2e
+       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx"_"$flunic_fixcs"_"$fl_e2e"_"$rtscts"_"$bos
 
        case "$al" in
          "simple")
@@ -209,16 +216,14 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
        echo "#define BCAST_ENABLE_ABORT_TX $fl_abort_tx" >> flooding_config.h
        echo "#define BCAST2UNIC_FIXCS $flunic_fixcs" >> flooding_config.h
        echo "#define BCAST_E2E_RETRIES $fl_e2e" >> flooding_config.h
+       echo "#define RTSCTS_STRATEGY $rtscts" >> flooding_config.h
+       echo "#define TOS2QUEUEMAPPER_STRATEGY $bos" >> flooding_config.h
 
        if [ "x$flunic" = "x0" ]; then
          echo "#define BCAST_FPA_ABORTONFINISH false" >> flooding_config.h
-       else
-         if [ "x$RTSCTS_STRATEGY" != "x" ]; then
-           echo "#define RTSCTS_STRATEGY $RTSCTS_STRATEGY" >> flooding_config.h
-         fi
        fi
 
-       echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e"
+       echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e $rtscts $bos"
 
        if [ ! -e $MEASUREMENTDIR ]; then
 
@@ -281,6 +286,8 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
         echo "BCAST_ENABLE_ABORT_TX=$fl_abort_tx" >> $MEASUREMENTDIR/params
         echo "BCAST2UNIC_FIXCS=$flunic_fixcs" >> $MEASUREMENTDIR/params
         echo "BCAST_E2E_RETRIES=$fl_e2e" >> $MEASUREMENTDIR/params
+        echo "RTSCTS_STRATEGY=$rtscts" >> $MEASUREMENTDIR/params
+        echo "BO_STRATEGY=$bos" >> $MEASUREMENTDIR/params
 
        fi
 
@@ -312,6 +319,8 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
       exit
     fi
   done
+  done
+ done
  done
  done
  done

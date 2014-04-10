@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if [ "x$SIM" = "x1" ]; then
-  NO_NODES_VECTOR="10 11 12"
+  NO_NODES_VECTOR="2"
+  #NO_NODES_VECTOR="10 11 12"
   #NO_NODES_VECTOR="10 11 12 13 14 15"
   #NO_NODES_VECTOR="5"
   #NO_NODES_VECTOR="2 5 10"
@@ -35,7 +36,7 @@ fi
 #TOSTOQUEUE="2 3 5 7 8 9"
 #TOSTOQUEUE="2 5 8 9"
 #TOSTOQUEUE="5 7 8 9"
-TOSTOQUEUE="5 8 9"
+TOSTOQUEUE="0 1 2 3 4 5 6 7 8 9"
 
 
 
@@ -54,7 +55,7 @@ PACKET_SIZE_VECTOR="1500"
 
 RATE_VECTOR="125"
 
-REP=3
+REP=1
 NUM=1
 
 if [ "x$SIM" = "x1" ]; then
@@ -66,10 +67,11 @@ fi
 
 if [ "x$SIM" = "x1" ]; then
 #   CHANNEL_MODEL="shadowing11b tworayground01b"
-#    CHANNEL_MODEL="shadowing01b tworayground01b"
+#   CHANNEL_MODEL="shadowing01b tworayground01b"
 #   CHANNEL_MODEL="shadowing11b"
-   CHANNEL_MODEL="shadowing01b"
+#   CHANNEL_MODEL="shadowing01b"
 #   CHANNEL_MODEL="tworayground01b"
+    CHANNEL_MODEL="tworayground"
 else
   CHANNEL_MODEL="real"
 fi
