@@ -16,7 +16,7 @@
 #include "device/wifidev_linkstat.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", CWMIN CWMINPARAM, CWMAX CWMAXPARAM, AIFS AIFSPARAM);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
