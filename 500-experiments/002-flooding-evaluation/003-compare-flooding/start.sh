@@ -98,12 +98,28 @@ for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT`; do
 
 done
 
-for n in `cat $NODESFILE | grep -v "#"`; do
-  echo "$FLOWTIME  $n DEV0 read flooding/fl stats" >> flooding.ctl
-  echo "$FLOWTIME  $n DEV0 read flooding/fl forward_table" >> flooding.ctl
-  echo "$FLOWTIME  $n DEV0 read flooding/unicfl stats" >> flooding.ctl
-  echo "$FLOWTIME  $n DEV0 read sf stats" >> flooding.ctl
-done
+
+#for n in `cat $NODESFILE | grep -v "#"`; do
+#  echo "$FLOWTIME  $n DEV0 read flooding/fl stats" >> flooding.ctl
+#  echo "$FLOWTIME  $n DEV0 read flooding/fl forward_table" >> flooding.ctl
+#  echo "$FLOWTIME  $n DEV0 read flooding/unicfl stats" >> flooding.ctl
+#  echo "$FLOWTIME  $n DEV0 read sf stats" >> flooding.ctl
+#  read setrtscts.stats,
+#  read rate_flooding.stats
+#done
+
+echo "Script( wait $FLOWTIME," > flooding_script.click
+
+echo "  read flooding/fl.stats," >> flooding_script.click
+echo "  read flooding/fl.forward_table," >> flooding_script.click
+echo "  read flooding/unicfl.stats," >> flooding_script.click
+echo "  read sf.stats," >> flooding_script.click
+echo "  read setrtscts.stats," >> flooding_script.click
+echo "  read rate_flooding.stats" >> flooding_script.click
+
+echo ");" >> flooding_script.click
+
+
 let FLOWTIME=FLOWTIME+1
 
 for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
@@ -131,7 +147,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
        FLOODING_E2E_RETRIES_F=$FLOODING_E2E_RETRIES
        RTS_CTS_F="0"
        BO_SCHEMES_F="0"
-       RS_SCHEMES_S="0"
+       RS_SCHEMES_F="0"
      else
        FLOODINGUNICAST_PRESELECTION_F=$FLOODINGUNICAST_PRESELECTION
        FLOODINGUNICAST_REJECT_EMPTYCS_F=$FLOODINGUNICAST_REJECT_EMPTYCS
@@ -166,6 +182,14 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
     for fl_e2e in $FLOODING_E2E_RETRIES_F; do
 
     for rtscts in $RTS_CTS_F; do
+
+    if [ "x$rtscts" = "x0" ]; then
+      RTSCTS_MIXED_F=$RTSCTS_MIXED
+    else
+      RTSCTS_MIXED_F="0"
+    fi
+
+    for rtscts_mixed in $RTSCTS_MIXED_F; do
     for bos in $BO_SCHEMES_F; do
     for rs in $RS_SCHEMES_F; do
 
@@ -175,7 +199,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
        while [ $DONE_ALL_FOR_ALG -eq 0 ]; do
 
-       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx"_"$flunic_fixcs"_"$fl_e2e"_"$rtscts"_"$bos"_"$rs
+       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx"_"$flunic_fixcs"_"$fl_e2e"_"$rtscts"_"$rtscts_mixed"_"$bos"_"$rs
 
        case "$al" in
          "simple")
@@ -220,6 +244,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
        echo "#define BCAST2UNIC_FIXCS $flunic_fixcs" >> flooding_config.h
        echo "#define BCAST_E2E_RETRIES $fl_e2e" >> flooding_config.h
        echo "#define RTSCTS_STRATEGY $rtscts" >> flooding_config.h
+       echo "#define RTSCTS_MIXEDSTRATEGY $rtscts_mixed" >> flooding_config.h
        echo "#define TOS2QUEUEMAPPER_STRATEGY $bos" >> flooding_config.h
        echo "#define RS_STRATEGY $rs" >> flooding_config.h
 
@@ -227,7 +252,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
          echo "#define BCAST_FPA_ABORTONFINISH false" >> flooding_config.h
        fi
 
-       echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e $rtscts $bos $rs"
+       echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e $rtscts $rtscts_mixed $bos $rs"
 
        if [ ! -e $MEASUREMENTDIR ]; then
 
@@ -291,6 +316,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
         echo "BCAST2UNIC_FIXCS=$flunic_fixcs" >> $MEASUREMENTDIR/params
         echo "BCAST_E2E_RETRIES=$fl_e2e" >> $MEASUREMENTDIR/params
         echo "RTSCTS_STRATEGY=$rtscts" >> $MEASUREMENTDIR/params
+        echo "RTSCTS_MIXEDSTRATEGY=$rtscts_mixed" >> $MEASUREMENTDIR/params
         echo "BO_STRATEGY=$bos" >> $MEASUREMENTDIR/params
         echo "RS_STRATEGY=$rs" >> $MEASUREMENTDIR/params
 
@@ -326,6 +352,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
   done
   done
   done
+  done
  done
  done
  done
@@ -343,7 +370,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
  let NUM=NUM+1
 done
 
-rm -f flooding_config.h placement.txt nodes.sim flooding.des flooding.mes flooding.ctl
+rm -f flooding_config.h placement.txt nodes.sim flooding.des flooding.mes flooding.ctl flooding_script.click
 
 if [ "x$SIM" = "x1" ]; then
   run_para_sim.sh

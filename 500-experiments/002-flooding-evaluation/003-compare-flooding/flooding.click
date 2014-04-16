@@ -64,7 +64,7 @@ brn_clf[0]
 
 brn_clf[2] -> Discard;
 
-rtscts_packetsize::RtsCtsPacketSize(PACKETSIZE 32);
+rtscts_packetsize::RtsCtsPacketSize(PACKETSIZE 32, PACKETDURATION -1);
 rtscts_hiddennode::RtsCtsHiddenNode(HIDDENNODE device_wifi/wifidevice/hnd);
 rtscts_flooding::RtsCtsFlooding(FLOODING flooding/fl, FLOODINGHELPER flooding/fl_helper, HIDDENNODE device_wifi/wifidevice/hnd, DEBUG 4);
 
@@ -76,7 +76,7 @@ rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22 24 36 48 72 96 108);
 brn_clf[1]
   -> [1]flooding[1]
   -> data_rate::SetTXPowerRate(RATESELECTIONS "rate_fix rate_flooding", STRATEGY 5, RT rates, POWER 24, OFFSET -1)
-  -> setrtscts::Brn2_SetRTSCTS(STRATEGY RTSCTS_STRATEGY, RTSCTS_SCHEMES "rtscts_hiddennode rtscts_flooding", HEADER 2, DEBUG 4)
+  -> setrtscts::Brn2_SetRTSCTS(RTSCTS_SCHEMES "rtscts_hiddennode rtscts_flooding rtscts_packetsize", STRATEGY RTSCTS_STRATEGY, MIXEDSTRATEGY RTSCTS_MIXEDSTRATEGY, HEADER 2, DEBUG 4)
   -> [2]device_wifi;
 
 Idle()
@@ -105,14 +105,11 @@ ffilter[1] -> [2]flooding; //feedback success
 Script(
   wait 100,
   wait 5,
+  read device_wifi/link_stat.bcast_stats
 //read lt.links,
-  read device_wifi/link_stat.bcast_stats,
-  read device_wifi/wifidevice/cst.stats,
+//read device_wifi/wifidevice/cst.stats,
 //read device_wifi/cocst.stats,
 //read device_wifi/wifidevice/hnd.stats,
-  wait 20,
-  read setrtscts.stats
-//read sf.stats
 );
 
 // 5 + 10 + 60 + TAU = 185
@@ -125,3 +122,4 @@ Script(
 );
 #endif
 
+#include "flooding_script.click"
