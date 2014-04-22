@@ -106,13 +106,8 @@ Script(
   wait 100,
   wait 5,
   read device_wifi/link_stat.bcast_stats
-//read lt.links,
-//read device_wifi/wifidevice/cst.stats,
-//read device_wifi/cocst.stats,
-//read device_wifi/wifidevice/hnd.stats,
 );
 
-// 5 + 10 + 60 + TAU = 185
 
 #ifdef MPR_STATS
 Script(

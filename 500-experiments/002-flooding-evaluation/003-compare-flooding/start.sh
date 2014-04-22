@@ -115,7 +115,8 @@ echo "  read flooding/fl.forward_table," >> flooding_script.click
 echo "  read flooding/unicfl.stats," >> flooding_script.click
 echo "  read sf.stats," >> flooding_script.click
 echo "  read setrtscts.stats," >> flooding_script.click
-echo "  read rate_flooding.stats" >> flooding_script.click
+echo "  read rate_flooding.stats," >> flooding_script.click
+echo "  read device_wifi/wifidevice/cst.stats" >> flooding_script.click
 
 echo ");" >> flooding_script.click
 

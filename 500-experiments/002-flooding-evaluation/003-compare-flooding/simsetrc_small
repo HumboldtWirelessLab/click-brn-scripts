@@ -98,3 +98,9 @@ BO_SCHEMES="0 2 7"
 
 #Default (0) and Flooding
 RS_SCHEMES="0 2 3"
+
+
+#RTS_CTS="0"
+#RTSCTS_MIXED="3"
+#BO_SCHEMES="2"
+#RS_SCHEMES="3"
