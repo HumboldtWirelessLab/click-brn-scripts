@@ -5,7 +5,11 @@ RESULTDIR=$1
 ALGSEDARG="-e s#simple#0#g -e s#probability#1#g -e s#mpr#2#g -e s#mst#3#g"
 
 echo -n "" > result_flooding.dat
+
 echo -n "" > result_flooding_info.dat
+echo -n "" > result_flooding_info_index.dat
+
+INFOINDEX=0
 
 for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print $NF}')`; do
   if [ -e $RESULTDIR/$d/params ]; then
@@ -32,22 +36,32 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
     UNIC=`awk -F, '{print $6}' $RESULTDIR/$d/evaluation/channelstats/simstats_summary.csv`
     ACK=`awk -F, '{print $7}' $RESULTDIR/$d/evaluation/channelstats/simstats_summary.csv`
 
-    EXTRA_DATA="$COLLISIONEN $MACRETRIES $FLOODING_MAXNBMETRIC $FLOODING_LASTNODES_PP $BCAST2UNIC_FORCERESPONSIBILITY $BCAST2UNIC_USEASSIGNINFO $BCAST_RNDDELAYQUEUE_MAXDELAY $SEED $BCAST2UNIC_TXABORT $BCAST2UNIC_FIXCS $BCAST_E2E_RETRIES $RTS $CTS $BCAST $UNIC $ACK"
+    EXTRA_DATA="$COLLISIONEN $MACRETRIES $FLOODING_MAXNBMETRIC $FLOODING_LASTNODES_PP $BCAST2UNIC_FORCERESPONSIBILITY $BCAST2UNIC_USEASSIGNINFO $BCAST_RNDDELAYQUEUE_MAXDELAY $SEED $BCAST2UNIC_TXABORT $BCAST2UNIC_FIXCS $BCAST_E2E_RETRIES $RTSCTS_STRATEGY $RTSCTS_MIXEDSTRATEGY $BO_STRATEGY $RS_STRATEGY $RTS $CTS $BCAST $UNIC $ACK"
 
     if [ -f $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv ]; then
       cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv | sed "s#,# #g" | awk -v ALG=$ALGORITHMID -v N=$SIMID -v I="$INFO" -v E=$EXTRAINFO -v L=$UNICASTSTRATEGY -v EXDAT="$EXTRA_DATA" '{print N" "I" "ALG" "E" "L" "$3" "$10" "$2" "$1" "$7" "$9" "$6" "$5" "EXDAT }' >> result_flooding.dat
     fi
 
+    EXTRA_DATA="$INFO $ALGORITHMID $EXTRAINFO $MACRETRIES $FLOODING_MAXNBMETRIC $FLOODING_LASTNODES_PP $BCAST2UNIC_FORCERESPONSIBILITY $BCAST2UNIC_USEASSIGNINFO $BCAST_RNDDELAYQUEUE_MAXDELAY $SEED $BCAST2UNIC_TXABORT $BCAST2UNIC_FIXCS $BCAST_E2E_RETRIES $RTSCTS_STRATEGY $RTSCTS_MIXEDSTRATEGY $BO_STRATEGY $RS_STRATEGY"
+
+    #TODO: split: Config + data to reduce memory usage
+    echo "$INFOINDEX $EXTRA_DATA" >> result_flooding_info_index.dat
+    EXTRA_DATA=$INFOINDEX
+    let INFOINDEX=INFOINDEX+1
+
     if [ -f $RESULTDIR/$d/evaluation/flooding_info/floodingsmallstats.mat ]; then
-      cat $RESULTDIR/$d/evaluation/flooding_info/floodingsmallstats.mat | awk -v ALG=$ALGORITHMID -v N=$SIMID -v I="$INFO" -v E=$EXTRAINFO -v L=$UNICASTSTRATEGY -v EXDAT="$EXTRA_DATA" '{print N" "$0" "I" "ALG" "E" "L" "EXDAT }' >> result_flooding_info.dat
+      cat $RESULTDIR/$d/evaluation/flooding_info/floodingsmallstats.mat | awk -v N=$SIMID -v EXDAT="$EXTRA_DATA" '{print N" "$0" "EXDAT }' >> result_flooding_info.dat
     else
       if [ -f $RESULTDIR/$d/evaluation/flooding_info/floodingsmallstats.mat.bz2 ]; then
-        bzcat $RESULTDIR/$d/evaluation/flooding_info/floodingsmallstats.mat.bz2 | awk -v ALG=$ALGORITHMID -v N=$SIMID -v I="$INFO" -v E=$EXTRAINFO -v L=$UNICASTSTRATEGY -v EXDAT="$EXTRA_DATA" '{print N" "$0" "I" "ALG" "E" "L" "EXDAT }' >> result_flooding_info.dat
+        bzcat $RESULTDIR/$d/evaluation/flooding_info/floodingsmallstats.mat.bz2 | awk -v N=$SIMID -v EXDAT="$EXTRA_DATA" '{print N" "$0" "EXDAT }' >> result_flooding_info.dat
       fi
-   fi
+    fi
   fi
 
 done
+
+echo "SIMID SIM UNICASTSTRATEGY PLACEMENT UNICAST_PRESELECTION_STRATEGY UNICAST_REJECTONEMPTYCS UNICAST_UCASTPEERMETRIC FLOODING_PASSIVE_ACK_RETRIES ALG FWDPROBALILITY UNICASTSTRATEGY PDR NOSRC RECVNEW NONODE FWDS FWDNEW SENT RECV COLLISIONEN MACRETRIES FLOODING_MAXNBMETRIC FLOODING_LASTNODES_PP BCAST2UNIC_FORCERESPONSIBILITY BCAST2UNIC_USEASSIGNINFO BCAST_RNDDELAYQUEUE_MAXDELAY SEED BCAST2UNIC_TXABORT BCAST2UNIC_FIXCS BCAST_E2E_RETRIES RTSCTS_STRATEGY RTSCTS_MIXEDSTRATEGY BO_STRATEGY RS_STRATEGY RTS CTS BCAST UNIC ACK" > result_flooding_xls.dat
+cat result_flooding.dat >> result_flooding_xls.dat
 
 exit 0
 
