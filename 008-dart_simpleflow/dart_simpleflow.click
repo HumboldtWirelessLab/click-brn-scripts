@@ -1,102 +1,86 @@
 #define DEBUGLEVEL 2
+//#define EXPAND_NEIGHBOURHOOD
+//#define OPT_ROUTING
+#include "config.click"
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
-#include "dht/routing/dht_dart.click"
-#include "dht/storage/dht_storage.click"
-#include "routing/dart.click"
+#include "dht/dht.click"
+#include "routing/routing.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-rt::BrnRoutingTable(DEBUG 0, ACTIVE false, DROP /* 1/20 = 5% */ 0, SLICE /* 100ms */ 0, TTL /* 4*100ms */4);
-lt::Brn2LinkTable(NODEIDENTITY id, STALE 500, DEBUG 2);
-routingalgo::Dijkstra(NODEIDENTITY id, LINKTABLE lt, MIN_LINK_METRIC_IN_ROUTE 6000, MAXGRAPHAGE 30000, DEBUG 4);
-route_maint::RoutingMaintenance(NODEIDENTITY id, LINKTABLE lt, ROUTETABLE rt, ROUTINGALGORITHM routingalgo, DEBUG 2);
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
+dht::DHT(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 3000, DEBUG 4);
+routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat, DHT dht);
 
-dht::DHT_DART(ETHERADDRESS deviceaddress, LINKSTAT device_wifi/link_stat, STARTTIME 10000, UPDATEINT 3000, DEBUG 4);
-dhtstorage::DHT_STORAGE( DHTROUTING dht/dhtrouting, DEBUG 4 );
-dart::DART(id, dht/dhtroutingtable, dhtstorage/dhtstorage, dht/dhtrouting);
+#ifndef SIMULATION
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+#endif
 
 device_wifi
--> Label_brnether::Null()
--> BRN2EtherDecap()
--> brn_clf::Classifier(    0/BRN_PORT_DHTROUTING,  //DHT-Routing
-                           0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
-                           0/BRN_PORT_DART,        //DART
-                           0/BRN_PORT_FLOW,        //SimpleFlow
-                             -  );//other
-                                    
+  -> Print("RX")
+  -> Label_brnether::Null()
+  -> BRN2EtherDecap()
+  -> brn_clf::Classifier(    0/BRN_PORT_ROUTING,     //Routing
+                             0/BRN_PORT_DHTROUTING,  //DHT-Routing
+                             0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
+                             0/BRN_PORT_FLOW );      //Simpleflow
 
-device_wifi[1] -> /*Print("BRN-In") -> */ BRN2EtherDecap() -> brn_clf;
-device_wifi[2] -> Discard;
 
-brn_clf[0]
-//-> Print("Routing-Packet",100)
--> BRN2Decap()
--> [0]dht[0]
--> dht_r_all::Counter()
-//-> Print("out Routing-Packet")
--> [0]dart;
+routing[0] -> Print("NODENAME: r0 out:") -> [0]device_wifi;
+routing[1] -> Print("NODENAME: r1 out:") -> [1]device_wifi;
+routing[2] -> Label_brnether;
+routing[3] -> Discard;
 
-brn_clf[1]
-//-> Print("Storage-Packet")
--> BRN2Decap()
--> dhtstorage
--> dht_s::Counter()
-//-> Print("Storage-Packet-out")
--> [0]dart;
+brn_clf[0] -> [1]routing;
+device_wifi[1] -> Label_brnether;;
 
-brn_clf[2] -> [1]dart;
+device_wifi[3]
+  -> ff::FilterFailures()
+  -> BRN2EtherDecap()
+  -> Classifier( 0/BRN_PORT_ROUTING )
+  -> Print("NODENAME: Success")
+  -> [4]routing;
 
-brn_clf[4] -> Discard;
+ff[1]
+  -> BRN2EtherDecap()
+  -> Classifier( 0/BRN_PORT_ROUTING )
+  -> Print("NODENAME: TX Failed")
+  -> [2]routing;
 
-dht[1]
-//-> Print("routing-Packet-out")
--> dht_r_neighbour::Counter()
--> [0]device_wifi;
+brn_clf[1] -> [0]dht;
+brn_clf[2] -> [1]dht;
+
+dht[0] -> Print("DHTBC") -> [0]device_wifi;
+dht[1] -> Print("DHTr") -> [0]routing;
 
 brn_clf[3]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow()
--> BRN2EtherEncap(USEANNO true)
--> Print("Foo")
--> [0]dart;
+-> sf::BRN2SimpleFlow(HEADROOM 192, ROUTINGPEEK routing/routing/routing_peek, DEBUG DEBUGLEVEL)
+-> SetTimestamp()
+-> BRN2EtherEncap(USEANNO true, DEBUG DEBUGLEVEL)
+-> [0]routing;
 
-dart[0] /*-> Print("Dart out")*/ -> BRN2EtherEncap() /*-> Print("Dart out ether")*/ -> [0]device_wifi;
-dart[1] -> Label_brnether;
+/* PASSIV (Overhear) */
 
-Idle 
-->[1]device_wifi;
+device_wifi[2]
+  -> Print("NODENAME: Passive:")
+  -> BRN2EtherDecap()
+  -> overhear_brn_clf::Classifier( 0/BRN_PORT_ROUTING,  //Routing
+                                   -  );//other
 
-Idle
--> [2]dart;
+  overhear_brn_clf[0]
+  -> [3]routing;
 
-Script(
-  wait 30,
-  //read lt.links,
-  wait 30, 
-  read lt.links,
-  //read dht/dhtrouting.routing_info,
-  wait 20, 
-  //read  dhtstorage.db_size,
-  //read  dhtstoragetest.stats,
-  read  dht/dhtrouting.routing_info,
-  wait 10,
-  //read  dhtstorage/dhtstorage.db_size,
-  //read  dhtstoragetest.stats,
-  //read  dht/dhtrouting.routing_info
-  //read dht_r_all.count,
-  //read dht_r_all.byte_count,
-  //read dht_r_neighbour.count,
-  //read dht_r_neighbour.byte_count,
-  //read dht_s.count,
-  //read dht_s.byte_count,
-  read  sf.stats
-);
+  overhear_brn_clf[1]
+  -> Discard;
+
+#include "script.click"

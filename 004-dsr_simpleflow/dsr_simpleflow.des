@@ -1,10 +1,10 @@
 NAME=dsr_simpleflow
 SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
+RADIO=shadowing
+#RADIO=tworayground
 FORGEINNODES=no
 
-TIME=130
+TIME=131
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=dsr_simpleflow.mes
@@ -17,7 +17,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATION="evaluation/eval.sh"
+EVALUATION="evaluation/eval.sh embrace_xml"
 
 GPS=no
 NOTICE=no

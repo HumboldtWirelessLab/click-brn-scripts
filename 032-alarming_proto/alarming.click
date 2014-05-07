@@ -8,6 +8,8 @@
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
+
+#undef PRIO_QUEUE
 #include "routing/broadcast.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
@@ -31,14 +33,14 @@ bc::BROADCAST(ID id, LT lt);
 asrc
 //  -> Print("ALARM")
   -> af;
-  
+
 device_wifi[0]
   -> brn_ether_decap::BRN2EtherDecap()
   -> brn_clf::Classifier( 0/BRN_PORT_FLOODING,          //SimpleFlooding
                           0/BRN_PORT_NHOPNEIGHBOURING,  //NHopNeighbouringBRN_PORT_ALARMING
                           0/BRN_PORT_ALARMINGPROTOCOL,  //Alarming
                             -  );//other
-  
+
 device_wifi[1]
   -> brn_ether_decap; 
 
@@ -89,6 +91,9 @@ bc[1]
 
 Idle
 -> [2]bc;
+
+Idle
+-> [4]bc;
 
 toMeAfterRouting[0]
   //-> Print("Routing-out: For ME")

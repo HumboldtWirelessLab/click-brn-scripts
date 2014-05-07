@@ -46,7 +46,7 @@ device_wifi
                            0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
                            0/BRN_PORT_GATEWAY,  //Gateway
                              -  );//other
-                                    
+
 brn_clf[0] -> [1]dsr;
 
 device_wifi[1] -> BRN2EtherDecap() -> brn_clf;
@@ -54,6 +54,7 @@ device_wifi[2] -> Discard;
 
 Idle -> [2]dsr;
 Idle -> [3]dsr;
+Idle -> [4]dsr;
 
 brn_clf[1]
 //-> Print("Routing-Packet")
@@ -87,7 +88,7 @@ toMeAfterDsr[1] ->  Discard;
 toMeAfterDsr[2] ->  [1]device_wifi;
 
 Idle
--> sf::BRN2SimpleFlow( ACTIVE 0, HEADROOM 192 )
+-> sf::BRN2SimpleFlow(HEADROOM 192)
 -> UDPIPEncap(SRC 192.168.0.4, SPORT 30000, DST 10.10.0.2, DPORT 80, CHECKSUM true)
 -> EtherEncap(0x0800, deviceaddress, serviceaddress)
 -> [0]brngw[0]

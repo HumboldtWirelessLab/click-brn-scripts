@@ -1,6 +1,6 @@
 #define DEBUGLEVEL 2
 
-#define CST
+#define CST cst
 
 // include unter helper/measurement/etc/click
 
@@ -15,12 +15,13 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 1460, INTERVAL 200, MAXSEQ 500000, BURST 2, ACTIVE true)
-  -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
+Idle()
+  -> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2)
+  -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> BRN2PrintWifi("Sender", TIMESTAMP true)
-  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
-  -> SetTXPower(13)
+  -> SetTXRate(RATE 2, TRIES 1)
+  -> SetTXPower(24)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> filter_tx :: FilterTX()
@@ -50,3 +51,7 @@ error_clf[7]
 
 filter_tx[1]
   -> discard;
+
+Script(
+  write sf.add_flow 00:00:00:00:00:02 00:00:00:00:00:01 200 1500 0 5000 true 2 0,
+);

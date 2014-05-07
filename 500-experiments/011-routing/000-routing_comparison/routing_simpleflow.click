@@ -68,6 +68,8 @@ toMeAfterRouting[2]
 
 Idle -> [3]routing;
 
+Idle -> [4]routing;
+
 Script (
   wait 219,
   read routing_cnt.count,

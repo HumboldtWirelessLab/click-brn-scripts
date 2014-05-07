@@ -1,37 +1,32 @@
 NAME=linkchannelstat_plm
 SIMULATOR=ns2
-RADIO=shadowing11b
+RADIO=shadowing
 FORGEINNODES=no
 
-TIME=350
+TIME=310
+
+USE_SINGLE_CLICKFILE=1
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=linkstat_plm.mes
-NODEPLACEMENT=npart
-NODEPLACEMENTOPTS="relative"
+#NODEPLACEMENT=npart
+#NODEPLACEMENTOPTS="relative"
+NODEPLACEMENT=multibox_placement.sh
+#"X=xlen Y=ylen B=no_boxes L=len_between_boxes LN=no_nodes_on_bridge $0"
+#NODEPLACEMENTOPTS="400 200 5 330 5"
+NODEPLACEMENTOPTS="750 500 5 350 5"
 FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-#EVALUATION="embrace_xml linkstat_graph network_info"
-EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression evaluation/eval.sh linkstat_graph network_info evaluation/drop_nsfiles.sh"
-#EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh linkstat_graph"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression evaluation/eval.sh linkstat_graph network_info evaluation/drop_nsfiles.sh"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no
 NOTICE=no
 LOS=no
 
-#LOCALPROCESS=CONFIGDIR/linkstat_ctl.sh
-
 CONTROLSOCKET=yes
-
-MULTIREPEAT="1"
-MULTIWAIT=0
-MULTIRUNMODE=REBOOT
-
-PARAMSFILE="params"
-PARAMSWAIT=0
-PARAMSRUNMODE=REBOOT

@@ -1,18 +1,15 @@
 #!/bin/sh
 
-#SEND_PACKETS=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $9}'`
-#ECHO_PACKETS=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $13}'`
-#RECV_PACKETS=`cat $RESULTDIR/measurement.log | grep "<rxflow src=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $9}'`
+F1_1=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | grep "flowid=\"0\"" | tail -n 1 | sed 's#"# #g' | sed "s#=# #g" | awk '{print $17}'`
+F1_2=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | grep "flowid=\"0\"" | head -n 1 | sed 's#"# #g' | sed "s#=# #g" | awk '{print $17}'`
+F2_1=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | grep "flowid=\"1\"" | tail -n 1 | sed 's#"# #g' | sed "s#=# #g" | awk '{print $17}'`
+F2_2=`cat $RESULTDIR/measurement.log | grep "<txflow src=" | grep "flowid=\"1\"" | head -n 1 | sed 's#"# #g' | sed "s#=# #g" | awk '{print $17}'`
 
-#echo -n "Send $SEND_PACKETS packet, received $ECHO_PACKETS packets and $RECV_PACKETS echo packets are received."
+let F1=\(100*F2_1\)/F1_1
+let F2=\(100*F2_2\)/F1_2
 
-#if [ $ECHO_PACKETS -gt 10 ]; then
-#  echo " OK !"
-#  exit 0
-#else
-#  echo " Too bad !"
-#  exit 2
-#fi
+let I=200-\(F1+F2\)
 
-echo "No valid evaluation."
+echo $I
+
 exit 0

@@ -1,0 +1,4 @@
+#define DEBUGLEVEL 2
+
+#define ROUTINGGEOR
+#define BRNFEEDBACK

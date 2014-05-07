@@ -1,8 +1,10 @@
 NAME=dht_dsr
 SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
+RADIO=shadowing
+#RADIO=tworayground
 FORGEINNODES=no
+
+DISABLE_TRACE=1
 
 #TIME=120
 TIME=260

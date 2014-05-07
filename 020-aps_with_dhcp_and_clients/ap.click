@@ -37,11 +37,11 @@ device_wifi
                            0/BRN_PORT_DHTROUTING,  //DHT-Routing
                            0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
                             -  );//other
-  
+
 brn_clf[0]
   //-> Print("DSR-Packet")
   -> [1]dsr;
-  
+
 brn_clf[1]
 //-> Print("Routing-Packet",100)
   -> BRN2Decap()
@@ -49,7 +49,7 @@ brn_clf[1]
   -> dht_r_all::Counter()
 //-> Print("out Routing-Packet")
   -> [0]dsr;
-  
+
 dht[1]
 //-> Print("routing-Packet-out")
   -> dht_r_neighbour::Counter()
@@ -76,6 +76,7 @@ device_wifi[4]            //broadcast and no brn
     -> BRN2EtherDecap()
     -> Strip(28) // strip ip and udp
     -> Print("For DHCP-Server", TIMESTAMP true)
+    -> BRN2DHCPPrint(LABEL "NODENAME")
     -> dh
     -> UDPIPEncap(192.168.0.1, 67, 255.255.255.255, 68)
     -> EtherEncap(0x0800, deviceaddress , ff:ff:ff:ff:ff:ff)
@@ -104,6 +105,7 @@ toMeAfterDsr[2]
 
 Idle -> [2]dsr;
 Idle -> [3]dsr;
+Idle -> [4]dsr;
 brn_clf[3] -> Discard;
 
 Script(

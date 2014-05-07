@@ -1,0 +1,26 @@
+NAME=receiver
+SIMULATOR=ns2
+RADIO=shadowing11b
+FORGEINNODES=no
+
+TIME=50
+
+NODEPLACEMENTFILE=placementfile.plm
+NODETABLE=sender_and_receiver.mes
+NODEPLACEMENT=file
+FIELDSIZE=RXRANGE
+
+LOGDIR=WORKDIR
+LOGFILE=measurement.log
+
+RESULTDIR=WORKDIR
+#EVALUATION="evaluation/eval.sh dump_compression status_compression"
+EVALUATION="evaluation/eval.sh"
+EVALUATIONSDIR=WORKDIR
+EVALUATIONSDIRPOSTFIX=_evaluation
+
+GPS=no
+NOTICE=no
+LOS=no
+
+CONTROLSOCKET=yes

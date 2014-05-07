@@ -1,0 +1,106 @@
+#!/bin/bash
+
+if [ "x$PLACEMENTFILE" = "x" ]; then
+  PLACEMENTFILE=placements_npart.dat
+fi
+
+#FLOODALGOS="simple"
+#FLOODALGOS="mpr mst"
+FLOODALGOS="simple"
+
+PROB_ARRAY=( 95 85 )
+
+FLOODINGPASSIVACK_RETRIES="1"
+#FLOODINGPASSIVACK_RETRIES="1 2 5"
+#FLOODINGPASSIVACK_RETRIES="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15"
+
+FLOODING_E2E_RETRIES="0"
+
+#FLOODINGUNICAST="0 4"
+#FLOODINGUNICAST="4"
+FLOODINGUNICAST="4"
+
+#FLOODINGUNICAST_PRESELECTION="1 2"
+FLOODINGUNICAST_PRESELECTION="2"
+
+FLOODINGUNICAST_REJECT_EMPTYCS="true"
+
+FLOODINGUNICAST_PEER_METRIC="1"
+
+MAC_TRIES="4"
+#MAC_TRIES="1 4 7"
+
+FIXCS_PARAMS="true"
+#FIXCS_PARAMS="false true"
+
+FLOODINGABORTTX="3"
+# 15"
+
+NB_METRIC="8000"
+
+#result_flooding_20130621d.dat
+PIGGYBACK="20"
+
+BCAST2UNIC_FORCERESPONSIBILITY="true"
+BCAST2UNIC_USEASSIGNINFO="true"
+BCAST_RNDDELAYQUEUE_MINDELAY="5"
+BCAST_RNDDELAYQUEUE_MAXDELAY="20"
+
+#define RTS_CTS_STRATEGY_NONE       0 /* default */
+#define RTS_CTS_STRATEGY_ALWAYS_OFF 1 /* */
+#define RTS_CTS_STRATEGY_ALWAYS_ON  2 /* */
+#define RTS_CTS_STRATEGY_SIZE_LIMIT 3 /* unicast only */
+#define RTS_CTS_STRATEGY_RANDOM     4 /* unicast only */
+#define RTS_CTS_STRATEGY_PLI        5 /* unicast only */
+#define RTS_CTS_STRATEGY_HIDDENNODE 6 /* unicast only */
+#define RTS_CTS_STRATEGY_FLOODING   7
+
+#define RTS_CTS_MIXED_STRATEGY_NONE        0 /* default */
+#define RTS_CTS_MIXED_PS_AND_HN            1 /* combine packet size and hidden node */
+#define RTS_CTS_MIXED_PS_AND_HN_AND_RANDOM 2 /* combine packet size and hidden node and random */
+#define RTS_CTS_MIXED_PS_AND_FLOODING      3 /* combine packet size and flooding */
+
+#define BACKOFF_STRATEGY_OFF                             0
+#define BACKOFF_STRATEGY_DIRECT                          1
+#define BACKOFF_STRATEGY_MAX_THROUGHPUT                  2
+#define BACKOFF_STRATEGY_BUSY_AWARE                      3
+#define BACKOFF_STRATEGY_TARGET_PACKETLOSS               4
+#define BACKOFF_STRATEGY_LEARNING                        5
+#define BACKOFF_STRATEGY_TARGET_DIFF_RXTX_BUSY           6
+#define BACKOFF_STRATEGY_NEIGHBOURS                      7
+#define BACKOFF_STRATEGY_CONSTANT                        8
+#define BACKOFF_STRATEGY_TX_AWARE                        9
+
+#define FLOODINGRATE_DEFAULT_VALUES          0
+#define FLOODINGRATE_SINGLE_MAXRATE          1
+#define FLOODINGRATE_SINGLE_MINPOWER         2
+#define FLOODINGRATE_SINGLE_BEST_POWER_RATE  3
+#define FLOODINGRATE_GROUP_MAXRATE           4
+#define FLOODINGRATE_GROUP_MINPOWER          5
+#define FLOODINGRATE_GROUP_BEST_POWER_RATE   6
+
+#$rtscts"_"$mixed"_"$bos"_"$rs
+
+#1_MBit_1_plm_1_simple_4_2_true_1_1_4_8000_20_true_true_5_3_true_0_1_0_1_unicast_4: 541
+#1_MBit_1_plm_1_simple_4_2_true_1_1_4_8000_20_true_true_5_3_true_0_2_0_1_unicast_4: 366
+#1_MBit_1_plm_1_simple_4_2_true_1_1_4_8000_20_true_true_5_3_true_0_6_0_1_unicast_4: 366
+#1_MBit_1_plm_1_simple_4_2_true_1_1_4_8000_20_true_true_5_3_true_0_7_0_1_unicast_4: 460
+
+#1_MBit_1_plm_1_simple_4_2_true_1_1_4_8000_20_true_true_5_3_true_0_1_2_1_unicast_4: 504
+#1_MBit_1_plm_1_simple_4_2_true_1_1_4_8000_20_true_true_5_3_true_0_2_2_1_unicast_4: 384
+#1_MBit_1_plm_1_simple_4_2_true_1_1_4_8000_20_true_true_5_3_true_0_6_2_1_unicast_4: 384
+#1_MBit_1_plm_1_simple_4_2_true_1_1_4_8000_20_true_true_5_3_true_0_7_2_1_unicast_4: 462
+
+RTS_CTS="0 6 7"
+RTSCTS_MIXED="0 1 3"
+
+BO_SCHEMES="0 2 7"
+
+#Default (0) and Flooding
+RS_SCHEMES="0 2 3"
+
+
+#RTS_CTS="0"
+#RTSCTS_MIXED="3"
+#BO_SCHEMES="2"
+#RS_SCHEMES="3"

@@ -1,0 +1,21 @@
+NAME=receiver
+SIMULATOR=ns2
+RADIO=shadowing
+#RADIO=tworayground
+FORGEINNODES=no
+
+TIME=6
+
+NODEPLACEMENTFILE=placementfile.plm
+NODETABLE=sender_and_receiver.mes
+NODEPLACEMENT=string
+NODEPLACEMENTOPTS="relative"
+FIELDSIZE=RXRANGE
+
+LOGDIR=WORKDIR
+LOGFILE=measurement.log
+
+RESULTDIR=WORKDIR
+EVALUATION="evaluation/eval.sh dump_compression status_compression"
+EVALUATIONSDIR=WORKDIR/evaluation
+EVALUATIONSDIRPOSTFIX=_evaluation

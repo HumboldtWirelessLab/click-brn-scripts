@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 rm -f testbed.pdf
 
@@ -19,7 +19,7 @@ if [ "x$SIMULATOR" = "x" ]; then
 fi
 
 if [ "x$LIMIT" = "x" ]; then
-  LIMIT=39
+  LIMIT=62
 fi
 
 if [ "x$START" = "x" ]; then

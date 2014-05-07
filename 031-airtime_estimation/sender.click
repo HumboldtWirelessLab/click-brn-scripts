@@ -1,5 +1,5 @@
 #define DEBUGLEVEL 2
-#define CST 1
+#define CST cst
 
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
@@ -13,27 +13,31 @@ rawdevice
   -> BRN2PrintWifi("Feedback", TIMESTAMP true)
   -> Discard;
 
-rate::SetTXRates(RATE0 22, RATE1 2, RATE2 0, RATE3 0, TRIES0 3, TRIES1 3, TRIES2 0, TRIES3 0)
+rate::SetTXRate(RATE 22, TRIES 3)
 -> wifioutq::NotifierQueue(50)
 -> rawdevice;
 
-BRN2PacketSource(SIZE 1450, INTERVAL 30, MAXSEQ 500000, BURST 1, ACTIVE true)
+Idle()
+  -> sf::BRN2SimpleFlow(EXTRADATA "sf1", DEBUG 2)
+  -> BRN2EtherEncap(USEANNO true)
   -> SetTimestamp()
-  -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> WifiSeq()
   -> Discard;
 //  -> rate;
 
-BRN2PacketSource(SIZE 1450, INTERVAL 30, MAXSEQ 500000, BURST 1, ACTIVE true)
+Idle()
+  -> sf2::BRN2SimpleFlow(EXTRADATA "sf2", DEBUG 2)
+  -> BRN2EtherEncap(USEANNO true)
   -> SetTimestamp()
-  -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:02)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> WifiSeq()
 //  -> Discard;
   -> rate;
 
 Script(
+ write sf.add_flow 00:00:00:00:00:01 ff:ff:ff:ff:ff:ff 30 1500 0 7000 true 1 0,
+ write sf2.add_flow 00:00:00:00:00:01 00:00:00:00:00:02 30 1500 0 7000 true 1 0,
  wait 3,
  read rawdevice/cst.stats,
  wait 3,

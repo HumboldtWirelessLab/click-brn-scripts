@@ -25,7 +25,7 @@ if [ "x$KEEP_EVAL" = "x" ]; then
   done
 fi
 
-MAX_THREADS=14
+MAX_THREADS=20
 NUM=0
 
 if [ ! -f placement.txt ]; then
@@ -36,7 +36,8 @@ echo -n "" > $DIR/evaluation_finish
 
 for i in `ls -d *MBit*`; do
 
-  (cd  $i/; rm -rf evaluation; ADDEVALUATION="evaluation/eval.sh network_info flooding_info flow_info" sh ./eval_again.sh; cd $DIR; tar cjf $i.tar.bz2 $i; mkdir -p $i.new/evaluation/flooding_info/; cp $i/params $i.new/; cp $i/evaluation/flooding_info/floodingstats.csv $i.new/evaluation/flooding_info/; rm -rf $i; mv $i.new $i; echo $NUM >> $DIR/evaluation_finish ) &
+  #ADDEVALUATION="evaluation/eval.sh flooding_info flow_info evaluation/eval_post.sh"
+  (cd $i/; PREEVALUATION="$PREEVALUATION" ADDEVALUATION="$ADDEVALUATION" /bin/bash ./eval_again.sh; echo $NUM >> $DIR/evaluation_finish ) &
 
   let NUM=NUM+1
 
@@ -44,7 +45,7 @@ for i in `ls -d *MBit*`; do
     LINES=`cat $DIR/evaluation_finish | wc -l`
 
     while [ $LINES -ne $NUM ]; do
-      sleep 10
+      sleep 1
       LINES=`cat $DIR/evaluation_finish | wc -l`
     done
     echo -n "" > $DIR/evaluation_finish
@@ -55,7 +56,7 @@ done
 LINES=`cat $DIR/evaluation_finish | wc -l`
 
 while [ $LINES -ne $NUM ]; do
-  sleep 10
+  sleep 1
   LINES=`cat $DIR/evaluation_finish | wc -l`
 done
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 dir=$(dirname "$0")
 pwd=$(pwd)
@@ -132,7 +132,8 @@ while [ $i -le $LIMIT ]; do
     EVO="OK"
 
     if [ $LATEX -eq 1 ]; then
-        IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$|eps$"`
+        #IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$|eps$"`
+        IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$"`
         IMG_COUNT=`echo $IMGS | wc -w`
 
         if [ $IMG_COUNT -gt 0 ]; then

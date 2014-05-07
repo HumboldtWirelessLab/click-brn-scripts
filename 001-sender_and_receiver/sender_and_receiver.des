@@ -1,8 +1,11 @@
 NAME=receiver
 SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
+RADIO=shadowing
+#RADIO=tworayground
 FORGEINNODES=no
+
+#DISABLE_NAM=1
+#DISABLE_TR=1
 
 TIME=5
 
@@ -13,14 +16,15 @@ NODEPLACEMENT=string
 #next is needed to use own placementfile
 #NODEPLACEMENT=file
 NODEPLACEMENTOPTS="relative"
+#FIELDSIZE=40
 FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="evaluation/eval.sh dump_compression status_compression"
-#EVALUATION="evaluation/eval.sh"
+#EVALUATION="evaluation/eval.sh dump_compression status_compression compression_config"
+EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
 EVALUATIONSDIRPOSTFIX=_evaluation
 
@@ -30,10 +34,12 @@ LOS=no
 
 CONTROLSOCKET=yes
 
-MULTIREPEAT="3"
+MULTIREPEAT="5"
 MULTIWAIT=0
 MULTIRUNMODE=REBOOT
 
 PARAMSFILE="params"
 PARAMSWAIT=0
 PARAMSRUNMODE=REBOOT
+
+USE_SINGLE_CLICKFILE=1

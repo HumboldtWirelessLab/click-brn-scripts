@@ -30,9 +30,18 @@ echo "NUM,NO_NODES,PACKETSIZE,BACKOFF_MAX,BACKOFF,SEED,RATE,TIME,NODE,ID,PHY_HWB
 echo "NUM,NO_NODES,PACKETSIZE,BACKOFF,BACKOFF_MAX,SEED,RATE,PACKETCOUNT,TARGET,CHANNELMODEL" > inrange_cnt.mat.tmp
 echo "NUM,NO_NODES,PACKETSIZE,BACKOFF,BACKOFF_MAX,SEED,RATE,BYTECOUNT,TARGET,CHANNELMODEL" > inrange_byte_cnt.mat.tmp
 
+MAX_NO_NODES=0
+MAX_NO_NODES_DIR=0
+
 while [ -e $ALLRESDIR/$DIRNUM ]; do
 
   if [ -f $ALLRESDIR/$DIRNUM/params ]; then
+    . $ALLRESDIR/$DIRNUM/params
+
+    if [ -f $ALLRESDIR/$DIRNUM/measurement.log.bz2 ]; then
+      bzip2 -d $ALLRESDIR/$DIRNUM/measurement.log.bz2
+    fi
+
     if [ -f $ALLRESDIR/$DIRNUM/sender_and_receiver.des.real ]; then
       CONFIGFILE=$ALLRESDIR/$DIRNUM/sender_and_receiver.des.real RESULTDIR=$ALLRESDIR/$DIRNUM $DIR/eval.sh
     else
@@ -42,6 +51,19 @@ while [ -e $ALLRESDIR/$DIRNUM ]; do
     cat $ALLRESDIR/$DIRNUM/receiver_info.mat >> inrange.mat.tmp
     cat $ALLRESDIR/$DIRNUM/receiver_cnt.mat >> inrange_cnt.mat.tmp
     cat $ALLRESDIR/$DIRNUM/receiver_byte_cnt.mat >> inrange_byte_cnt.mat.tmp
+
+    if [ $NO_NODES -gt $MAX_NO_NODES ]; then
+      MAX_NO_NODES=$NO_NODES
+      MAX_NO_NODES_DIR=$DIRNUM
+    fi
+
+    if [ -f $ALLRESDIR/$DIRNUM/measurement.log ]; then
+      if [ ! -f $ALLRESDIR/$DIRNUM/measurement.log.bz2 ]; then
+        bzip2 -z $ALLRESDIR/$DIRNUM/measurement.log
+      fi
+      rm -f $ALLRESDIR/$DIRNUM/measurement.log
+    fi
+
   fi
 
   let DIRNUM=DIRNUM+1
@@ -54,11 +76,11 @@ while read line; do
       NODENUM=`echo $line | awk '{print $4}'`
       NODEMAC=`echo $line | awk '{print $3}'`
       NODEMAC_SEDARG="$NODEMAC_SEDARG -e s#$NODEMAC#$NODENUM#g"
-done < $ALLRESDIR/1/nodes.mac
+done < $ALLRESDIR/$MAX_NO_NODES_DIR/nodes.mac
 
 #echo "$NODEMAC_SEDARG"
 
-cat inrange.mat.tmp | sed "s#00-1B-B1#06-1B-B1#g" | sed $NODEMAC_SEDARG | grep -v -e "[0-9]-" > inrange.mat
+cat inrange.mat.tmp | sed "s#00-1B-B1#06-1B-B1#g" | sed $NODEMAC_SEDARG | grep -v -e "[0-9A-F]-[0-9A-F]" > inrange.mat
 cat inrange_cnt.mat.tmp | sed $NODEMAC_SEDARG > inrange_cnt.mat
 cat inrange_byte_cnt.mat.tmp | sed $NODEMAC_SEDARG > inrange_byte_cnt.mat
 

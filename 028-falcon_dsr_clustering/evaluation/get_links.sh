@@ -41,8 +41,7 @@ echo "digraph G {" > linksmetric.dot.tmp
 
 for n in $NODES; do
   NUM=`echo $n | awk '{print strtonum("0x"$1)'}`
-  NODENUM=`expr $NUM - 1`
-  NODE=`cat $RESULTDIR/nodes.mac | grep " $NODENUM$" | awk '{print $1}'`
+  NODE=`cat $RESULTDIR/nodes.mac | grep " $NUM$" | awk '{print $1}'`
 #  echo "$n $NUM $NODE"
   X=`cat $RESULTDIR/placementfile.plm | grep "$NODE " | awk '{print $2}'`
   X=`calc $X / 50 | sed "s#^[[:space:]]*~##g"`
@@ -57,7 +56,7 @@ echo "}" >> links.dot.tmp
 
 cat links.dot.tmp | sed $FULLSED > links.dot
 #dot -Tpng links.dot > links.png
-#neato -Tpng links.dot > links.png
+neato -Tpng links.dot > links.png 2> /dev/null
 
 neato -Teps links.dot > links.eps 2> /dev/null
 
@@ -102,7 +101,7 @@ done
 echo "}" >> linksmetric.dot.tmp
 
 cat linksmetric.dot.tmp | sed $FULLSED > linksmetric.dot
-#neato -Tpng linksmetric.dot > linksmetric.png
+neato -Tpng linksmetric.dot > linksmetric.png 2> /dev/null
 neato -Teps linksmetric.dot > linksmetric.eps 2> /dev/null
 
 if [ $? -ne 0 ]; then
