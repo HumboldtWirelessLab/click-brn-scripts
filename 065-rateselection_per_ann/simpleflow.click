@@ -2,13 +2,13 @@
 
 #define PRIO_QUEUE
 #define RAWDUMP
-//#define WIFIDEV_LINKSTAT_DEBUG
 #define ENABLE_DSR_DEBUG
 
 #define BRNFEEDBACK
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#define CERR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -36,7 +36,7 @@ brn_clf[0]
 -> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2)
 -> SetTimestamp() -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
--> SetTXRate(RATE 2, TRIES 1)
+-> data_rate::SetTXRate(RATE 36, TRIES 7)
 -> NotifierQueue(500)
 -> [2]device_wifi;
 
@@ -56,3 +56,66 @@ device_wifi[3]
 Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
 
+Script(
+  print "<rate>",
+  read data_rate.rate,
+  print "</rate>"
+  write data_rate.rate 18,
+
+  wait 1,
+  print "New Rate:",
+  read data_rate.rate
+  
+ )
+
+Script(
+  wait 2.5,
+  read sf.stats,
+  read device_wifi/wifidevice/hnd.stats,
+
+  wait 1,
+  read sf.stats,
+  read device_wifi/wifidevice/hnd.stats,
+
+  wait 1,
+  read sf.stats,
+  read device_wifi/wifidevice/hnd.stats,
+
+  wait 1,
+  read sf.stats,
+  read device_wifi/wifidevice/hnd.stats,
+
+  wait 1,
+  read sf.stats,
+  read device_wifi/wifidevice/hnd.stats,
+
+  wait 1,
+  read sf.stats,
+  read device_wifi/wifidevice/hnd.stats
+
+)
+
+Script(
+  wait 15.1,
+  read sf.stats,
+  read device_wifi/wifidevice/hnd.stats,
+  read device_wifi/wifidevice/cst.stats
+)
+
+Script(
+  wait 25.1,
+  read sf.stats,
+  read device_wifi/wifidevice/hnd.stats,
+  read device_wifi/wifidevice/cst.stats
+)
+
+Script(
+  wait 35.1,
+  read sf.stats,
+  read device_wifi/wifidevice/hnd.stats,
+  read device_wifi/wifidevice/cst.stats
+)
+
+Script(
+  wait 39
+)
