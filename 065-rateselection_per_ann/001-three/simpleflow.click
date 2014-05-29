@@ -57,6 +57,8 @@ Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
 
 Script(
+  set x $(data_rate.rate),
+  print <rate>$x</rate>,
   print "<rate>",
   read data_rate.rate,
   print "</rate>"
