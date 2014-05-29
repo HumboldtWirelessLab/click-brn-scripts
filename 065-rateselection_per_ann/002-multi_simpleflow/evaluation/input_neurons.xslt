@@ -14,22 +14,30 @@
                 <xsl:variable name="src_addr" select="@src"/>
                 <xsl:variable name="des_addr" select="@dst"/>
 
-                <!-- for each  occurrence of this pair -->
-                <xsl:for-each select="/simpleflow/flowstats[@node = $src_addr]/txflow[@dst = $des_addr]">
-                    <xsl:sort select="@tx_rate" data-type="number" order="descending"/>
-                    <xsl:if test="position() = 1">
-                        <optimal_rate>
-                        <xsl:attribute name="max_thruput">
-                            <xsl:value-of select="@tx_rate" />
-                        </xsl:attribute>
+                <link>
+                    <xsl:attribute name="from">
+                        <xsl:value-of select="@src" />
+                    </xsl:attribute>
 
-                        <xsl:value-of select="@extra_data" />
-                        </optimal_rate>
-                    </xsl:if>
-                </xsl:for-each>
+                    <xsl:attribute name="to">
+                        <xsl:value-of select="@dst" />
+                    </xsl:attribute>
+
+                    <!-- for each  occurrence of this pair -->
+                    <xsl:for-each select="/simpleflow/flowstats[@node = $src_addr]/txflow[@dst = $des_addr]">
+                        <xsl:sort select="@tx_rate" data-type="number" order="descending"/>
+                        <xsl:if test="position() = 1">
+                            <optimal_rate>
+                                <xsl:attribute name="max_thruput">
+                                    <xsl:value-of select="@tx_rate" />
+                                </xsl:attribute>
+
+                            <xsl:value-of select="@extra_data" />
+                            </optimal_rate>
+                        </xsl:if>
+                    </xsl:for-each>
+                </link>
             </xsl:for-each>
-            <fertig />
-            <xsl:apply-templates/>
         </data_set>
     </xsl:template>
 
@@ -39,25 +47,6 @@
 
 
     
-
-    <xsl:template match="flowstats/txflow">
-        <xsl:variable name="src_addr" select="@src"/>
-        <xsl:variable name="des_addr" select="@dst"/>
-
-        <xsl:for-each select="/simpleflow/flowstats[@node = $src_addr]/txflow[@dst = $des_addr]">
-            <xsl:sort select="@tx_rate" data-type="number" order="descending"/>
-            <xsl:if test="position() = 1">
-                <optimal_rate>
-                    <xsl:attribute name="thruput">
-                        <xsl:value-of select="@tx_rate" />
-                    </xsl:attribute>
-
-                    <xsl:value-of select="@extra_data" />
-                </optimal_rate>
-            </xsl:if>
-      </xsl:for-each>
-
-    </xsl:template>
 
     <xsl:template match="nb" >
         <link>

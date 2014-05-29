@@ -4,7 +4,7 @@ SIMULATOR=ns2
 RADIO=tworayground
 FORGEINNODES=no
 
-TIME=50
+TIME=100
 
 NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=simpleflow.mes
