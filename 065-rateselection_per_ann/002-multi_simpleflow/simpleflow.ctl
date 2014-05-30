@@ -45,6 +45,7 @@
 7.2	sk3		ath0	read	device_wifi/wifidevice/hnd	stats
 
 
+# Probe one link with multiple rates
 11	sk2		ath0	write	mcs	rate	12
 11	sk2		ath0	read	mcs	rate	
 11	sk2		ath0	write	sf	reset	
