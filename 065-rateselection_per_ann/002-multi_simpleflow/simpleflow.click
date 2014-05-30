@@ -56,3 +56,7 @@ device_wifi[3]
 Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
 
+Script(
+	wait 0.4,
+ 	read device_wifi/wifidevice/hnd.stats,
+)

@@ -23,19 +23,33 @@
                         <xsl:value-of select="@dst" />
                     </xsl:attribute>
 
-                    <!-- for each  occurrence of this pair -->
-                    <xsl:for-each select="/simpleflow/flowstats[@node = $src_addr]/txflow[@dst = $des_addr]">
-                        <xsl:sort select="@tx_rate" data-type="number" order="descending"/>
-                        <xsl:if test="position() = 1">
-                            <optimal_rate>
-                                <xsl:attribute name="max_thruput">
-                                    <xsl:value-of select="@tx_rate" />
-                                </xsl:attribute>
+                    <number_of_neighbors>
+                        <!-- <xsl:value-of select="count(/simpleflow/hiddennodedetection[@addr = $src_addr]/neighbour_nodes/node)" /> -->
+                        <xsl:value-of select="count(/simpleflow/hiddennodedetection[@node = $src_addr]/neighbour_nodes/node)" />
+                    </number_of_neighbors>
+        
+                    <number_of_hidden_nodes>
+                        <xsl:variable name="from_node" select="../../@node" />
+                        <xsl:value-of select="count(../../../hiddennodedetection[@node=$from_node]/hidden_nodes/node)" />
+                    </number_of_hidden_nodes>
 
-                            <xsl:value-of select="@extra_data" />
-                            </optimal_rate>
-                        </xsl:if>
-                    </xsl:for-each>
+                    <optimal_rate>
+                        <!-- for each  occurrence of this pair -->
+                        <xsl:for-each select="/simpleflow/flowstats[@node = $src_addr]/txflow[@dst = $des_addr]">
+                            <xsl:sort select="@tx_rate" data-type="number" order="descending"/>
+                            <xsl:if test="position() = 1">
+                                    <xsl:attribute name="max_thruput">
+                                        <xsl:value-of select="@tx_rate" />
+                                    </xsl:attribute>
+    
+                                    <xsl:value-of select="@extra_data" />
+                                </xsl:if>
+                        </xsl:for-each>
+                    </optimal_rate>
+
+                    <rssi>
+                        <xsl:value-of select="@rssi" />
+                    </rssi>
                 </link>
             </xsl:for-each>
         </data_set>
@@ -78,4 +92,3 @@
     </xsl:template>
 
 </xsl:stylesheet>
-
