@@ -70,6 +70,12 @@
                     </optimal_rate>
 
                     <rssi>
+                        <xsl:for-each select="/simpleflow/channelstats[@node = $src_addr]/neighbourstats/nb[@addr = $des_addr]">
+                            <xsl:sort select="@rssi" data-type="number" order="ascending"/>
+                            <xsl:if test="position() = 1">
+                                <xsl:value-of select="@rssi" />
+                            </xsl:if>
+                        </xsl:for-each>
                         <xsl:value-of select="@rssi" />
                     </rssi>
                 </link>
