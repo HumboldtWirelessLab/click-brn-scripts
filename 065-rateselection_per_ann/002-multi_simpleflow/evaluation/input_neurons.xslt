@@ -5,12 +5,12 @@
     <xsl:variable name='newline'><xsl:text>
 </xsl:text></xsl:variable>
     
-    <xsl:key name="key_link" match="txflow" use="concat(@src, '+', @dst)"/>
+    <xsl:key name="key_link" match="txflow[@replies > 0 and contains(@extra_data, 'mcs_rate')]" use="concat(@src, '+', @dst)"/>
 
     <xsl:template match="/">
         <data_set>
             <!-- for each pair of (src,dest) -->
-            <xsl:for-each select="simpleflow/flowstats/txflow[count(. | key('key_link', concat(@src, '+', @dst))[1]) = 1 and @replies > 0]">
+            <xsl:for-each select="simpleflow/flowstats/txflow[count(. | key('key_link', concat(@src, '+', @dst))[1]) = 1 and @replies > 0 and contains(@extra_data, 'mcs_rate')]">
                 <xsl:variable name="src_addr" select="@src"/>
                 <xsl:variable name="des_addr" select="@dst"/>
 
