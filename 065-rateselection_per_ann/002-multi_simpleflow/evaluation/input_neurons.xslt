@@ -32,28 +32,9 @@
                         </xsl:for-each>
                     </number_of_neighbors>
 
-                    <!-- Ordered list of used counts
-                    <list_of_number_of_neighbors>
-                        <xsl:for-each select="/simpleflow/hiddennodedetection[@node = $src_addr]/neighbour_nodes">
-                            <xsl:sort select="count(./node[@addr != 'FF-FF-FF-FF-FF-FF'])" data-type="number" order="descending"/>
-                            <count>
-                                <xsl:value-of select="count(./node[@addr != 'FF-FF-FF-FF-FF-FF'])" />
-                            </count>
-                        </xsl:for-each>
-                    </list_of_number_of_neighbors> -->
-        
                     <number_of_hidden_nodes>
                         <xsl:value-of select="count(/simpleflow/hiddennodedetection[neighbour_nodes/node/@addr = $des_addr]/hidden_nodes/node[@addr = $src_addr])" />                        
                     </number_of_hidden_nodes>
-
-                    <!-- List of hidden nodes
-                    <hidden_nodes>
-                        <xsl:for-each select="/simpleflow/hiddennodedetection[neighbour_nodes/node/@addr = $des_addr]/hidden_nodes/node[@addr = $src_addr]">
-                            <node>
-                                <xsl:value-of select="../../@node" />
-                            </node>
-                        </xsl:for-each>
-                    </hidden_nodes> -->
 
                     <optimal_rate>
                         <!-- for each  occurrence of this pair -->
