@@ -57,14 +57,15 @@
 
                     <optimal_rate>
                         <!-- for each  occurrence of this pair -->
-                        <xsl:for-each select="/simpleflow/flowstats[@node = $src_addr]/txflow[@dst = $des_addr]">
+                        <xsl:for-each select="/simpleflow/flowstats[@node = $src_addr]/txflow[@dst = $des_addr and @replies > 0 and contains(@extra_data, 'mcs_rate')]">
                             <xsl:sort select="@tx_rate" data-type="number" order="descending"/>
+                            <xsl:sort select="substring-after(@extra_data, 'mcs_rate=')" data-type="number" order="descending"/>
                             <xsl:if test="position() = 1">
                                 <xsl:attribute name="max_thruput">
                                     <xsl:value-of select="@tx_rate" />
                                 </xsl:attribute>
     
-                                <xsl:value-of select="@extra_data" />
+                                <xsl:value-of select="substring-after(@extra_data, 'mcs_rate=')" />
                             </xsl:if>
                         </xsl:for-each>
                     </optimal_rate>
