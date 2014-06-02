@@ -7,6 +7,8 @@
     
     <xsl:template match="/"> 
         <xsl:text>ID,Rate,Length,Replies</xsl:text>
+        <xsl:value-of select="$newline" />
+        
         <xsl:for-each select="simpleflow/flowstats/txflow">
             <xsl:value-of select="concat(@src, 'and', @dst)" />
             <xsl:text >,</xsl:text>
