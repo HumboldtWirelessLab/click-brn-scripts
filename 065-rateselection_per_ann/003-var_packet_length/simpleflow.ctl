@@ -1,6 +1,6 @@
 #TIME	NODE(S)	DEVICE	MODE	ELEMENT	HANDLER		VALUE
 
-# Probing with multiple rates for all variations
+# Probing multiple packet lengths with multiple rates for all variations
 # Probe link 1 - 2 with length 100
 1	sk1		ath0	write	mcs	rate	12
 1	sk1		ath0	read	mcs	rate	
