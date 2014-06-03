@@ -31,7 +31,7 @@ for a in range(1, node_number + 1):
 				print("{0:.0f}	sk{1}		ath0	read	mcs	rate	".format(current_time, a))
 				print("{0:.0f}	sk{1}		ath0	write	sf	reset	".format(current_time, a))
 				current_time += 2
-				print("{0:.0f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 50 {4} 2 5000 true 1 0 mcs_rate={3}".format(current_time, a, b, rate, len))
+				print("{0:.0f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 0 {4} 2 5000 true 1 0 mcs_rate={3}".format(current_time, a, b, rate, len))
 				current_time += 6
 				print("{0:.0f}	sk{1}		ath0	read	sf	stats".format(current_time, a))
 				print
