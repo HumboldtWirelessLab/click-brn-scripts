@@ -121,6 +121,8 @@ def extract_cross_edges(file_path):
 
 def translate_nodes_to_pos(edges, nodes):
     result=[]
+    pos_a=(0,0,0)
+    pos_b=(0,0,0)
     for node_a, node_b, skip_info in edges:
         for x, y, z, name, mac in nodes:
             if node_a == mac:
