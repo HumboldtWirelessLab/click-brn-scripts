@@ -36,7 +36,7 @@ fi
 xsltproc -o ${RESULTDIR}/measurement.postxslt ${DIR}/strip.xslt ${RESULTDIR}/measurement.xml 
 
 BR_FOUND=$(grep ${RESULTDIR}/measurement.postxslt -e "^bridges.*")
-BR_EXPECTED="bridges,00-00-00-00-00-02--00-00-00-00-00-03,00-00-00-00-00-03--00-00-00-00-00-02,"
+BR_EXPECTED="bridges,00-00-00-00-00-01--00-00-00-00-00-05,00-00-00-00-00-05--00-00-00-00-00-01,"
 if [ "${BR_FOUND}" != "${BR_EXPECTED}" ]; then
   echo "Failed: Bridge analysis"
   echo "  Found:   ${BR_FOUND}"
@@ -49,7 +49,7 @@ fi
 # Check APs
 # 
 AP_FOUND=$(grep ${RESULTDIR}/measurement.postxslt -e "^articulationpoints.*")
-AP_EXPECTED="articulationpoints,00-00-00-00-00-02,"
+AP_EXPECTED="articulationpoints,00-00-00-00-00-05,"
 if [ "${AP_FOUND}" != "${AP_EXPECTED}" ]; then
   echo "Failed: Articulation point analysis"
   echo "  Found:   ${AP_FOUND}"

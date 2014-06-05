@@ -2,13 +2,13 @@
 
 #define PRIO_QUEUE
 #define RAWDUMP
+//#define WIFIDEV_LINKSTAT_DEBUG
 #define ENABLE_DSR_DEBUG
 
 #define BRNFEEDBACK
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
-#define CERR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -25,18 +25,23 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
+topo_info::TopologyInfo(DEBUG 4);
+
+//rs::RandomSeed(12);
+
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
-  -> brn_clf::Classifier( 0/BRN_PORT_FLOW, //Simpleflow
-                               -  );//other
+  -> brn_clf::Classifier( 0/BRN_PORT_TOPOLOGY_DETECTION,  //DETECT
+                                                    -  ); //other
 
 brn_clf[0]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2)
--> SetTimestamp() -> Print(TIMESTAMP true)
+-> topo_detect::TopologyDetection(TOPOLOGYINFO topo_info, NODEIDENTITY id, LINKTABLE lt, DEBUG 4)
+-> SetTimestamp()
+-> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
--> mcs::SetTXRate(RATE 12, TRIES 7)
+-> SetTXRate(RATE 2, TRIES 1)
 -> NotifierQueue(500)
 -> [2]device_wifi;
 
@@ -47,15 +52,13 @@ device_wifi[2] -> Discard;
 
 #ifdef BRNFEEDBACK
 device_wifi[3]
-  -> BRN2EtherDecap()
-  -> Classifier( 0/BRN_PORT_FLOW )
-  -> BRN2Decap()
-  -> [1]sf;
+  -> Discard;
 #endif
 
 Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
 
 Script(
-
-)
+  wait 260,
+  read topo_detect.local_topo_info
+);
