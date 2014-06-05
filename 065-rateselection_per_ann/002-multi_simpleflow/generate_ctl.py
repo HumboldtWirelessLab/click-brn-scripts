@@ -14,25 +14,26 @@ current_time = 2
 print("#TIME	NODE(S)	DEVICE	MODE	ELEMENT	HANDLER		VALUE\n")
 
 print("# Find hidden nodes by sending from each node to each other")
+current_time = math.ceil(current_time)
 for a in range(1, node_number + 1):
 	for b in range(1, node_number + 1):
 		if a == b:
 			continue
-		current_time = math.ceil(current_time)
-		print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 50 200 2 90 true 1 0".format(current_time, a, b))
-		current_time += 0.1
-		print("{0:.1f}	sk{1}		ath0	read	sf	stats".format(current_time, a))
-		current_time += 0.1
-		print("{0:.1f}	sk{1}		ath0	write	sf	reset".format(current_time, a))
-		for c in range(1, node_number + 1):
-			print("{0:.1f}	sk{1}		ath0	read	device_wifi/wifidevice/hnd	stats".format(current_time, c))
-		print
+		print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 50 3000 2 90 true 1 0".format(current_time, a, b))
+current_time += 1
+for a in range(1, node_number + 1):
+	print("{0:.1f}	sk{1}		ath0	read	sf	stats".format(current_time, a))
+current_time += 0.1
+for a in range(1, node_number + 1):
+	print("{0:.1f}	sk{1}		ath0	read	device_wifi/wifidevice/hnd	stats".format(current_time, a))
+print
 print
 
 print("# Get RSSI")
 current_time = math.ceil(current_time / 10) * 10
 for a in range(1, node_number + 1):
 	print("{0:.1f}	sk{1}		ath0	read	device_wifi/link_stat bcast_stats".format(current_time, a))
+print
 print
 
 print("# Probing with multiple rates for all variations")

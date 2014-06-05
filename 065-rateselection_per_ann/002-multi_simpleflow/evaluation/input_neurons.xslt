@@ -33,7 +33,7 @@
                     </number_of_neighbors>
 
                     <number_of_hidden_nodes>
-                        <xsl:value-of select="count(/simpleflow/hiddennodedetection[neighbour_nodes/node/@addr = $des_addr]/hidden_nodes/node[@addr = $src_addr])" />                        
+                        <xsl:value-of select="count(/simpleflow/hiddennodedetection[neighbour_nodes/node/@addr = $des_addr]/hidden_nodes/node[@addr = $src_addr])" />
                     </number_of_hidden_nodes>
 
                     <optimal_rate>
@@ -62,38 +62,6 @@
 
     <xsl:template match="text( )|@*">
       <!--<xsl:value-of select="."/>-->
-    </xsl:template>
-
-
-    
-
-    <xsl:template match="nb" >
-        <link>
-            <xsl:attribute name="from">
-                <xsl:value-of select="../../@node" />
-            </xsl:attribute>
-
-            <xsl:attribute name="to">
-                <xsl:value-of select="@addr" />
-            </xsl:attribute>
-
-            <number_of_neighbors>
-                <xsl:value-of select="count(../nb)" />
-            </number_of_neighbors>
-
-            <number_of_hidden_nodes>
-                <xsl:variable name="from_node" select="../../@node" />
-                <xsl:value-of select="count(../../../hiddennodedetection[@node=$from_node]/hidden_nodes/node)" />
-            </number_of_hidden_nodes>
-
-            <optimal_rate>
-                
-            </optimal_rate>
-
-            <rssi>
-                <xsl:value-of select="@rssi" />
-            </rssi>
-        </link>
     </xsl:template>
 
 </xsl:stylesheet>
