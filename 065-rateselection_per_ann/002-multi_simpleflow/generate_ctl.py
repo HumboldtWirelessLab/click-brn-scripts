@@ -32,16 +32,7 @@ print
 print("# Get RSSI")
 current_time = math.ceil(current_time / 10) * 10
 for a in range(1, node_number + 1):
-	for b in range(1, node_number + 1):
-		if a == b:
-			continue
-		current_time = math.ceil(current_time)
-		print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 50 200 2 90 true 1 0".format(current_time, a, b))
-		current_time += 0.1
-		print("{0:.1f}	sk{1}		ath0	write	sf	reset".format(current_time, a))
-		print("{0:.1f}	sk{1}		ath0	read	device_wifi/wifidevice/cst	stats".format(current_time, b))
-		
-		print
+	print("{0:.1f}	sk{1}		ath0	read	device_wifi/link_stat bcast_stats".format(current_time, a))
 print
 
 print("# Probing with multiple rates for all variations")
