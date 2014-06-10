@@ -4,7 +4,7 @@ import sys
 
 argc = len(sys.argv)
 if argc < 2:
-    print "Usage: generate_ctl.py NumberOfNodes"
+    print("Usage: generate_ctl.py NumberOfNodes")
     sys.exit();
 
 node_number = int(sys.argv[1])
