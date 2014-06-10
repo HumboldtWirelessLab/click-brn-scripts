@@ -40,11 +40,20 @@ Idle
 Idle
 ->[1]device_wifi;
 
+
+/*
+// for stats: enabele read hnd... in "Script"
+Idle
+-> hnd::HiddenNodeDetection(DEVICE wireless, TIMEOUT 1000, LINKTIMEOUT 2000, LINKTABLE lt, DEBUG 2)
+-> Discard;
+
+*/
 Script(
   read device_wifi/link_stat.probes,
   wait 50,
   read lt.links,
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats,
-  read device_wifi/cocst.stats 
+  read device_wifi/cocst.stats,
+//  read hnd.stats
 );

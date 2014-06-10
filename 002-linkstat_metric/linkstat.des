@@ -12,13 +12,14 @@ NODETABLE=linkstat.mes
 NODEPLACEMENT=grid
 #NODEPLACEMENT=npart
 NODEPLACEMENTOPTS="relative"
-FIELDSIZE=40
+FIELDSIZE=MAXRXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATION="network_info evaluation/eval.sh"
+#EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no
