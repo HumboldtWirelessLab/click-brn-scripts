@@ -38,7 +38,7 @@
 
                     <optimal_rate>
                         <!-- for each  occurrence of this pair -->
-                        <xsl:for-each select="/simpleflow/flowstats[@node = $des_addr]/rxflow[@dst = $des_addr and contains(@extra_data, 'mcs_rate')]">
+                        <xsl:for-each select="/simpleflow/flowstats[@node = $des_addr]/rxflow[@dst = $des_addr and @src = $src_addr and contains(@extra_data, 'mcs_rate')]">
                             <xsl:sort select="@packet_count" data-type="number" order="descending"/>
                             <xsl:sort select="substring-after(@extra_data, 'mcs_rate=')" data-type="number" order="descending"/>
                             <xsl:if test="position() = 1">
