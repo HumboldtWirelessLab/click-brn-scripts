@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
 #define PRIO_QUEUE
-#define RAWDUMP
+//#define RAWDUMP
 #define ENABLE_DSR_DEBUG
 
 #define BRNFEEDBACK

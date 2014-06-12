@@ -80,6 +80,7 @@ def extract_mac_by_node_from_mac_file(file_path, nodes):
 
     return macs
 
+
 def extract_search_tree_edges(file_path):
     edges = []
 
@@ -107,9 +108,12 @@ def extract_cross_edges(file_path):
 
     searchtree_xml_elements = tree.getElementsByTagName("CrossEdgeDetected")
     for entry in searchtree_xml_elements:
+        valid = entry.getAttribute("valid")
+        if valid == "0":
+            continue
+
         neighbor = entry.getAttribute("neighbor")
         node = entry.getAttribute("node")
-
         if (node, neighbor, False) in edges or (neighbor, node, False) in edges:
             skip = True
         else:
@@ -118,6 +122,30 @@ def extract_cross_edges(file_path):
         edges.append((node, neighbor, skip))
 
     return edges
+
+
+def extract_invalid_cross_edges(file_path):
+    edges = []
+
+    tree = dom.parse(file_path)
+
+    searchtree_xml_elements = tree.getElementsByTagName("CrossEdgeDetected")
+    for entry in searchtree_xml_elements:
+        valid = entry.getAttribute("valid")
+        if valid != "0":
+            continue
+
+        neighbor = entry.getAttribute("neighbor")
+        node = entry.getAttribute("node")
+        if (node, neighbor, False) in edges or (neighbor, node, False) in edges:
+            skip = True
+        else:
+            skip = False
+
+        edges.append((node, neighbor, skip))
+
+    return edges
+
 
 def translate_nodes_to_pos(edges, nodes):
     result=[]
@@ -163,24 +191,33 @@ for x, y, z, name, mac in nodes:
     print("  {0}: mac={1} pos=({2},{3},{4})".format(name, mac, x, y, z))
 
 file_path = os.path.join(options.path, "measurement.xml")
+
 searchtreeEdges = extract_search_tree_edges(file_path)
 searchtreeEdges = translate_nodes_to_pos(searchtreeEdges, nodes)
 print("Search-Tree-Edges:")
 for node, parent, node_pos, parent_pos, skip in searchtreeEdges:
-    print("  {0} -- {1} => {2} -- {3} (skip={4})".format(node, parent, node_pos, parent_pos, skip))
+    print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in searchtreeEdges:
     if not skip:
         ax.plot([nx, px], [ny, py],zs=[nz, pz], color="k", ls="-")
 
-file_path = os.path.join(options.path, "measurement.xml")
 crossEdges = extract_cross_edges(file_path)
 crossEdges = translate_nodes_to_pos(crossEdges, nodes)
 print("Cross-Edges:")
 for node, parent, node_pos, parent_pos, skip in crossEdges:
-    print("  {0} -- {1} => {2} -- {3} (skip={4})".format(node, parent, node_pos, parent_pos, skip))
+    print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in crossEdges:
     if not skip:
         ax.plot([nx, px], [ny, py],zs=[nz, pz], color="c", ls="--")
+
+invalidCrossEdges = extract_invalid_cross_edges(file_path)
+invalidCrossEdges = translate_nodes_to_pos(invalidCrossEdges, nodes)
+print("Invalid Cross-Edges:")
+for node, parent, node_pos, parent_pos, skip in invalidCrossEdges:
+    print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
+for node, parent, (nx, ny, nz), (px, py, pz), skip in invalidCrossEdges:
+    if not skip:
+        ax.plot([nx, px], [ny, py],zs=[nz, pz], color="b", ls="--")
 
 for x, y, z, name, mac in nodes:
     label = '%s (%s)\n(%d, %d, %d)' % (name, mac, x, y, z)
