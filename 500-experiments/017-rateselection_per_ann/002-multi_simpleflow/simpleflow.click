@@ -56,6 +56,11 @@ device_wifi[3]
 Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
 
+// for stats: enabele read hnd... in "Script"
+Idle
+-> hnd::HiddenNodeDetection(DEVICE wireless, TIMEOUT 1000, LINKTIMEOUT 2000, LINKTABLE lt, DEBUG 2)
+-> Discard;
+
 Script(
 
 )

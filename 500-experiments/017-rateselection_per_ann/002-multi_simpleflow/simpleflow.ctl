@@ -10,9 +10,9 @@
 3.6	sk1		ath0	read	sf	stats
 3.6	sk2		ath0	read	sf	stats
 3.6	sk3		ath0	read	sf	stats
-3.7	sk1		ath0	read	device_wifi/wifidevice/hnd	stats
-3.7	sk2		ath0	read	device_wifi/wifidevice/hnd	stats
-3.7	sk3		ath0	read	device_wifi/wifidevice/hnd	stats
+3.7	sk1		ath0	read	hnd	stats
+3.7	sk2		ath0	read	hnd	stats
+3.7	sk3		ath0	read	hnd	stats
 
 
 # Get RSSI

@@ -34,7 +34,7 @@ def find_hidden_nodes():
 
 	current_time += 0.1
 	for a in range(1, node_number + 1):
-		print("{0:.1f}	sk{1}		ath0	read	device_wifi/wifidevice/hnd	stats".format(current_time, a))
+		print("{0:.1f}	sk{1}		ath0	read	hnd	stats".format(current_time, a))
 	
 	print
 	print
