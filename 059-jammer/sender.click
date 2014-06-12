@@ -29,8 +29,8 @@ Idle()
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
-  read sj.cca,
-  write sj.cca -20 -20 10,
+  read wireless.cca,
+  write wireless.cca -20 -20 10,
   wait 2,
   read wifidevice/cst.stats
 );
