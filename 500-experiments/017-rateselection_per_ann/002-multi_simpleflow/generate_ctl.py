@@ -34,7 +34,7 @@ def find_hidden_nodes():
 
 	current_time += 0.1
 	for a in range(1, node_number + 1):
-		print("{0:.1f}	sk{1}		ath0	read	device_wifi/wifidevice/hnd	stats".format(current_time, a))
+		print("{0:.1f}	sk{1}		ath0	read	hnd	stats".format(current_time, a))
 	
 	print
 	print
@@ -72,7 +72,7 @@ def link_probe():
 				print("{0:.0f}	sk{1}		ath0	write	sf	reset	".format(current_time, b))
 				print("{0:.0f}	sk{1}		ath0	write	sf	extra_data	mcs_rate={2}".format(current_time, a, rate))
 				current_time += 2
-				print("{0:.0f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 0 1500 2 1000 true 1 0".format(current_time, a, b))
+				print("{0:.0f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 0 1500 0 1000 true 5 0".format(current_time, a, b))
 				current_time += 6
 				print("{0:.0f}	sk{1}		ath0	read	sf	stats".format(current_time, b))
 				print

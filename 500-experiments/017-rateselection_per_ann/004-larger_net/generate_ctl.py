@@ -33,7 +33,7 @@ def find_hidden_nodes():
 
 	current_time += 0.1
 	for a in range(1, node_number + 1):
-		print("{0:.1f}	sk{1}		ath0	read	device_wifi/wifidevice/hnd	stats".format(current_time, a))
+		print("{0:.1f}	sk{1}		ath0	read	hnd	stats".format(current_time, a))
 	
 	print
 	print
@@ -69,20 +69,22 @@ def link_probe_with_load():
 				if c == a or c == b:
 					continue
 				
+				print("{0:.1f}	sk{1}		ath0	write	sj	jammer		true")
 				print("{0:.1f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, c, rates[3] * 2))
-				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk7:eth 50 1500 2 {2} true 1 0 \n".format(current_time + 0.1, c, len(rates) * 10 * 1000))
+				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF 50 1500 2 {2} true 1 0 \n".format(current_time + 0.1, c, len(rates) * 10 * 1000))
 	
 			print("# Probe link {0} - {1}".format(a, b))
 			for rate in rates:
 				current_time = math.ceil(current_time / 10) * 10 
 				current_time += 1
 				
+				print("{0:.0f}	sk{1}		ath0	write	sj	jammer		false")
 				print("{0:.0f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, a, rate * 2))
 				print("{0:.0f}	sk{1}		ath0	write	sf	reset	".format(current_time, a))
 				print("{0:.0f}	sk{1}		ath0	write	sf	reset	".format(current_time, b))
 				print("{0:.0f}	sk{1}		ath0	write	sf	extra_data	mcs_rate={2}".format(current_time, a, rate))
 				current_time += 2
-				print("{0:.0f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 0 1500 2 1000 true 1 0".format(current_time, a, b))
+				print("{0:.0f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 0 1500 0 1000 true 5 0".format(current_time, a, b))
 				current_time += 6
 				print("{0:.0f}	sk{1}		ath0	read	sf	stats".format(current_time, b))
 				print
@@ -96,8 +98,9 @@ current_time = 2
 print("#TIME	NODE(S)	DEVICE	MODE	ELEMENT	HANDLER		VALUE\n")
 
 print("# Setup jammer")
-print("1	sk8 	ath0	write	sj	cca		-10 -5 10")
-print("1	sk8 	ath0	write	sj	jammer		true")
+print("1	sk7 	ath0	write	sj	cca		-10 -5 10")
+print("1	sk7 	ath0	write	sj	jammer		true")
+print("1	sk7		ath0	write	sf	add_flow	sk8:eth FF-FF-FF-FF-FF-FF 1 500 0 9999999 true 1 0")
 print
 
 find_hidden_nodes()
