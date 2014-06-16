@@ -57,6 +57,6 @@ Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
 
 Script(
-  wait 29,
+  wait 150,
   read topo_detect.local_topo_info
 );
