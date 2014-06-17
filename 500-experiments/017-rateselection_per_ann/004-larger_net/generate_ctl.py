@@ -39,16 +39,17 @@ def find_hidden_nodes():
 	print
 
 
-def get_rssi():
+def get_rssi(src, des, rate):
 	global current_time
 
 	print("# Get RSSI")
-	
-	current_time = math.ceil(current_time / 10) * 10
-	for a in range(1, node_number + 1):
-		print("{0:.1f}	sk{1}		ath0	read	device_wifi/link_stat bcast_stats".format(current_time, a))
-	
-	print
+	current_time += 0.1
+	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat reset".format(current_time, des))
+	print("{0:.1f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, src, rate))
+	current_time += 0.1
+	print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 0 1500 0 500 true".format(current_time, src, des))
+	current_time += 0.5
+	print("{0:.1f}	sk{1}		ath0	read	device_wifi/link_stat bcast_stats".format(current_time, des))
 	print
 
 
@@ -64,21 +65,24 @@ def link_probe_with_load():
 			
 			rates=[6, 9, 12, 18, 24, 36, 48, 54]
 			current_time = math.ceil(current_time / 10) * 10
-			print("setup load for next probes")
+			print("# Setup load for next probes")
 			for c in range(1, node_number + 1):
 				if c == a or c == b:
 					continue
 				
-				print("{0:.1f}	sk{1}		ath0	write	sj	jammer		true")
+				print("{0:.1f}	sk{1}		ath0	write	sj	jammer		true".format(current_time, c))
 				print("{0:.1f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, c, rates[3] * 2))
-				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF 50 1500 2 {2} true 1 0 \n".format(current_time + 0.1, c, len(rates) * 10 * 1000))
+				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF 50 1500 2 {2} true \n".format(current_time + 0.1, c, len(rates) * 10 * 1000))
 	
+			get_rssi(a, b, rates[3] * 2)
+
 			print("# Probe link {0} - {1}".format(a, b))
 			for rate in rates:
 				current_time = math.ceil(current_time / 10) * 10 
 				current_time += 1
 				
-				print("{0:.0f}	sk{1}		ath0	write	sj	jammer		false")
+				print("{0:.0f}	sk{1}		ath0	write	sj	jammer		false".format(current_time, a))
+				print("{0:.0f}	sk{1}		ath0	write	sj	jammer		false".format(current_time, b))
 				print("{0:.0f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, a, rate * 2))
 				print("{0:.0f}	sk{1}		ath0	write	sf	reset	".format(current_time, a))
 				print("{0:.0f}	sk{1}		ath0	write	sf	reset	".format(current_time, b))
@@ -98,5 +102,4 @@ current_time = 2
 print("#TIME	NODE(S)	DEVICE	MODE	ELEMENT	HANDLER		VALUE\n")
 
 find_hidden_nodes()
-get_rssi()
 link_probe_with_load()

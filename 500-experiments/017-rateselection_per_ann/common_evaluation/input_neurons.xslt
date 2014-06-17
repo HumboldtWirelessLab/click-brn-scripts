@@ -48,10 +48,10 @@
                     </optimal_rate>
 
                     <rssi>
-                        <xsl:for-each select="/simpleflow/entry[@from = $src_addr]/link[@to = $des_addr]/link_info">
-                            <xsl:sort select="@fwd_min_rssi" data-type="number" order="ascending"/>
+                        <xsl:for-each select="/simpleflow/entry[@from = $des_addr]/link[@to = $src_addr]/link_info">
+                            <xsl:sort select="@rev_min_rssi" data-type="number" order="ascending"/>
                             <xsl:if test="position() = 1">
-                                <xsl:value-of select="@fwd_min_rssi" />
+                                <xsl:value-of select="@rev_min_rssi" />
                             </xsl:if>
                         </xsl:for-each>
                     </rssi>
