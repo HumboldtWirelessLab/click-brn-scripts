@@ -56,9 +56,14 @@ def get_rssi(src, des, rate):
 
 def link_probe_with_load(load_mbitpersec):
 	global current_time
+	global node_number
+
+	load_burst_count = 5
+	load_pck_size = 1500
+	load_interval_per_node = 1000.0 / (load_mbitpersec / 8 / (load_burst_count * load_pck_size) / (node_number - 2) )
 
 	print("# Probing with multiple rates for all variations")
-	
+
 	for a in range(1, node_number + 1):
 		for b in range(1, node_number + 1):
 			if a == b:
@@ -73,7 +78,14 @@ def link_probe_with_load(load_mbitpersec):
 				
 				print("{0:.1f}	sk{1}		ath0	write	sj	jammer		true".format(current_time, c))
 				print("{0:.1f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, c, rates[3] * 2))
-				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF 10 1500 0 {2} true 5 {3:.2f}\n".format(current_time + 0.1, c, len(rates) * 10 * 1000, random.random() * 10.0))
+				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF {6:.6f} {4} 0 {2} true {5} {3:.6f}\n".format(
+					current_time + 0.1, 
+					c, 
+					len(rates) * 10 * 1000, 
+					random.random() * 10.0,
+					load_pck_size,
+					load_burst_count,
+					load_interval_per_node))
 	
 			get_rssi(a, b, rates[3] * 2)
 
