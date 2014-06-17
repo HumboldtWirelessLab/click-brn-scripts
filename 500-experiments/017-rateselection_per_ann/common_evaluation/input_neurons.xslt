@@ -10,7 +10,7 @@
     <xsl:template match="/">
         <data_set>
             <!-- for each pair of (src,dest) -->
-            <xsl:for-each select="simpleflow/flowstats/rxflow[count(. | key('key_link', concat(@src, '+', @dst))[1]) = 1 and contains(@extra_data, 'mcs_rate')]">
+            <xsl:for-each select="simpleflow/flowstats/rxflow[count(. | key('key_link', concat(@src, '+', @dst))[1]) = 1 and contains(@extra_data, 'mcs_rate') and @dst != 'FF-FF-FF-FF-FF-FF' and @src != 'FF-FF-FF-FF-FF-FF' ]">
                 <xsl:variable name="src_addr" select="@src"/>
                 <xsl:variable name="des_addr" select="@dst"/>
 
