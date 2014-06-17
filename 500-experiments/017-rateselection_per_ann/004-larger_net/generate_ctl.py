@@ -97,12 +97,6 @@ current_time = 2
 
 print("#TIME	NODE(S)	DEVICE	MODE	ELEMENT	HANDLER		VALUE\n")
 
-print("# Setup jammer")
-print("1	sk7 	ath0	write	sj	cca		-10 -5 10")
-print("1	sk7 	ath0	write	sj	jammer		true")
-print("1	sk7		ath0	write	sf	add_flow	sk8:eth FF-FF-FF-FF-FF-FF 1 500 0 9999999 true 1 0")
-print
-
 find_hidden_nodes()
 get_rssi()
 link_probe_with_load()
