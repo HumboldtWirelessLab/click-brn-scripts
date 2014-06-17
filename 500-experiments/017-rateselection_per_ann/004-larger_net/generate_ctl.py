@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import math
 import sys
+import random
 
 def check_args():
 	global node_number
@@ -53,7 +54,7 @@ def get_rssi(src, des, rate):
 	print
 
 
-def link_probe_with_load():
+def link_probe_with_load(load_mbitpersec):
 	global current_time
 
 	print("# Probing with multiple rates for all variations")
@@ -72,7 +73,7 @@ def link_probe_with_load():
 				
 				print("{0:.1f}	sk{1}		ath0	write	sj	jammer		true".format(current_time, c))
 				print("{0:.1f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, c, rates[3] * 2))
-				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF 50 1500 2 {2} true \n".format(current_time + 0.1, c, len(rates) * 10 * 1000))
+				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF 10 1500 0 {2} true 5 {3:.2f}\n".format(current_time + 0.1, c, len(rates) * 10 * 1000, random.random() * 10.0))
 	
 			get_rssi(a, b, rates[3] * 2)
 
@@ -102,4 +103,4 @@ current_time = 2
 print("#TIME	NODE(S)	DEVICE	MODE	ELEMENT	HANDLER		VALUE\n")
 
 find_hidden_nodes()
-link_probe_with_load()
+link_probe_with_load(22 * 1000 * 1000)
