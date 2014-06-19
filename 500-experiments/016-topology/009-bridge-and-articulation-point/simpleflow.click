@@ -35,11 +35,11 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> topo_detect::TopologyDetection(TOPOLOGYINFO topo_info, NODEIDENTITY id, LINKTABLE lt, DEBUG 4)
+-> topo_detect::TopologyDetection(TOPOLOGYINFO topo_info, NODEIDENTITY id, LINKTABLE lt, DEBUG 5, ORIGINDELAY true)
 -> SetTimestamp()
 -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
--> SetTXRate(RATE 2, TRIES 1)
+-> SetTXRate(RATE 2, TRIES 7)
 -> NotifierQueue(500)
 -> [2]device_wifi;
 
@@ -58,5 +58,5 @@ Idle -> [0]device_wifi;
 
 Script(
   wait 260,
-  read topo_detect.local_topo_info
+  read topo_detect.local_topo_info,
 );
