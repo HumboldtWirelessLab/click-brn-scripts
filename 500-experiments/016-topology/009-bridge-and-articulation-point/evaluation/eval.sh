@@ -18,6 +18,9 @@ case "$SIGN" in
       ;;
 esac
 
+xsltproc -o ${RESULTDIR}/links.csv ${DIR}/extract_links.xslt ${RESULTDIR}/measurement.xml 
+
+
 PYTHONPATH=$DIR/../../lib/
 export PYTHONPATH
 $DIR/eval.py
