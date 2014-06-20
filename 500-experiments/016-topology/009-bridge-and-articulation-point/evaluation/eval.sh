@@ -23,7 +23,8 @@ xsltproc -o ${RESULTDIR}/links.csv ${DIR}/extract_links.xslt ${RESULTDIR}/measur
 
 PYTHONPATH=$DIR/../../lib/
 export PYTHONPATH
-$DIR/eval.py
+$DIR/../../bin/extract_nodes.py -p ${RESULTDIR}
+$DIR/eval.py 
 echo "Mein Result: $?"
 
 exit 2

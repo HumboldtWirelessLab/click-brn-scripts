@@ -14,6 +14,9 @@
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
 
+#define LINKPROBE_PERIOD   1000
+#define LINKPROBE_TAU      50000
+
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 

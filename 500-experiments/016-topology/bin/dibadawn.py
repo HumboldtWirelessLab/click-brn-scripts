@@ -7,9 +7,8 @@ import sys
 import os
 import xml.dom.minidom as dom
 from optparse import OptionParser
+from mpl_toolkits.mplot3d import Axes3D
 import csv
-import numpy as np
-import matplotlib.pyplot as plot
 
 
 def create_random_values():
@@ -102,22 +101,6 @@ def extract_search_tree_edges(file_path):
     return edges
 
 
-def extract_links(file_path):
-    edges = []
-
-    with open(file_path, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-        first = True
-        for row in spamreader:
-            if first:
-                first = False
-                continue
-
-            edges.append((row[0], row[1], False))
-
-    return edges
-
-
 def extract_cross_edges(file_path):
     edges = []
 
@@ -180,18 +163,20 @@ def translate_nodes_to_pos(edges, nodes):
 
 optParser = OptionParser()
 optParser.add_option("-p", "--path", dest="path", type="string", help="Path to to dir, where to find xml-file")
-optParser.add_option("-i", "--interactive", dest="is_interactive", help="Interactive mode" , action="store_true")
+optParser.add_option("-o", "--output", dest="output_path", type="string", help="write into file")
 (options, args) = optParser.parse_args()
 
 if not options.path:
     print "Failed: Please enter a path to evaluate with option '-p=<path>'"
     sys.exit(-1)
 
+fig = pylab.figure()
+ax = Axes3D(fig)
 
 file_path = os.path.join(options.path, "placementfile.plm")
 (xs, ys, zs, node_names) = extract_position_from_placement_file(file_path)
 
-plot.scatter(xs, ys, s=30, c="gray")
+ax.scatter3D(xs, ys, zs, s=30, c="gray")
 
 file_path = os.path.join(options.path, "nodes.mac")
 macs = extract_mac_by_node_from_mac_file(file_path, node_names)
@@ -209,17 +194,7 @@ for node, parent, node_pos, parent_pos, skip in searchtreeEdges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in searchtreeEdges:
     if not skip:
-        plot.plot([nx, px], [ny, py], color="k", ls="-")
-
-file_path_links = os.path.join(options.path, "links.csv")
-links = extract_links(file_path_links)
-links = translate_nodes_to_pos(links, nodes)
-print("Links:")
-for node, parent, node_pos, parent_pos, skip in links:
-    print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
-for node, parent, (nx, ny, nz), (px, py, pz), skip in links:
-    if not skip:
-        plot.plot([nx, px], [ny, py], color="y", ls="-")
+        ax.plot([nx, px], [ny, py],zs=[nz, pz], color="k", ls="-")
 
 crossEdges = extract_cross_edges(file_path)
 crossEdges = translate_nodes_to_pos(crossEdges, nodes)
@@ -228,7 +203,7 @@ for node, parent, node_pos, parent_pos, skip in crossEdges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in crossEdges:
     if not skip:
-        plot.plot([nx, px], [ny, py], color="c", ls="--")
+        ax.plot([nx, px], [ny, py],zs=[nz, pz], color="c", ls="--")
 
 invalidCrossEdges = extract_invalid_cross_edges(file_path)
 invalidCrossEdges = translate_nodes_to_pos(invalidCrossEdges, nodes)
@@ -237,16 +212,15 @@ for node, parent, node_pos, parent_pos, skip in invalidCrossEdges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in invalidCrossEdges:
     if not skip:
-        plot.plot([nx, px], [ny, py], color="b", ls="--")
+        ax.plot([nx, px], [ny, py],zs=[nz, pz], color="b", ls="--")
 
 for x, y, z, name, mac in nodes:
     label = '%s (%s)\n(%d, %d, %d)' % (name, mac, x, y, z)
-    plot.text(x, y, label, horizontalalignment='center', verticalalignment='bottom',)
+    ax.text(x, y, z, label, horizontalalignment='center', verticalalignment='bottom',)
 
-if options.is_interactive:
-    plot.show()
+if not options.output_path:
+    pylab.show()
 else:
-    picture_file_name = "nodes_on_map.png"
+    picture_file_name = os.path.join(options.output_path, "dibadawn_graph.png")
     print("Write file \"" + picture_file_name + "\".")
-    plot.savefig(picture_file_name)
-
+    pylab.savefig(picture_file_name)
