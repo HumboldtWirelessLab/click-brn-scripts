@@ -36,7 +36,7 @@ brn_clf[0]
 -> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2)
 -> SetTimestamp() -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
--> SetTXRate(RATE 2, TRIES 1)
+-> rate::SetTXRate(RATE 18, TRIES 1)
 -> NotifierQueue(500)
 -> [2]device_wifi;
 
@@ -55,3 +55,12 @@ device_wifi[3]
 
 Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
+
+ch::BrnCompoundHandler(HANDLER rate.rate);
+
+Script(
+ wait 16,
+ read rate.rate,
+ read device_wifi/wifidevice/cst.stats,
+ read ch.read
+ );

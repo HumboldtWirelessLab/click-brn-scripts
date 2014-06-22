@@ -66,10 +66,10 @@ brn_clf[2] -> Discard;
 
 rtscts_packetsize::RtsCtsPacketSize(PACKETSIZE 32, PACKETDURATION -1);
 rtscts_hiddennode::RtsCtsHiddenNode(HIDDENNODE device_wifi/wifidevice/hnd);
-rtscts_flooding::RtsCtsFlooding(FLOODING flooding/fl, FLOODINGHELPER flooding/fl_helper, HIDDENNODE device_wifi/wifidevice/hnd, DEBUG 4);
+rtscts_flooding::RtsCtsFlooding(FLOODING flooding/fl, FLOODINGHELPER flooding/fl_helper, FLOODINGDB flooding/fl_database, HIDDENNODE device_wifi/wifidevice/hnd, DEBUG 4);
 
 rate_fix::BrnFixRate(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0);
-rate_flooding::BrnFloodingRate(FLOODING flooding/fl, FLOODINGHELPER flooding/fl_helper, LINKSTAT device_wifi/link_stat, CHANNELSTATS device_wifi/wifidevice/cst, STRATEGY RS_STRATEGY, DEFAULTRETRIES 7, DEBUG 4);
+rate_flooding::BrnFloodingRate(FLOODING flooding/fl, FLOODINGHELPER flooding/fl_helper, FLOODINGDB flooding/fl_database, LINKSTAT device_wifi/link_stat, CHANNELSTATS device_wifi/wifidevice/cst, STRATEGY RS_STRATEGY, DEFAULTRETRIES 7, DEBUG 4);
 
 rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22 24 36 48 72 96 108);
 
