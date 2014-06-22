@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
 #define PRIO_QUEUE
-#define RAWDUMP
+//#define RAWDUMP
 //#define WIFIDEV_LINKSTAT_DEBUG
 #define ENABLE_DSR_DEBUG
 
@@ -58,5 +58,6 @@ Idle -> [0]device_wifi;
 
 Script(
   wait 260,
-  read topo_detect.local_topo_info
+  read topo_detect.local_topo_info,
+  read lt.links,
 );

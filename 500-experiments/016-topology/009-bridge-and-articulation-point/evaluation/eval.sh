@@ -21,9 +21,10 @@ esac
 xsltproc -o ${RESULTDIR}/links.csv ${DIR}/extract_links.xslt ${RESULTDIR}/measurement.xml 
 
 
+$DIR/../../bin/extract_nodes.py -p ${RESULTDIR}
+
 PYTHONPATH=$DIR/../../lib/
 export PYTHONPATH
-$DIR/../../bin/extract_nodes.py -p ${RESULTDIR}
 $DIR/eval.py 
 echo "Mein Result: $?"
 
