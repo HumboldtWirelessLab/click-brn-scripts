@@ -38,8 +38,8 @@ brn_clf[0]
 -> BRN2EtherEncap(USEANNO true)
 -> sj::SetJammer(JAMMER false)
 -> mcs::SetTXRate(RATE 12, TRIES 7)
--> NotifierQueue(500)
--> [2]device_wifi;
+//-> NotifierQueue(500)
+-> [0]device_wifi;
 
 brn_clf[1] -> Discard;
 
@@ -55,7 +55,7 @@ device_wifi[3]
 #endif
 
 Idle -> [1]device_wifi;
-Idle -> [0]device_wifi;
+Idle -> [2]device_wifi;
 
 // for stats: enabele read hnd... in "Script"
 Idle
