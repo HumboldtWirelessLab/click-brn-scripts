@@ -87,8 +87,6 @@ def link_probe_with_load(load_mbitpersec):
 					load_burst_count,
 					load_interval_per_node))
 	
-			get_rssi(a, b, rates[3] * 2)
-
 			print("# Probe link {0} - {1}".format(a, b))
 			for rate in rates:
 				current_time = math.ceil(current_time / 10) * 10 
@@ -106,6 +104,8 @@ def link_probe_with_load(load_mbitpersec):
 				print("{0:.0f}	sk{1}		ath0	read	sf	stats".format(current_time, b))
 				print
 			
+			get_rssi(a, b, rates[3] * 2)
+
 			print
 	
 
