@@ -4,7 +4,7 @@ RADIO=shadowing
 #RADIO=tworayground
 FORGEINNODES=no
 
-TIME=121
+TIME=61
 
 #NODEPLACEMENTFILE=placement.default
 NODEPLACEMENTFILE=placements/scd.plm
