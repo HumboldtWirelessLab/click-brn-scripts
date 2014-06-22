@@ -161,6 +161,8 @@ def translate_nodes_to_pos(edges, nodes):
 optParser = OptionParser()
 optParser.add_option("-p", "--path", dest="path", type="string", help="Path to to dir, where to find xml-file")
 optParser.add_option("-o", "--output", dest="output_path", type="string", help="write into file")
+optParser.add_option("-m", "--macs", dest="is_show_macs", action="store_false", help="Draw macs. (False)", default=False)
+optParser.add_option("-c", "--coordinates", dest="is_show_coordinates", action="store_false", help="Draw coordinates. (False)", default=False)
 (options, args) = optParser.parse_args()
 
 if not options.path:
@@ -188,7 +190,11 @@ for node, parent, (nx, ny, nz), (px, py, pz), skip in links:
 		plot.plot([nx, px], [ny, py], color="k", ls="-")
 
 for x, y, z, name, mac in nodes:
-	label = '%s (%s)\n(%d, %d, %d)' % (name, mac, x, y, z)
+	label = name
+	if(options.is_show_coordinates):
+		label = label + ' (%s)' % (mac)
+	if(options.is_show_coordinates):
+		label = label + '\n(%d, %d, %d)' % (x, y, z)
 	plot.text(x, y, label, horizontalalignment='center', verticalalignment='bottom',)
 
 if not options.output_path:
