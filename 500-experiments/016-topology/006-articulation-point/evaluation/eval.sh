@@ -18,6 +18,18 @@ case "$SIGN" in
       ;;
 esac
 
+#
+# Create nodes.csv
+#
+$DIR/../../bin/extract_nodes.py -p ${RESULTDIR}
+
+
+#
+# Create links.scv
+#
+xsltproc -o ${RESULTDIR}/links.csv ${DIR}/../../common_evaluation/extract_links.xslt ${RESULTDIR}/measurement.xml 
+
+
 PYTHONPATH=$DIR/../../lib/
 export PYTHONPATH
 $DIR/eval.py

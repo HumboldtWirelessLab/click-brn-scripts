@@ -18,6 +18,11 @@ case "$SIGN" in
       ;;
 esac
 
+#
+# Create nodes.csv
+#
+$DIR/../../bin/extract_nodes.py -p ${RESULTDIR}
+
 xsltproc -o ${RESULTDIR}/links.csv ${DIR}/extract_links.xslt ${RESULTDIR}/measurement.xml 
 
 
