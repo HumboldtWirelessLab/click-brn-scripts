@@ -25,60 +25,23 @@ def vlen(v):
     return math.sqrt(scipy.vdot(v, v))
 
 
-def extract_position_from_xml(file_path):
-    tree = dom.parse(file_path)
-
-    setups = tree.getElementsByTagName("Setup")
-
+def read_nodes_from_file(file_path):
     xs = []
     ys = []
     zs = []
     nodes = []
-    for entry in setups:
-        x = entry.getAttribute("x")
-        y = entry.getAttribute("y")
-        z = entry.getAttribute("z")
-        node = entry.getAttribute("node")
-
-        xs.append(x)
-        ys.append(y)
-        zs.append(z)
-        nodes.append(node)
-
-    return xs, ys, zs, nodes
-
-
-def extract_position_from_placement_file(file_path):
-    xs = []
-    ys = []
-    zs = []
-    nodes = []
-    with open(file_path, 'r') as f:
-        reader = csv.reader(f, delimiter=' ', quoting=csv.QUOTE_NONE)
-        for row in reader:
-            nodes.append(row[0])
-            xs.append(int(row[1]))
-            ys.append(int(row[2]))
-            zs.append(int(row[3]))
-
-    return xs, ys, zs, nodes
-
-
-def extract_mac_by_node_from_mac_file(file_path, nodes):
     macs = []
-    for node in nodes:
-        with open(file_path, 'r') as f:
-            reader = csv.reader(f, delimiter=' ', quoting=csv.QUOTE_NONE)
-            for row in reader:
-                node_name = row[0]
-                interface = row[1]
-                mac = row[2]
-                number = row[3]
-
-                if(node_name == node):
-                    macs.append(mac)
-
-    return macs
+    with open(file_path, 'r') as f:
+        reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
+        reader.next()
+        for row in reader:
+            xs.append(int(row[0]))
+            ys.append(int(row[1]))
+            zs.append(int(row[2]))
+            nodes.append(row[3])
+            macs.append(row[4])
+            
+    return xs, ys, zs, nodes, macs
 
 
 def extract_search_tree_edges(file_path):
@@ -164,6 +127,8 @@ def translate_nodes_to_pos(edges, nodes):
 optParser = OptionParser()
 optParser.add_option("-p", "--path", dest="path", type="string", help="Path to to dir, where to find xml-file")
 optParser.add_option("-o", "--output", dest="output_path", type="string", help="write into file")
+optParser.add_option("-m", "--macs", dest="is_show_macs", action="store_true", help="Draw macs. (False)", default=False)
+optParser.add_option("-c", "--coordinates", dest="is_show_coordinates", action="store_true", help="Draw coordinates. (False)", default=False)
 (options, args) = optParser.parse_args()
 
 if not options.path:
@@ -173,13 +138,12 @@ if not options.path:
 fig = pylab.figure()
 ax = Axes3D(fig)
 
-file_path = os.path.join(options.path, "placementfile.plm")
-(xs, ys, zs, node_names) = extract_position_from_placement_file(file_path)
+file_path = os.path.join(options.path, "nodes.csv")
+(xs, ys, zs, node_names, macs) = read_nodes_from_file(file_path)
 
 ax.scatter3D(xs, ys, zs, s=30, c="gray")
 
-file_path = os.path.join(options.path, "nodes.mac")
-macs = extract_mac_by_node_from_mac_file(file_path, node_names)
+
 nodes = zip(xs, ys, zs, node_names, macs)
 print("Nodes:")
 for x, y, z, name, mac in nodes:
@@ -215,7 +179,11 @@ for node, parent, (nx, ny, nz), (px, py, pz), skip in invalidCrossEdges:
         ax.plot([nx, px], [ny, py],zs=[nz, pz], color="b", ls="--")
 
 for x, y, z, name, mac in nodes:
-    label = '%s (%s)\n(%d, %d, %d)' % (name, mac, x, y, z)
+    label = name
+    if(options.is_show_macs):
+        label = label + ' (%s)' % (mac)
+    if(options.is_show_coordinates):
+        label = label + '\n(%d, %d, %d)' % (x, y, z)
     ax.text(x, y, z, label, horizontalalignment='center', verticalalignment='bottom',)
 
 if not options.output_path:

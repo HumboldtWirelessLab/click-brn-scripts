@@ -191,7 +191,7 @@ for node, parent, (nx, ny, nz), (px, py, pz), skip in links:
 
 for x, y, z, name, mac in nodes:
 	label = name
-	if(options.is_show_coordinates):
+	if(options.is_show_macs):
 		label = label + ' (%s)' % (mac)
 	if(options.is_show_coordinates):
 		label = label + '\n(%d, %d, %d)' % (x, y, z)
