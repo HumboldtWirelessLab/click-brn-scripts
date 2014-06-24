@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
 import math
-import pylab
 import scipy
 import sys
 import os
 import xml.dom.minidom as dom
 from optparse import OptionParser
 import csv
-import numpy as np
 import matplotlib.pyplot as plot
 
 
@@ -87,13 +85,9 @@ def extract_links(file_path):
 
 	with open(file_path, 'rb') as csvfile:
 		spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-		first = True
+		spamreader.next()
 		for row in spamreader:
-			if first:
-				first = False
-				continue
-
-			edges.append((row[0], row[1], False))
+			edges.append((row[0], row[1], False, row[2]))
 
 	return edges
 
@@ -148,7 +142,7 @@ def translate_nodes_to_pos(edges, nodes):
 	result=[]
 	pos_a=(0,0,0)
 	pos_b=(0,0,0)
-	for node_a, node_b, skip_info in edges:
+	for node_a, node_b, skip_info, metric in edges:
 		for x, y, z, name, mac in nodes:
 			if node_a == mac:
 				pos_a=(x,y,z)
@@ -158,11 +152,23 @@ def translate_nodes_to_pos(edges, nodes):
 		result.append((node_a, node_b, pos_a, pos_b, skip_info))
 	return result
 
+
+def filter_by_metric(links, metric):
+	filtered = []
+	for link in links:
+		if link[3] > metric:
+			continue
+		filtered.append(link)
+	return filtered
+
+
+
 optParser = OptionParser()
 optParser.add_option("-p", "--path", dest="path", type="string", help="Path to to dir, where to find xml-file")
 optParser.add_option("-o", "--output", dest="output_path", type="string", help="write into file")
 optParser.add_option("-m", "--macs", dest="is_show_macs", action="store_false", help="Draw macs. (False)", default=False)
 optParser.add_option("-c", "--coordinates", dest="is_show_coordinates", action="store_false", help="Draw coordinates. (False)", default=False)
+optParser.add_option("-e", "--metric_etx_limit", dest="etx_metric_limit", help="ETX-metric limit for accepted links")
 (options, args) = optParser.parse_args()
 
 if not options.path:
@@ -173,7 +179,7 @@ if not options.path:
 file_path = os.path.join(options.path, "nodes.csv")
 (xs, ys, zs, node_names, macs) = read_nodes_from_file(file_path)
 nodes = zip(xs, ys, zs, node_names, macs)
-print("Nodes:")
+print("Nodes: {0}".format(len(nodes)))
 for x, y, z, name, mac in nodes:
 	print("  {0}: mac={1} pos=({2},{3},{4})".format(name, mac, x, y, z))
 for x, y, z, name, mac in nodes:
@@ -181,8 +187,12 @@ for x, y, z, name, mac in nodes:
 
 file_path_links = os.path.join(options.path, "links.csv")
 links = extract_links(file_path_links)
+if options.etx_metric_limit:
+	links_filtered = filter_by_metric(links, options.etx_metric_limit)
+	print("Filtered Links:{0}".format(len(links) - len(links_filtered)))
+	links = links_filtered
 links = translate_nodes_to_pos(links, nodes)
-print("Links:")
+print("Links: {0}".format(len(links)))
 for node, parent, node_pos, parent_pos, skip in links:
 	print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in links:
