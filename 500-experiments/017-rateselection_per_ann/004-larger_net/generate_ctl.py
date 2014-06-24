@@ -40,17 +40,31 @@ def find_hidden_nodes():
 	print
 
 
+def reset_rssi_measurement(src, des, rate):
+	global current_time
+	global node_number
+
+	print("# Reset RSSI")
+	current_time += 0.1
+	for a in range(1, node_number + 1):
+		print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat reset".format(current_time, a))
+	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat probes \"2 500 24\"".format(current_time, src))
+	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat probes \"2 500 24\"".format(current_time, des))
+	print
+
+
 def get_rssi(src, des, rate):
 	global current_time
 
 	print("# Get RSSI")
 	current_time += 0.1
-	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat reset".format(current_time, des))
 	print("{0:.1f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, src, rate))
 	current_time += 0.1
 	print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 0 1500 0 500 true".format(current_time, src, des))
 	current_time += 0.5
 	print("{0:.1f}	sk{1}		ath0	read	device_wifi/link_stat bcast_stats".format(current_time, des))
+	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat probes \"\"".format(current_time, src))
+	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat probes \"\"".format(current_time, des))
 	print
 
 
@@ -104,8 +118,6 @@ def link_probe_with_load(load_mbitpersec):
 				print("{0:.0f}	sk{1}		ath0	read	sf	stats".format(current_time, b))
 				print
 			
-			get_rssi(a, b, rates[3] * 2)
-
 			print
 	
 

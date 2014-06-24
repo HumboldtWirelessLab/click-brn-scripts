@@ -63,5 +63,8 @@ Idle
 -> Discard;
 
 Script(
+  //write device_wifi/link_stat.probes "",
+  wait 10,
+  read  device_wifi/link_stat.bcast_stats,
 
 )
