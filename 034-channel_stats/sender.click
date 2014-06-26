@@ -39,7 +39,9 @@ brn_clf[0]
 -> SetTimestamp()
 -> BRN2EtherEncap(USEANNO true)
 -> SetTXRate(RATE 2, TRIES 1)
--> sf_queue::NotifierQueue(500);
+//-> sf_queue::NotifierQueue(500);
+-> SetRTS(RTS true)
+-> [0]device_wifi;
 
 brn_clf[1]
 -> BRN2Decap()
