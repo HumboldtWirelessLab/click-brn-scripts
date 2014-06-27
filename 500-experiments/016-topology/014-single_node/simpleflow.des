@@ -1,14 +1,15 @@
 NAME=simpleflow
 SIMULATOR=ns2
+#RADIO=shadowing
 #RADIO=shadowing11b
 RADIO=tworayground01b
 FORGEINNODES=no
 
-TIME=500
+TIME=300
 
-NODEPLACEMENTFILE=placement.default
+NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=simpleflow.mes
-NODEPLACEMENT=grid
+NODEPLACEMENT=file
 NODEPLACEMENTOPTS="relative"
 FIELDSIZE=RXRANGE
 
@@ -17,7 +18,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATION="embrace_xml evaluation/strip evaluation/eval.sh"
+EVALUATION="embrace_xml evaluation/eval.sh"
 
 GPS=no
 NOTICE=no
