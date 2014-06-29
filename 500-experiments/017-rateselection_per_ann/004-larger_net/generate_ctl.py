@@ -2,16 +2,27 @@
 import math
 import sys
 import random
+from optparse import OptionParser
+
 
 def check_args():
 	global node_number
+	global net_load
 
-	argc = len(sys.argv)
-	if argc < 2:
-	    print("Usage: generate_ctl.py NumberOfNodes")
-	    sys.exit();
-	
-	node_number = int(sys.argv[1])
+	optParser = OptionParser()
+	optParser.add_option("-n", "--nodes", dest="node_num", type="int", help="Number of nodes.")
+	optParser.add_option("-l", "--load", dest="net_load", type="int", help="Net load (user traffic in Mbit/sec)")
+	(options, args) = optParser.parse_args()
+
+	if not options.node_num:
+		optParser.print_help()
+		sys.exit(-1)
+	node_number = options.node_num
+
+	if not options.net_load:
+		net_load = 10 * 1000 * 1000
+	else:
+		net_load = options.net_load
 
 
 def find_hidden_nodes():
@@ -127,4 +138,4 @@ current_time = 2
 print("#TIME	NODE(S)	DEVICE	MODE	ELEMENT	HANDLER		VALUE\n")
 
 find_hidden_nodes()
-link_probe_with_load(22 * 1000 * 1000)
+link_probe_with_load(net_load)
