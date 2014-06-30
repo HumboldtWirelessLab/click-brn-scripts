@@ -22,53 +22,59 @@ read -p "Do you want start a test with these settings?   ....(Ctrl+C to abort)"
 
 for RUN in $(seq ${RUNS})
 do
-	#
-	# Create NPart placement
-	#
-	echo "create NPart placement..."
-	echo "  output file: ${PLACEMENT_PATH}"
-	OPWD=$(pwd)
-	cd ../../../../helper/src/Npart
-	EXPECT_NUM_OF_NODES=80
-	RXRANGE=230  ./gen_topo.sh ${EXPECT_NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
-	RESULT=$?
-	cd ${OPWD}
-	cat /tmp/${PLACEMENT_PATH} | awk -F " " '{print "sk"NR,$2,$3,$4}' > ${PLACEMENT_PATH}
-	
-	if [ "${RESULT}" -ne 0 ] 
+	if [ "x${USENPART}" != "x" ]
 	then
-		echo "result: failed"
-		exit -1
-	fi
-	
-	
-	#
-	#
-	#
-	NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
-	echo "  new node count: ${NODE_COUNT}"
+		#
+		# Create NPart placement
+		#
+		echo "create NPart placement..."
+		echo "  output file: ${PLACEMENT_PATH}"
+		OPWD=$(pwd)
+		cd ../../../../helper/src/Npart
+		EXPECT_NUM_OF_NODES=80
+		RXRANGE=230  ./gen_topo.sh ${EXPECT_NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
+		RESULT=$?
+		cd ${OPWD}
+		cat /tmp/${PLACEMENT_PATH} | awk -F " " '{print "sk"NR,$2,$3,$4}' > ${PLACEMENT_PATH}
 		
-
-	#
-	#
-	#
-	echo "update .mes file..."
-	mv simpleflow.mes simpleflow-orig.mes
-	cat simpleflow-orig.mes | sed "s/:[0-9]*/:${NODE_COUNT}/" > simpleflow.mes
-	if [ "$?" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
+		if [ "${RESULT}" -ne 0 ] 
+		then
+			echo "result: failed"
+			exit -1
+		fi
+	
+		#
+		#
+		#
+		NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
+		echo "  new node count: ${NODE_COUNT}"
+			
+	
+		#
+		#
+		#
+		echo "update .mes file..."
+		mv simpleflow.mes simpleflow-orig.mes
+		cat simpleflow-orig.mes | sed "s/:[0-9]*/:${NODE_COUNT}/" > simpleflow.mes
+		if [ "$?" -ne 0 ] 
+		then
+			echo "result: failed"
+			exit -1
+		fi
+	else
+		#
+		#
+		#
+		NODE_COUNT=$(grep -oPe ":\K\w+" simpleflow.mes)
+		echo "  current node count: ${NODE_COUNT}"
 	fi
 
-	
-	for LOAD_MBITS in "22000000 16500000 11000000 5500000 2000000"; do
+	for LOAD_MBITS in 22000000 16500000 11000000 5500000 2000000; do
 
 		#
 		#
 		#
 		echo "update ctl file..."
-		LOAD_MBITS=22000000
 		echo "  net load: ${LOAD_MBITS} Mbits/sec"
 		./generate_ctl.py --nodes ${NODE_COUNT} --load ${LOAD_MBITS} > simpleflow.ctl
 		if [ "$?" -ne 0 ] 
@@ -92,7 +98,7 @@ do
 		#
 		#
 		echo "run simulation..."
-		run_sim.sh
+		USEPYTHON=1 run_sim.sh
 		RESULT=$?
 		if [ "${RESULT}" -ne 0 ] 
 		then
