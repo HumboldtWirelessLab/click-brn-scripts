@@ -98,7 +98,7 @@ do
 		#
 		#
 		echo "run simulation..."
-		USEPYTHON=1 run_sim.sh
+		PROGRESS=1 USEPYTHON=1 run_sim.sh
 		RESULT=$?
 		if [ "${RESULT}" -ne 0 ] 
 		then
