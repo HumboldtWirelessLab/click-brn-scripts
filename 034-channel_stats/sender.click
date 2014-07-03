@@ -1,9 +1,11 @@
 #define DEBUGLEVEL 2
 
 #define PRIO_QUEUE
-//#define RAWDUMP
+#define RAWDUMP
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
+
+//#define TOS2QUEUEMAPPER_STRATEGY 2
 
 #define BRNFEEDBACK
 
@@ -40,7 +42,7 @@ brn_clf[0]
 -> BRN2EtherEncap(USEANNO true)
 -> SetTXRate(RATE 2, TRIES 1)
 //-> sf_queue::NotifierQueue(500);
--> SetRTS(RTS true)
+//-> SetRTS(RTS true)
 -> [0]device_wifi;
 
 brn_clf[1]

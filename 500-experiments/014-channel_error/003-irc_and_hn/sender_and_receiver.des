@@ -6,8 +6,8 @@ TIME=10
 
 NODEPLACEMENTFILE=placementfile.plm
 #NODEPLACEMENTFILE=placement.default
-#NODEPLACEMENTFILE=placements/scd.plm
-# NODEPLACEMENTFILE=placements/hn-1.plm
+#  NODEPLACEMENTFILE=placements/scd.plm
+#NODEPLACEMENTFILE=placements/hn-1.plm
 
 NODETABLE=sender_and_receiver.mes
 NODEPLACEMENT=file
