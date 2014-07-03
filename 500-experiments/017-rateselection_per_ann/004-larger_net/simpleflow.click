@@ -33,7 +33,7 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2)
+-> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2, FLOWSTARTRANDOM 10)
 -> SetTimestamp() -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
 -> sj::SetJammer(JAMMER false)

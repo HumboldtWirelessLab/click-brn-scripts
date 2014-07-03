@@ -103,14 +103,14 @@ def link_probe_with_load(load_mbitpersec):
 				
 				print("{0:.1f}	sk{1}		ath0	write	sj	jammer		true".format(current_time, c))
 				print("{0:.1f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, c, rates[3] * 2))
-				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF {6:.6f} {4} 0 {2} true {5} {3:.6f}\n".format(
+				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF {6} {4} 0 {2} true {5}\n".format(
 					current_time + 0.1, 
 					c, 
 					len(rates) * 10 * 1000, 
 					random.random() * 10.0,
 					load_pck_size,
 					load_burst_count,
-					load_interval_per_node))
+					int(round(load_interval_per_node)) ))
 	
 			print("# Probe link {0} - {1}".format(a, b))
 			for rate in rates:
