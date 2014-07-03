@@ -58,6 +58,9 @@ result = rbind(result, c("br_tn", br_tn))
 result = rbind(result, c("br_fn", br_fn))
 result = rbind(result, c("num_edges", length(E(g))))
 result = rbind(result, c("num_vertexes", length(V(g))))
+result = rbind(result, c("num_theo_br", length(theo_br)))
+result = rbind(result, c("num_theo_ap", length(theo_ap)))
+result = rbind(result, c("num_runs", num_of_runs))
 
 # Write result
 print(paste("Write... ", result_file_path))
