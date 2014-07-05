@@ -10,6 +10,9 @@
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 #define CERR
 
+#define DEFAULT_DATARATE    12
+#define DEFAULT_DATARETRIES 1
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
@@ -33,12 +36,25 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
+//-> Print("in", TIMESTAMP true)
 -> sf::BRN2SimpleFlow(EXTRADATA "")
--> SetTimestamp() -> Print(TIMESTAMP true)
+//-> Print("out", TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
--> mcs::SetTXRate(RATE 12, TRIES 7)
--> NotifierQueue(500)
+-> mcs::SetTXRate(RATE DEFAULT_DATARATE, TRIES DEFAULT_DATARETRIES)
+//-> NotifierQueue(50)
+-> [0]device_wifi;
+
+Idle -> [2]device_wifi;
+
+/* alternativ: achtung: packete haben so hoehere prioritaet als Linkprobes -> linkstats funktionieren so evtl nicht (bei kleinen paketintervallen)
+
+-> NotifierQueue(50)
 -> [2]device_wifi;
+Idle -> [0]device_wifi;
+*/
+
+
+Idle -> [1]device_wifi;
 
 brn_clf[1] -> Discard;
 
@@ -50,11 +66,10 @@ device_wifi[3]
   -> BRN2EtherDecap()
   -> Classifier( 0/BRN_PORT_FLOW )
   -> BRN2Decap()
+//  -> Print("txf", TIMESTAMP true)
   -> [1]sf;
 #endif
 
-Idle -> [1]device_wifi;
-Idle -> [0]device_wifi;
 
 // for stats: enabele read hnd... in "Script"
 Idle
@@ -62,8 +77,10 @@ Idle
 -> Discard;
 
 Script(
-  write device_wifi/link_stat.probes "",
-  wait 10,
+  wait 2,
+//  read device_wifi/wifidevice/cst.stats,
+//  write device_wifi/link_stat.probes "",
+  wait 9,
   read sf.stats,
   wait 1,
   read lt.links,
