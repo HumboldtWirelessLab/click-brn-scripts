@@ -6,7 +6,7 @@ do
 	echo "---------------[ $DIR ]-------------"
 	cd ${DIR}
 	rm -rf 1  
-	run_sim.sh
+	USEPYTHON=1 PROGRESS=1 run_sim.sh
 	
 	RET=$?
 	case "$RET" in
