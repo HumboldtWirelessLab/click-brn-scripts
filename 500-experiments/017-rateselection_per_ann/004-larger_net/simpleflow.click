@@ -10,6 +10,9 @@
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 #define CERR
 
+#define DEFAULT_DATARATE    12
+#define DEFAULT_DATARETRIES 1
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
@@ -33,13 +36,26 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2, FLOWSTARTRANDOM 10)
--> SetTimestamp() -> Print(TIMESTAMP true)
+-> sf::BRN2SimpleFlow(EXTRADATA "")
+-> SetTimestamp() 
+//-> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
 -> sj::SetJammer(JAMMER false)
--> mcs::SetTXRate(RATE 12, TRIES 7)
-//-> NotifierQueue(500)
+ -> mcs::SetTXRate(RATE DEFAULT_DATARATE, TRIES DEFAULT_DATARETRIES)
+//-> NotifierQueue(50)
 -> [0]device_wifi;
+
+Idle -> [2]device_wifi;
+
+/* alternativ: achtung: packete haben so hoehere prioritaet als Linkprobes -> linkstats funktionieren so evtl nicht (bei kleinen paketintervallen)
+
+-> NotifierQueue(50)
+-> [2]device_wifi;
+Idle -> [0]device_wifi;
+*/
+
+
+Idle -> [1]device_wifi;
 
 brn_clf[1] -> Discard;
 
@@ -54,13 +70,12 @@ device_wifi[3]
   -> [1]sf;
 #endif
 
-Idle -> [1]device_wifi;
-Idle -> [2]device_wifi;
 
 // for stats: enabele read hnd... in "Script"
 Idle
 -> hnd::HiddenNodeDetection(DEVICE wireless, TIMEOUT 1000, LINKTIMEOUT 2000, LINKTABLE lt, DEBUG 2)
 -> Discard;
+
 
 Script(
   //write device_wifi/link_stat.probes "",
