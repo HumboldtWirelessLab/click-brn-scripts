@@ -33,7 +33,7 @@ fi
 #
 # Create links.scv
 #
-xsltproc -o ${RESULTDIR}/links.csv ${DIR}/../../common_evaluation/extract_links.xslt ${RESULTDIR}/measurement.xml 
+xsltproc -o ${RESULTDIR}/links.csv ${DIR}/../../common_evaluation/extract_dibadawn_links.xslt ${RESULTDIR}/measurement.xml 
 if [ "$?" -ne 0 ]
 then
   echo "Failed to extract links.csv"

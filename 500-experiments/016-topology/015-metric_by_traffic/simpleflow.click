@@ -22,16 +22,19 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-lt::Brn2LinkTable(NODEIDENTITY id, STALE 3600000);
+lt::Brn2LinkTable(NODEIDENTITY id, STALE 3600000, DEBUG 12);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
+topo_info::TopologyInfo(DEBUG 4);
+
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
   -> brn_clf::Classifier( 0/BRN_PORT_FLOW, //Simpleflow
+                          0/BRN_PORT_TOPOLOGY_DETECTION,  //DETECT
                                -  );//other
 
 brn_clf[0]
@@ -43,6 +46,17 @@ brn_clf[0]
 -> mcs::SetTXRate(RATE DEFAULT_DATARATE, TRIES DEFAULT_DATARETRIES)
 //-> NotifierQueue(50)
 -> [0]device_wifi;
+
+brn_clf[1]
+-> BRN2Decap()
+//-> Print("in", TIMESTAMP true)
+-> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 4, RANDOM_START_DELAY_MS 100)
+//-> Print("out", TIMESTAMP true)
+-> BRN2EtherEncap(USEANNO true)
+-> mcs
+//-> NotifierQueue(50)
+-> [0]device_wifi;
+
 
 Idle -> [2]device_wifi;
 
@@ -56,7 +70,7 @@ Idle -> [0]device_wifi;
 
 Idle -> [1]device_wifi;
 
-brn_clf[1] -> Discard;
+brn_clf[2] -> Discard;
 
 device_wifi[1] -> BRN2EtherDecap() -> brn_clf;
 device_wifi[2] -> Discard;
@@ -77,9 +91,9 @@ Idle
 -> Discard;
 
 Script(
-  wait 2,
 //  read device_wifi/wifidevice/cst.stats,
-//  write device_wifi/link_stat.probes "",
+  write topo_detect.detect,
+  write device_wifi/link_stat.probes "",
   wait 9,
   read sf.stats,
   wait 1,
