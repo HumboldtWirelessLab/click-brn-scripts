@@ -35,7 +35,7 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> topo_detect::TopologyDetection(TOPOLOGYINFO topo_info, NODEIDENTITY id, LINKTABLE lt, DEBUG 4)
+-> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 4)
 -> SetTimestamp()
 -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
@@ -62,5 +62,6 @@ Script(
   wait 1,
   read topo_info.topology_info,
   wait 300,
-  read topo_info.topology_info
+  read topo_info.topology_info,
+  read lt.links,
 );

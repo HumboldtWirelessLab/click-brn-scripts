@@ -18,9 +18,9 @@ case "$SIGN" in
       ;;
 esac
 
-xsltproc -o ${RESULTDIR}/measurement.postxslt ${DIR}/input_neurons.xslt ${RESULTDIR}/measurement.xml 
+xsltproc -o ${RESULTDIR}/input_dataset.xml ${RESULTDIR}/../../common_evaluation/input_neurons.xslt ${RESULTDIR}/measurement.xml 
 
-echo "Mein Result: xsltproc returned $?"
+echo "Result: xsltproc returned $?"
 
 exit 2
 

@@ -2,16 +2,27 @@
 import math
 import sys
 import random
+from optparse import OptionParser
+
 
 def check_args():
 	global node_number
+	global net_load
 
-	argc = len(sys.argv)
-	if argc < 2:
-	    print("Usage: generate_ctl.py NumberOfNodes")
-	    sys.exit();
-	
-	node_number = int(sys.argv[1])
+	optParser = OptionParser()
+	optParser.add_option("-n", "--nodes", dest="node_num", type="int", help="Number of nodes.")
+	optParser.add_option("-l", "--load", dest="net_load", type="int", help="Net load (user traffic in Mbit/sec)")
+	(options, args) = optParser.parse_args()
+
+	if not options.node_num:
+		optParser.print_help()
+		sys.exit(-1)
+	node_number = options.node_num
+
+	if not options.net_load:
+		net_load = 10 * 1000 * 1000
+	else:
+		net_load = options.net_load
 
 
 def find_hidden_nodes():
@@ -40,17 +51,31 @@ def find_hidden_nodes():
 	print
 
 
+def reset_rssi_measurement(src, des, rate):
+	global current_time
+	global node_number
+
+	print("# Reset RSSI")
+	current_time += 0.1
+	for a in range(1, node_number + 1):
+		print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat reset".format(current_time, a))
+	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat probes \"2 500 24\"".format(current_time, src))
+	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat probes \"2 500 24\"".format(current_time, des))
+	print
+
+
 def get_rssi(src, des, rate):
 	global current_time
 
 	print("# Get RSSI")
 	current_time += 0.1
-	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat reset".format(current_time, des))
 	print("{0:.1f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, src, rate))
 	current_time += 0.1
 	print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth sk{2}:eth 0 1500 0 500 true".format(current_time, src, des))
 	current_time += 0.5
 	print("{0:.1f}	sk{1}		ath0	read	device_wifi/link_stat bcast_stats".format(current_time, des))
+	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat probes \"\"".format(current_time, src))
+	print("{0:.1f}	sk{1}		ath0	write	device_wifi/link_stat probes \"\"".format(current_time, des))
 	print
 
 
@@ -78,17 +103,15 @@ def link_probe_with_load(load_mbitpersec):
 				
 				print("{0:.1f}	sk{1}		ath0	write	sj	jammer		true".format(current_time, c))
 				print("{0:.1f}	sk{1}		ath0	write	mcs	rate	{2}".format(current_time, c, rates[3] * 2))
-				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF {6:.6f} {4} 0 {2} true {5} {3:.6f}\n".format(
+				print("{0:.1f}	sk{1}		ath0	write	sf	add_flow	sk{1}:eth FF-FF-FF-FF-FF-FF {6} {4} 0 {2} true {5}\n".format(
 					current_time + 0.1, 
 					c, 
 					len(rates) * 10 * 1000, 
 					random.random() * 10.0,
 					load_pck_size,
 					load_burst_count,
-					load_interval_per_node))
+					int(round(load_interval_per_node)) ))
 	
-			get_rssi(a, b, rates[3] * 2)
-
 			print("# Probe link {0} - {1}".format(a, b))
 			for rate in rates:
 				current_time = math.ceil(current_time / 10) * 10 
@@ -115,4 +138,4 @@ current_time = 2
 print("#TIME	NODE(S)	DEVICE	MODE	ELEMENT	HANDLER		VALUE\n")
 
 find_hidden_nodes()
-link_probe_with_load(22 * 1000 * 1000)
+link_probe_with_load(net_load)
