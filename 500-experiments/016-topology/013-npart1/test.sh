@@ -71,7 +71,7 @@ do
 	# simulate placement
 	#
 	echo "run simulation to get link-graph..."
-	run_sim.sh
+	USEPYTHON=1 PROGRESS=1 run_sim.sh
 	RESULT=$?
 	if [ "${RESULT}" -ne 0 ] 
 	then
@@ -98,7 +98,7 @@ do
 		exit -1
 	fi
 	cd ..
-	mv ${i} "${i}-pre"
+	rm -rf  ${i}
 	
 	#
 	# Update mes
@@ -118,7 +118,7 @@ do
 	# simulate placement
 	#
 	echo "run simulation..."
-	run_sim.sh
+	USEPYTHON=1 PROGRESS=1  run_sim.sh
 	RESULT=$?
 	if [ "${RESULT}" -ne 0 ] 
 	then
