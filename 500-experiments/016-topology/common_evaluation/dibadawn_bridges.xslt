@@ -1,6 +1,6 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-    <xsl:output method="text" />
+    <xsl:output method="text" indent="yes" />
 
     <xsl:variable name='newline'><xsl:text>
 </xsl:text></xsl:variable>

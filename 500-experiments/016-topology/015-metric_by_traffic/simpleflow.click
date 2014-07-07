@@ -50,7 +50,7 @@ brn_clf[0]
 brn_clf[1]
 -> BRN2Decap()
 //-> Print("in", TIMESTAMP true)
--> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 4, RANDOM_START_DELAY_MS 100)
+-> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 4, RANDOM_START_DELAY_MS 100, USE_LINK_STAT true)
 //-> Print("out", TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
 -> mcs
@@ -98,4 +98,5 @@ Script(
   read sf.stats,
   wait 1,
   read lt.links,
+  read topo_detect.link_stat,
 );
