@@ -60,6 +60,8 @@ result = rbind(result, c("num_edges", length(E(g))))
 result = rbind(result, c("num_vertexes", length(V(g))))
 result = rbind(result, c("num_theo_br", length(theo_br)))
 result = rbind(result, c("num_theo_ap", length(theo_ap)))
+result = rbind(result, c("num_pr_br", (br_tp + br_fp)/num_of_runs))
+result = rbind(result, c("num_pr_ap", (ap_tp + ap_fp)/num_of_runs))
 result = rbind(result, c("num_runs", num_of_runs))
 
 # Write result
