@@ -9,6 +9,7 @@ import xml.dom.minidom as dom
 from optparse import OptionParser
 from mpl_toolkits.mplot3d import Axes3D
 import csv
+import matplotlib.pyplot as plot
 
 
 def create_random_values():
@@ -110,6 +111,25 @@ def extract_invalid_cross_edges(file_path):
     return edges
 
 
+def extract_bridges(file_path):
+    edges = []
+
+    tree = dom.parse(file_path)
+
+    searchtree_xml_elements = tree.getElementsByTagName("Bridge")
+    for entry in searchtree_xml_elements:
+        node_a = entry.getAttribute("nodeA")
+        node_b = entry.getAttribute("nodeB")
+        if (node_b, node_a, False) in edges or (node_a, node_b, False) in edges:
+            skip = True
+        else:
+            skip = False
+
+        edges.append((node_b, node_a, skip))
+
+    return edges
+
+
 def translate_nodes_to_pos(edges, nodes):
     result=[]
     pos_a=(0,0,0)
@@ -135,13 +155,10 @@ if not options.path:
     print "Failed: Please enter a path to evaluate with option '-p=<path>'"
     sys.exit(-1)
 
-fig = pylab.figure()
-ax = Axes3D(fig)
-
 file_path = os.path.join(options.path, "nodes.csv")
 (xs, ys, zs, node_names, macs) = read_nodes_from_file(file_path)
 
-ax.scatter3D(xs, ys, zs, s=30, c="gray")
+plot.scatter(xs, ys, s=30, c="gray")
 
 
 nodes = zip(xs, ys, zs, node_names, macs)
@@ -158,7 +175,7 @@ for node, parent, node_pos, parent_pos, skip in searchtreeEdges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in searchtreeEdges:
     if not skip:
-        ax.plot([nx, px], [ny, py],zs=[nz, pz], color="k", ls="-")
+        plot.plot([nx, px], [ny, py], color="k", ls="-")
 
 crossEdges = extract_cross_edges(file_path)
 crossEdges = translate_nodes_to_pos(crossEdges, nodes)
@@ -167,7 +184,7 @@ for node, parent, node_pos, parent_pos, skip in crossEdges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in crossEdges:
     if not skip:
-        ax.plot([nx, px], [ny, py],zs=[nz, pz], color="c", ls="--")
+        plot.plot([nx, px], [ny, py], color="c", ls="--")
 
 invalidCrossEdges = extract_invalid_cross_edges(file_path)
 invalidCrossEdges = translate_nodes_to_pos(invalidCrossEdges, nodes)
@@ -176,7 +193,16 @@ for node, parent, node_pos, parent_pos, skip in invalidCrossEdges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in invalidCrossEdges:
     if not skip:
-        ax.plot([nx, px], [ny, py],zs=[nz, pz], color="b", ls="--")
+        plot.plot([nx, px], [ny, py], color="k", ls="-")
+
+bridges = extract_bridges(file_path)
+bridges = translate_nodes_to_pos(bridges, nodes)
+print("Bridges:")
+for node, parent, node_pos, parent_pos, skip in bridges:
+    print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
+for node, parent, (nx, ny, nz), (px, py, pz), skip in bridges:
+    if not skip:
+        plot.plot([nx, px], [ny, py], color="y", ls="-")
 
 for x, y, z, name, mac in nodes:
     label = name
@@ -184,11 +210,11 @@ for x, y, z, name, mac in nodes:
         label = label + ' (%s)' % (mac)
     if(options.is_show_coordinates):
         label = label + '\n(%d, %d, %d)' % (x, y, z)
-    ax.text(x, y, z, label, horizontalalignment='center', verticalalignment='bottom',)
-
+    plot.text(x, y, label, horizontalalignment='center', verticalalignment='bottom',)
+    
 if not options.output_path:
-    pylab.show()
+    plot.show()
 else:
     picture_file_name = os.path.join(options.output_path, "dibadawn_graph.png")
     print("Write file \"" + picture_file_name + "\".")
-    pylab.savefig(picture_file_name)
+    plot.savefig(picture_file_name)
