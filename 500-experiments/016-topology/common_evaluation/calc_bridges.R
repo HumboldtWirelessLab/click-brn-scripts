@@ -1,5 +1,6 @@
 #!/usr/bin/Rscript
 
+library(methods)
 library(igraph)
 
 get.bridges <- function(g)
