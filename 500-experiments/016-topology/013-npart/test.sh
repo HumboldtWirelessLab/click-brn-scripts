@@ -71,7 +71,7 @@ do
 	# simulate placement
 	#
 	echo "run simulation to get link-graph..."
-	run_sim.sh
+	USEPYTHON=1 PROGRESS=1 run_sim.sh
 	RESULT=$?
 	if [ "${RESULT}" -ne 0 ] 
 	then
@@ -98,7 +98,7 @@ do
 		exit -1
 	fi
 	cd ..
-	mv ${i} "${i}-pre"
+	rm -rf  ${i}
 	
 	#
 	# Update mes
@@ -108,6 +108,7 @@ do
 	echo "  new node count: ${NODE_COUNT}"
 	mv simpleflow.mes simpleflow-orig.mes
 	cat simpleflow-orig.mes | sed "s/:[0-9]*/:${NODE_COUNT}/" > simpleflow.mes
+	rm simpleflow-orig.mes
 	if [ "$?" -ne 0 ] 
 	then
 		echo "result: failed"
@@ -118,7 +119,7 @@ do
 	# simulate placement
 	#
 	echo "run simulation..."
-	run_sim.sh
+	USEPYTHON=1 PROGRESS=1  run_sim.sh
 	RESULT=$?
 	if [ "${RESULT}" -ne 0 ] 
 	then
