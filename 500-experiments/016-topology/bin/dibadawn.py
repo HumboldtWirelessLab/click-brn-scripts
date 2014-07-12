@@ -170,7 +170,7 @@ file_path = os.path.join(options.path, "measurement.xml")
 
 searchtreeEdges = extract_search_tree_edges(file_path)
 searchtreeEdges = translate_nodes_to_pos(searchtreeEdges, nodes)
-print("Search-Tree-Edges:")
+print("Search-Tree-Edges: (solid black)")
 for node, parent, node_pos, parent_pos, skip in searchtreeEdges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in searchtreeEdges:
@@ -179,30 +179,30 @@ for node, parent, (nx, ny, nz), (px, py, pz), skip in searchtreeEdges:
 
 crossEdges = extract_cross_edges(file_path)
 crossEdges = translate_nodes_to_pos(crossEdges, nodes)
-print("Cross-Edges:")
+print("Cross-Edges: (dashed yellow)" )
 for node, parent, node_pos, parent_pos, skip in crossEdges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in crossEdges:
     if not skip:
-        plot.plot([nx, px], [ny, py], color="c", ls="--")
+        plot.plot([nx, px], [ny, py], color="y", ls="--", linewidth="3")
 
 invalidCrossEdges = extract_invalid_cross_edges(file_path)
 invalidCrossEdges = translate_nodes_to_pos(invalidCrossEdges, nodes)
-print("Invalid Cross-Edges:")
+print("Invalid Cross-Edges: (dashed cyan)")
 for node, parent, node_pos, parent_pos, skip in invalidCrossEdges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in invalidCrossEdges:
     if not skip:
-        plot.plot([nx, px], [ny, py], color="k", ls="-")
+        plot.plot([nx, px], [ny, py], color="c", ls="--", linewidth="3")
 
 bridges = extract_bridges(file_path)
 bridges = translate_nodes_to_pos(bridges, nodes)
-print("Bridges:")
+print("Bridges: (solid yellow)")
 for node, parent, node_pos, parent_pos, skip in bridges:
     print("  {0} -- {1} => {2} -- {3}".format(node, parent, node_pos, parent_pos, skip))
 for node, parent, (nx, ny, nz), (px, py, pz), skip in bridges:
     if not skip:
-        plot.plot([nx, px], [ny, py], color="y", ls="-")
+        plot.plot([nx, px], [ny, py], color="y", ls="-", linewidth="3")
 
 for x, y, z, name, mac in nodes:
     label = name
