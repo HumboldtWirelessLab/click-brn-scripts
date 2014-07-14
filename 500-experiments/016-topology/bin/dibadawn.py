@@ -162,44 +162,17 @@ def translate_nodes_to_pos(edges, nodes):
 	return result
 
 
-def list_of_searches(file_path):
-	searches = []
-
-	tree = dom.parse(file_path)
-
-	searchtree_xml_elements = tree.getElementsByTagName("DibadawnStartSearch")
-	for entry in searchtree_xml_elements:
-		id  = entry.getAttribute("searchId")
-		
-		searches.append(id)
-
-	return searches
-
-
-def print_list_of_searches_and_exit():
-	file_path = os.path.join(options.path, "measurement.xml")
-	searches = list_of_searches(file_path)
-
-	for (i, search) in enumerate(searches):
-		print("  {0}: {1}".format(i, search))
-
-	sys.exit(0)
-
-
 optParser = OptionParser()
 optParser.add_option("-p", "--path", dest="path", type="string", help="Path to to dir, where to find xml-file")
+optParser.add_option("-f", "--file", dest="measurement_file", type="string", help="measurement file")
 optParser.add_option("-o", "--output", dest="output_path", type="string", help="write into file")
 optParser.add_option("-m", "--macs", dest="is_show_macs", action="store_true", help="Draw macs. (False)", default=False)
 optParser.add_option("-c", "--coordinates", dest="is_show_coordinates", action="store_true", help="Draw coordinates. (False)", default=False)
-optParser.add_option("-l", "--list", dest="list_searches", action="store_true", help="Only list available searches. (False)", default=False)
 (options, args) = optParser.parse_args()
 
 if not options.path:
-	print "Failed: Please enter a path to evaluate with option '-p=<path>'"
+	print("Failed: Please enter a path to evaluate with option '-p=<path>'")
 	sys.exit(-1)
-
-if options.list_searches :
-	print_list_of_searches_and_exit()
 
 file_path = os.path.join(options.path, "nodes.csv")
 (xs, ys, zs, node_names, macs) = read_nodes_from_file(file_path)
@@ -212,7 +185,10 @@ print("Nodes:")
 for x, y, z, name, mac in nodes:
 	print("  {0}: mac={1} pos=({2},{3},{4})".format(name, mac, x, y, z))
 
-file_path = os.path.join(options.path, "measurement.xml")
+if None != options.measurement_file:
+	file_path = options.measurement_file
+else:
+	file_path = os.path.join(options.path, "measurement.xml")
 
 searchtreeEdges = extract_search_tree_edges(file_path)
 searchtreeEdges = translate_nodes_to_pos(searchtreeEdges, nodes)
