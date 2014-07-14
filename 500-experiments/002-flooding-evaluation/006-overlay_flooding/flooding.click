@@ -27,6 +27,7 @@
 //#define CIRCLE_DATA circles/circles1_1
 //#define MST_BD
 //#define MST_PRE
+#define GG_GRAPH
 
 //#define DISBALE_BCASTWIFIDUPS
 
@@ -39,9 +40,6 @@
 #include "device/wifidev_linkstat.click"
 #include "routing/broadcastflooding.click"
 #include "routing/routing.click"
-
-//Overlay goes here. Name of OverlayStructure is ovl
-ggraph::GabrielGraph(NODEIDENTITY $id, OVERLAY_STRUCTURE ovl, LINKTABLE $lt, UPDATE_INTERVALL 1000, THRESHOLD 0, DEBUG FLOODING_DEBUG);
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
