@@ -56,7 +56,7 @@
 					</xsl:when>
 
 					<xsl:otherwise>
-					<xsl:variable name="metric" select="1 div (($node_b_rx div $node_a_tx) * ($node_a_rx div $node_b_tx))" />
+					<xsl:variable name="metric" select="format-number(1 div (($node_b_rx div $node_a_tx) * ($node_a_rx div $node_b_tx)), '0.###')" />
 					<xsl:value-of select="concat('&quot;',$metric,'&quot;', ',')" />
 				</xsl:otherwise>
 				</xsl:choose>
