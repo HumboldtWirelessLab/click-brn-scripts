@@ -22,8 +22,9 @@
 //#define MPR_FL
 //#define MST_FL
 #define OVL_FL
-#define CIR_OVL
-#define CIRCLE_DATA circles/circles1_1
+#define FLOODING_STRATEGY 2
+//#define CIR_OVL
+//#define CIRCLE_DATA circles/circles1_1
 //#define MST_BD
 //#define MST_PRE
 
@@ -38,6 +39,9 @@
 #include "device/wifidev_linkstat.click"
 #include "routing/broadcastflooding.click"
 #include "routing/routing.click"
+
+//Overlay goes here. Name of OverlayStructure is ovl
+ggraph::GabrielGraph(NODEIDENTITY $id, OVERLAY_STRUCTURE ovl, LINKTABLE $lt, UPDATE_INTERVALL 1000, THRESHOLD 0, DEBUG FLOODING_DEBUG);
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -75,7 +79,10 @@ brn_clf[0]
 
 brn_clf[1]
   -> [1]flooding[1]
-  -> SetTXRates(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0)
+//  -> SetTXRates(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0)
+//  -> SetTXPowerRate(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> SetTXRate(RATE 2, TRIES DEFAULT_DATATRIES)
+  -> SetTXPower(24)
 //  -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> [2]device_wifi;
 

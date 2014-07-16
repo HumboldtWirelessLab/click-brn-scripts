@@ -1,14 +1,14 @@
 #define DEBUGLEVEL 2
 
 #define PRIO_QUEUE
-#define RAWDUMP
-//#define WIFIDEV_LINKSTAT_DEBUG
+//#define RAWDUMP
 #define ENABLE_DSR_DEBUG
 
 #define BRNFEEDBACK
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#define CERR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -27,6 +27,8 @@ sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 topo_info::TopologyInfo(DEBUG 4);
 
+//rs::RandomSeed(12);
+
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
@@ -35,7 +37,7 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 4)
+-> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 5, ORIGIN_FORWARD_DELAY true, IS_DETECTION_PERIODICALLY false, USE_LINK_STAT true)
 -> SetTimestamp()
 -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
@@ -57,7 +59,15 @@ Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
 
 Script(
-  wait 260,
+  write device_wifi/link_stat.probes "",
+  write topo_detect.config IS_DETECTION_PERIODICALLY true,
+
+  wait 300,
+  write topo_detect.stop_periotically_detection_smoothly,
+
+  wait 5,
   read topo_detect.local_topo_info,
   read lt.links,
+  wait 1,
+  read topo_detect.link_stat,
 );

@@ -1,10 +1,9 @@
 NAME=simpleflow
 SIMULATOR=ns2
-#RADIO=shadowing11b
-RADIO=tworayground01b
+RADIO=shadowing
 FORGEINNODES=no
 
-TIME=300
+TIME=600
 
 NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=simpleflow.mes

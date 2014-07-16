@@ -6,10 +6,12 @@ library(igraph)
 links_file_path = "links.csv"
 links_of_largest_component_file_path = "links_of_largest_component.csv"
 edges_of_largest_component_file_path = "nodes_of_largest_component.csv"
+metric_threshold = 100
 
 # Read in graph
 print(paste("Read files... ", links_file_path))
-links = as.matrix(read.csv(file = links_file_path))
+links_unfiltered = read.csv(file = links_file_path)
+links = as.matrix(links_unfiltered[ links_unfiltered$metric <= metric_threshold,])
 g = graph.data.frame(links, directed = FALSE)
 # removeduplicated edges
 g = as.undirected(as.directed(g))

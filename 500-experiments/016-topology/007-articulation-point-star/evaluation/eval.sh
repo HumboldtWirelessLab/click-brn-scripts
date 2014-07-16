@@ -33,7 +33,10 @@ fi
 #
 # Create links.scv
 #
-xsltproc -o ${RESULTDIR}/links.csv ${DIR}/../../common_evaluation/extract_dibadawn_links.xslt ${RESULTDIR}/measurement.xml 
+PRE_LINKS_PATH=${RESULTDIR}/links_extract.xml
+LINKS_PATH=${RESULTDIR}/links.csv
+xsltproc -o ${PRE_LINKS_PATH} ${DIR}/../../common_evaluation/extract_dibadawn_links.xslt ${RESULTDIR}/measurement.xml 
+xsltproc -o ${LINKS_PATH} ${DIR}/../../common_evaluation/dibadawn_links_to_csv.xslt ${PRE_LINKS_PATH}
 if [ "$?" -ne 0 ]
 then
   echo "Failed to extract links.csv"
@@ -56,7 +59,7 @@ fi
 # Check bridges
 #
 BR_FOUND=$(grep ${RESULTDIR}/measurement.postxslt -e "^bridges.*")
-BR_EXPECTED="bridges,00-00-00-00-00-03--00-00-00-00-00-02,00-00-00-00-00-04--00-00-00-00-00-02,00-00-00-00-00-02--00-00-00-00-00-01,00-00-00-00-00-02--00-00-00-00-00-01,00-00-00-00-00-03--00-00-00-00-00-02,00-00-00-00-00-04--00-00-00-00-00-02,"
+BR_EXPECTED="bridges,00-00-00-00-00-04--00-00-00-00-00-02,00-00-00-00-00-03--00-00-00-00-00-02,00-00-00-00-00-02--00-00-00-00-00-01,00-00-00-00-00-02--00-00-00-00-00-01,00-00-00-00-00-03--00-00-00-00-00-02,00-00-00-00-00-04--00-00-00-00-00-02,"
 if [ "${BR_FOUND}" != "${BR_EXPECTED}" ]; then
   echo "Failed: Bridge analysis"
   echo "  Found:   ${BR_FOUND}"

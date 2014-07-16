@@ -1,5 +1,6 @@
 #!/usr/bin/Rscript
 
+library(methods)
 library(igraph)
 
 get.bridges <- function(g)
@@ -31,26 +32,20 @@ if(length(args) > 0)
 }
 cat("use input file", links_file_path, "\n", file=stderr())
 
-use_metric_filter = FALSE
 if(length(args) > 1)
 {
-  use_metric_filter = TRUE
   metric_threshold = args[2]
   cat("use ETX metric limit", metric_threshold, "\n", file=stderr())
 }else
 {
-  cat("don't use ETX metric limit", "\n", file=stderr())
+  metric_threshold = 100
+  cat("use default ETX metric limit", metric_threshold, "\n", file=stderr())
 }
-
 
 # Read in graph
 cat("read file", links_file_path, "\n", file=stderr())
 links_unfiltered = read.csv(file = links_file_path)
-if(use_metric_filter)
-{
-  links = as.matrix(links_unfiltered[ links_unfiltered$metric <= metric_threshold,])
-}else
-  links = as.matrix(links_unfiltered)
+links = as.matrix(links_unfiltered[ links_unfiltered$metric <= metric_threshold,])
 cat( "read (", nrow(links), "/", nrow(links_unfiltered), ") links\n", file=stderr())
 g = graph.data.frame(links, directed = FALSE)
 # removeduplicated edges
@@ -60,4 +55,11 @@ theoretical_bridges = get.bridges(g)
 cat("found", nrow(theoretical_bridges), "bridges\n", file=stderr())
 
 # Write theoretical results
-write.table(theoretical_bridges, file=stdout(), sep=",", col.names=c("node_a", "node_b"), row.names = FALSE)
+if(is.null(theoretical_bridges))  
+{
+    write.table(theoretical_bridges, file=stdout(), sep=",", row.names = FALSE)
+}else 
+{
+    write.table(theoretical_bridges, file=stdout(), sep=",", col.names=c("node_a", "node_b"), row.names = FALSE)
+}
+

@@ -40,7 +40,7 @@ do
 	echo "  output file: ${PLACEMENT_PATH}"
 	OPWD=$(pwd)
 	cd ../../../../helper/src/Npart
-	NUM_OF_NODES=100
+	NUM_OF_NODES=175
 	RXRANGE=230  ./gen_topo.sh ${NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
 	RESULT=$?
 	cd ${OPWD}
@@ -67,38 +67,6 @@ do
 		exit -1
 	fi
 	
-	#
-	# simulate placement
-	#
-	echo "run simulation to get link-graph..."
-	run_sim.sh
-	RESULT=$?
-	if [ "${RESULT}" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
-	fi
-	
-	
-	#
-	# extract largest component of link-graph and save this as new placement
-	#
-	echo "extract larges component of link-graph as new placement..."
-	cd ${SIM_RESULT_DIR}
-	../../common_evaluation/extract_largest_component_of_graph.R 1>/dev/null
-	if [ "$?" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
-	fi
-	../../common_evaluation/sub_placement.py --nodes=nodes.csv --list=nodes_of_largest_component.csv --rename > ../${PLACEMENT_PATH}
-	if [ "$?" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
-	fi
-	cd ..
-	mv ${i} "${i}-pre"
 	
 	#
 	# Update mes
@@ -108,6 +76,7 @@ do
 	echo "  new node count: ${NODE_COUNT}"
 	mv simpleflow.mes simpleflow-orig.mes
 	cat simpleflow-orig.mes | sed "s/:[0-9]*/:${NODE_COUNT}/" > simpleflow.mes
+	rm simpleflow-orig.mes
 	if [ "$?" -ne 0 ] 
 	then
 		echo "result: failed"
@@ -118,7 +87,7 @@ do
 	# simulate placement
 	#
 	echo "run simulation..."
-	run_sim.sh
+	USEPYTHON=1 PROGRESS=1  run_sim.sh
 	RESULT=$?
 	if [ "${RESULT}" -ne 0 ] 
 	then

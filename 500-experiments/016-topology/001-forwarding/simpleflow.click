@@ -58,9 +58,6 @@ Idle -> [0]device_wifi;
 
 Script(
   wait 29,
-  read topo_detect.local_topo_info,
-  wait 1,
-  read topo_info.topology_info,
   wait 300,
   read topo_info.topology_info,
   read lt.links,
