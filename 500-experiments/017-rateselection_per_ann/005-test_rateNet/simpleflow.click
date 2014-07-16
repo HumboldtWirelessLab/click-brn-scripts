@@ -25,7 +25,7 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
-annRate::BrnAnnRate()
+annRate::BrnAnnRate(LINKSTAT device_wifi/link_stat, HIDDENNODE hnd)
 
 device_wifi
   -> Label_brnether::Null()
@@ -57,6 +57,11 @@ device_wifi[3]
 
 Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
+
+// for stats: enabele read hnd... in "Script"
+Idle
+-> hnd::HiddenNodeDetection(DEVICE wireless, TIMEOUT 1000, LINKTIMEOUT 2000, LINKTABLE lt, DEBUG 2)
+-> Discard;
 
 Script(
   wait 39,
