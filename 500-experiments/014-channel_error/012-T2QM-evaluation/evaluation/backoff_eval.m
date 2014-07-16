@@ -26,7 +26,7 @@ ps_string={'1500'};
 %ps_string={'375', '750', '1500'};
 
 
-sim_duration = 120;
+sim_duration = 60;
 
 print=1;
 a=load('backoffusage.mat','-ASCII');
@@ -54,14 +54,14 @@ tqmmodes=unique(a(:,TTQM_STRATEGY));
 %plot_cols=['r';'m';'k';'b'];
 %tqmmodes=[5 7 8 9]';
 
-%plot_cols=['r';'k';'m'];
-%tqmmodes=[5 8 9]';
+plot_cols=['g';'c';'k'];
+tqmmodes=[3 5 8]';
 
-%plot_cols=['b';'m';'k';'r'];
-%tqmmodes=[2 7 8 9]';
+%plot_cols=['b';'r';'k';'m'];
+%tqmmodes=[2 5 8 9]';
 
-plot_cols=['c';'k';'r'];
-tqmmodes=[5 8 9]';
+%plot_cols=['m';'k'];
+%tqmmodes=[7 8]';
 
 %plot_cols=['k'];
 %tqmmodes=[8];
@@ -75,11 +75,11 @@ for ii = 1:size(tqmmodes, 1)
 end
 
 
-plot_bo = 0;
-plot_colls = 0;
+plot_bo = 1;
+plot_colls = 1;
 plot_jfi = 1;
 plot_sumtp = 1;
-plot_nodetp = 0;
+plot_nodetp = 1;
 
 %                                                     TP     FAIR  Backoff
 % blue  BACKOFF_STRATEGY_OFF                     0    +      +++   +++
