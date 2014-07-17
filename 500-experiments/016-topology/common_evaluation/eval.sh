@@ -34,7 +34,7 @@ $DIR/../bin/extract_nodes.py -p ${RESULTDIR}
 PRE_LINKS_PATH=${RESULTDIR}/links_extract.xml
 LINKS_PATH=${RESULTDIR}/links.csv
 SEARCHES=${RESULTDIR}/searches.xml
-xsltproc -o ${PRE_LINKS_PATH} ${DIR}/extract_dibadawn_links.xslt ${RESULTDIR}/measurement.xml 
+${DIR}/extract_dibadawn_links.py -f ${RESULTDIR}/measurement.xml > ${PRE_LINKS_PATH}
 xsltproc -o ${LINKS_PATH} ${DIR}/dibadawn_links_to_csv.xslt ${PRE_LINKS_PATH}
 xsltproc -o ${SEARCHES} ${DIR}/group_searches.xslt ${RESULTDIR}/measurement.xml 
 xsltproc -o ${RESULTDIR}/articulation_points.csv ${DIR}/dibadawn_articulation_points.xslt ${SEARCHES}

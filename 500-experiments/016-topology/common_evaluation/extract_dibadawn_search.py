@@ -23,7 +23,7 @@ if not options.measurement_file:
     sys.exit(-1)
 measurement_file = options.measurement_file
 
-context = Et.iterparse(measurement_file, events=('end',))
+context = Et.iterparse(measurement_file, events=('start',))
 
 print("<simpleflow>")
 for event, elem in context:
