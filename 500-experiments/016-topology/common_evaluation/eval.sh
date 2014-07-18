@@ -22,7 +22,7 @@ esac
 #
 # Create nodes.csv
 #
-$DIR/../bin/extract_nodes.py -p ${RESULTDIR}
+$DIR/extract_nodes.py -p ${RESULTDIR}
 
 
 #
