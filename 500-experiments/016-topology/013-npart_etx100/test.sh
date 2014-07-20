@@ -10,19 +10,11 @@ fi
 PLACEMENT_PATH="placementfile.plm"
 RESULT_PATH="test-result.csv"
 RUNS=$1
-ETXLIMIT=$2
-export ETXLIMIT
 
 
 echo "overwrite placement file ${PLACEMENT_PATH}"
 echo "overwrite result file ${RESULT_PATH}"
 echo "simulate ${RUNS} runs"
-if [ "x${ETXLIMIT}" == "x" ]
-then
-	echo "don't use ETX-metric limit"
-else
-	echo "use ETX-metric limit max(${ETXLIMIT})"
-fi
 read -p "Do you want start a test with these settings?   ....(Ctrl+C to abort)"
 
 
