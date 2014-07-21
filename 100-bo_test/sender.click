@@ -1,14 +1,17 @@
 #define DEBUGLEVEL 2
 
 #define PRIO_QUEUE
-#define RAWDUMP
-#define ENABLE_DSR_DEBUG
+//#define RAWDUMP
+//#define WIFIDEV_LINKSTAT_DEBUG
+//#define ENABLE_DSR_DEBUG
+
+#define TOS2QUEUEMAPPER_STRATEGY 11
 
 #define BRNFEEDBACK
 
 #define CST cst
-#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
-#define CERR
+#define COOPCST
+#define COOPCST_STRING "device_wifi/cocst"
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -25,21 +28,21 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
-annRate::BrnAnnRate(LINKSTAT device_wifi/link_stat, HIDDENNODE hnd)
-
 device_wifi
   -> Label_brnether::Null()
   -> BRN2EtherDecap()
-  -> brn_clf::Classifier( 0/BRN_PORT_FLOW, //Simpleflow
-                               -  );//other
+  -> brn_clf::Classifier( 0/BRN_PORT_FLOW,              //Simpleflow
+                               -  );                    //other
 
 brn_clf[0]
 -> BRN2Decap()
 -> sf::BRN2SimpleFlow(EXTRADATA "channel 4 mcs 1", DEBUG 2)
--> SetTimestamp() -> Print(TIMESTAMP true)
+-> SetTimestamp()
 -> BRN2EtherEncap(USEANNO true)
--> data_rate::SetTXRate(RATE 36, TRIES 7)
--> NotifierQueue(500)
+-> SetTXRate(RATE 2, TRIES 1)
+-> [0]device_wifi;
+
+Idle
 -> [2]device_wifi;
 
 brn_clf[1] -> Discard;
@@ -58,11 +61,16 @@ device_wifi[3]
 Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
 
-// for stats: enabele read hnd... in "Script"
-Idle
--> hnd::HiddenNodeDetection(DEVICE wireless, TIMEOUT 1000, LINKTIMEOUT 2000, LINKTABLE lt, DEBUG 2)
--> Discard;
+/*
+Script(
+  write sf.add_flow deviceaddress ff:ff:ff:ff:ff:ff 100 50 0 10000 true 2 1000,
+);
+
 
 Script(
-  wait 39,
-)
+  wait 2,
+  read device_wifi/wifidevice/cst.stats,
+  read device_wifi/cocst.stats,
+  loop
+  );
+*/

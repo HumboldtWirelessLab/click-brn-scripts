@@ -23,7 +23,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 Idle()
-  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 12 PACKETSIZE_PARAMS 0 60000 true 1 1000", FLOWSTARTRANDOM 50, DEBUG 2)
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 12 1500 0 60000 true 1 1000", FLOWSTARTRANDOM 50, DEBUG 2)
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTXRate(RATE 2, TRIES 7)

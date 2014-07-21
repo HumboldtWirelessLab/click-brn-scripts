@@ -5,18 +5,20 @@
     <xsl:variable name='newline'><xsl:text>
 </xsl:text></xsl:variable>
     
-    <xsl:template match="/">
+    <xsl:template match="/simpleflow">
         <xsl:value-of select="concat('&quot;node_a&quot;', ',')" />
         <xsl:value-of select="concat('&quot;node_a&quot;', ',')" />
         <xsl:value-of select="'&quot;metric&quot;'" />
         <xsl:value-of select="$newline" />
-        <xsl:for-each select="simpleflow/linktable/link[@to = ../@id] ">
-            <xsl:value-of select="concat('&quot;', @from, '&quot;', ',')" />
-            <xsl:value-of select="concat('&quot;', @to, '&quot;', ',')" />
-            <xsl:value-of select="concat('&quot;', @metric, '&quot;')" />
-            <xsl:value-of select="$newline" />
-            
-        </xsl:for-each>
+        
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="linktable/link[@to = ../@id]">
+        <xsl:value-of select="concat('&quot;', @from, '&quot;', ',')" />
+        <xsl:value-of select="concat('&quot;', @to, '&quot;', ',')" />
+        <xsl:value-of select="concat('&quot;', @metric, '&quot;')" />
+        <xsl:value-of select="$newline" />
     </xsl:template>
 
     <xsl:template match="text( )|@*">

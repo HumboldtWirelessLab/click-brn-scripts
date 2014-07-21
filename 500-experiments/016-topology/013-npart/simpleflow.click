@@ -37,7 +37,7 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 5, ORIGIN_FORWARD_DELAY true, IS_DETECTION_PERIODICALLY false, USE_LINK_STAT true)
+-> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 1, ORIGIN_FORWARD_DELAY true, IS_DETECTION_PERIODICALLY true, RANDOM_START_DELAY_MS 10000, DETECTION_INTERVAL_MS 30000, USE_LINK_STAT true, MAX_HOPS 12)
 -> SetTimestamp()
 -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
@@ -60,14 +60,16 @@ Idle -> [0]device_wifi;
 
 Script(
   write device_wifi/link_stat.probes "",
-  write topo_detect.config IS_DETECTION_PERIODICALLY true,
+  read topo_detect.config,
+  
+  wait 200, // ... for training
+  write topo_detect.config DEBUG 1, // to get XML start elements
+  write topo_detect.config PRINT_AFTER_RUN true,  // print topo info after any search is done 
 
-  wait 300,
-  write topo_detect.stop_periotically_detection_smoothly,
 
-  wait 5,
-  read topo_detect.local_topo_info,
-  read lt.links,
-  wait 1,
-  read topo_detect.link_stat,
+  wait 330, // ... for testing
+  write topo_detect.stop_periotically_detection_smoothly,  // timer for triggering periodically searches will not be refreshed
+
+  wait 30,  // wait for last search executions
+  read topo_detect.link_stat,  // get all links nice formated at once
 );

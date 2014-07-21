@@ -1,50 +1,32 @@
 #!/bin/bash
 
 if [ "x$SIM" = "x1" ]; then
-  #NO_NODES_VECTOR="10 11"
-  #NO_NODES_VECTOR="10 11 12"
-  NO_NODES_VECTOR="10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25"
-  #NO_NODES_VECTOR="5"
-  #NO_NODES_VECTOR="2 5 10"
-  #NO_NODES_VECTOR="1 2 5 10 15 20 25 30"
-  #NO_NODES_VECTOR="1 2"
-  #NO_NODES_VECTOR="1 2 3 4"
+  NO_NODES_VECTOR=SENDERS
+  #NO_NODES_VECTOR="2 3 4"
   #NO_NODES_VECTOR="1 2 4 6 8 10 12 14 16 18 20"
   #NO_NODES_VECTOR="1 5 10 15 20 25 30"
-  #NO_NODES_VECTOR="1 2"
-  #NO_NODES_VECTOR="1 2 5 10 15 20 25 30"
-  #NO_NODES_VECTOR="2 5 10 20 30"
-  #NO_NODES_VECTOR="2 5 10 20"
-  #NO_NODES_VECTOR="1 2 3 4 5 6 7 8 9 10"
+  #NO_NODES_VECTOR="1 2 4"
+  #NO_NODES_VECTOR="1 2 5 10 20 30"
+  #NO_NODES_VECTOR="5 10 20 30"
+  #NO_NODES_VECTOR="1 2 5 10"
   #NO_NODES_VECTOR="2 4 6 8"
   #NO_NODES_VECTOR="1 2 4 6 8 10"
-  #NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30"
+  #NO_NODES_VECTOR="2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25"
   #NO_NODES_VECTOR="2 4 6 8 10 12 14 16"
   #NO_NODES_VECTOR="1 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30"
 else
   NO_NODES_VECTOR="2 4 6 8 10"
 fi
 
-#TOSTOQUEUE="8 3 5 9 7"
 #TOSTOQUEUE="0 2 3 4 5 6 7"
-#TOSTOQUEUE="2 3 4 7 8 9"
+#TOSTOQUEUE="0 3 5"
 #TOSTOQUEUE="0 2 3 4"
-#TOSTOQUEUE="8 3 5 9"
-#TOSTOQUEUE="2 3 4 5 7 8 9"
-#TOSTOQUEUE="2 3 7"
-#TOSTOQUEUE="2 3 7 8 9"
-#TOSTOQUEUE="2 3 5 7 8 9"
-#TOSTOQUEUE="2 5 8 9"
-#TOSTOQUEUE="5 7 8 9"
-TOSTOQUEUE="8 9"
+#TOSTOQUEUE="0 3"
+TOSTOQUEUE="8"
 
-
-
-
-#PACKET_SIZE_VECTOR="750"
 PACKET_SIZE_VECTOR="1500"
 #PACKET_SIZE_VECTOR="750 1500"
-#PACKET_SIZE_VECTOR="100 750 1500"
+#PACKET_SIZE_VECTOR="375 750 1500"
 #PACKET_SIZE_VECTOR="500 1000 1500"
 #PACKET_SIZE_VECTOR="100 200 400 600 800 1000 1250 1500"
 #PACKET_SIZE_VECTOR="100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500"
@@ -55,24 +37,21 @@ PACKET_SIZE_VECTOR="1500"
 
 RATE_VECTOR="125"
 
-REP=20
+REP=1
 NUM=1
 
-if [ "x$SIM" = "x1" ]; then
+#if [ "x$SIM" = "x1" ]; then
   #cat placement.plm | awk '{print $1}' > nodes
-  echo -n ""
-else
-  cp nodes.testbed nodes
-fi
+#else
+#  cp nodes.testbed nodes
+#fi
 
 if [ "x$SIM" = "x1" ]; then
 #   CHANNEL_MODEL="shadowing11b tworayground01b"
-#   CHANNEL_MODEL="shadowing01b tworayground01b"
+#    CHANNEL_MODEL="shadowing01b tworayground01b"
 #   CHANNEL_MODEL="shadowing11b"
-#   CHANNEL_MODEL="shadowing01b"
-#   CHANNEL_MODEL="tworayground01b"
-#    CHANNEL_MODEL="tworayground"
-    CHANNEL_MODEL="shadowing"
+#    CHANNEL_MODEL="shadowing01b"
+   CHANNEL_MODEL="tworayground01b"
 else
   CHANNEL_MODEL="real"
 fi
@@ -100,11 +79,11 @@ for ttq in $TOSTOQUEUE; do
 
     cat backoff.mes.tmpl | sed "s#NONODES#$non#g" > backoff.mes
 
-    echo -n "" > simpleflow.ctl
-    let LAST_SENDER=non+1
-    for i in `seq 2 $LAST_SENDER`; do
-      echo "1  sk$i   ath0  write sf  add_flow  sk$i:eth  00:00:00:00:00:01 0  1500 0 30000 true 1 0" >> simpleflow.ctl
-    done
+    #echo -n "" > simpleflow.ctl
+    #let LAST_SENDER=non+1
+    #for i in `seq 2 $LAST_SENDER`; do
+    #  echo "1  sk$i   ath0  write sf  add_flow  sk$i:eth  00:00:00:00:00:01 0  1500 0 30000 true 1 0" >> simpleflow.ctl
+    #done
 
     for p_s in $PACKET_SIZE_VECTOR ; do
 
@@ -177,6 +156,6 @@ rm -f nodes config.h backoff.des
 
 sh ./run_para_sim.sh
 
-(cd evaluation; ./eval_all.sh)
+#(cd evaluation; ./eval_all.sh)
 
 exit 0
