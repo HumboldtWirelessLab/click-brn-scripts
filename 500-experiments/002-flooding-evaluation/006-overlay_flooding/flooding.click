@@ -14,20 +14,26 @@
 
 #define LINKPROBE_PERIOD                                         2000
 #define LINKPROBE_TAU                                          100000
-//#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000"
-#define LINKPROBE_PROBES                                       "2 100"
+//#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000" -- old version
+//#define LINKPROBE_PROBES                                       "2 100" -- old version
+//#define LINKPROBE_PROBES                   "2 200 24 2 200 23 11 200 24 11 200 23"
+#define LINKPROBE_PROBES                                       "2 100 24"
 #define DISABLE_LP_POWER
 
 //#define PRO_FL
 //#define MPR_FL
 //#define MST_FL
 #define OVL_FL
-#define FLOODING_STRATEGY 2
+#define FLOODING_STRATEGY 4
 //#define CIR_OVL
 //#define CIRCLE_DATA circles/circles1_1
 //#define MST_BD
 //#define MST_PRE
-#define GG_GRAPH
+//#define GG_GRAPH
+//#define GG_THRESHOLD 0
+
+#define RN_GRAPH
+#define RN_THRESHOLD 0
 
 //#define DISBALE_BCASTWIFIDUPS
 
@@ -75,12 +81,19 @@ brn_clf[0]
   -> BRN2EtherEncap(USEANNO true)
   -> [0]flooding;
 
+rate_fix::BrnFixRate(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0);
+rate_flooding::BrnFloodingRate(FLOODING flooding/fl, FLOODINGHELPER flooding/fl_helper, FLOODINGDB flooding/fl_database, LINKSTAT device_wifi/link_stat, CHANNELSTATS device_wifi/wifidevice/cst, STRATEGY 0, DEFAULTRETRIES 7, DEBUG 4);
+
+rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22 24 36 48 72 96 108);
+
+
 brn_clf[1]
   -> [1]flooding[1]
 //  -> SetTXRates(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0)
 //  -> SetTXPowerRate(RATE0 2, TRIES0 DEFAULT_DATATRIES, TRIES1 0, TRIES2 0, TRIES3 0)
-  -> SetTXRate(RATE 2, TRIES DEFAULT_DATATRIES)
-  -> SetTXPower(24)
+//  -> SetTXRate(RATE 2, TRIES DEFAULT_DATATRIES)
+//  -> SetTXPower(24)
+  -> data_rate::SetTXPowerRate(RATESELECTIONS "rate_fix rate_flooding", STRATEGY 5, RT rates, POWER 24, OFFSET -1)
 //  -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> [2]device_wifi;
 
