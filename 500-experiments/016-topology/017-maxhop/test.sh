@@ -35,7 +35,7 @@ do
 	echo "create NPart placement..."
 	OPWD=$(pwd)
 	cd ../../../../helper/src/Npart
-	NUM_OF_NODES=240
+	NUM_OF_NODES=175
 	RXRANGE=230  ./gen_topo.sh ${NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
 	RESULT=$?
 	cd ${OPWD}
@@ -123,6 +123,7 @@ do
 	#
 	DES="${MAXHOPS}-max_hops"
 	
+	echo "Process ${DES}"
 	cd ${DES}
 	../../common_evaluation/collect_results.sh > ${RESULT_PATH}
 	cd ..

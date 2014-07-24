@@ -1,7 +1,6 @@
 NAME=simpleflow
 SIMULATOR=ns2
-#RADIO=shadowing
-RADIO=tworayground
+RADIO=shadowing
 FORGEINNODES=no
 
 TIME=360
@@ -17,7 +16,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATION="embrace_xml evaluation/eval.sh"
+EVALUATION="embrace_xml ../common_evaluation/eval.sh evaluation/eval.sh"
 
 GPS=no
 NOTICE=no
