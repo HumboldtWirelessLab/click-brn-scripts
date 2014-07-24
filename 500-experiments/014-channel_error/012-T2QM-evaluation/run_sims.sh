@@ -3,12 +3,12 @@
 if [ "x$SIM" = "x1" ]; then
   #NO_NODES_VECTOR="10 11"
   #NO_NODES_VECTOR="10 11 12"
-  NO_NODES_VECTOR="10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25"
+  #NO_NODES_VECTOR="10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25"
   #NO_NODES_VECTOR="5"
   #NO_NODES_VECTOR="2 5 10"
   #NO_NODES_VECTOR="1 2 5 10 15 20 25 30"
   #NO_NODES_VECTOR="1 2"
-  #NO_NODES_VECTOR="1 2 3 4"
+  NO_NODES_VECTOR="1 2 3 4"
   #NO_NODES_VECTOR="1 2 4 6 8 10 12 14 16 18 20"
   #NO_NODES_VECTOR="1 5 10 15 20 25 30"
   #NO_NODES_VECTOR="1 2"
@@ -36,7 +36,7 @@ fi
 #TOSTOQUEUE="2 3 5 7 8 9"
 #TOSTOQUEUE="2 5 8 9"
 #TOSTOQUEUE="5 7 8 9"
-TOSTOQUEUE="8 9"
+TOSTOQUEUE="0 2"
 
 
 
@@ -55,7 +55,7 @@ PACKET_SIZE_VECTOR="1500"
 
 RATE_VECTOR="125"
 
-REP=20
+REP=1
 NUM=1
 
 if [ "x$SIM" = "x1" ]; then
@@ -66,11 +66,6 @@ else
 fi
 
 if [ "x$SIM" = "x1" ]; then
-#   CHANNEL_MODEL="shadowing11b tworayground01b"
-#   CHANNEL_MODEL="shadowing01b tworayground01b"
-#   CHANNEL_MODEL="shadowing11b"
-#   CHANNEL_MODEL="shadowing01b"
-#   CHANNEL_MODEL="tworayground01b"
 #    CHANNEL_MODEL="tworayground"
     CHANNEL_MODEL="shadowing"
 else

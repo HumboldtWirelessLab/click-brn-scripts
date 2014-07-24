@@ -27,7 +27,7 @@ for i in `ls -d ../[0-9]*`; do
 
   . $i/params
 
-  CHANNEL_MODEL=`echo $CHANNEL_MODEL | sed -e "s#real#0#g" -e "s#shadowing#1#g" -e "s#tworayground01b#2#g"`
+  CHANNEL_MODEL=`echo $CHANNEL_MODEL | sed -e "s#real#0#g" -e "s#shadowing#1#g" -e "s#tworayground#2#g"`
   PKT_TARGET=`echo $PKT_TARGET | sed -e "s#USE_BROADCAST#0#g" -e "s#USE_UNICAST#1#g"`
   TARGET=`echo $TARGET | sed -e "s#USE_BROADCAST#0#g" -e "s#USE_UNICAST#1#g"`
 
@@ -47,6 +47,6 @@ for i in `ls -d ../[0-9]*`; do
 
 done
 
-(cd $DIR; matlab -nosplash -nodesktop -nojvm -nodisplay -r "try,backoff_eval,catch,exit(1),end,exit(0)" 1> /dev/null)
+(cd $DIR;  matwrapper.sh "try,backoff_eval,catch,exit(1),end,exit(0)" 1> /dev/null)
 
 exit 0
