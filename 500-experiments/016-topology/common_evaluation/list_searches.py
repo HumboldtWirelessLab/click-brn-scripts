@@ -20,7 +20,7 @@ context = Et.iterparse(measurement_file, events=('end',))
 
 for event, elem in context:
     if elem.tag == 'DibadawnStartSearch':
-        print("  " + elem.get("searchId"))
+        print(elem.get("searchId"))
     elem.clear()
 
 
