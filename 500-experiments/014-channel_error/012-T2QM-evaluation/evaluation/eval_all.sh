@@ -38,9 +38,9 @@ for i in `ls -d ../[0-9]*`; do
   #SEED=1
   #RATE=125
   #TARGET=USE_BROADCAST
-  #CHANNEL_MODEL=shadowing11b
+  #CHANNEL_MODEL=shadowing
 
-  PARAMS="$NUM $NO_NODES $PACKETSIZE $TOS2QUEUEMAPPER_STRATEGY $RATE $TARGET $CHANNEL_MODEL"
+  PARAMS="$NUM $NO_NODES $PACKETSIZE $TOS2QUEUEMAPPER_STRATEGY $RATE $TARGET $CHANNEL_MODEL $QUEUEMAPPING $MACBOSCHEME"
 
   cat $i/evaluation/backoffusage.mat | awk -v params="$PARAMS" '{print params" "$0}' >> backoffusage.mat
   cat $i/evaluation/bovalues.mat | awk -v params="$PARAMS" '{print params" "$0}' >> bovalues.mat
