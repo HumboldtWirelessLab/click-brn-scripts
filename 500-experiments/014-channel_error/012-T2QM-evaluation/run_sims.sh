@@ -2,7 +2,7 @@
 
 if [ "x$SIM" = "x1" ]; then
   NO_NODES_MIN=2
-  NO_NODES_MAX=20
+  NO_NODES_MAX=2
   NO_NODES_STEP=1
   NO_NODES_VECTOR=`seq $NO_NODES_MIN $NO_NODES_STEP $NO_NODES_MAX`
 else
@@ -22,7 +22,7 @@ fi
 #define BACKOFF_STRATEGY_FLOODING                       10
 
 #TOSTOQUEUE="0 1 2 3 4 5 6 7 8 9"
-TOSTOQUEUE="0 2"
+TOSTOQUEUE="2"
 
 
 #define QUEUEMAPPING_NEXT_BIGGER   0
@@ -31,7 +31,8 @@ TOSTOQUEUE="0 2"
 #define QUEUEMAPPING_GRAVITATION   3
 #define QUEUEMAPPING_DIRECT        4
 
-QUEUEMAPPING="0 1 2 3 4"
+#QUEUEMAPPING="0 1 2 3 4"
+QUEUEMAPPING="0 1 2 4"
 
 #define QUEUEMAPPING_DIFFQUEUE_EXP     0  /* mul with 2 every step but also add 1 */
 #define QUEUEMAPPING_DIFFQUEUE_MUL     1
@@ -41,7 +42,8 @@ QUEUEMAPPING="0 1 2 3 4"
 #MAC_BACKOFF_SCHEME_EXPONENTIAL = 1
 #MAC_BACKOFF_SCHEME_FIBONACCI = 2
 
-MAC_BACKOFF_SCHEMES="1 2"
+#MAC_BACKOFF_SCHEMES="1 2"
+MAC_BACKOFF_SCHEMES="1"
 
 PACKET_SIZE_MIN=1500
 PACKET_SIZE_MAX=1500
@@ -98,16 +100,17 @@ for ttq in $TOSTOQUEUE; do
    echo "#define $target" > config.click
    echo "#define TOS2QUEUEMAPPER_MAC_BO_SCHEME $mbs" >> config.click
    echo "#define TOS2QUEUEMAPPER_STRATEGY $ttq" >> config.click
+   echo "#define TOS2QUEUEMAPPER_QUEUEMAPPING $qm" >> config.click
 
-   if [ $qm -eq 4 ]; then
+   if [ $qm -ne 4 ]; then    # Not direct
      if [ $mbs -eq 1 ]; then # exponential mac
        echo "#define TOS2QUEUEMAPPER_QUEUEMODE 0" >> config.click
        echo "#define TOS2QUEUEMAPPER_CWMINMAXMODE 0" >> config.click
-     else
+     else                    #fib
        echo "#define TOS2QUEUEMAPPER_QUEUEMODE 3" >> config.click
        echo "#define TOS2QUEUEMAPPER_CWMINMAXMODE 3" >> config.click
      fi
-   else
+   else # direct
      #use add with 0 diff
      echo "#define TOS2QUEUEMAPPER_QUEUEMODE 2" >> config.click
      echo "#define TOS2QUEUEMAPPER_CWMINMAXMODE 2" >> config.click
@@ -198,7 +201,7 @@ done
 
 rm -f nodes config.h backoff.des
 
-sh run_para_sim.sh
+run_para_sim.sh
 
 if [ "x$DISABLE_EVAL" != "x1" ]; then
   (cd evaluation; ./eval_all.sh)

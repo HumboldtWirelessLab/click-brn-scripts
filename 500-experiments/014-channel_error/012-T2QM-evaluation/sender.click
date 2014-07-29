@@ -81,7 +81,7 @@ sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 Script(
   wait 61,
   read wifidevice/tosq.stats,
-  read wifidevice/tosq.BOs,
+  read wifidevice/tosq.bos,
   read wifidevice/cst.stats,
   read sf.stats
   //read sys_info.systeminfo,
