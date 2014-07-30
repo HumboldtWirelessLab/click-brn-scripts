@@ -271,7 +271,7 @@ def draw_lines():
 				((nx, ny, nz), node_name) = node_dict[node_mac]
 				((px, py, pz), parent_name) = node_dict[parent_mac]
 	
-				print_link(parent_name, node_name, (px, py, pz), (nx, ny, nz), command_keys[idx], "S ")
+				print_link(parent_name, node_name, (px, py, pz), (nx, ny, nz), command_keys[idx], "T ")
 				plot.plot([nx, px], [ny, py], color="k", ls="-")
 
 			elif cmd == cmd_cross_edge:
@@ -280,7 +280,7 @@ def draw_lines():
 				((nx, ny, nz), node_name) = node_dict[node_mac]
 				((px, py, pz), neighbor_name) = node_dict[neighbor_mac]
 
-				print_link(node_name, neighbor_name, (nx, ny, nz), (px, py, pz), command_keys[idx], "C ")
+				print_link(neighbor_name, node_name, (px, py, pz), (nx, ny, nz), command_keys[idx], "C ")
 				plot.plot([nx, px], [ny, py], color="k", ls=":", linewidth="1")
 
 			elif cmd == cmd_invalid_cross_edge:
@@ -305,7 +305,7 @@ def print_link(adesc, bdesc, (ax, ay, az), (bx, by, bz), time, prefix):
 	apos = "({0},{1})".format(ax,ay)
 	bpos = "({0},{1})".format(bx,by)
 	link = "{0}--{1}".format(adesc, bdesc)
-	print(" {0} {1} {2:<38} > {3}--{4}".format(time, prefix, link, apos, bpos))
+	print(" {0:<10} {1} {2:<38} {3}--{4}".format(time, prefix, link, apos, bpos))
 
 def draw_nodes():
 	global current_command_key_idx
@@ -344,7 +344,7 @@ def draw_nodes():
 		plot.scatter(x, y, s=250, c="white")
 		plot.scatter(x, y, s=90, c="gray")
 		plot.text(x, y, label, horizontalalignment='center', verticalalignment='bottom',)
-		print("  {2} StartS: {0} => {1}".format(name, (x, y, z), command_keys[current_command_key_idx - 1]))
+		print("  {2} Start: {0} > {1}".format(name, (x, y, z), command_keys[current_command_key_idx - 1]))
 
 	print	
 
@@ -385,7 +385,6 @@ else:
 commands = read_measurement(file_path)
 command_keys = commands.keys()
 current_command_key_idx = 0
-print(commands)
 
 searchtreeEdges = extract_search_tree_edges(file_path)
 searchtreeEdges = translate_nodes_to_pos(searchtreeEdges, nodes)
