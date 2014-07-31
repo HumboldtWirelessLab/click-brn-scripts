@@ -5,10 +5,11 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
 
-#define TOS2QUEUEMAPPER_STRATEGY 11
+#define TOS2QUEUEMAPPER_STRATEGY 7
 
 #define BRNFEEDBACK
 
+#define CERR
 #define CST cst
 #define COOPCST
 #define COOPCST_STRING "device_wifi/cocst"

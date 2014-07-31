@@ -9,6 +9,7 @@
 
 #define BRNFEEDBACK
 
+#define CERR
 #define CST cst
 #define COOPCST
 #define COOPCST_STRING "device_wifi/cocst"
