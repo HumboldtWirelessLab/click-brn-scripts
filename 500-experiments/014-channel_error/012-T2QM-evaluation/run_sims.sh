@@ -2,7 +2,7 @@
 
 if [ "x$SIM" = "x1" ]; then
   NO_NODES_MIN=2
-  NO_NODES_MAX=2
+  NO_NODES_MAX=20
   NO_NODES_STEP=1
   NO_NODES_VECTOR=`seq $NO_NODES_MIN $NO_NODES_STEP $NO_NODES_MAX`
 else
@@ -22,7 +22,7 @@ fi
 #define BACKOFF_STRATEGY_FLOODING                       10
 
 #TOSTOQUEUE="0 1 2 3 4 5 6 7 8 9"
-TOSTOQUEUE="2"
+TOSTOQUEUE="0 2 5 7 9"
 
 
 #define QUEUEMAPPING_NEXT_BIGGER   0
@@ -53,7 +53,7 @@ PACKET_SIZE_VECTOR=`seq $PACKET_SIZE_MIN $PACKET_SIZE_STEP $PACKET_SIZE_MAX`
 
 RATE_VECTOR="125"
 
-REP=1
+REP=10
 NUM=1
 
 if [ "x$SIM" = "x1" ]; then
@@ -64,7 +64,7 @@ else
 fi
 
 if [ "x$SIM" = "x1" ]; then
-#    CHANNEL_MODEL="tworayground"
+    #CHANNEL_MODEL="tworayground"
     CHANNEL_MODEL="shadowing"
 else
   CHANNEL_MODEL="real"
@@ -116,6 +116,10 @@ for ttq in $TOSTOQUEUE; do
      echo "#define TOS2QUEUEMAPPER_CWMINMAXMODE 2" >> config.click
      echo "#define TOS2QUEUEMAPPER_QUEUEVAL 0" >> config.click
      echo "#define TOS2QUEUEMAPPER_CWMINMAXVAL 0" >> config.click
+     #echo "#define TOS2QUEUEMAPPER_QUEUEMODE 0" >> config.click
+     #echo "#define TOS2QUEUEMAPPER_CWMINMAXMODE 0" >> config.click
+     #echo "#define TOS2QUEUEMAPPER_QUEUEVAL 1" >> config.click
+     #echo "#define TOS2QUEUEMAPPER_CWMINMAXVAL 7" >> config.click
    fi
 
    for non in $NO_NODES_VECTOR ; do

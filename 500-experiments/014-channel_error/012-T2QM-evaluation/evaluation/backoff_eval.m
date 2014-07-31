@@ -25,20 +25,24 @@ sim_duration = 60;
 
 print=1;
 a=load('backoffusage.mat','-ASCII');
-%a=load('backoffusage_20130606.mat','-ASCII');
+%a=load('backoffusage-20140729.mat','-ASCII');
 
 all_ps=unique(a(:,PACKETSIZE));
 cmodel=unique(a(:,CHANNELMODEL));
 configs=unique(a(:,[TTQM_STRATEGY QUEUEMAPPING MACBOSCHEME]),'rows')
-configs=configs(find(configs(:,3)==1),:)
-%configs=configs([ 2 3],:)
+
+%configs=configs(find(configs(:,3)==2),:)
+%configs=configs(find((configs(:,1)==7)|(configs(:,1)==0)),:)
+
+%configs=configs([1 2 3 4 6 7 8 9 11],:)
+%configs=configs([1 7 8 9 11],:)
 
 tqmmodes=unique(configs(:,1));
 
-%all_targets=unique(a(:,TARGET));
-all_targets=[1];
 
-plot_cols=['r';'m';'k';'b';'c';'y';'r';'m';'k';'b';'c';'y'];
+all_targets=unique(a(:,TARGET));
+
+plot_cols=['r';'m';'k';'b';'c';'g';'y';'r';'m';'k';'b';'c';'y'];
 
 schemes = {'old 802.11','direct','max. tp','busy aware','target pkt loss','learning','target diff rx tx busy','neighbours','const','tx aware','flooding'};
 queuemap_str = {'bigger','smaller','prob','grav','direct'};
@@ -48,9 +52,9 @@ mac_schemes_str = {'default','exp','fib'}
 scheme_labels = {};
 
 
-%for ii = 1:size(tqmmodes, 1)
-%  scheme_labels = union(scheme_labels, schemes{tqmmodes(ii)+1}, 'stable');
-%end
+for ii = 1:size(configs,1)
+  scheme_labels = union(scheme_labels, strcat(schemes{configs(ii,1)+1},' - ',queuemap_str{configs(ii,2)+1},' - ', mac_schemes_str{configs(ii,3)+1}), 'stable');
+end
 
 
 plot_bo = 1;
@@ -95,7 +99,7 @@ for ps_i = 1:size(all_ps,1)
       size(data)
 
 
-      rep = 1;%size(unique(data(:,NUM)),1) / (size(configs,1) * size(no_nodes,1)); %repetitions
+      rep = size(unique(data(:,NUM)),1) / (size(configs,1) * size(no_nodes,1)); %repetitions
       nodes_tp = zeros(size(configs,1), size(no_nodes,1), max_nodes * rep);
       nodes_tp(:,:,:) = nan;
 
@@ -255,14 +259,14 @@ for ps_i = 1:size(all_ps,1)
         set(gca, 'XTick', [2,5,10,15,20,25,30]);
 
         if (with_leading_zero == 1)
-          fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.png');
+          fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',num2str(all_ps(ps_i)), '.png');
           saveas(h1, fname{1} ,'png');
-          fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.eps');
+          fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',num2str(all_ps(ps_i)), '.eps');
           saveas(h1, fname{1}, 'epsc');
         else
-          fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.png');
+          fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',num2str(all_ps(ps_i)), '.png');
           saveas(h1, fname{1} ,'png');
-          fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.eps');
+          fname=strcat('sum_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',num2str(all_ps(ps_i)), '.eps');
           saveas(h1, fname{1}, 'epsc');
         end
       end
@@ -278,20 +282,21 @@ for ps_i = 1:size(all_ps,1)
         xlabel('No. Nodes');
         %legend(findobj(gca,'Tag','Box'),'off','max. Throughput','channelload aw.','target packetloss','learning','diff rxtx busy', 'location', 'southeast');
         legend(findobj(gca,'Tag','Box'),scheme_labels, 'location', 'southeast');
-        ylim([0.7 1]);
+        %ylim([0.7 1]);
+        ylim([min(min(jfn))*0.95 1]);
         grid on;
         %set(gca, 'XTick', [no_nodes]);
         set(gca, 'XTick', [1,5,10,15,20,25,30]);
 
         if (with_leading_zero == 1)
-          fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.png');
+          fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',num2str(all_ps(ps_i)), '.png');
           saveas(h3, fname{1} ,'png');
-          fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.eps');
+          fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',num2str(all_ps(ps_i)), '.eps');
           saveas(h3, fname{1}, 'epsc');
         else
-          fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.png');
+          fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',num2str(all_ps(ps_i)), '.png');
           saveas(h3, fname{1} ,'png');
-          fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.eps');
+          fname=strcat('jfi_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',num2str(all_ps(ps_i)), '.eps');
           saveas(h3, fname{1}, 'epsc');
         end
       end
@@ -319,14 +324,14 @@ for ps_i = 1:size(all_ps,1)
         set(gca, 'XTick', [2,5,10,15,20,25,30]);
 
         if (with_leading_zero == 1)
-          fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.png');
+          fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',num2str(all_ps(ps_i)), '.png');
           saveas(h4, fname{1} ,'png');
-          fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i), '.eps');
+          fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',num2str(all_ps(ps_i)), '.eps');
           saveas(h4, fname{1}, 'epsc');
         else
-          fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.png');
+          fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',num2str(all_ps(ps_i)), '.png');
           saveas(h4, fname{1} ,'png');
-          fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i), '.eps');
+          fname=strcat('avg_col_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',num2str(all_ps(ps_i)), '.eps');
           saveas(h4, fname{1}, 'epsc');
         end
       end
@@ -372,14 +377,14 @@ for ps_i = 1:size(all_ps,1)
         set(gca, 'XTick', [2,5,10,15,20,25,30]);
 
         if (with_leading_zero == 1)
-          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i),'.png');
+          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',num2str(all_ps(ps_i)),'.png');
           saveas(h5, fname{1} ,'png');
-          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',ps_string(ps_i),'.eps');
+          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_0',num2str(all_ps(ps_i)),'.eps');
           saveas(h5, fname{1}, 'epsc');
         else
-          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i),'.png');
+          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',num2str(all_ps(ps_i)),'.png');
           saveas(h5, fname{1} ,'png');
-          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',ps_string(ps_i),'.eps');
+          fname=strcat('node_tp_', target_string(all_targets(tar_i)+1) , '_channelmodel_', cm_string(cmodel(cm_i)+1),'_ps_',num2str(all_ps(ps_i)),'.eps');
           saveas(h5, fname{1}, 'epsc');
         end
       end
