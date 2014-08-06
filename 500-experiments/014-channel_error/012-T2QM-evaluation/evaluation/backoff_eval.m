@@ -24,17 +24,21 @@ tqm_string={ 'off';'on'};
 sim_duration = 60;
 
 print=1;
-a=load('backoffusage.mat','-ASCII');
-%a=load('backoffusage-20140729.mat','-ASCII');
+if ( ~(exist('a','var') ))
+  disp('load data...')
+  a=load('backoffusage.mat','-ASCII');
+  %a=load('backoffusage-20140801-b.mat','-ASCII');
+end
 
 all_ps=unique(a(:,PACKETSIZE));
 cmodel=unique(a(:,CHANNELMODEL));
 configs=unique(a(:,[TTQM_STRATEGY QUEUEMAPPING MACBOSCHEME]),'rows')
 
-%configs=configs(find(configs(:,3)==2),:)
-%configs=configs(find((configs(:,1)==7)|(configs(:,1)==0)),:)
+%configs=configs(find((configs(:,1)==0) | (configs(:,2)==1) ),:) %stand vs smaller
+%configs=configs(find((configs(:,1)==0) | (configs(:,1)==2) ),:) %stand vs max tp
+configs=configs(find((configs(:,1)==0) | (configs(:,2)==2) ),:) %stand vs prob
 
-%configs=configs([1 2 3 4 6 7 8 9 11],:)
+%configs=configs([1 2 3 5 8 11 12] ,:)
 %configs=configs([1 7 8 9 11],:)
 
 tqmmodes=unique(configs(:,1));
