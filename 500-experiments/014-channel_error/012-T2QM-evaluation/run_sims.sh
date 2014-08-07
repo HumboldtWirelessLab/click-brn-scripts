@@ -2,7 +2,7 @@
 
 if [ "x$SIM" = "x1" ]; then
   NO_NODES_MIN=2
-  NO_NODES_MAX=20
+  NO_NODES_MAX=10
   NO_NODES_STEP=2
   NO_NODES_VECTOR=`seq $NO_NODES_MIN $NO_NODES_STEP $NO_NODES_MAX`
 else
@@ -52,10 +52,12 @@ PACKET_SIZE_VECTOR=`seq $PACKET_SIZE_MIN $PACKET_SIZE_STEP $PACKET_SIZE_MAX`
 
 RATE_VECTOR="125"
 
-REP=10
+REP=1
 
-if [ -f $CONFIGFILE ]; then
-. $CONFIGFILE
+if [ "x$CONFIGFILE" != "x" ]; then
+  if [ -f $CONFIGFILE ]; then
+  . $CONFIGFILE
+  fi
 fi
 
 NUM=1
@@ -130,12 +132,6 @@ for ttq in $TOSTOQUEUE; do
 
     cat backoff.mes.tmpl | sed "s#NONODES#$non#g" > backoff.mes
 
-    echo -n "" > simpleflow.ctl
-    let LAST_SENDER=non+1
-    for i in `seq 2 $LAST_SENDER`; do
-      echo "1  sk$i   ath0  write sf  add_flow  sk$i:eth  00:00:00:00:00:01 0  1500 0 30000 true 1 0" >> simpleflow.ctl
-    done
-
     for p_s in $PACKET_SIZE_VECTOR ; do
 
      for rate in $RATE_VECTOR ; do
@@ -207,7 +203,7 @@ done
 #tar cvfj all_sim.tar.bz2 `seq $NUM` > /dev/null 2>&1
 #rm -rf `seq $NUM`
 
-rm -f nodes config.h backoff.des
+rm -f nodes config.h backoff.des sender.click simpleflow.ctl
 
 run_para_sim.sh
 
