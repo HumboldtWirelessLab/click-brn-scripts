@@ -4,7 +4,7 @@ SIMULATOR=ns2
   RADIO=tworayground
 FORGEINNODES=no
 
-TIME=61
+TIME=601
 
 #NODEPLACEMENTFILE=placement.default
   NODEPLACEMENTFILE=placements/scd.plm
