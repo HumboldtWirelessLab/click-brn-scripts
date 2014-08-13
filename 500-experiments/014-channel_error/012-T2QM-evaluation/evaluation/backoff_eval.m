@@ -27,16 +27,17 @@ print=1;
 if ( ~(exist('a','var') ))
   disp('load data...')
   a=load('backoffusage.mat','-ASCII');
-  %a=load('backoffusage-20140801-b.mat','-ASCII');
+  %a=load('2014-08-07-shad/backoffusage.mat','-ASCII');
 end
 
 all_ps=unique(a(:,PACKETSIZE));
 cmodel=unique(a(:,CHANNELMODEL));
 configs=unique(a(:,[TTQM_STRATEGY QUEUEMAPPING MACBOSCHEME]),'rows')
 
+%configs=configs(find((configs(:,1)==0) | (configs(:,2)==0) ),:) %stand vs bigger
 %configs=configs(find((configs(:,1)==0) | (configs(:,2)==1) ),:) %stand vs smaller
 %configs=configs(find((configs(:,1)==0) | (configs(:,1)==2) ),:) %stand vs max tp
-configs=configs(find((configs(:,1)==0) | (configs(:,2)==2) ),:) %stand vs prob
+%configs=configs(find((configs(:,1)==0) | (configs(:,2)==2) ),:) %stand vs prob
 
 %configs=configs([1 2 3 5 8 11 12] ,:)
 %configs=configs([1 7 8 9 11],:)
