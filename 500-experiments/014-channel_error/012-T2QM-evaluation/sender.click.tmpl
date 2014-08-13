@@ -24,7 +24,7 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 Idle()
   -> brn_clf::Classifier( 0/BRN_PORT_FLOW)  //Simpleflow
-  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 12 PACKETSIZE_PARAMS 0 60000 true 1 1000", FLOWSTARTRANDOM 50, DEBUG 2)
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 0 PACKETSIZE_PARAMS 0 60000 true 1 1000", FLOWSTARTRANDOM 50, DEBUG 2)
   -> BRN2EtherEncap(USEANNO true)
   -> device_wifi;
 
@@ -48,5 +48,6 @@ Script(
   read device_wifi/wifidevice/tosq.stats,
   read device_wifi/wifidevice/tosq.bos,
   read device_wifi/wifidevice/cst.stats,
-  read sf.stats
+  read sf.stats,
+  write device_wifi/lp_suppressor.active0 true
 );
