@@ -1,3 +1,0 @@
-sample_nr,ap_tp,ap_fp,ap_tn,ap_fn,br_unique_tp,br_unique_fp,br_unique_tn,br_unique_fn,br_all_tp,br_all_fp,br_all_tn,br_all_fn,num_edges,num_vertexes,num_theo_br,num_theo_ap,num_all_pr_br,num_unique_pr_br,num_pr_ap,num_runs
-1,2858,15909,324291,24442,4213,257934,63666066,16787,6669,288563,127559437,35331,30450,175,21000,27300,295232,262147,18767,2100
-2,1825,18185,334615,12875,2668,256283,63676117,9932,4434,289108,127575692,20766,30450,175,12600,14700,293542,258951,20010,2100
