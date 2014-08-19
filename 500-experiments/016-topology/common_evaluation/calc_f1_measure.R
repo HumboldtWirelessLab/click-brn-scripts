@@ -40,11 +40,24 @@ ap_fn = ap_tp_fn - ap_tp
 ap_fp_tn = (length(V(g)) - nrow(theo_ap)) * num_of_runs
 ap_tn = ap_fp_tn - ap_fp
 
+ap_precision = ap_tp / (ap_tp + ap_fp)
+ap_recall = ap_tp / (ap_tp + ap_fn)
+ap_fallout = ap_fp / (ap_fp + ap_tn)
+ap_falsenegative = ap_fn / (ap_fn + ap_tp)
+ap_accuracy = (ap_tn + ap_tp) / (ap_fn + ap_tn + ap_fp + ap_tp)
+ap_f_measure = (2 * ap_precision * ap_recall) / (ap_precision + ap_recall)
+
 result = list()
 result = rbind(result, c("ap_tp", ap_tp))
 result = rbind(result, c("ap_fp", ap_fp))
 result = rbind(result, c("ap_tn", ap_tn))
 result = rbind(result, c("ap_fn", ap_fn))
+result = rbind(result, c("ap_precision", ap_precision))
+result = rbind(result, c("ap_recall", ap_recall))
+result = rbind(result, c("ap_fallout", ap_fallout))
+result = rbind(result, c("ap_falsenegative", ap_falsenegative))
+result = rbind(result, c("ap_accuracy", ap_accuracy))
+result = rbind(result, c("ap_f_measure", ap_f_measure))
 
 
 #
@@ -61,10 +74,23 @@ br_unique_fn    = br_unique_tp_fn - br_unique_tp
 br_unique_fp_tn = num_of_runs * (length(E(g)) - nrow(theo_br))
 br_unique_tn    = br_unique_fp_tn - br_unique_fp
 
+br_unique_precision = br_unique_tp / (br_unique_tp + br_unique_fp)
+br_unique_recall = br_unique_tp / (br_unique_tp + br_unique_fn)
+br_unique_fallout = br_unique_fp / (br_unique_fp + br_unique_tn)
+br_unique_falsenegative = br_unique_fn / (br_unique_fn + br_unique_tp)
+br_unique_accuracy = (br_unique_tn + br_unique_tp) / (br_unique_fn + br_unique_tn + br_unique_fp + br_unique_tp)
+br_unique_f_measure = (2 * br_unique_precision * br_unique_recall) / (br_unique_precision + br_unique_recall)
+
 result = rbind(result, c("br_unique_tp", br_unique_tp))
 result = rbind(result, c("br_unique_fp", br_unique_fp))
 result = rbind(result, c("br_unique_tn", br_unique_tn))
 result = rbind(result, c("br_unique_fn", br_unique_fn))
+result = rbind(result, c("br_unique_precision", br_unique_precision))
+result = rbind(result, c("br_unique_recall", br_unique_recall))
+result = rbind(result, c("br_unique_fallout", br_unique_fallout))
+result = rbind(result, c("br_unique_falsenegative", br_unique_falsenegative))
+result = rbind(result, c("br_unique_accuracy", br_unique_accuracy))
+result = rbind(result, c("br_unique_f_measure", br_unique_f_measure))
 
 
 #
@@ -82,10 +108,23 @@ br_all_fn    = br_all_tp_fn - br_all_tp
 br_all_fp_tn = num_of_runs * (2 * length(E(g)) - 2 * theo_br_count)
 br_all_tn    = br_all_fp_tn - br_all_fp
 
+br_all_precision = br_all_tp / (br_all_tp + br_all_fp)
+br_all_recall = br_all_tp / (br_all_tp + br_all_fn)
+br_all_fallout = br_all_fp / (br_all_fp + br_all_tn)
+br_all_falsenegative = br_all_fn / (br_all_fn + br_all_tp)
+br_all_accuracy = (br_all_tn + br_all_tp) / (br_all_fn + br_all_tn + br_all_fp + br_all_tp)
+br_all_f_measure = (2 * br_all_precision * br_all_recall) / (br_all_precision + br_all_recall)
+
 result = rbind(result, c("br_all_tp", br_all_tp))
 result = rbind(result, c("br_all_fp", br_all_fp))
 result = rbind(result, c("br_all_tn", br_all_tn))
 result = rbind(result, c("br_all_fn", br_all_fn))
+result = rbind(result, c("br_all_precision", br_all_precision))
+result = rbind(result, c("br_all_recall", br_all_recall))
+result = rbind(result, c("br_all_fallout", br_all_fallout))
+result = rbind(result, c("br_all_falsenegative", br_all_falsenegative))
+result = rbind(result, c("br_all_accuracy", br_all_accuracy))
+result = rbind(result, c("br_all_f_measure", br_all_f_measure))
 
 
 result = rbind(result, c("num_edges", length(E(g))))
