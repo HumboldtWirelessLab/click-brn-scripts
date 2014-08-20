@@ -3,7 +3,7 @@ SIMULATOR=ns2
 RADIO=shadowing
 FORGEINNODES=no
 
-TIME=600
+TIME=60100
 
 NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=simpleflow.mes

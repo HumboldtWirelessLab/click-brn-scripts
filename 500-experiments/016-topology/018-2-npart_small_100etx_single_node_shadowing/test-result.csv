@@ -1,0 +1,2 @@
+sample_nr,ap_tp,ap_fp,ap_tn,ap_fn,br_unique_tp,br_unique_fp,br_unique_tn,br_unique_fn,br_all_tp,br_all_fp,br_all_tn,br_all_fn,num_edges,num_vertexes,num_theo_br,num_theo_ap,num_all_pr_br,num_unique_pr_br,num_pr_ap,num_runs
+1,3839,13815,299085,50761,5501,101124,63732576,105799,18795,256123,127411277,203805,30450,175,111300,54600,274918,106625,17654,2100
