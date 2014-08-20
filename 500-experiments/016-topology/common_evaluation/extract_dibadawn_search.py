@@ -25,21 +25,20 @@ measurement_file = options.measurement_file
 
 context = Et.iterparse(measurement_file, events=('start',))
 
-extracted_root = Et.Element("simpleflow")
-
+print("<simpleflow>")
 for event, elem in context:
     if elem.tag == 'DibadawnStartSearch' and elem.get("searchId") == search_id:
-        extracted_root.append(elem)
+        sys.stdout.write("  " + Et.tostring(elem).decode('utf-8'))
     elif elem.tag == 'CrossEdgeDetected' and elem.get("searchId") == search_id:
-        extracted_root.append(elem)
+        sys.stdout.write("  " + Et.tostring(elem).decode('utf-8'))
     elif elem.tag == 'SearchTree' and elem.get("searchId") == search_id:
-        extracted_root.append(elem)
+        sys.stdout.write("  " + Et.tostring(elem).decode('utf-8'))
     elif elem.tag == 'Bridge' and elem.get("searchId") == search_id:
-        extracted_root.append(elem)
+        sys.stdout.write("  " + Et.tostring(elem).decode('utf-8'))
     elif elem.tag == 'topology_info' and elem.get("extra_data") == search_id:
-        extracted_root.append(elem)
+        sys.stdout.write("  " + Et.tostring(elem).decode('utf-8'))
     elem.clear()
+print("</simpleflow>")
 
-print(Et.tostring(extracted_root).decode('utf-8'))
 
 del context
