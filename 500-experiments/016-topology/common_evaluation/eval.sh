@@ -31,9 +31,9 @@ $DIR/extract_nodes.py -p ${RESULTDIR}
 # Create runs.csv
 # Create bridges.csv
 #
-PRE_LINKS_PATH=${RESULTDIR}/links_extract.xml
+
 LINKS_PATH=${RESULTDIR}/links.csv
-SEARCHES=${RESULTDIR}/searches.xml
+PRE_LINKS_PATH=${RESULTDIR}/links_extract.xml
 ${DIR}/extract_dibadawn_links.py -f ${RESULTDIR}/measurement.xml > ${PRE_LINKS_PATH}
 xsltproc -o ${LINKS_PATH} ${DIR}/dibadawn_links_to_csv.xslt ${PRE_LINKS_PATH}
 
