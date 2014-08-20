@@ -40,15 +40,17 @@ xsltproc -o ${SEARCHES} ${DIR}/group_searches.xslt ${RESULTDIR}/measurement.xml
 xsltproc -o ${RESULTDIR}/articulation_points.csv ${DIR}/dibadawn_articulation_points.xslt ${SEARCHES}
 xsltproc -o ${RESULTDIR}/bridges_all.csv ${DIR}/dibadawn_all_bridges.xslt ${SEARCHES}
 xsltproc -o ${RESULTDIR}/bridges_unique_per_search.csv ${DIR}/dibadawn_unique_bridges_per_search.xslt ${SEARCHES}
-xsltproc -o ${RESULTDIR}/runs.csv ${DIR}/dibadawn_runs.xslt ${RESULTDIR}/measurement.xml
+
+# Count runs
+COUNT_OF_RUNS=$(grep -e "^<DibadawnStartSearch" ${RESULTDIR}/measurement.xml | wc -l)
+echo -e "\"num_of_runs\"\n${COUNT_OF_RUNS}" > ${RESULTDIR}/runs.csv
+
 xsltproc -o ${RESULTDIR}/cycles.csv ${DIR}/dibadawn_asym_cycle_ration.xslt ${RESULTDIR}/measurement.xml
  
-
 cd ${RESULTDIR}
 ../../common_evaluation/calc_articulation_points.R ${LINKS_PATH} ${ETXLIMIT} > ${RESULTDIR}/theoretical_articulation_points.csv
 ../../common_evaluation/calc_bridges.R ${LINKS_PATH} ${ETXLIMIT} > ${RESULTDIR}/theoretical_bridges.csv
 ../../common_evaluation/calc_f1_measure.R
-
 
 exit 2
 
