@@ -36,7 +36,12 @@ LINKS_PATH=${RESULTDIR}/links.csv
 SEARCHES=${RESULTDIR}/searches.xml
 ${DIR}/extract_dibadawn_links.py -f ${RESULTDIR}/measurement.xml > ${PRE_LINKS_PATH}
 xsltproc -o ${LINKS_PATH} ${DIR}/dibadawn_links_to_csv.xslt ${PRE_LINKS_PATH}
-xsltproc -o ${SEARCHES} ${DIR}/group_searches.xslt ${RESULTDIR}/measurement.xml 
+
+SEARCHES=${RESULTDIR}/searches.xml
+TOPO_PATH=${RESULTDIR}/topo_info.xml
+$DIR/extract_topology_info.py -f ${RESULTDIR}/measurement.xml > ${TOPO_PATH}
+xsltproc -o ${SEARCHES} ${DIR}/group_searches.xslt ${TOPO_PATH}
+
 xsltproc -o ${RESULTDIR}/articulation_points.csv ${DIR}/dibadawn_articulation_points.xslt ${SEARCHES}
 xsltproc -o ${RESULTDIR}/bridges_all.csv ${DIR}/dibadawn_all_bridges.xslt ${SEARCHES}
 xsltproc -o ${RESULTDIR}/bridges_unique_per_search.csv ${DIR}/dibadawn_unique_bridges_per_search.xslt ${SEARCHES}
