@@ -14,7 +14,7 @@ cat("use input file", links_file_path, "\n", file=stderr())
 
 if(length(args) > 1)
 {
-    metric_threshold = args[2]
+    metric_threshold = as.double(args[2])
     cat("use ETX metric limit", metric_threshold, "\n", file=stderr())
 }else
 {
