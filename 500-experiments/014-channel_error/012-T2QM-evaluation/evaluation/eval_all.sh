@@ -27,7 +27,7 @@ for i in `ls -d ../[0-9]*`; do
 
   . $i/params
 
-  CHANNEL_MODEL=`echo $CHANNEL_MODEL | sed -e "s#real#0#g" -e "s#shadowing#1#g" -e "s#tworayground01b#2#g"`
+  CHANNEL_MODEL=`echo $CHANNEL_MODEL | sed -e "s#real#0#g" -e "s#shadowing#1#g" -e "s#tworayground#2#g"`
   PKT_TARGET=`echo $PKT_TARGET | sed -e "s#USE_BROADCAST#0#g" -e "s#USE_UNICAST#1#g"`
   TARGET=`echo $TARGET | sed -e "s#USE_BROADCAST#0#g" -e "s#USE_UNICAST#1#g"`
 
@@ -38,15 +38,15 @@ for i in `ls -d ../[0-9]*`; do
   #SEED=1
   #RATE=125
   #TARGET=USE_BROADCAST
-  #CHANNEL_MODEL=shadowing11b
+  #CHANNEL_MODEL=shadowing
 
-  PARAMS="$NUM $NO_NODES $PACKETSIZE $TOS2QUEUEMAPPER_STRATEGY $RATE $TARGET $CHANNEL_MODEL"
+  PARAMS="$NUM $NO_NODES $PACKETSIZE $TOS2QUEUEMAPPER_STRATEGY $RATE $TARGET $CHANNEL_MODEL $QUEUEMAPPING $MACBOSCHEME"
 
   cat $i/evaluation/backoffusage.mat | awk -v params="$PARAMS" '{print params" "$0}' >> backoffusage.mat
   cat $i/evaluation/bovalues.mat | awk -v params="$PARAMS" '{print params" "$0}' >> bovalues.mat
 
 done
 
-(cd $DIR; matlab -nosplash -nodesktop -nojvm -nodisplay -r "try,backoff_eval,catch,exit(1),end,exit(0)" 1> /dev/null)
+(cd $DIR;  matwrapper.sh "try,backoff_eval,catch,exit(1),end,exit(0)" 1> /dev/null)
 
 exit 0

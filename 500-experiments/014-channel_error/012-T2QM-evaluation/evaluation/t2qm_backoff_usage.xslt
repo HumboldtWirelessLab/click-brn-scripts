@@ -22,8 +22,8 @@
 	<xsl:value-of select="@value" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="@usage" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="@exp"/><xsl:text>,</xsl:text>
-    <xsl:value-of select="@last_usage"/><xsl:text>,</xsl:text>
-        <xsl:value-of select="$result"/><xsl:value-of select="$newline" />
+	<xsl:value-of select="@last_usage"/><xsl:text>,</xsl:text>
+	<xsl:value-of select="$result"/><xsl:value-of select="$newline" />
 	<xsl:apply-templates />
     </xsl:template>
 </xsl:stylesheet>

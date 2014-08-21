@@ -33,6 +33,7 @@ keyserver		:: KeyServer(NODEID id, PROTOCOL_TYPE "CLIENT-DRIVEN", WEPENCAP wifid
  */
 rawdevice
 	-> [2]wifidev_ap[6]
+	-> wifioutq::NotifierQueue(100)
 	-> rawdevice;
 
 
