@@ -47,24 +47,24 @@
 				</xsl:variable>
 				
 				
-				<xsl:value-of select="concat('&quot;', $node_a, '&quot;', ',')" />
-				<xsl:value-of select="concat('&quot;', $node_b, '&quot;', ',')" />
+				<xsl:value-of select="concat($node_a, ',')" />
+				<xsl:value-of select="concat($node_b, ',')" />
 
 				<xsl:choose>
 					<xsl:when test="$node_a_rx = 0 or $node_b_rx = 0 or $node_a_tx = 0 or $node_b_tx = 0">
-						<xsl:value-of select="'&quot;99999&quot;,'" />
+						<xsl:value-of select="'99999,'" />
 					</xsl:when>
 
 					<xsl:otherwise>
 					<xsl:variable name="metric" select="format-number(1 div (($node_b_rx div $node_a_tx) * ($node_a_rx div $node_b_tx)), '0.###')" />
-					<xsl:value-of select="concat('&quot;',$metric,'&quot;', ',')" />
+					<xsl:value-of select="concat($metric, ',')" />
 				</xsl:otherwise>
 				</xsl:choose>
 				
-				<xsl:value-of select="concat('&quot;', $node_a_rx, '&quot;', ',')" />
-				<xsl:value-of select="concat('&quot;', $node_a_tx, '&quot;', ',')" />
-				<xsl:value-of select="concat('&quot;', $node_b_rx, '&quot;', ',')" />
-				<xsl:value-of select="concat('&quot;', $node_b_tx, '&quot;')" />
+				<xsl:value-of select="concat($node_a_rx, ',')" />
+				<xsl:value-of select="concat($node_a_tx, ',')" />
+				<xsl:value-of select="concat($node_b_rx, ',')" />
+				<xsl:value-of select="$node_b_tx" />
 				<xsl:value-of select="$newline" />
 
 			</xsl:for-each>    
