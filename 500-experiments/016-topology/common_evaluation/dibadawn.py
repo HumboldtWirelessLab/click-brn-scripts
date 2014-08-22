@@ -154,12 +154,12 @@ def extract_topology_bridges(file_path):
 
 	return edges
 
-def read_measurement(file_path):
+def read_measurement(file_path, specific_search=None):
 	command_dict = dict()
 
 	context = Et.iterparse(file_path, events=('start',))
 	for event, elem in context:
-		if elem.tag == 'DibadawnStartSearch':
+		if elem.tag == 'DibadawnStartSearch' and (specific_search == None or elem.get("searchId") == specific_search):
 			node = elem.get("node")
 			time = float(elem.get("time"))
 			
@@ -167,7 +167,7 @@ def read_measurement(file_path):
 			cmds.append((cmd_dibadawn_start, {'node': node}))
 			command_dict[time] = cmds
 
-		elif elem.tag == 'SearchTree':
+		elif elem.tag == 'SearchTree' and (specific_search == None or elem.get("searchId") == specific_search):
 			node = elem.get("node")
 			parent = elem.get("parent")
 			time = float(elem.get("time"))
@@ -176,7 +176,7 @@ def read_measurement(file_path):
 			cmds.append( (cmd_search_tree, {'node': node, 'parent': parent}) )
 			command_dict[time] = cmds
 
-		elif elem.tag == 'CrossEdgeDetected':
+		elif elem.tag == 'CrossEdgeDetected' and (specific_search == None or elem.get("searchId") == specific_search):
 			node = elem.get("node")
 			neighbor = elem.get("neighbor")
 			time = float(elem.get("time"))
@@ -190,7 +190,7 @@ def read_measurement(file_path):
 			cmds.append( (cmd, {'node': node, 'neighbor': neighbor}) )
 			command_dict[time] = cmds
 
-		elif elem.tag == 'Bridge':
+		elif elem.tag == 'Bridge' and (specific_search == None or elem.get("searchId") == specific_search):
 			nodeA = elem.get("nodeA")
 			nodeB = elem.get("nodeB")
 			time = float(elem.get("time"))
@@ -353,6 +353,7 @@ optParser = OptionParser()
 optParser.add_option("-p", "--path", dest="path", type="string", help="Path to to dir, where to find xml-file")
 optParser.add_option("-f", "--file", dest="measurement_file", type="string", help="measurement file")
 optParser.add_option("-o", "--output", dest="output_path", type="string", help="write into file")
+optParser.add_option("-s", "--search", dest="specific_search", type="string", help="specific search to show")
 optParser.add_option("-m", "--macs", dest="is_show_macs", action="store_true", help="Draw macs. (False)", default=False)
 optParser.add_option("-c", "--coordinates", dest="is_show_coordinates", action="store_true", help="Draw coordinates. (False)", default=False)
 (options, args) = optParser.parse_args()
@@ -382,7 +383,7 @@ if None != options.measurement_file:
 else:
 	file_path = os.path.join(options.path, "measurement.xml")
 
-commands = read_measurement(file_path)
+commands = read_measurement(file_path, options.specific_search)
 command_keys = commands.keys()
 current_command_key_idx = 0
 
