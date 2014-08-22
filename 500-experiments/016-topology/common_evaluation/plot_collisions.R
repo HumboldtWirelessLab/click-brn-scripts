@@ -1,6 +1,7 @@
 #!/usr/bin/Rscript
 
 library(ggplot2)
+library(methods)
 
 df = read.csv(file="collisions.csv")
 

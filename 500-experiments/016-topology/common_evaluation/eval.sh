@@ -26,16 +26,18 @@ $DIR/extract_nodes.py -p ${RESULTDIR}
 
 
 #
-# Create links.csv
+# Create links_filtered.csv
+# Create links_raw.csv
 # Create articulation_points.csv
 # Create runs.csv
 # Create bridges.csv
 #
-
-LINKS_PATH=${RESULTDIR}/links.csv
-PRE_LINKS_PATH=${RESULTDIR}/links_extract.xml
-${DIR}/extract_dibadawn_links.py -f ${RESULTDIR}/measurement.xml > ${PRE_LINKS_PATH}
-xsltproc -o ${LINKS_PATH} ${DIR}/dibadawn_links_to_csv.xslt ${PRE_LINKS_PATH}
+LINKS_EXTRACED_PATH=${RESULTDIR}/links_extract.xml
+${DIR}/extract_dibadawn_links.py -f ${RESULTDIR}/measurement.xml > ${LINKS_EXTRACED_PATH}
+LINKS_RAW_PATH=${RESULTDIR}/links_raw.csv
+xsltproc -o ${LINKS_RAW_PATH} ${DIR}/dibadawn_links_to_csv.xslt ${LINKS_EXTRACED_PATH}
+LINKS_PATH=${RESULTDIR}/links_filtered.csv
+$DIR/filter_links.py -f ${LINKS_RAW_PATH} -e 100 > ${LINKS_PATH}
 
 SEARCHES=${RESULTDIR}/searches.xml
 TOPO_PATH=${RESULTDIR}/topo_info.xml
@@ -53,8 +55,8 @@ echo -e "\"num_of_runs\"\n${COUNT_OF_RUNS}" > ${RESULTDIR}/runs.csv
 xsltproc -o ${RESULTDIR}/cycles.csv ${DIR}/dibadawn_asym_cycle_ration.xslt ${RESULTDIR}/measurement.xml
  
 cd ${RESULTDIR}
-../../common_evaluation/calc_articulation_points.R ${LINKS_PATH} ${ETXLIMIT} > ${RESULTDIR}/theoretical_articulation_points.csv
-../../common_evaluation/calc_bridges.R ${LINKS_PATH} ${ETXLIMIT} > ${RESULTDIR}/theoretical_bridges.csv
+../../common_evaluation/calc_articulation_points.R ${LINKS_PATH} > ${RESULTDIR}/theoretical_articulation_points.csv
+../../common_evaluation/calc_bridges.R ${LINKS_PATH} > ${RESULTDIR}/theoretical_bridges.csv
 ../../common_evaluation/calc_f1_measure.R
 
 exit 2
