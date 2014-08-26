@@ -30,7 +30,7 @@ for f in $DUMP_FILES; do
     pkt_recv=0
   fi
 
-  echo -n "$NODEPRE: "
+  echo -n "$NODEPRE ($SENDER ($SENDERMAC) -> $RECEIVER): "
   # eval pdr
   pdr=`expr $pkt_recv \* 100 / \( $TIME \* 10 \)`
   if [ $pdr -gt 50 ]; then
