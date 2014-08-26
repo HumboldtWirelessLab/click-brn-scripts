@@ -186,7 +186,7 @@ for x, y, z, name, mac in nodes:
 for x, y, z, name, mac in nodes:
 	plot.scatter(x, y, s=30, c="gray")
 
-file_path_links = os.path.join(options.path, "links.csv")
+file_path_links = os.path.join(options.path, "links_filtered.csv")
 links = extract_links(file_path_links)
 if options.etx_metric_limit:
 	links_filtered = filter_by_metric(links, options.etx_metric_limit)
