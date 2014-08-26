@@ -25,6 +25,7 @@ dev.off()
 pdf("asym_crossedges_per_time_cutted.pdf")
 
 p = ggplot(df_first_searches)
+p = p + theme_set(theme_bw())
 p = p + labs(title= sprintf("Asym. Querverbindungen pro %d Sekunden ", breite), x="Zeit [s]", y="Anzahl der Querverbindungen")
 p = p + geom_histogram(aes(x=time), binwidth=30)
 p = p + theme_set(theme_bw())

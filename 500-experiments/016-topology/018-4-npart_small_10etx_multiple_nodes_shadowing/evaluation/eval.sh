@@ -19,7 +19,8 @@ case "$SIGN" in
 esac
 
 LINKS_PATH=${RESULTDIR}/links_filtered.csv
-ETXLIMIT=100
+ETXLIMIT=10
+
 
 cd ${RESULTDIR}
 

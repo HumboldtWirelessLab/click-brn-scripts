@@ -79,7 +79,4 @@ Idle
 
 Script(
   write device_wifi/link_stat.probes "",
-  wait 110,
-  read sf.stats,
-
 )

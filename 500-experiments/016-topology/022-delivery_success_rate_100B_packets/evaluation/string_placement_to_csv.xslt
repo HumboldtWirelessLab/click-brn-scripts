@@ -15,11 +15,11 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="flowstats[txflow/@extra_data != 'dont_use']">
+    <xsl:template match="flowstats/rxflow[../txflow/@extra_data != 'dont_use']">
         <xsl:variable name="packet_count"> 
             <xsl:choose>
-                <xsl:when test="rxflow/@packet_count > 0">
-                    <xsl:value-of select="rxflow/@packet_count" />
+                <xsl:when test="@packet_count > 0">
+                    <xsl:value-of select="@packet_count" />
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:value-of select="0" />
@@ -27,8 +27,8 @@
             </xsl:choose>
         </xsl:variable>
 
-        <xsl:value-of select="concat(@node, ',')" />
-        <xsl:value-of select="concat(txflow/@extra_data, ',')" />
+        <xsl:value-of select="concat(../@node, ',')" />
+        <xsl:value-of select="concat(../txflow/@extra_data, ',')" />
         <xsl:value-of select="concat($packet_count, ',')" />
          <xsl:value-of select="/simpleflow/flowstats[@node='00-00-00-00-00-01']/txflow/@packet_count" />
         <xsl:value-of select="$newline" />
