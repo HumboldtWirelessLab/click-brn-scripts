@@ -9,20 +9,26 @@ def check_args():
 	global nodes_per_step
 	global step_distance
 	global step_count
+	global cmd_line
+	global num_measurements
+
+	cmd_line = ' '.join(sys.argv[1:])
 
 	optParser = OptionParser()
 	optParser.add_option("-n", "--nodes", dest="node_num", type="int", help="Number of nodes per step.")
 	optParser.add_option("-s", "--step_distance", dest="step_distance", type="float", help="Distance of one single step.")
 	optParser.add_option("-c", "--step_count", dest="step_count", type="int", help="Number of steps.")
+	optParser.add_option("-i", "--iterations", dest="num_measurements", type="int", help="Number of iterations (measurements).")
 	(options, args) = optParser.parse_args()
 
-	if not options.node_num or not options.step_distance or not options.step_count:
+	if not options.node_num or not options.step_distance or not options.step_count or not options.num_measurements:
 		optParser.print_help()
 		sys.exit(-1)
 
 	nodes_per_step = options.node_num
 	step_distance = options.step_distance
 	step_count = options.step_count
+	num_measurements = options.num_measurements
 
 	
 def setup_extra_data(fh):
@@ -60,7 +66,14 @@ def setup_sk1(fh):
 	fh.write("0	sk1		ath0	write	sf	extra_data	dont_use\n")
 	fh.write("\n")
 	fh.write("# real flow\n")
-	fh.write("0.001	sk1		ath0	write	sf	add_flow	sk1:eth FF-FF-FF-FF-FF-FF 1000 200 0 100000 true 1 0\n")
+
+	duration = 100
+	pause = 5
+	start_time = 0.001
+	for i in range(0, num_measurements):
+		start_time =  start_time + (duration + pause)
+		fh.write("{0}	sk1		ath0	write	sf	add_flow	sk1:eth FF-FF-FF-FF-FF-FF 100 100 0 100000 true 1 0\n".format(start_time))
+	fh.write("{0}	ALL		ath0	read	sf	stats	\n".format(start_time +  duration + (pause / 2)))
 
 
 def setup_plm(fh):
@@ -80,6 +93,7 @@ def setup_plm(fh):
 check_args()
 
 fh = open("simpleflow.ctl", "w")
+fh.write("#Created with " + cmd_line + "\n\n")
 fh.write("#TIME	NODE(S)	DEVICE	MODE	ELEMENT	HANDLER		VALUE\n\n")
 setup_extra_data(fh)
 setup_dummies(fh)
