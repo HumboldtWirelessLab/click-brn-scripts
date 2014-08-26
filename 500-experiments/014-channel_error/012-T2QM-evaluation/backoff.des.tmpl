@@ -3,11 +3,15 @@ SIMULATOR=ns2
 #RADIO=RADIOMODELL
 FORGEINNODES=no
 
-TIME=32
+DISABLE_NAM=1
+
+TIME=62
+#TIME=302
 
 #NODEPLACEMENTFILE=placement.plm
-	NODEPLACEMENTFILE=placements/grid-cluster.plm
 #NODEPLACEMENTFILE=placements/hn.plm
+
+NODEPLACEMENTFILE=placements/grid-cluster.plm
 
 NODETABLE=backoff.mes
 NODEPLACEMENT=file
@@ -21,7 +25,8 @@ RESULTDIR=WORKDIR
 
 #EVALUATION="evaluation/eval.sh dump_compression status_compression"
 #EVALUATION="embrace_xml evaluation/eval.sh"
-  EVALUATION="embrace_xml evaluation/eval.sh dump_compression status_compression"
+
+EVALUATION="embrace_xml evaluation/eval.sh dump_compression status_compression"
 
 EVALUATIONSDIR=WORKDIR/evaluation
 EVALUATIONSDIRPOSTFIX=_evaluation
@@ -32,3 +37,5 @@ LOS=no
 
 CONTROLSOCKET=yes
 #CONTROLFILE=simpleflow.ctl
+
+USE_SINGLE_CLICKFILE=1

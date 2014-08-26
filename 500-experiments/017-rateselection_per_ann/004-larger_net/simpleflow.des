@@ -4,11 +4,11 @@ RADIO=shadowing
 #RADIO=tworayground
 FORGEINNODES=no
 
-TIME=3000
+TIME=10589
 
 NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=simpleflow.mes
-NODEPLACEMENT=file
+NODEPLACEMENT=grid
 NODEPLACEMENTOPTS="relative"
 FIELDSIZE=RXRANGE
 
@@ -17,7 +17,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATION="embrace_xml ../common_evaluation/eval.sh"
+EVALUATION="embrace_xml evaluation/eval.sh"
 
 GPS=no
 NOTICE=no

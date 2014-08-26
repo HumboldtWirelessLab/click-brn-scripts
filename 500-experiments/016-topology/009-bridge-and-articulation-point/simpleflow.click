@@ -14,6 +14,9 @@
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
 
+#define LINKPROBE_PERIOD   1000
+#define LINKPROBE_TAU      50000
+
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
@@ -35,11 +38,11 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> topo_detect::TopologyDetection(TOPOLOGYINFO topo_info, NODEIDENTITY id, LINKTABLE lt, DEBUG 4)
+-> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 4)
 -> SetTimestamp()
 -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
--> SetTXRate(RATE 2, TRIES 1)
+-> SetTXRate(RATE 2, TRIES 7)
 -> NotifierQueue(500)
 -> [2]device_wifi;
 
@@ -58,5 +61,6 @@ Idle -> [0]device_wifi;
 
 Script(
   wait 260,
-  read topo_detect.local_topo_info
+  read topo_detect.local_topo_info,
+  read lt.links,
 );

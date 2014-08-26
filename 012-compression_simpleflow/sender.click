@@ -32,6 +32,7 @@ Idle
   -> cnt_tx_comp::Counter()
   -> wifien::WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTXRate(RATE 2, TRIES 1)
+  -> wifioutq::NotifierQueue(10)
   -> rawdevice;
 
 pdc

@@ -54,7 +54,12 @@ if [ "$MODE" = "sim" ]; then
 fi
 
 # get collision count
-COLS=`bzcat -q $RESULTDIR/receiver.tr.bz2 | grep COL | wc -l`
+if [ -f $RESULTDIR/receiver.tr.bz2 ]; then
+  COLS=`bzcat -q $RESULTDIR/receiver.tr.bz2 | grep COL | wc -l`
+else
+  COLS=`cat $RESULTDIR/receiver.tr | grep COL | wc -l`
+fi
+
 echo -n ",$COLS" >> $EVALUATIONSDIR/result.txt
 
 RES=`cat $EVALUATIONSDIR/result.txt`
