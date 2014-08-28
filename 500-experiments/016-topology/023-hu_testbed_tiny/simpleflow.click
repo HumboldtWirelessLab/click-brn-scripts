@@ -21,13 +21,12 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
-device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+//device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+device_wifi::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 topo_info::TopologyInfo(DEBUG 4);
-
-//rs::RandomSeed(12);
 
 device_wifi
   -> Label_brnether::Null()
