@@ -96,6 +96,14 @@ for ttq in $TOSTOQUEUE; do
 
  for qm in $FINQUEUEMAPPING; do
 
+ if [ "x$BO_WIN" = "x" ]; then
+   FIN_BO_WIN=0
+ else
+   FIN_BO_WIN=$BO_WIN
+ fi
+
+ for bowinsz in $FIN_BO_WIN; do
+
  for cm in $CHANNEL_MODEL; do
 
   cp backoff.des.tmpl backoff.des
@@ -127,6 +135,10 @@ for ttq in $TOSTOQUEUE; do
      #echo "#define TOS2QUEUEMAPPER_CWMINMAXMODE 0" >> config.click
      #echo "#define TOS2QUEUEMAPPER_QUEUEVAL 1" >> config.click
      #echo "#define TOS2QUEUEMAPPER_CWMINMAXVAL 7" >> config.click
+   fi
+
+   if [ $bowinsz -ne 0 ]; then
+     echo "#define BOCONST_VALUE $bowinsz" >> config.click
    fi
 
    for non in $NO_NODES_VECTOR ; do
@@ -169,6 +181,7 @@ for ttq in $TOSTOQUEUE; do
               echo "REP=$r" >> $NUM/params
               echo "QUEUEMAPPING=$qm" >> $NUM/params
               echo "MACBOSCHEME=$mbs" >> $NUM/params
+              echo "FIXEDBO=$bowinsz" >> $NUM/params
               cp monitor $NUM
             fi
 
@@ -195,6 +208,7 @@ for ttq in $TOSTOQUEUE; do
   rm config.click
 
  #ende channel model
+ done
  done
  done
 done

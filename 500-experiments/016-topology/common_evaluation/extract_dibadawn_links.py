@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-
 import xml.etree.ElementTree as Et
 import sys
 from optparse import OptionParser
@@ -16,15 +15,23 @@ if not options.measurement_file:
 	sys.exit(-1)
 measurement_file = options.measurement_file
 
-context = Et.iterparse(measurement_file, events=('start',))
+context = Et.iterparse(measurement_file, events=('start','end'))
 
-print("<simpleflow>")
+extracted_root = Et.Element("simpleflow")
+
+inside_of_link_stat = False
 for event, elem in context:
-	if elem.tag == 'DibadawnLinkStat':
-		print("  " + Et.tostring(elem).decode('utf-8'))
+	if elem.tag == 'DibadawnLinkStat' and event == 'start':
+		inside_of_link_stat = True
+		continue
+	elif elem.tag == 'DibadawnLinkStat' and event == 'end':
+		extracted_root.append(elem)
+		inside_of_link_stat = False
+		continue
 	
-	elem.clear()
-print("</simpleflow>")
+	if not inside_of_link_stat:
+		elem.clear()
 
+print(Et.tostring(extracted_root).decode('utf-8'))
 
 del context

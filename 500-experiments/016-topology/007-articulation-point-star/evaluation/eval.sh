@@ -22,7 +22,7 @@ esac
 #
 # Create nodes.csv
 #
-$DIR/../../bin/extract_nodes.py -p ${RESULTDIR}
+$DIR/../../common_evaluation/extract_nodes.py -p ${RESULTDIR}
 if [ "$?" -ne 0 ]
 then
   echo "Failed to extract nodes.csv"
