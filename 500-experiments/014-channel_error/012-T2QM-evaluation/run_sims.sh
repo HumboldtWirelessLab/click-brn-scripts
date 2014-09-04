@@ -71,7 +71,8 @@ fi
 
 if [ "x$SIM" = "x1" ]; then
     #CHANNEL_MODEL="tworayground"
-    CHANNEL_MODEL="shadowing"
+    #CHANNEL_MODEL="shadowing"
+    CHANNEL_MODEL="tworayground shadowing"
 else
   CHANNEL_MODEL="real"
 fi

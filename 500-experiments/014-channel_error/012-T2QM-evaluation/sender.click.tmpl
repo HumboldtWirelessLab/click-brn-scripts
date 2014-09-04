@@ -7,6 +7,10 @@
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
+#define CERR
+#define COOPCST
+#define COOPCST_STRING "device_wifi/cocst"
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
@@ -24,7 +28,7 @@ device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceadd
 
 Idle()
   -> brn_clf::Classifier( 0/BRN_PORT_FLOW)  //Simpleflow
-  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 0 PACKETSIZE_PARAMS 0 60000 true 1 1000", FLOWSTARTRANDOM 50, DEBUG 2)
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 0 PACKETSIZE_PARAMS 0 60000 true 5 1000", FLOWSTARTRANDOM 50, DEBUG 2)
   -> BRN2EtherEncap(USEANNO true)
   -> device_wifi;
 

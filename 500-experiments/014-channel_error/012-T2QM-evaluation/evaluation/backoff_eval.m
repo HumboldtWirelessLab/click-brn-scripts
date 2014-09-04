@@ -31,28 +31,35 @@ if ( ~(exist('a','var') ))
 end
 
 all_ps=unique(a(:,PACKETSIZE));
-cmodel=unique(a(:,CHANNELMODEL));
+cmodel=unique(a(:,CHANNELMODEL))
 configs=unique(a(:,[TTQM_STRATEGY QUEUEMAPPING MACBOSCHEME]),'rows')
 
 %configs=configs(find((configs(:,1)==0) | (configs(:,2)==0) ),:) %stand vs bigger
 %configs=configs(find((configs(:,1)==0) | (configs(:,2)==1) ),:) %stand vs smaller
+configs=configs(find((configs(:,1)==0) | (configs(:,2)==2) ),:) %stand vs prob
 %configs=configs(find((configs(:,1)==0) | (configs(:,1)==2) ),:) %stand vs max tp
-%configs=configs(find((configs(:,1)==0) | (configs(:,2)==2) ),:) %stand vs prob
+%configs=configs(find((configs(:,1)==0) | (configs(:,1)==14) ),:) %stand vs prob
+
+%configs=configs(find((configs(:,1)==0) | (configs(:,1)==2) ),:) %stand vs prob
+
+configs=configs(find((configs(:,3)==1)),:) %stand
 
 %configs=configs([1 2 3 5 8 11 12] ,:)
 %configs=configs([1 7 8 9 11],:)
 
 tqmmodes=unique(configs(:,1));
 
+cmodel=[1];
+
 
 all_targets=unique(a(:,TARGET));
 
 plot_cols=['r';'m';'k';'b';'c';'g';'y';'r';'m';'k';'b';'c';'y'];
 
-schemes = {'old 802.11','direct','max. tp','busy aware','target pkt loss','learning','target diff rx tx busy','neighbours','const','tx aware','flooding'};
+schemes = {'old 802.11','direct','max. tp','busy aware','target pkt loss','learning','target diff rx tx busy','neighbours','const','tx aware','flooding','11','12','13','mshare'};
 queuemap_str = {'bigger','smaller','prob','grav','direct'};
 queuemapdiff_str = {'exp','mul','add','fib'};
-mac_schemes_str = {'default','exp','fib'}
+mac_schemes_str = {'default','exp','fib'};
 
 scheme_labels = {};
 
@@ -100,6 +107,7 @@ for ps_i = 1:size(all_ps,1)
       
       jfn = zeros(size(no_nodes,1),size(configs,1));
 
+      size(a)
       data=a(find((a(:,PACKETSIZE) == all_ps(ps_i)) & (a(:,CHANNELMODEL) == cmodel(cm_i)) & (a(:,TARGET) == all_targets(tar_i))), :);
       size(data)
 
@@ -114,7 +122,7 @@ for ps_i = 1:size(all_ps,1)
                                  (data(:,QUEUEMAPPING) == configs(conf_i,2)) & ...
                                  (data(:,MACBOSCHEME) == configs(conf_i,3))),:);
         
-        size(all_nodes_data)
+        %size(all_nodes_data)
 
         for non_i = 1:size(no_nodes,1)
           nodes_tp_index = 1;
@@ -256,7 +264,7 @@ for ps_i = 1:size(all_ps,1)
         title('Sum. Throughput');
         ylabel('Sum. Throughput (kbit/s)')
         xlabel('No. Nodes');
-        ylim([650 925]);
+        ylim([800 1025]);
         %legend(findobj(gca,'Tag','Box'),'off','max. Throughput','channelload aw.','target packetloss','learning','diff rxtx busy', 'location', 'southeast');
         legend(findobj(gca,'Tag','Box'),scheme_labels, 'location', 'southeast');
         grid on;

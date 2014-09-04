@@ -23,7 +23,7 @@ echo -n "" > bovalues.mat
 
 for i in `ls -d ../[0-9]*`; do
 
-  (cd $i; sh ./eval_again.sh)
+  #(cd $i; sh ./eval_again.sh)
 
   . $i/params
 
