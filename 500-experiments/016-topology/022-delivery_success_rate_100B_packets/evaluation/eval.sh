@@ -18,7 +18,9 @@ case "$SIGN" in
       ;;
 esac
 
-
+xsltproc ${DIR}/string_placement_to_csv.xslt ${RESULTDIR}/measurement.xml >  ${RESULTDIR}/result.csv
+cd ${RESULTDIR}
+Rscript ../evaluation/plot.R
 
 echo "Done"
 exit 2

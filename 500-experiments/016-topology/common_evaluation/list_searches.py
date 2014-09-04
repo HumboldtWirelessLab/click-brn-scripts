@@ -16,11 +16,11 @@ if not options.measurement_file:
     sys.exit(-1)
 measurement_file = options.measurement_file
 
-context = Et.iterparse(measurement_file, events=('end',))
+context = Et.iterparse(measurement_file, events=('start',))
 
 for event, elem in context:
     if elem.tag == 'DibadawnStartSearch':
-        print("  " + elem.get("searchId"))
+        print(elem.get("searchId"))
     elem.clear()
 
 

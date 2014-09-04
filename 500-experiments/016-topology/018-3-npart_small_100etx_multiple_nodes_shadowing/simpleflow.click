@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
 #define PRIO_QUEUE
-//#define RAWDUMP
+#define RAWDUMP
 #define ENABLE_DSR_DEBUG
 
 #define BRNFEEDBACK
@@ -37,11 +37,13 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 1, ORIGIN_FORWARD_DELAY true, IS_DETECTION_PERIODICALLY true, RANDOM_START_DELAY_MS 10000, DETECTION_INTERVAL_MS 30000, USE_LINK_STAT true, MAX_HOPS 12)
+//-> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 0, ORIGIN_FORWARD_DELAY true, IS_DETECTION_PERIODICALLY false, RANDOM_START_DELAY_MS 20000, DETECTION_INTERVAL_MS 30000, USE_LINK_STAT true, MAX_HOPS 12)
+-> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 0, ORIGIN_FORWARD_DELAY true, IS_DETECTION_PERIODICALLY true, RANDOM_START_DELAY_MS 20000, DETECTION_INTERVAL_MS 30000, USE_LINK_STAT true, MAX_HOPS 12)
 -> SetTimestamp()
 -> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
 -> SetTXRate(RATE 2, TRIES 7)
+-> SetRTS(true)
 -> NotifierQueue(500)
 -> [2]device_wifi;
 
@@ -62,12 +64,11 @@ Script(
   write device_wifi/link_stat.probes "",
   read topo_detect.config,
   
-  wait 200, // ... for training
-  write topo_detect.config DEBUG 1, // to get XML start elements
+  write topo_detect.config DEBUG 6, // to get XML start elements
   write topo_detect.config PRINT_AFTER_RUN true,  // print topo info after any search is done 
 
 
-  wait 330, // ... for testing
+  wait 27030, // ... for testing
   write topo_detect.stop_periotically_detection_smoothly,  // timer for triggering periodically searches will not be refreshed
 
   wait 30,  // wait for last search executions

@@ -1,0 +1,2 @@
+#TIME	NODE(S)	DEVICE	MODE	ELEMENT		HANDLER		VALUE
+#0	sk1	ath0	write	topo_detect	config		IS_DETECTION_PERIODICALLY true
