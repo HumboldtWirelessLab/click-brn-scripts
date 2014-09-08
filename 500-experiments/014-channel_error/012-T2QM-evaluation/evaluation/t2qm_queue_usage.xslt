@@ -20,8 +20,7 @@
     <xsl:template match="queue">
 	<xsl:value-of select="../../@node" /><xsl:text>,</xsl:text>
 	<xsl:value-of select="@index" /><xsl:text>,</xsl:text>
-	<xsl:value-of select="@usage" /><xsl:text>,</xsl:text>
-	<xsl:value-of select="$result"/><xsl:value-of select="$newline" />
+	<xsl:value-of select="@usage"/><xsl:value-of select="$newline" />
 
 	<xsl:apply-templates />
     </xsl:template>

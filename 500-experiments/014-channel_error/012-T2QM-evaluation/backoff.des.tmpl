@@ -4,6 +4,7 @@ SIMULATOR=ns2
 FORGEINNODES=no
 
 DISABLE_NAM=1
+DISABLE_TR=1
 
 TIME=62
 #TIME=302
@@ -23,10 +24,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 
-#EVALUATION="evaluation/eval.sh dump_compression status_compression"
-#EVALUATION="embrace_xml evaluation/eval.sh"
-
-EVALUATION="embrace_xml evaluation/eval.sh dump_compression status_compression"
+EVALUATION="embrace_xml channelstats_xml evaluation/eval.sh dump_compression status_compression"
 
 EVALUATIONSDIR=WORKDIR/evaluation
 EVALUATIONSDIRPOSTFIX=_evaluation
