@@ -42,14 +42,14 @@ brn_clf[0]
 -> BRN2EtherEncap(USEANNO true)
 -> SetTXRate(RATE 2, TRIES 7)
 -> NotifierQueue(500)
--> [2]device_wifi;
+-> device_wifi;
 
 brn_clf[1] -> Discard;
 
 device_wifi -> BRN2EtherDecap() -> brn_clf;
 
 #ifdef BRNFEEDBACK
-device_wifi[3]
+device_wifi
   -> Discard;
 #endif
 
