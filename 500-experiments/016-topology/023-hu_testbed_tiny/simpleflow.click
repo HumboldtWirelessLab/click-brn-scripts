@@ -13,6 +13,7 @@
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
+#include "device/rawwifidev.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -42,14 +43,14 @@ brn_clf[0]
 -> BRN2EtherEncap(USEANNO true)
 -> SetTXRate(RATE 2, TRIES 7)
 -> NotifierQueue(500)
--> [2]device_wifi;
+-> device_wifi;
 
 brn_clf[1] -> Discard;
 
 device_wifi -> BRN2EtherDecap() -> brn_clf;
 
 #ifdef BRNFEEDBACK
-device_wifi[3]
+device_wifi
   -> Discard;
 #endif
 
