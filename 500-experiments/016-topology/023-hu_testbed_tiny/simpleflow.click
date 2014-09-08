@@ -1,18 +1,9 @@
 #define DEBUGLEVEL 2
 
-#define PRIO_QUEUE
 #define RAWDUMP
-#define ENABLE_DSR_DEBUG
-
-#define BRNFEEDBACK
-
-#define CST cst
-#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
-#define CERR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
-#include "device/wifidev_linkstat.click"
 #include "device/rawwifidev.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
