@@ -46,18 +46,14 @@ brn_clf[0]
 
 brn_clf[1] -> Discard;
 
-device_wifi[1] -> BRN2EtherDecap() -> brn_clf;
-device_wifi[2] -> Discard;
+device_wifi -> BRN2EtherDecap() -> brn_clf;
 
 #ifdef BRNFEEDBACK
 device_wifi[3]
   -> Discard;
 #endif
 
-Idle -> [1]device_wifi;
-Idle -> [0]device_wifi;
-
-sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+Idle -> device_wifi;
 
 Script(
   write device_wifi/link_stat.probes "",
