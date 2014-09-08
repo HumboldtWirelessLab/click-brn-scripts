@@ -18,9 +18,8 @@
     </xsl:template>
 
     <xsl:template match="bos">
-    <xsl:value-of select="../../@node" /><xsl:text>,</xsl:text>
-    <xsl:value-of select="@values" /><xsl:text>,</xsl:text>
-    <xsl:value-of select="$result"/><xsl:value-of select="$newline" />
+    <xsl:value-of select="../../@node"/><xsl:text>,</xsl:text>
+    <xsl:value-of select="@values"/><xsl:value-of select="$newline" />
   <xsl:apply-templates />
     </xsl:template>
 </xsl:stylesheet>

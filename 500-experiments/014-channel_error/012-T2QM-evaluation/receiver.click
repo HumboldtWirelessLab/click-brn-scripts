@@ -14,6 +14,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 Idle
   -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
+  -> main_suppressor::Suppressor()
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
   -> BRN2PrintWifi("OKPacket", TIMESTAMP true)
@@ -53,8 +54,7 @@ filter_tx[1]
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
-/*Script(
- wait 5,
- read sys_info.systeminfo,
- read id.version
-);*/
+Script(
+  wait 61,
+  write main_suppressor.active0 false
+);

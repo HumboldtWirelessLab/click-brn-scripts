@@ -1,6 +1,10 @@
 #define DEBUGLEVEL 2
 
 #define RAWDUMP
+#define ENABLE_DSR_DEBUG
+
+#define BRNFEEDBACK
+
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
