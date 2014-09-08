@@ -1,18 +1,10 @@
 #define DEBUGLEVEL 2
 
-#define PRIO_QUEUE
 #define RAWDUMP
-#define ENABLE_DSR_DEBUG
-
-#define BRNFEEDBACK
-
-#define CST cst
-#define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
-#define CERR
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
-#include "device/wifidev_linkstat.click"
+#include "device/rawwifidev.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -42,22 +34,18 @@ brn_clf[0]
 -> BRN2EtherEncap(USEANNO true)
 -> SetTXRate(RATE 2, TRIES 7)
 -> NotifierQueue(500)
--> [2]device_wifi;
+-> device_wifi;
 
 brn_clf[1] -> Discard;
 
-device_wifi[1] -> BRN2EtherDecap() -> brn_clf;
-device_wifi[2] -> Discard;
+device_wifi -> BRN2EtherDecap() -> brn_clf;
 
 #ifdef BRNFEEDBACK
-device_wifi[3]
+device_wifi
   -> Discard;
 #endif
 
-Idle -> [1]device_wifi;
-Idle -> [0]device_wifi;
-
-sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
+Idle -> device_wifi;
 
 Script(
   write device_wifi/link_stat.probes "",
