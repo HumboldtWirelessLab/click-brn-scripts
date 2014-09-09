@@ -2,6 +2,9 @@
 
 #include "flooding_config.h"
 
+#define FOREIGNRXSTATS
+
+#define FLOODING_DEBUG 4
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define RAWDUMP
 
