@@ -2,9 +2,11 @@
 
 . $CONFIGFILE
 
-rm -f $EVALUATIONSDIR/measurement.xml
+#rm -f $EVALUATIONSDIR/measurement.xml
 
-rm -f $EVALUATIONSDIR/flooding_info/floodingforwardstats.csv $EVALUATIONSDIR/flooding_info/floodingforwardstats.mat $EVALUATIONSDIR/flooding_info/floodingsmallstats.csv
+#rm -f $EVALUATIONSDIR/flooding_info/floodingforwardstats.csv $EVALUATIONSDIR/flooding_info/floodingforwardstats.mat $EVALUATIONSDIR/flooding_info/floodingsmallstats.csv
+
+rm $RESULTDIR/*.*
 
 if [ -f $RESULTDIR/measurement.log.bz2 ]; then
   rm -f $RESULTDIR/measurement.log;

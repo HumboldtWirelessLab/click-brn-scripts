@@ -42,7 +42,7 @@ if [ "x$SIM" = "x1" ]; then
 
   if [ "x$GRID" = "x1" ]; then
     echo -n "" > $NODESFILE
-    for i in `seq 1 36`; do
+    for i in `seq 1 100`; do
       echo "sk$i" >> $NODESFILE
     done
     MAX_PLACEMENT=1

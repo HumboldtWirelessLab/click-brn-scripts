@@ -7,7 +7,7 @@ rs_minstrel::BrnMinstrelRate(DEBUG 2);                               //2
 rs_madwifi::BrnMadwifiRate(PERIOD 55, DEBUG 2);                      //3
 rs_autorate::BrnAutoRateFallback();                                  //4
 
-rs::SetTXPowerRate(RATESELECTIONS "rs_madwifi rs_autorate rs_fix rs_minstrel", STRATEGY 2, RT brnrates, POWER 24, OFFSET 0, STATSINTERVAL 100, DEBUG 4);
+rs::SetTXPowerRate(RATESELECTIONS "rs_madwifi rs_autorate rs_fix rs_minstrel", STRATEGY 4, RT brnrates, POWER 24, OFFSET 0, STATSINTERVAL 100, DEBUG 4);
 
 //rs::MadwifiRate(RT rates);
 //rs::AutoRateFallback(RT rates);
