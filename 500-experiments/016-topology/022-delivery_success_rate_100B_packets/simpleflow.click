@@ -10,7 +10,7 @@
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 #define CERR
 
-#define DEFAULT_DATARATE    12
+#define DEFAULT_DATARATE    2
 #define DEFAULT_DATARETRIES 1
 
 #include "brn/helper.inc"

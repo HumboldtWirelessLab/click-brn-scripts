@@ -75,7 +75,7 @@ function hText = xticklabel_rotate(XTick,rot,varargin)
 
 % check to see if xticklabel_rotate has already been here (no other reason for this to happen)
 if isempty(get(gca,'XTickLabel')),
-    error('xticklabel_rotate : can not process, either xticklabel_rotate has already been run or XTickLabel field has been erased')  ;
+    %error('xticklabel_rotate : can not process, either xticklabel_rotate has already been run or XTickLabel field has been erased')  ;
 end
 
 % if no XTickLabel AND no XTick are defined use the current XTickLabel
@@ -214,7 +214,7 @@ else
             origpos(3)-(min(leftdist,labyorigpos(1)))+labyorigpos(1)-largest ...
             origpos(4)-(longest)+get(gca,'FontSize')]  
 end
-set(gca,'position',newpos)                      ;
+%set(gca,'position',newpos)                      ;
 
 % readjust position of text labels after resize of plot
 set(hText,'units','data')                       ;

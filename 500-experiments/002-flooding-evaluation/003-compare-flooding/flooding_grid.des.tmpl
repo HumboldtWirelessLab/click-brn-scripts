@@ -13,14 +13,14 @@ NODEPLACEMENTFILE=placement.txt
 NODETABLE=flooding.mes
 NODEPLACEMENT=grid
 NODEPLACEMENTOPTS="relative"
-FIELDSIZE=RXRANGE
+FIELDSIZE=MAXRXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
-EVALUATION="evaluation/copy_tmp.sh flooding_info_xml channelstats_xml"
+EVALUATION="evaluation/copy_tmp.sh flooding_info_xml channelstats_xml flow_info evaluation/eval_post.sh"
 
 GPS=no
 NOTICE=no

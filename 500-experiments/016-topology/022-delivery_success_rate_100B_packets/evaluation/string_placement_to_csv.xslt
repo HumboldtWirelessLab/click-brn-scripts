@@ -9,6 +9,8 @@
         <xsl:value-of select="concat('node',',')" />
         <xsl:value-of select="concat('distance',',')" />
         <xsl:value-of select="concat('received_packages', ',')" />
+        <xsl:value-of select="concat('sample_size', ',')" />
+        <xsl:value-of select="concat('packet_size', ',')" />
         <xsl:value-of select="'real_sent'" />
         <xsl:value-of select="$newline" />
 
@@ -27,10 +29,14 @@
             </xsl:choose>
         </xsl:variable>
 
+        <xsl:variable name="sample_size" select="count(/simpleflow/flowstats[@node='00-00-00-00-00-01']/txflow)" /> 
+
         <xsl:value-of select="concat(../@node, ',')" />
         <xsl:value-of select="concat(../txflow/@extra_data, ',')" />
         <xsl:value-of select="concat($packet_count, ',')" />
-         <xsl:value-of select="/simpleflow/flowstats[@node='00-00-00-00-00-01']/txflow/@packet_count" />
+        <xsl:value-of select="concat($sample_size, ',')" />
+        <xsl:value-of select="concat(@packet_size, ',')" />
+        <xsl:value-of select="/simpleflow/flowstats[@node='00-00-00-00-00-01']/txflow/@packet_count" />
         <xsl:value-of select="$newline" />
     </xsl:template>
 

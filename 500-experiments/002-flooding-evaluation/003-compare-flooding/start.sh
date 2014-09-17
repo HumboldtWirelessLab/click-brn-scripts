@@ -21,6 +21,10 @@ fi
 
 NUM=1
 
+if [ "x$REPETITIONS" = "x" ]; then
+  REPETITIONS=1
+fi
+
 if [ "x$DATARATE" = "x" ]; then
   echo "Set DATARATE. Use DATARATE=x ./start.sh"
   exit 1
@@ -38,7 +42,7 @@ if [ "x$SIM" = "x1" ]; then
 
   if [ "x$GRID" = "x1" ]; then
     echo -n "" > $NODESFILE
-    for i in `seq 1 36`; do
+    for i in `seq 1 100`; do
       echo "sk$i" >> $NODESFILE
     done
     MAX_PLACEMENT=1
@@ -111,7 +115,7 @@ done
 echo "Script( wait $FLOWTIME," > flooding_script.click
 
 echo "  read flooding/fl.stats," >> flooding_script.click
-echo "  read flooding/fl.forward_table," >> flooding_script.click
+echo "  read flooding/fl_database.forward_table," >> flooding_script.click
 echo "  read flooding/unicfl.stats," >> flooding_script.click
 echo "  read sf.stats," >> flooding_script.click
 echo "  read setrtscts.stats," >> flooding_script.click
@@ -178,6 +182,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
     for fl_piggy in $PIGGYBACK_F; do
     for fl_forceresp in $BCAST2UNIC_FORCERESPONSIBILITY_F; do
     for fl_useassign in $BCAST2UNIC_USEASSIGNINFO_F; do
+    for fl_txsched in $FLOODING_TXSCHEDULING; do
     for fl_maxdelay in $BCAST_RNDDELAYQUEUE_MAXDELAY; do
 
     for fl_e2e in $FLOODING_E2E_RETRIES_F; do
@@ -196,22 +201,25 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
      for al in $FLOODALGOS; do
 
-       DONE_ALL_FOR_ALG=0
+      DONE_ALL_FOR_ALG=0
 
-       while [ $DONE_ALL_FOR_ALG -eq 0 ]; do
+      while [ $DONE_ALL_FOR_ALG -eq 0 ]; do
 
-       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx"_"$flunic_fixcs"_"$fl_e2e"_"$rtscts"_"$rtscts_mixed"_"$bos"_"$rs
+      for repetition in `seq 1 $REPETITIONS`; do
+
+       MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx"_"$flunic_fixcs"_"$fl_e2e"_"$rtscts"_"$rtscts_mixed"_"$bos"_"$rs"_"$fl_txsched
 
        case "$al" in
          "simple")
                  echo "" > flooding_config.h
                  ;;
          "probability")
+                  echo "" > flooding_config.h
                   if [ "x$PROBINDEX" = "x" ]; then
                     PROBINDEX=0
                   fi
                   MEASUREMENTDIR="$MEASUREMENTDIR""_p_"${PROB_ARRAY[$PROBINDEX]}
-                  echo "#define FLOODING_DEBUG 2" > flooding_config.h
+                  #echo "#define FLOODING_DEBUG 2" > flooding_config.h
                   echo "#define PROBABILITYFLOODING_FWDPROBALILITY ${PROB_ARRAY[$PROBINDEX]}" >> flooding_config.h
                   echo "#define PRO_FL" >> flooding_config.h
                   ;;
@@ -227,7 +235,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
        esac
 
-       MEASUREMENTDIR="$MEASUREMENTDIR""_unicast_"$flunic
+       MEASUREMENTDIR="$MEASUREMENTDIR""_unicast_"$flunic"_"$repetition
 
        echo "#define BCAST2UNIC" >> flooding_config.h
        echo "#define BCAST2UNIC_STRATEGY $flunic" >> flooding_config.h
@@ -248,12 +256,13 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
        echo "#define RTSCTS_MIXEDSTRATEGY $rtscts_mixed" >> flooding_config.h
        echo "#define TOS2QUEUEMAPPER_STRATEGY $bos" >> flooding_config.h
        echo "#define RS_STRATEGY $rs" >> flooding_config.h
+       echo "#define FLOODING_TX_SCHEDULING $fl_txsched" >> flooding_config.h
 
        if [ "x$flunic" = "x0" ]; then
          echo "#define BCAST_FPA_ABORTONFINISH false" >> flooding_config.h
        fi
 
-       echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e $rtscts $rtscts_mixed $bos $rs"
+       echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e $rtscts $rtscts_mixed $bos $rs $fl_txsched $repetition"
 
        if [ ! -e $MEASUREMENTDIR ]; then
 
@@ -269,7 +278,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            cat flooding_grid.des.tmpl | sed "s#FLOWTIME#$FLOWTIME#g" > flooding.des
          fi
 
-         echo "SEED=$NUM" >> flooding.des
+         echo "SEED=$repetition" >> flooding.des
 
          if [ "x$SIM" = "x" ]; then
            RUNMODE=$CURRENTRUNMODE run_measurement.sh flooding.des $MEASUREMENTDIR
@@ -309,7 +318,9 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
         echo "MACRETRIES=$fl_mac_ret" >> $MEASUREMENTDIR/params
         echo "FLOODING_MAXNBMETRIC=$fl_nb_met" >> $MEASUREMENTDIR/params
         echo "FLOODING_LASTNODES_PP=$fl_piggy" >> $MEASUREMENTDIR/params
-        echo "SEED=$NUM" >> $MEASUREMENTDIR/params
+        echo "SEED=$repetition" >> $MEASUREMENTDIR/params
+        echo "NUM=$NUM" >> $MEASUREMENTDIR/params
+        echo "REPETITION=$repetition" >> $MEASUREMENTDIR/params
         echo "BCAST2UNIC_FORCERESPONSIBILITY=$fl_forceresp" >> $MEASUREMENTDIR/params
         echo "BCAST2UNIC_USEASSIGNINFO=$fl_useassign" >> $MEASUREMENTDIR/params
         echo "BCAST_RNDDELAYQUEUE_MAXDELAY=$fl_maxdelay" >> $MEASUREMENTDIR/params
@@ -320,28 +331,31 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
         echo "RTSCTS_MIXEDSTRATEGY=$rtscts_mixed" >> $MEASUREMENTDIR/params
         echo "BO_STRATEGY=$bos" >> $MEASUREMENTDIR/params
         echo "RS_STRATEGY=$rs" >> $MEASUREMENTDIR/params
+        echo "FLOODING_TX_SCHEDULING=$fl_txsched" >> $MEASUREMENTDIR/params
 
        fi
 
-       case "$al" in
-         "simple")
-                 DONE_ALL_FOR_ALG=1
-                 ;;
-         "probability")
-                  let PROBINDEX=PROBINDEX+1;
+     done #repetition
 
-                  if [ $PROBINDEX -ge $PROB_ARRAY_SIZE ]; then
-                    DONE_ALL_FOR_ALG=1
-                    PROBINDEX=""
-                  fi
-                  ;;
-         "mpr")
-                 DONE_ALL_FOR_ALG=1
-                 ;;
-         "mst")
-                 DONE_ALL_FOR_ALG=1
-                 ;;
-       esac
+      case "$al" in
+        "simple")
+             DONE_ALL_FOR_ALG=1
+             ;;
+        "probability")
+              let PROBINDEX=PROBINDEX+1;
+
+              if [ $PROBINDEX -ge $PROB_ARRAY_SIZE ]; then
+                DONE_ALL_FOR_ALG=1
+                PROBINDEX=""
+              fi
+              ;;
+        "mpr")
+             DONE_ALL_FOR_ALG=1
+             ;;
+        "mst")
+             DONE_ALL_FOR_ALG=1
+             ;;
+      esac
 
 
       done
@@ -354,6 +368,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
   done
   done
   done
+ done
  done
  done
  done
