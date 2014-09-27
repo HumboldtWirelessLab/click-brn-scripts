@@ -42,20 +42,26 @@ def extract_node_id_from_file(file_path, node_name):
 
 
 def extract_pos_by_id_from_file(file_path, id):
-	with open(file_path, 'r') as f:
-		reader = csv.reader(f, delimiter=' ', quoting=csv.QUOTE_NONE)
-		found = False
-		for row in reader:
-			if row[0] == "n" and  id == row[4] and row[2] == "*":
-				x = row[7]
-				y = row[9]
-				z = row[11]
-				found = True
-				break
+	try:
+		with open(file_path, 'r') as f:
+			reader = csv.reader(f, delimiter=' ', quoting=csv.QUOTE_NONE)
+			found = False
+			for row in reader:
+				if row[0] == "n" and  id == row[4] and row[2] == "*":
+					x = row[7]
+					y = row[9]
+					z = row[11]
+					found = True
+					break
 
-		if not found:
-			print("Error: Failed to find position for id {0} in {1}.".format(id, file_path))
-			sys.exit(-1)
+			if not found:
+				print("Error: Failed to find position for id {0} in {1}.".format(id, file_path))
+				sys.exit(-1)
+	except:
+		x = 0
+		y = 0
+		x = 0
+	
 
 	return x, y, z
 
