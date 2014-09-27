@@ -19,6 +19,8 @@ INDEX=1;
 
 %index
 UNIC=4;
+MAXPARETRIES=9;
+MAXMACRETRIES=13;
 MAXDELAY=18;
 ABORTTX=20;
 SCHEDULING=27;
@@ -32,23 +34,24 @@ AVG_TIME_PER_HOP=9;
 %sum
 REACH=2
 CNT_TX_PKT=8;
+COL=10
 
-configs=unique(index(:,[UNIC MAXDELAY ABORTTX SCHEDULING]),'rows')
+configs=unique(index(:,[UNIC MAXPARETRIES MAXMACRETRIES MAXDELAY ABORTTX SCHEDULING]),'rows')
 
-%configs=configs(configs(:,1) == 0,:)
-%configs=configs(configs(:,3) ~= 15,:)
-%configs=configs(configs(:,4) == 3,:)
+configs=configs(configs(:,5) == 31,:)
+%configs=configs(configs(:,4) == 150,:)
+%configs=configs(configs(:,6) == 3,:)
 
-wo_delay=unique(index(:,[UNIC ABORTTX SCHEDULING]),'rows');
+wo_delay=unique(configs(:,[1 2 3 5 6]),'rows');
 
-unicast_config=unique(index(:,[UNIC ABORTTX SCHEDULING]),'rows');
+unicast_config=unique(configs(:,[1 2 3 5 6]),'rows');
     
 result=[];
 scheme_labels = {};
 
 for sc=1:size(configs,1)
     cur_sc=configs(sc,:);
-    c_inds=unique(index(ismember(index(:,[UNIC MAXDELAY ABORTTX SCHEDULING]),cur_sc,'rows'),INDEX));
+    c_inds=unique(index(ismember(index(:,[UNIC MAXPARETRIES MAXMACRETRIES MAXDELAY ABORTTX SCHEDULING]),cur_sc,'rows'),INDEX));
 
     %size(c_inds)
     %size(times)
@@ -65,23 +68,27 @@ end
 
 reach_res=[];
 pkt_res=[];
+col_res=[]
 
 cur_r=zeros(1,size(unicast_config,1));
 cur_p=zeros(1,size(unicast_config,1));
+cur_c=zeros(1,size(unicast_config,1));
 
 for uc=1:size(unicast_config,1)
     cur_uc=unicast_config(uc,:);
-    c_inds=unique(index(ismember(index(:,[UNIC ABORTTX SCHEDULING]),cur_uc,'rows'),INDEX));
+    c_inds=unique(index(ismember(index(:,[UNIC MAXPARETRIES MAXMACRETRIES ABORTTX SCHEDULING]),cur_uc,'rows'),INDEX));
 
-   
     for c=1:size(c_inds,1)
         cur_r(:)=nan;
         cur_p(:)=nan;
+        cur_c(:)=nan;
         cur_r(uc)=summary(find(index(:,INDEX)==c_inds(c)),REACH);
         cur_p(uc)=summary(find(index(:,INDEX)==c_inds(c)),CNT_TX_PKT);
-        
+        cur_c(uc)=summary(find(index(:,INDEX)==c_inds(c)),COL);
+
         reach_res=[reach_res; cur_r];
         pkt_res=[pkt_res; cur_p];
+        col_res=[pkt_res; cur_c];
     end
 
 end
@@ -101,7 +108,7 @@ for sc=1:size(configs,1)
 
     r=result(find(result(:,1) == sc),[2 3]);
 
-    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(4)));
+    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(end)));
 
     hold on;
 end
@@ -124,7 +131,7 @@ for sc=1:size(configs,1)
 
     r=result(find(result(:,1) == sc),[4 2]);
 
-    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(4)));
+    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(end)));
 
     hold on;
 end
@@ -147,7 +154,7 @@ for sc=1:size(configs,1)
 
     r=result(find(result(:,1) == sc),[4 3]);
 
-    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(4)));
+    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(end)));
 
     hold on;
 end
@@ -189,14 +196,27 @@ grid on;
 saveas(h1, 'pkt.png' ,'png');
 saveas(h1, 'pkt.eps' ,'epsc');
 
+h1 = figure;
+
+boxplot(col_res,[1:size(unicast_config,1)]);
+
+title('scheme vs colisions');
+xlabel('scheme');
+ylabel('#pcols');
+%legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'southwest');
+grid on;
+
+saveas(h1, 'col.png' ,'png');
+saveas(h1, 'col.eps' ,'epsc');
+
 plot_scatter = 0;
 if plot_scatter == 1
 
 for c=1:size(wo_delay,1)
   h1 = figure;
 
-  next_configs=unique(configs(ismember(configs(:,[1 3 4]),wo_delay(c,:),'rows'),:),'rows');
-  delays=sort(next_configs(:,2));
+  next_configs=unique(configs(ismember(configs(:,[1 2 3 5 6]),wo_delay(c,:),'rows'),:),'rows');
+  delays=sort(next_configs(:,4));
 
   delay_labels = {};
   for sc=1:size(delays,1)
@@ -205,7 +225,7 @@ for c=1:size(wo_delay,1)
 
   for dc=1:size(delays,1)
 
-    n_cfg = next_configs(find(next_configs(:,2) == delays(dc)),:);
+    n_cfg = next_configs(find(next_configs(:,4) == delays(dc)),:);
 
     n_cfg_index = find(ismember(configs(:,:),n_cfg,'rows') == 1);
 
