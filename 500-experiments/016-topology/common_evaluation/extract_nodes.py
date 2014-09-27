@@ -25,18 +25,21 @@ def extract_names_and_macs_from_file(file_path):
 	return node_names, macs
 
 def extract_node_id_from_file(file_path, node_name):
-	with open(file_path, 'r') as f:
-		reader = csv.reader(f, delimiter=' ', quoting=csv.QUOTE_NONE)
-		found = False
-		for row in reader:
-			if row[0] == "n" and (node_name + ".") in row[8]:
-				id = row[4]
-				found = True
-				break
+	try:
+		with open(file_path, 'r') as f:
+			reader = csv.reader(f, delimiter=' ', quoting=csv.QUOTE_NONE)
+			found = False
+			for row in reader:
+				if row[0] == "n" and (node_name + ".") in row[8]:
+					id = row[4]
+					found = True
+					break
 
-		if not found:
-			print("Error: Failed to find id for node {0} in {1}.".format(node_name, file_path))
-			sys.exit(-1)
+			if not found:
+				print("Error: Failed to find id for node {0} in {1}.".format(node_name, file_path))
+				sys.exit(-1)
+	except:
+		id = 0
 
 	return id
 
