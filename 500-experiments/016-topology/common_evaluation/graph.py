@@ -178,6 +178,7 @@ if not options.path:
 
 
 file_path = os.path.join(options.path, "nodes.csv")
+print("read nodes from: ", file_path)
 (xs, ys, zs, node_names, macs) = read_nodes_from_file(file_path)
 nodes = list(zip(xs, ys, zs, node_names, macs))
 print("Nodes: {0}".format(len(nodes)))
@@ -187,6 +188,7 @@ for x, y, z, name, mac in nodes:
 	plot.scatter(x, y, s=30, c="gray")
 
 file_path_links = os.path.join(options.path, "links_filtered.csv")
+print("read links from: ", file_path_links)
 links = extract_links(file_path_links)
 if options.etx_metric_limit:
 	links_filtered = filter_by_metric(links, options.etx_metric_limit)

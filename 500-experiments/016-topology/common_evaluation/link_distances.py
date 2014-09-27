@@ -55,7 +55,7 @@ used_content = list()
 num_filtered = 0
 num_used     = 0
 header 		 = str()
-print("\"node_a\",\"node_b\",\"distance\"")
+print("\"node_a\",\"node_b\",\"etx_metric\",\"distance\"")
 with open(options.links_path, 'r') as f:
 	reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
 	next(reader)
@@ -69,6 +69,6 @@ with open(options.links_path, 'r') as f:
 		((b_x, b_y, b_z), b_name) = node_dict[b_node_mac]
 
 		distance = math.sqrt(pow(a_x - b_x, 2) + pow(a_y - b_y, 2) + pow(a_z - b_z, 2))
-		print("{0},{1},{3},{2:.3f}".format(a_node_mac, b_node_mac,distance, etx_metric))
+		print("{0},{1},{2},{3:.3f}".format(a_node_mac, b_node_mac, etx_metric, distance))
 
 
