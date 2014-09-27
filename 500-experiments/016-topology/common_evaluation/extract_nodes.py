@@ -25,6 +25,7 @@ def extract_names_and_macs_from_file(file_path):
 	return node_names, macs
 
 def extract_node_id_from_file(file_path, node_name):
+	id = None
 	try:
 		with open(file_path, 'r') as f:
 			reader = csv.reader(f, delimiter=' ', quoting=csv.QUOTE_NONE)
@@ -45,6 +46,7 @@ def extract_node_id_from_file(file_path, node_name):
 
 
 def extract_pos_by_id_from_file(file_path, id):
+	x = y = z = None
 	try:
 		with open(file_path, 'r') as f:
 			reader = csv.reader(f, delimiter=' ', quoting=csv.QUOTE_NONE)
@@ -63,7 +65,7 @@ def extract_pos_by_id_from_file(file_path, id):
 	except:
 		x = 0
 		y = 0
-		x = 0
+		z = 0
 	
 
 	return x, y, z
@@ -106,7 +108,7 @@ file_path = os.path.join(options.path, "nodes.csv")
 with open(file_path, 'w', newline='') as f:
 	header = OrderedDict([('x',None),('y',None), ('z',None), ('name',None), ('mac',None)])
 	dw = csv.DictWriter(f, delimiter=',', fieldnames=header, quotechar='"', quoting=csv.QUOTE_ALL)
-	dw.writeheader()
+	dw.writerow(dict((fn,fn) for fn in header))
 
 	writer = csv.writer(f, quotechar='"', quoting=csv.QUOTE_ALL)
 	writer.writerows(nodes)
