@@ -8,6 +8,9 @@
 
 . $CONFIGFILE
 
+
+exit 0
+
 # Get dump-file
 DUMP_FILES=`ls -1 "$RESULTDIR" | grep "raw.dump"`
 

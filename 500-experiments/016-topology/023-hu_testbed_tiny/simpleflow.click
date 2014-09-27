@@ -8,8 +8,8 @@
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
-//#include "device/rawwifidev.click"
-#include "device/wifidev_linkstat.click"
+#include "device/rawwifidev.click"
+//#include "device/wifidev_linkstat.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
@@ -18,8 +18,8 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
-device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
-//device_wifi::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
+//device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
+device_wifi::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
@@ -43,14 +43,14 @@ brn_clf[0]
 
 brn_clf[1] -> Discard;
 
-device_wifi -> BRN2EtherDecap() -> brn_clf;
+//device_wifi -> BRN2EtherDecap() -> brn_clf;
 
-#ifdef BRNFEEDBACK
-device_wifi
-  -> Discard;
-#endif
+//#ifdef BRNFEEDBACK
+//device_wifi
+//  -> Discard;
+//#endif
 
-Idle -> device_wifi;
+//Idle -> device_wifi;
 
 Script(
   write device_wifi/link_stat.probes "",
