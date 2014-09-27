@@ -1,9 +1,9 @@
-NAME=receiver
+NAME=simpleflow
 SIMULATOR=ns2
 RADIO=shadowing
 FORGEINNODES=no
 
-TIME=60
+TIME=600
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=simpleflow.mes
@@ -16,7 +16,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 
-EVALUATION="evaluation/eval.sh"
+EVALUATION="evaluation/embrace_xml_measurement.sh evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
 EVALUATIONSDIRPOSTFIX=_evaluation
 
