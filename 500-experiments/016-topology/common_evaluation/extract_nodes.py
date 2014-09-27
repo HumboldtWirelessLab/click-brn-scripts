@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from optparse import OptionParser
 import sys
@@ -23,7 +23,6 @@ def extract_names_and_macs_from_file(file_path):
 			node_names.append(node_name)
 
 	return node_names, macs
-
 
 def extract_node_id_from_file(file_path, node_name):
 	with open(file_path, 'r') as f:
@@ -83,7 +82,7 @@ optParser.add_option("-i", "--interactive", dest="is_interactive", help="Interac
 (options, args) = optParser.parse_args()
 
 if not options.path:
-    print "Failed: Please enter a path to evaluate with option '-p=<path>'"
+    print("Failed: Please enter a path to evaluate with option '-p=<path>'")
     sys.exit(-1)
 
 file_path = os.path.join(options.path, "nodes.mac")
@@ -95,7 +94,7 @@ file_path = os.path.join(options.path, "simpleflow.nam")
 nodes = zip(xs, ys, zs, node_names, macs)
 
 file_path = os.path.join(options.path, "nodes.csv")
-with open(file_path, 'wb') as f:
+with open(file_path, 'w', newline='') as f:
 	header = OrderedDict([('x',None),('y',None), ('z',None), ('name',None), ('mac',None)])
 	dw = csv.DictWriter(f, delimiter=',', fieldnames=header, quotechar='"', quoting=csv.QUOTE_ALL)
 	dw.writeheader()
