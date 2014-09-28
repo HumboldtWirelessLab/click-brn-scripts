@@ -32,6 +32,9 @@ for event, elem in context:
 	if not inside_of_link_stat:
 		elem.clear()
 
-print(Et.tostring(extracted_root))
+res = Et.tostring(extracted_root)
+if isinstance(res, bytes):
+	res = res.decode('utf8')
+sys.stdout.write(res + "\n")
 
 del context
