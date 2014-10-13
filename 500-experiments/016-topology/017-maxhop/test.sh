@@ -13,7 +13,7 @@ RUNS=$1
 ETXLIMIT=$2
 export ETXLIMIT
 MAXHOPS_MIN="1"
-MAXHOPS_MAX="10"
+MAXHOPS_MAX="30"
 MAXHOPS_STEP="1"
 
 
@@ -36,7 +36,7 @@ do
 	OPWD=$(pwd)
 	cd ../../../../helper/src/Npart
 	NUM_OF_NODES=175
-	RXRANGE=230  ./gen_topo.sh ${NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
+	RXRANGE=370  ./gen_topo.sh ${NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
 	RESULT=$?
 	cd ${OPWD}
 	cat /tmp/${PLACEMENT_PATH} | awk -F " " '{print "sk"NR,$2,$3,$4}' > ${PLACEMENT_PATH}
@@ -91,7 +91,7 @@ do
 		#
 		# Remove large files
 		#
-		rm -rf ${SIM_RESULT_DIR}/*.nam ${SIM_RESULT_DIR}/*.tr
+		rm -rf ${RESULT}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
 
 		#
 		# Copy

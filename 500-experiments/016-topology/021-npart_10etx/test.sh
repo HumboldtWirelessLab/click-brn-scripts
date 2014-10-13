@@ -73,7 +73,7 @@ do
 	#
 	# Remove large files
 	#
-	rm -rf ${SIM_RESULT_DIR}/*.nam ${SIM_RESULT_DIR}/*.tr
+	rm -rf ${SIM_RESULT_DIR}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
 done
 
 #
