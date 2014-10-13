@@ -2,6 +2,10 @@
 
 #include "flooding_config.h"
 
+#define BCAST2UNIC_PDRCONFIG "101 5 115"
+//#define BCAST2UNIC_PDRCONFIG "112 0 112"
+//#define BCAST2UNIC_PDRCONFIG "102 0 102"
+
 #define FOREIGNRXSTATS
 
 #define FLOODING_DEBUG 4
@@ -104,13 +108,6 @@ device_wifi[3]
   -> [4]flooding; //feedback failure
 
 ffilter[1] -> [2]flooding; //feedback success
-
-Script(
-  wait 100,
-  wait 5,
-  read device_wifi/link_stat.bcast_stats
-);
-
 
 #ifdef MPR_STATS
 Script(
