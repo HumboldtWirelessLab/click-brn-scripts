@@ -1,11 +1,8 @@
 #!/usr/bin/Rscript
 
-library(ggplot2)
-library(methods)
+suppressPackageStartupMessages(library(ggplot2))
 
 df = read.csv(file="collisions.csv")
-
-pdf("collisions_per_node.pdf")
 
 p = ggplot(df)
 p = p + theme_set(theme_bw())
@@ -15,10 +12,8 @@ p = p + theme_set(theme_bw())
 p = p + theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1))
 p
 
-dev.off()
+ggsave("collisions_per_node.pdf")
 
-
-pdf("collisions_grouped_by_search.pdf")
 
 breite=30
 max_time = 9000
@@ -31,9 +26,8 @@ p = p + theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1))
 #p = p + scale_x_continuous(breaks=seq(15, max_time, 30))
 p
 
-dev.off()
+ggsave("collisions_grouped_by_search.pdf")
 
-pdf("collisions_within_30s.pdf")
 
 dauer=30
 max_time = 9000
@@ -47,4 +41,4 @@ p = p + theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1))
 #p = p + scale_x_continuous(breaks=seq(15, max_time, 30))
 p
 
-dev.off()
+ggsave("collisions_within_30s.pdf")
