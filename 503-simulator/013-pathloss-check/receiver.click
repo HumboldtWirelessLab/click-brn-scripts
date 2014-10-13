@@ -18,6 +18,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 Idle
   -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress FF:FF:FF:FF:FF:FF 25 100 0 25000 false 1 0", DEBUG 4)
   -> filter_tx :: FilterTX()
   -> error_clf :: WifiErrorClassifier()
   -> BRN2PrintWifi("OKPacket (NODENAME)", TIMESTAMP true)
@@ -62,5 +63,7 @@ Script(
  read sys_info.systeminfo,
  read id.version,
  read error_clf.stats,
- read wifidevice/cst.stats
+ read wifidevice/cst.stats,
+ wait 294,
+ read sf.stats,
 );
