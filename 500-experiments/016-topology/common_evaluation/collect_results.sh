@@ -21,6 +21,12 @@ esac
 first=true
 for d in $(ls -d [0-9]*)
 do
+  if [ ! -f ${d}/result.csv ]
+  then
+    echo "Warning: No result file at $d" >&2
+    continue
+  fi
+
   # header
   if [ "${first}" == true  ]
   then
