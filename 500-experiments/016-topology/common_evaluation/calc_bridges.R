@@ -1,7 +1,6 @@
 #!/usr/bin/Rscript
 
-library(methods)
-library(igraph)
+suppressPackageStartupMessages(library(igraph))
 
 get.bridges <- function(g)
 {

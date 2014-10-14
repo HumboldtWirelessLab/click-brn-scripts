@@ -1,13 +1,13 @@
 #!/usr/bin/Rscript
 
-library(methods)
-library(igraph)
+suppressPackageStartupMessages(library(igraph))
 
 
 #
 # Settings
 #
 runs_file_path         = "runs.csv"
+runs_measure_file_path = "runs_measure.csv"
 theo_ap_path           = "theoretical_articulation_points.csv"
 theo_br_file_path      = "theoretical_bridges.csv"
 pr_all_br_file_path    = "bridges_all.csv"
@@ -26,6 +26,7 @@ pr_ap = as.matrix(read.csv(file = pr_ap_path))
 theo_br = as.matrix(read.csv(file = theo_br_file_path))
 theo_ap = as.matrix(read.csv(file = theo_ap_path))
 num_of_runs = as.integer(read.csv(file = runs_file_path))
+num_of_measure = as.integer(read.csv(file = runs_measure_file_path))
 links = as.matrix(read.csv(file = links_file_path))
 g = graph.data.frame(links, directed = FALSE)
 
@@ -103,9 +104,9 @@ theo_br_count = nrow(theo_br)
 
 br_all_tp    = sum(pr_br %in% theo_br_fwd) + sum(pr_br %in% theo_br_rev)
 br_all_fp    = length(pr_br) - br_all_tp
-br_all_tp_fn = num_of_runs * 2 * theo_br_count;  # both nodes will detect one bridge
+br_all_tp_fn = num_of_measure * 2 * theo_br_count;  # both nodes will detect one bridge
 br_all_fn    = br_all_tp_fn - br_all_tp
-br_all_fp_tn = num_of_runs * (2 * length(E(g)) - 2 * theo_br_count)
+br_all_fp_tn = num_of_measure * (2 * length(E(g)) - 2 * theo_br_count)
 br_all_tn    = br_all_fp_tn - br_all_fp
 
 br_all_precision = br_all_tp / (br_all_tp + br_all_fp)
@@ -138,9 +139,9 @@ pr_classified_br = pr_br[pr_br %in% valid_links]
 
 br_class_tp    = sum(pr_classified_br %in% theo_br_fwd) + sum(pr_classified_br %in% theo_br_rev)
 br_class_fp    = length(pr_classified_br) - br_class_tp
-br_class_tp_fn = num_of_runs * 2 * theo_br_count;  # both nodes will detect one bridge
+br_class_tp_fn = num_of_measure * 2 * theo_br_count;  # both nodes will detect one bridge
 br_class_fn    = br_class_tp_fn - br_class_tp
-br_class_fp_tn = num_of_runs * (2 * length(E(g)) - 2 * theo_br_count)
+br_class_fp_tn = num_of_measure * (2 * length(E(g)) - 2 * theo_br_count)
 br_class_tn    = br_class_fp_tn - br_class_fp
 
 br_class_precision = br_class_tp / (br_class_tp + br_class_fp)
@@ -167,12 +168,15 @@ result = rbind(result, c("br_class_f_measure", br_class_f_measure))
 
 result = rbind(result, c("num_edges", length(E(g))))
 result = rbind(result, c("num_vertexes", length(V(g))))
-result = rbind(result, c("num_theo_br", nrow(theo_br) * num_of_runs))
-result = rbind(result, c("num_theo_ap", nrow(theo_ap) * num_of_runs))
+result = rbind(result, c("num_theo_br_per_measure", nrow(theo_br)))
+result = rbind(result, c("num_theo_ap_per_measure", nrow(theo_ap)))
+result = rbind(result, c("num_theo_br", nrow(theo_br) * num_of_measure))
+result = rbind(result, c("num_theo_ap", nrow(theo_ap) * num_of_measure))
 result = rbind(result, c("num_all_pr_br", nrow(pr_all_br)))
 result = rbind(result, c("num_unique_pr_br", nrow(pr_unique_br)))
 result = rbind(result, c("num_pr_ap", nrow(pr_ap)))
 result = rbind(result, c("num_runs", num_of_runs))
+result = rbind(result, c("num_measure", num_of_measure))
 
 
 #

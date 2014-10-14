@@ -12,9 +12,9 @@ RESULT_PATH="test-result.csv"
 RUNS=$1
 ETXLIMIT=$2
 export ETXLIMIT
-MAXHOPS_MIN="1"
-MAXHOPS_MAX="30"
-MAXHOPS_STEP="1"
+DISTANCE_MIN="100"
+DISTANCE_MAX="400"
+DISTANCE_STEP="10"
 
 
 echo "simulate ${RUNS} runs"
@@ -29,44 +29,38 @@ read -p "Do you want start a test with these settings?   ....(Ctrl+C to abort)"
 
 for RUN in $(seq ${RUNS})
 do
-	#
-	# Create NPart placement
-	#
-	echo "create NPart placement..."
-	OPWD=$(pwd)
-	cd ../../../../helper/src/Npart
-	NUM_OF_NODES=175
-	RXRANGE=370  ./gen_topo.sh ${NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
-	RESULT=$?
-	cd ${OPWD}
-	cat /tmp/${PLACEMENT_PATH} | awk -F " " '{print "sk"NR,$2,$3,$4}' > ${PLACEMENT_PATH}
-	
-	if [ "${RESULT}" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
-	fi
-	
-	#
-	# Update mes
-	#
-	echo "update .mes file..."
-	NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
-	echo "  new node count: ${NODE_COUNT}"
-	sed -i "s/:[0-9]*/:${NODE_COUNT}/" simpleflow.mes
-	if [ "$?" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
-	fi
-	
-	
-	for MAXHOPS in $(seq ${MAXHOPS_MIN} ${MAXHOPS_STEP} ${MAXHOPS_MAX})
+	for DISTANCE in $(seq ${DISTANCE_MIN} ${DISTANCE_STEP} ${DISTANCE_MAX})
 	do
+		
+		echo "------------------[ Run ${RUN}/${RUNS} ]------[ ${DISTANCE} ]------------------"
+
 		#
-		# Set TTL
+		# Create placement
 		#
-		sed -i  "s/MAX_HOPS [0-9]*/MAX_HOPS ${MAXHOPS}/" simpleflow.click
+		echo "create box placement..."
+		let FIRST=50
+		let SECOND=${DISTANCE}-${FIRST}
+		../common_evaluation/generate_box_placement.R --l1 ${FIRST} --l2 ${SECOND} --b 300 --r1 ${FIRST} --r2 ${SECOND} > ${PLACEMENT_PATH}
+		if [ "$?" -ne 0 ] 
+		then
+			echo "result: failed"
+			exit -1
+		fi
+
+
+		#
+		# Update mes
+		#
+		echo "update .mes file..."
+		NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
+		echo "  new node count: ${NODE_COUNT}"
+		sed -i "s/:[0-9]*/:${NODE_COUNT}/" simpleflow.mes
+		if [ "$?" -ne 0 ] 
+		then
+			echo "result: failed"
+			exit -1
+		fi
+
 
 		#
 		# Get result dir
@@ -76,6 +70,7 @@ do
 		SIM_RESULT_DIR=${i}
 		echo "next simulation result dir: ${SIM_RESULT_DIR}"
 		
+
 		#
 		# simulate placement
 		#
@@ -88,15 +83,17 @@ do
 			exit -1
 		fi
 
+
 		#
 		# Remove large files
 		#
-		rm -rf ${RESULT}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
+		rm -rf ${SIM_RESULT_DIR}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
+
 
 		#
 		# Copy
 		#
-		DES="${MAXHOPS}-max_hops"
+		DES="${DISTANCE}-quali"
 		if [ ! -d "${DES}" ]
 		then
 			mkdir "${DES}"
@@ -108,6 +105,7 @@ do
 
 		echo "move ${SIM_RESULT_DIR} to ${DES_SIM_RESULT_DIR}"
 		mv ${SIM_RESULT_DIR} ${DES_SIM_RESULT_DIR}
+		cp ${PLACEMENT_PATH} ${DES_SIM_RESULT_DIR}
 
 	done
 done
@@ -116,18 +114,16 @@ done
 # Process results
 #
 echo "process results..."
-for MAXHOPS in $(seq ${MAXHOPS_MIN} ${MAXHOPS_STEP} ${MAXHOPS_MAX})
+for DISTANCE in $(seq ${DISTANCE_MIN} ${DISTANCE_STEP} ${DISTANCE_MAX})
 do
 	#
 	# get dir
 	#
-	DES="${MAXHOPS}-max_hops"
-	
+	DES="${DISTANCE}-quali"	
 	echo "Process ${DES}"
 	cd ${DES}
 	../../common_evaluation/collect_results.sh > ${RESULT_PATH}
 	cd ..
-
 done
 
 echo "Done"

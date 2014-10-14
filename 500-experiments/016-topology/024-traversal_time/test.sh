@@ -12,9 +12,9 @@ RESULT_PATH="test-result.csv"
 RUNS=$1
 ETXLIMIT=$2
 export ETXLIMIT
-MAXHOPS_MIN="1"
-MAXHOPS_MAX="30"
-MAXHOPS_STEP="1"
+TRAVERSALTIME_MIN="4"
+TRAVERSALTIME_MAX="120"
+TRAVERSALTIME_STEP="4"
 
 
 echo "simulate ${RUNS} runs"
@@ -61,12 +61,12 @@ do
 	fi
 	
 	
-	for MAXHOPS in $(seq ${MAXHOPS_MIN} ${MAXHOPS_STEP} ${MAXHOPS_MAX})
+	for TRAVERSALTIME in $(seq ${TRAVERSALTIME_MIN} ${TRAVERSALTIME_STEP} ${TRAVERSALTIME_MAX})
 	do
 		#
-		# Set TTL
+		# Set current value 
 		#
-		sed -i  "s/MAX_HOPS [0-9]*/MAX_HOPS ${MAXHOPS}/" simpleflow.click
+		sed -i  "s/MAX_TRAVERSAL_TIME_MS [0-9]*/MAX_TRAVERSAL_TIME_MS ${TRAVERSALTIME}/" simpleflow.click
 
 		#
 		# Get result dir
@@ -91,12 +91,12 @@ do
 		#
 		# Remove large files
 		#
-		rm -rf ${RESULT}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
+		rm -rf ${SIM_RESULT_DIR}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
 
 		#
 		# Copy
 		#
-		DES="${MAXHOPS}-max_hops"
+		DES="${TRAVERSALTIME}-traversal"
 		if [ ! -d "${DES}" ]
 		then
 			mkdir "${DES}"
@@ -116,12 +116,12 @@ done
 # Process results
 #
 echo "process results..."
-for MAXHOPS in $(seq ${MAXHOPS_MIN} ${MAXHOPS_STEP} ${MAXHOPS_MAX})
+for TRAVERSALTIME in $(seq ${TRAVERSALTIME_MIN} ${TRAVERSALTIME_STEP} ${TRAVERSALTIME_MAX})
 do
 	#
 	# get dir
 	#
-	DES="${MAXHOPS}-max_hops"
+	DES="${TRAVERSALTIME}-traversal"
 	
 	echo "Process ${DES}"
 	cd ${DES}
