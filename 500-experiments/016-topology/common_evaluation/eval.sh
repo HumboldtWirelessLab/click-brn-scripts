@@ -56,6 +56,10 @@ xsltproc -o ${RESULTDIR}/bridges_unique_per_search.csv ${DIR}/dibadawn_unique_br
 COUNT_OF_RUNS=$(grep -e "^<DibadawnStartSearch" ${RESULTDIR}/measurement.xml | wc -l)
 echo -e "\"num_of_runs\"\n${COUNT_OF_RUNS}" > ${RESULTDIR}/runs.csv
 
+# Count measure
+COUNT_OF_MEASURES=$(grep -e "topology_info.*extra_data=" ${RESULTDIR}/measurement.xml | awk -F "'" 'BEGIN{max=0}{if($6 > max){max = $6}}END{print max}')
+echo -e "\"num_of_measure\"\n${COUNT_OF_MEASURES}" > ${RESULTDIR}/runs_measure.csv
+
 grep -e "simpleflow>" -e "<CrossEdge" ${RESULTDIR}/measurement.xml > ${RESULTDIR}/crossedge_extract.xml
 xsltproc -o ${RESULTDIR}/cycles.csv ${DIR}/dibadawn_asym_cycle_ration.xslt ${RESULTDIR}/crossedge_extract.xml
  
