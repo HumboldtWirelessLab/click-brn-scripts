@@ -1,4 +1,5 @@
-%basedir='20140912/';
+%basedir='20141014/';
+%basedir='20141014b-gridrand/';
 basedir='';
   
 if (~exist('basedir'))
@@ -11,18 +12,30 @@ if (~exist('index'))
   times=load(strcat(basedir,'result_flowtime.dat'),'-ASCII');
 end
 
-plot_cols=['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y'];
-plot_sign=['*';'+';'o';'x'];
+plot_cols=['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y'];
+plot_sign=['*';'+';'o';'x';'.';'-'];
 scheduling_schemes_str = {'neighbours cnt','max delay','prio'};
 
 INDEX=1;
 
+
 %index
 UNIC=4;
+PLACEMENT=5;
+UNIC_PRESELECTION=6;
+UNIC_REJECT=7;
+UNIC_PEERMET=8;
 MAXPARETRIES=9;
+
+UNIC_STRATEGY=12;
 MAXMACRETRIES=13;
+PIGGYBACK=15;
+FORCE_RESP=16;
+USE_ASSIGN=17;
 MAXDELAY=18;
+
 ABORTTX=20;
+FIX_CAND_SET=21;
 SCHEDULING=27;
 
 %flowtime
@@ -32,70 +45,118 @@ MAX_TIME=8;
 AVG_TIME_PER_HOP=9;
 
 %sum
-REACH=2
+REACH=2;
 CNT_TX_PKT=8;
-COL=10
+COL=10;
 
-configs=unique(index(:,[UNIC MAXPARETRIES MAXMACRETRIES MAXDELAY ABORTTX SCHEDULING]),'rows')
+%size(index)
 
-configs=configs(configs(:,5) == 31,:)
-%configs=configs(configs(:,4) == 150,:)
-%configs=configs(configs(:,6) == 3,:)
+CFG_INDEX=[UNIC UNIC_PRESELECTION UNIC_REJECT UNIC_PEERMET MAXPARETRIES UNIC_STRATEGY MAXMACRETRIES PIGGYBACK FORCE_RESP MAXDELAY USE_ASSIGN ABORTTX FIX_CAND_SET SCHEDULING]
 
-wo_delay=unique(configs(:,[1 2 3 5 6]),'rows');
+CFG_WO_DELAY_INDEX=CFG_INDEX(CFG_INDEX(:)~=MAXDELAY);
 
-unicast_config=unique(configs(:,[1 2 3 5 6]),'rows');
-    
-result=[];
-scheme_labels = {};
+CFG_WO_DELAY_INDEX_IN_INDEX=[1:size(CFG_INDEX,2)];
+CFG_WO_DELAY_INDEX_IN_INDEX=CFG_WO_DELAY_INDEX_IN_INDEX(CFG_INDEX(:)~=MAXDELAY);
 
-for sc=1:size(configs,1)
-    cur_sc=configs(sc,:);
-    c_inds=unique(index(ismember(index(:,[UNIC MAXPARETRIES MAXMACRETRIES MAXDELAY ABORTTX SCHEDULING]),cur_sc,'rows'),INDEX));
+configs=unique(index(:,CFG_INDEX),'rows')
+configs=[configs'; [1:size(configs,1)]]'; %add index at the end 
+
+config_wo_delay=unique(configs(:,CFG_WO_DELAY_INDEX_IN_INDEX),'rows');
+
+size(configs)
+size(config_wo_delay)
+
+if (~exist('result'))
+  result=[];
+  scheme_labels = {};
+
+  for sc=1:size(configs,1)
+    cur_sc=configs(sc,1:end-1)
+    c_inds=unique(index(ismember(index(:,CFG_INDEX),cur_sc,'rows'),INDEX));
 
     %size(c_inds)
     %size(times)
 
     for c=1:size(c_inds,1)
-        t=times(find(index(:,INDEX)==c_inds(c)),AVG_TIME);
-        p=summary(find(index(:,INDEX)==c_inds(c)),CNT_TX_PKT);
-        md=index(find(index(:,INDEX)==c_inds(c)),MAXDELAY);
+        i=find(index(:,INDEX)==c_inds(c));
+        t=times(i,AVG_TIME);
+        p=summary(i,CNT_TX_PKT);
+        md=index(i,MAXDELAY);
+        r=summary(i,REACH);
 
-        result=[result; [sc p t md]];
+        result=[result; [sc p t md r]];
     end
 
-end
+  end
 
-reach_res=[];
-pkt_res=[];
-col_res=[]
+  reach_res=[];
+  pkt_res=[];
+  col_res=[];
 
-cur_r=zeros(1,size(unicast_config,1));
-cur_p=zeros(1,size(unicast_config,1));
-cur_c=zeros(1,size(unicast_config,1));
+  cur_r=zeros(1,size(config_wo_delay,1));
+  cur_p=zeros(1,size(config_wo_delay,1));
+  cur_c=zeros(1,size(config_wo_delay,1));
 
-for uc=1:size(unicast_config,1)
-    cur_uc=unicast_config(uc,:);
-    c_inds=unique(index(ismember(index(:,[UNIC MAXPARETRIES MAXMACRETRIES ABORTTX SCHEDULING]),cur_uc,'rows'),INDEX));
+  for uc=1:size(config_wo_delay,1)
+    cur_uc=config_wo_delay(uc,:);
+    c_inds=unique(index(ismember(index(:,CFG_WO_DELAY_INDEX),cur_uc,'rows'),INDEX));
 
     for c=1:size(c_inds,1)
         cur_r(:)=nan;
         cur_p(:)=nan;
         cur_c(:)=nan;
-        cur_r(uc)=summary(find(index(:,INDEX)==c_inds(c)),REACH);
-        cur_p(uc)=summary(find(index(:,INDEX)==c_inds(c)),CNT_TX_PKT);
-        cur_c(uc)=summary(find(index(:,INDEX)==c_inds(c)),COL);
+        i=find(index(:,INDEX)==c_inds(c));
+
+        cur_r(uc) = summary(i,REACH);
+        cur_p(uc) = summary(i,CNT_TX_PKT);
+        cur_c(uc) = summary(i,COL);
 
         reach_res=[reach_res; cur_r];
         pkt_res=[pkt_res; cur_p];
         col_res=[pkt_res; cur_c];
     end
 
+  end
 end
 
 %result
 
-scheduling_cfgs = sort(unique(index(:,SCHEDULING),'rows'));
+% P L O T T E N
+plotold=1;
+
+if ( plotold == 1)
+  test_params(configs, result, [3 5], [2 3]);
+
+  test_params(configs, result, [1 14], [2 3]);
+
+  show_configs=configs(configs(:,5) == 4,:);
+  test_params(show_configs, result, [3 5], [2 3]);
+
+  show_configs=configs(configs(:,3) == 0,:);
+  test_params(show_configs, result, [3 5], [2 3]);
+  
+  show_configs=configs(configs(:,3) == 1,:);
+  test_params(show_configs, result, [3 5], [2 3]);
+
+end
+
+show_configs=configs(configs(:,3) == 1,:);
+show_configs=show_configs(show_configs(:,14) == 3,:) % prio scheduling
+
+test_params(show_configs, result, [4 9], [2 3]);     % peermetric vs fix cand set
+
+show_configs=show_configs(show_configs(:,9) == 1,:); % use fix cand set
+test_params(show_configs, result, [1 11], [2 3]);
+
+test_params(show_configs, result, [1 2], [2 3]);
+test_params(show_configs, result, [2 1], [2 3]);
+
+%test_params(show_configs, result, [1 5], [2 5]);
+%test_params(show_configs, result, [5 1], [2 5]);
+
+f=z-1
+
+scheduling_cfgs = unique(configs(:,end),'rows');
 
 for sc=1:size(scheduling_cfgs,1)
   scheme_labels = union(scheme_labels, scheduling_schemes_str(scheduling_cfgs(sc)), 'stable');
@@ -108,7 +169,7 @@ for sc=1:size(configs,1)
 
     r=result(find(result(:,1) == sc),[2 3]);
 
-    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(end)));
+    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(5)),plot_sign(cur_sc(3)+1)); %end
 
     hold on;
 end
@@ -123,6 +184,8 @@ ylim([0 max(result(:,3))*1.05]);
 
 saveas(h1, 'txscheduling.png' ,'png');
 saveas(h1, 'txscheduling.eps' ,'epsc');
+
+f=z-1;
 
 h1 = figure;
 
@@ -172,7 +235,7 @@ saveas(h1, 'maxdelay_vs_delay.eps' ,'epsc');
 
 h1 = figure;
 
-boxplot(reach_res,[1:size(unicast_config,1)]);
+boxplot(reach_res,[1:size(config_wo_delay,1)]);
 
 title('scheme vs reach');
 xlabel('scheme');
@@ -185,7 +248,7 @@ saveas(h1, 'reach.eps' ,'epsc');
 
 h1 = figure;
 
-boxplot(pkt_res,[1:size(unicast_config,1)]);
+boxplot(pkt_res,[1:size(config_wo_delay,1)]);
 
 title('scheme vs pkt');
 xlabel('scheme');
@@ -198,7 +261,7 @@ saveas(h1, 'pkt.eps' ,'epsc');
 
 h1 = figure;
 
-boxplot(col_res,[1:size(unicast_config,1)]);
+boxplot(col_res,[1:size(config_wo_delay,1)]);
 
 title('scheme vs colisions');
 xlabel('scheme');
@@ -212,10 +275,10 @@ saveas(h1, 'col.eps' ,'epsc');
 plot_scatter = 0;
 if plot_scatter == 1
 
-for c=1:size(wo_delay,1)
+for c=1:size(config_wo_delay,1)
   h1 = figure;
 
-  next_configs=unique(configs(ismember(configs(:,[1 2 3 5 6]),wo_delay(c,:),'rows'),:),'rows');
+  next_configs=unique(configs(ismember(configs(:,[1 2 3 5 6]),config_wo_delay(c,:),'rows'),:),'rows');
   delays=sort(next_configs(:,4));
 
   delay_labels = {};
