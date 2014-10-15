@@ -92,7 +92,7 @@ do
 			#
 			# Copy
 			#
-			DES="${NODECOUNT_A}-${NODECOUNT_B}-degree"
+			DES=$(printf "%02d-%02d-degree" ${NODECOUNT_A} ${NODECOUNT_B})
 			if [ ! -d "${DES}" ]
 			then
 				mkdir "${DES}"
@@ -121,7 +121,7 @@ do
 		#
 		# get dir
 		#
-		DES="${NODECOUNT_A}-${NODECOUNT_B}-degree"
+		DES=$(printf "%02d-%02d-degree" ${NODECOUNT_A} ${NODECOUNT_B})
 		
 		echo "Process ${DES}"
 		cd ${DES}

@@ -3,6 +3,10 @@
 
 #define ROUTING_PERFORMANCE_CNT
 
+#define LINKPROBE_PERIOD   2000
+#define LINKPROBE_TAU      50000
+#define LINKPROBE_PROBES   "2 1500 24"
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
@@ -54,7 +58,7 @@ ff[1]
 
 brn_clf[1]
 -> BRN2Decap()
--> dc::DCluster(NODEIDENTITY id, LINKSTAT device_wifi/link_stat, DISTANCE 1, DEBUG 4)
+-> dc::DCluster(NODEIDENTITY id, LINKSTAT device_wifi/link_stat, DISTANCE 10, DEBUG 4)
 -> SetTimestamp()
 -> BRN2EtherEncap(USEANNO true, DEBUG DEBUGLEVEL)
 -> [0]routing;
@@ -75,9 +79,9 @@ device_wifi[2]
 
 Script(
   wait 15,
-  read dc.stats,
+//  read dc.stats,
   wait 15,
-  read dc.stats,
-  wait 15,
+//  read dc.stats,
+  wait 400,
   read dc.stats
 );

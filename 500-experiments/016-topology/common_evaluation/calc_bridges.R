@@ -36,15 +36,12 @@ g = graph.data.frame(links, directed = FALSE)
 # removeduplicated edges
 g = as.undirected(as.directed(g))
 
-theoretical_bridges = get.bridges(g)
+if(nrow(links) > 0) {
+  theoretical_bridges = get.bridges(g)
+} else {
+  theoretical_bridges = matrix(nrow = 0, ncol = 2)
+}
 cat("found", nrow(theoretical_bridges), "bridges\n", file=stderr())
 
 # Write theoretical results
-if(is.null(theoretical_bridges))  
-{
-    write.table(theoretical_bridges, file=stdout(), sep=",", row.names = FALSE)
-}else 
-{
-    write.table(theoretical_bridges, file=stdout(), sep=",", col.names=c("node_a", "node_b"), row.names = FALSE)
-}
-
+write.table(theoretical_bridges, file=stdout(), sep=",", col.names=c("node_a", "node_b"), row.names = FALSE)
