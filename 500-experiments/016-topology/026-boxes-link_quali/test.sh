@@ -14,7 +14,7 @@ ETXLIMIT=$2
 export ETXLIMIT
 DISTANCE_MIN="100"
 DISTANCE_MAX="400"
-DISTANCE_STEP="10"
+DISTANCE_STEP="20"
 
 
 echo "simulate ${RUNS} runs"
@@ -38,9 +38,9 @@ do
 		# Create placement
 		#
 		echo "create box placement..."
-		let FIRST=50
-		let SECOND=${DISTANCE}-${FIRST}
-		../common_evaluation/generate_box_placement.R --l1 ${FIRST} --l2 ${SECOND} --b 300 --r1 ${FIRST} --r2 ${SECOND} > ${PLACEMENT_PATH}
+		let SECOND=50
+		let FIRST=${DISTANCE}-${SECOND}
+		../common_evaluation/generate_box_placement.R --l1 ${FIRST} --l2 ${SECOND} --b 250 --r1 ${FIRST} --r2 ${SECOND} > ${PLACEMENT_PATH}
 		if [ "$?" -ne 0 ] 
 		then
 			echo "result: failed"
@@ -123,6 +123,12 @@ do
 	echo "Process ${DES}"
 	cd ${DES}
 	../../common_evaluation/collect_results.sh > ${RESULT_PATH}
+
+	if [ ! -s ${RESULT_PATH} ] 
+	then
+		echo "Warning: Empty result file at ${DES}" >&2
+	fi
+
 	cd ..
 done
 
