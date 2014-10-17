@@ -37,9 +37,9 @@ device_wifi
 
 brn_clf[0]
 -> BRN2Decap()
--> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 0, IS_DETECTION_PERIODICALLY true, RANDOM_START_DELAY_MS 20000, DETECTION_INTERVAL_MS 30000, USE_LINK_STAT true)
+-> topo_detect::TopologyDetection(TOPOLOGY_INFO topo_info, NODE_IDENTITY id, LINK_TABLE lt, DEBUG 0, IS_DETECTION_PERIODICALLY true, RANDOM_START_DELAY_MS 20000, DETECTION_INTERVAL_MS 30000, USE_LINK_STAT true, VOTING_RULE 1)
 -> SetTimestamp()
--> Print(TIMESTAMP true)
+//-> Print(TIMESTAMP true)
 -> BRN2EtherEncap(USEANNO true)
 -> SetTXRate(RATE 2, TRIES 7)
 -> SetRTS(true)
