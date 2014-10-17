@@ -36,9 +36,9 @@ g = graph.data.frame(links, directed = FALSE)
 #
 ap_tp = sum(pr_ap %in% theo_ap)
 ap_fp = nrow(pr_ap) - ap_tp
-ap_tp_fn = num_of_runs * nrow(theo_ap);
+ap_tp_fn = num_of_measure * nrow(theo_ap);
 ap_fn = ap_tp_fn - ap_tp
-ap_fp_tn = (length(V(g)) - nrow(theo_ap)) * num_of_runs
+ap_fp_tn = (length(V(g)) - nrow(theo_ap)) * num_of_measure
 ap_tn = ap_fp_tn - ap_fp
 
 ap_precision = ap_tp / (ap_tp + ap_fp)
@@ -70,9 +70,9 @@ pr_br = interaction(pr_unique_br[,1], pr_unique_br[,2])
 
 br_unique_tp    = sum(pr_br %in% theo_br_fwd) + sum(pr_br %in% theo_br_rev)
 br_unique_fp    = length(pr_br) - br_unique_tp
-br_unique_tp_fn = num_of_runs * nrow(theo_br);
+br_unique_tp_fn = num_of_measure * nrow(theo_br);
 br_unique_fn    = br_unique_tp_fn - br_unique_tp
-br_unique_fp_tn = num_of_runs * (length(E(g)) - nrow(theo_br))
+br_unique_fp_tn = num_of_measure * (length(E(g)) - nrow(theo_br))
 br_unique_tn    = br_unique_fp_tn - br_unique_fp
 
 br_unique_precision = br_unique_tp / (br_unique_tp + br_unique_fp)
