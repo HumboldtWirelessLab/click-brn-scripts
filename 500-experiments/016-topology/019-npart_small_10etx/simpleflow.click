@@ -1,7 +1,7 @@
 #define DEBUGLEVEL 2
 
 #define PRIO_QUEUE
-#define RAWDUMP
+//#define RAWDUMP
 #define ENABLE_DSR_DEBUG
 
 #define BRNFEEDBACK
@@ -63,11 +63,12 @@ Script(
   write device_wifi/link_stat.probes "",
   read topo_detect.config,
   
-  write topo_detect.config DEBUG 6, // to get XML start elements
+  wait 200, // ... for training
+  write topo_detect.config DEBUG 1, // to get XML start elements
   write topo_detect.config PRINT_INFO_PERIODICALLY true,  // print topo info periodically
 
 
-  wait 330, // ... for testing
+  wait 300, // ... for testing
   write topo_detect.stop_periotically_detection_smoothly,  // timer for triggering periodically searches will not be refreshed
   write topo_detect.config PRINT_INFO_PERIODICALLY false,
 
