@@ -37,6 +37,8 @@ do
 	RESULT=$?
 	cd ${OPWD}
 	cat /tmp/${PLACEMENT_PATH} | awk -F " " '{print "sk"NR,$2,$3,$4}' > ${PLACEMENT_PATH}
+	NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
+	echo "  new node count: ${NODE_COUNT}"
 	
 	if [ "${RESULT}" -ne 0 ] 
 	then
@@ -44,20 +46,7 @@ do
 		exit -1
 	fi
 	
-	
-	#
-	# Update mes
-	#
-	echo "update .mes file..."
-	NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
-	echo "  new node count: ${NODE_COUNT}"
-	sed -i "s/:[0-9]*/:${NODE_COUNT}/" simpleflow.mes
-	if [ "$?" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
-	fi
-	
+
 	#
 	# simulate placement
 	#
