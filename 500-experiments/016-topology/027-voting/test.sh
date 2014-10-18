@@ -13,8 +13,6 @@ RUNS=$1
 RULE_MIN=1
 RULE_MAX=7
 
-
-
 echo "overwrite placement file ${PLACEMENT_PATH}"
 echo "overwrite result file ${RESULT_PATH}"
 echo "simulate ${RUNS} runs"
@@ -40,6 +38,8 @@ do
 	RESULT=$?
 	cd ${OPWD}
 	cat /tmp/${PLACEMENT_PATH} | awk -F " " '{print "sk"NR,$2,$3,$4}' > ${PLACEMENT_PATH}
+	NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
+	echo "  new node count: ${NODE_COUNT}"
 	
 	if [ "${RESULT}" -ne 0 ] 
 	then
@@ -48,61 +48,75 @@ do
 	fi
 	
 	
-	#
-	# Update mes
-	#
-	echo "update .mes file..."
-	NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
-	echo "  new node count: ${NODE_COUNT}"
-	sed -i "s/:[0-9]*/:${NODE_COUNT}/" simpleflow.mes
-	if [ "$?" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
-	fi
-	
-	for RULE in $(seq ${RULE_MIN} ${RULE_MAX})
+	for ETX in 10 100
 	do
-		echo "------------------[ Run ${RUN}/${RUNS} ]------[ ${RULE}/${RULE_MAX} ]------------------"
+		echo "update etx threshold at DES file"
+		sed -ie "s/ETX_THRESHOLD=[0-9]*/ETX_THRESHOLD=${ETX}/" simpleflow.des 
 
-		#
-		# Update click
-		#
-		sed -i  "s/VOTING_RULE [0-9]*/VOTING_RULE ${RULE}/" simpleflow.click
+		for RULE in $(seq ${RULE_MIN} ${RULE_MAX})
+		do
+			echo "------------------[ Run ${RUN}/${RUNS} ]------[ Rule ${RULE}/${RULE_MAX} ]-----[ ETX $ETX ]-------------"
 
-		#
-		# simulate placement
-		#
-		echo "run simulation..."
-		USEPYTHON=1 PROGRESS=1  run_sim.sh
-		RESULT=$?
-		if [ "${RESULT}" -ne 0 ] 
-		then
-			echo "result: failed"
-			exit -1
-		fi
+			#
+			# Update click
+			#
+			echo "update voting rule at CLICK file"
+			sed -i  "s/VOTING_RULE [0-9]*/VOTING_RULE ${RULE}/" simpleflow.click
 
-		#
-		# Remove large files
-		#
-		rm -rf ${SIM_RESULT_DIR}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
+			#
+			# simulate placement
+			#
+			echo "run simulation..."
+			USEPYTHON=1 PROGRESS=1  run_sim.sh
+			RESULT=$?
+			if [ "${RESULT}" -ne 0 ] 
+			then
+				echo "result: failed"
+				exit -1
+			fi
 
-		#
-		# Copy
-		#
-		DES="${RULE}-votingrule"
-		if [ ! -d "${DES}" ]
-		then
-			mkdir "${DES}"
-		fi
+			#
+			# Get or update net info for next rules
+			#
+			if [ ! -n "${PROBABILITY_BR}" ]
+			then
+				PROBABILITY_BR=$(awk -F ',' '{if($1 == "probability_theo_br"){ print $2}}' ${SIM_RESULT_DIR}/result.csv)
+				echo "update bridge probability ${PROBABILITY_BR}"
+				sed -ie "s/BR_POBABILITY [0-9]*\.[0-9]*/BR_POBABILITY ${PROBABILITY_BR}/" simpleflow.click 
+			fi
+			
+			if [ ! -n "${PROBABILITY_AP}" ]
+			then
+				PROBABILITY_AP=$(awk -F ',' '{if($1 == "probability_theo_ap"){ print $2}}' ${SIM_RESULT_DIR}/result.csv)
+				echo "update AP probability ${PROBABILITY_AP}"
+				sed -ie "s/AP_POBABILITY [0-9]*\.[0-9]*/AP_POBABILITY ${PROBABILITY_AP}/" simpleflow.click
+			fi
 
-		i=1
-		while [ -e "./${DES}/$i" ]; do i=$((i+1)); done;
-		DES_SIM_RESULT_DIR=${DES}/${i}
+			#
+			# Remove large files
+			#
+			rm -rf ${SIM_RESULT_DIR}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
 
-		echo "move ${SIM_RESULT_DIR} to ${DES_SIM_RESULT_DIR}"
-		mv ${SIM_RESULT_DIR} ${DES_SIM_RESULT_DIR}
-		cp ${PLACEMENT_PATH} ${DES_SIM_RESULT_DIR}
+			#
+			# Copy
+			#
+			DES="${RULE}-votingrule"
+			if [ ! -d "${DES}" ]
+			then
+				mkdir "${DES}"
+			fi
+
+			i=1
+			while [ -e "./${DES}/$i" ]; do i=$((i+1)); done;
+			DES_SIM_RESULT_DIR=${DES}/${i}
+
+			echo "move ${SIM_RESULT_DIR} to ${DES_SIM_RESULT_DIR}"
+			mv ${SIM_RESULT_DIR} ${DES_SIM_RESULT_DIR}
+			cp ${PLACEMENT_PATH} ${DES_SIM_RESULT_DIR}
+		done
+
+		unset PROBABILITY_BR
+		unset PROBABILITY_AP
 
 	done
 done
