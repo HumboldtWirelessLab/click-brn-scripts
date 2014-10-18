@@ -15,6 +15,7 @@ pr_unique_br_file_path = "bridges_unique_per_search.csv"
 pr_ap_path             = "articulation_points.csv"
 result_file_path       = "result.csv"
 links_file_path        = "links_filtered.csv"
+etx_threshold_path 	   = "etx_threshold.csv"
 
 
 #
@@ -27,6 +28,7 @@ theo_br = as.matrix(read.csv(file = theo_br_file_path))
 theo_ap = as.matrix(read.csv(file = theo_ap_path))
 num_of_runs = as.integer(read.csv(file = runs_file_path))
 num_of_measure = as.integer(read.csv(file = runs_measure_file_path))
+etx_threshold = as.integer(read.csv(file = etx_threshold_path))
 links = as.matrix(read.csv(file = links_file_path))
 g = graph.data.frame(links, directed = FALSE)
 
@@ -165,18 +167,20 @@ result = rbind(result, c("br_class_falsenegative", br_class_falsenegative))
 result = rbind(result, c("br_class_accuracy", br_class_accuracy))
 result = rbind(result, c("br_class_f_measure", br_class_f_measure))
 
-
 result = rbind(result, c("num_edges", length(E(g))))
 result = rbind(result, c("num_vertexes", length(V(g))))
 result = rbind(result, c("num_theo_br_per_measure", nrow(theo_br)))
 result = rbind(result, c("num_theo_ap_per_measure", nrow(theo_ap)))
 result = rbind(result, c("num_theo_br", nrow(theo_br) * num_of_measure))
 result = rbind(result, c("num_theo_ap", nrow(theo_ap) * num_of_measure))
+result = rbind(result, c("probability_theo_br", round(nrow(theo_br) / length(V(g)), 3) ))
+result = rbind(result, c("probability_theo_ap", round(nrow(theo_ap) / length(E(g)), 3) ))
 result = rbind(result, c("num_all_pr_br", nrow(pr_all_br)))
 result = rbind(result, c("num_unique_pr_br", nrow(pr_unique_br)))
 result = rbind(result, c("num_pr_ap", nrow(pr_ap)))
 result = rbind(result, c("num_runs", num_of_runs))
 result = rbind(result, c("num_measure", num_of_measure))
+result = rbind(result, c("etx_threshold", etx_threshold))
 
 
 #

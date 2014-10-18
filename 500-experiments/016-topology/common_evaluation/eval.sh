@@ -20,6 +20,18 @@ esac
 
 
 #
+# Read ETX_THRESHOLD
+#
+source "$CONFIGFILE"
+
+if [ -z "$ETX_THRESHOLD" ]
+then
+  ETX_THRESHOLD=100
+fi
+echo -e "\"etx_threshold\"\n${ETX_THRESHOLD}" > ${RESULTDIR}/etx_threshold.csv
+
+
+#
 # Create nodes.csv
 #
 $DIR/extract_nodes.py -p ${RESULTDIR}
@@ -38,7 +50,7 @@ ${DIR}/extract_dibadawn_links.py -f ${RESULTDIR}/measurement.xml > ${LINKS_EXTRA
 LINKS_RAW_PATH=${RESULTDIR}/links_raw.csv
 xsltproc -o ${LINKS_RAW_PATH} ${DIR}/dibadawn_links_to_csv.xslt ${LINKS_EXTRACED_PATH}
 LINKS_PATH=${RESULTDIR}/links_filtered.csv
-$DIR/filter_links.py -f ${LINKS_RAW_PATH} -e 100 > ${LINKS_PATH}
+$DIR/filter_links.py -f ${LINKS_RAW_PATH} -e ${ETX_THRESHOLD} > ${LINKS_PATH}
 DISTANCES_PATH=${RESULTDIR}/links_distances.csv
 $DIR/link_distances.py -n ${RESULTDIR}/nodes.csv -l ${LINKS_PATH} > ${DISTANCES_PATH}
 
@@ -60,15 +72,21 @@ echo -e "\"num_of_runs\"\n${COUNT_OF_RUNS}" > ${RESULTDIR}/runs.csv
 COUNT_OF_MEASURES=$(grep -e "topology_info.*extra_data=" ${RESULTDIR}/measurement.xml | awk -F "'" 'BEGIN{max=0}{if($6 > max){max = $6}}END{print max}')
 echo -e "\"num_of_measure\"\n${COUNT_OF_MEASURES}" > ${RESULTDIR}/runs_measure.csv
 
-grep -e "simpleflow>" -e "<CrossEdge" ${RESULTDIR}/measurement.xml > ${RESULTDIR}/crossedge_extract.xml
-xsltproc -o ${RESULTDIR}/cycles.csv ${DIR}/dibadawn_asym_cycle_ration.xslt ${RESULTDIR}/crossedge_extract.xml
+if [ ! -z "$EXTRACT_CROSSEDGES" ]
+then
+  grep -e "simpleflow>" -e "<CrossEdge" ${RESULTDIR}/measurement.xml > ${RESULTDIR}/crossedge_extract.xml
+  xsltproc -o ${RESULTDIR}/cycles.csv ${DIR}/dibadawn_asym_cycle_ration.xslt ${RESULTDIR}/crossedge_extract.xml
+fi
  
 cd ${RESULTDIR}
 ../../common_evaluation/calc_articulation_points.R ${LINKS_PATH} > ${RESULTDIR}/theoretical_articulation_points.csv
 ../../common_evaluation/calc_bridges.R ${LINKS_PATH} > ${RESULTDIR}/theoretical_bridges.csv
 ../../common_evaluation/calc_f1_measure.R
 
-../../common_evaluation/plot_distances.R 
+if [ ! -z "$PLOT_LINK_DISTANCES" ]
+then
+  ../../common_evaluation/plot_distances.R 
+fi
 
 exit 2
 
