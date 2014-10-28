@@ -7,10 +7,12 @@ generate.calculated.box.placement <- function(
     left.first.distance = 170,
     left.second.distance = 60,
     left.third.distance = 0,
+    left.fourth.distance = 300,
     left.node.count = 10,
     right.first.distance = 170,
     right.second.distance = 60,
     right.third.distance = 0,
+    right.fourth.distance = 300,
     right.node.count = 10) {
     stopifnot(left.node.count > 0)
     x1 = 0
@@ -27,7 +29,7 @@ generate.calculated.box.placement <- function(
     #
     # Left side
     #
-    r = left.second.distance
+    r = left.first.distance + left.second.distance
     n = 0
     while( n < left.node.count) {
         r.plus = runif(1, 0, left.third.distance)
@@ -35,10 +37,12 @@ generate.calculated.box.placement <- function(
         repeat{
             a = runif(1, 0, 2 * pi)
             
-            x = (r + r.plus) * cos(a) + x1 - left.first.distance
+            x = (r + r.plus) * cos(a) + x1
             y = (r + r.plus) * sin(a) + y1
             
-            if(x < x1 - left.first.distance) {
+            if(x < x1 - left.first.distance & 
+                   y < y1 + left.fourth.distance / 2 &
+                   y > y1 - left.fourth.distance / 2) {
                 result = rbind(result, data.frame(x, y))
                 n = n + 1 
                 break
@@ -49,7 +53,7 @@ generate.calculated.box.placement <- function(
     #
     # Right side
     #
-    r = right.second.distance
+    r = right.first.distance + right.second.distance
     n = 0
     while( n < right.node.count) {
         r.plus = runif(1, 0, right.third.distance)
@@ -57,10 +61,12 @@ generate.calculated.box.placement <- function(
         repeat{
             a = runif(1, 0, 2 * pi)
             
-            x = (r + r.plus) * cos(a) + x2 + right.first.distance
+            x = (r + r.plus) * cos(a) + x2
             y = (r + r.plus) * sin(a) + y2
             
-            if(x > x2 + right.first.distance) {
+            if(x > x2 + right.first.distance & 
+                   y < y2 + right.fourth.distance / 2 &
+                   y > y2 - right.fourth.distance / 2) {
                 result = rbind(result, data.frame(x, y))
                 n = n + 1 
                 break
@@ -87,10 +93,12 @@ main <- function() {
         make_option(c("--l1"), dest = "left.first.distance", type = "integer", default = 170, help = "Left min distance btw bridge-node and other nodes at the box"),
         make_option(c("--l2"), dest = "left.second.distance", type = "integer", default = 60, help = "Left first + second distance is the minimal distance or the radius related to the bridge node of a box."),
         make_option(c("--l3"), dest = "left.third.distance", type = "integer", default = 0, help = "Left first + second + third distance is the maximal distance or the radius related to the bridge node of a box."),
+        make_option(c("--l4"), dest = "left.fourth.distance", type = "integer", default = 300, help = "y-range for the left box."),
         make_option(c("--rn"), dest = "right.node.number", type = "integer", default = 6, help = "Right number of nodes"),
         make_option(c("--r1"), dest = "right.first.distance", type = "integer", default = 170, help = "Right min distance btw bridge-node and other nodes at the box"),
         make_option(c("--r2"), dest = "right.second.distance", type = "integer", default = 60, help = "Right first + second distance is the minimal distance or the radius related to the bridge node of a box."),
-        make_option(c("--r3"), dest = "right.third.distance", type = "integer", default = 0, help = "Right first + second + third distance is the maximal distance or the radius related to the bridge node of a box.")
+        make_option(c("--r3"), dest = "right.third.distance", type = "integer", default = 0, help = "Right first + second + third distance is the maximal distance or the radius related to the bridge node of a box."),
+        make_option(c("--r4"), dest = "right.fourth.distance", type = "integer", default = 300, help = "y-range for the right box.")
     )
     cmd.args <- parse_args(OptionParser(option_list = cmd.opts))
     

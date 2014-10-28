@@ -16,7 +16,11 @@ g = graph.data.frame(links, directed = FALSE)
 # removeduplicated edges
 g = as.undirected(as.directed(g))
 
-theoretical_articulation_points = as.matrix(V(g)[articulation.points(g)]$name)
+if(nrow(links) > 0){
+	theoretical_articulation_points = as.matrix(V(g)[articulation.points(g)]$name)
+} else {
+	theoretical_articulation_points = matrix(nrow = 0, ncol = 1)
+}
 cat("found", nrow(theoretical_articulation_points), "articulation points\n", file=stderr())
 
 # Write theoretical results
