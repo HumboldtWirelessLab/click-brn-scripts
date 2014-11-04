@@ -1,6 +1,8 @@
 %basedir='20141014/';
 %basedir='20141014b-gridrand/';
-basedir='';
+%basedir='20141015-small/';
+basedir='20141015-big/';
+%basedir='';
   
 if (~exist('basedir'))
   basedir='20140912/';
@@ -15,6 +17,8 @@ end
 plot_cols=['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y'];
 plot_sign=['*';'+';'o';'x';'.';'-'];
 scheduling_schemes_str = {'neighbours cnt','max delay','prio'};
+show_param_filestr = {'config', 'cntpacket' , 'avgdelay' , 'maxdelayperhop', 'reach' };
+
 
 INDEX=1;
 
@@ -125,9 +129,14 @@ end
 plotold=1;
 
 if ( plotold == 1)
-  test_params(configs, result, [3 5], [2 3]);
+  figurehandle = test_params(configs, result, [3 5], [2 3]);
+
+  %saveas(figurehandle, char(strcat(basedir, '001.png')), 'png');
+  saveas(figurehandle, char(strcat(basedir, '001.eps')), 'epsc');
 
   test_params(configs, result, [1 14], [2 3]);
+  %saveas(figurehandle, char(strcat(basedir, '002.png')), 'png');
+  saveas(figurehandle, char(strcat(basedir, '002.eps')), 'epsc');
 
   show_configs=configs(configs(:,5) == 4,:);
   test_params(show_configs, result, [3 5], [2 3]);
@@ -151,10 +160,11 @@ test_params(show_configs, result, [1 11], [2 3]);
 test_params(show_configs, result, [1 2], [2 3]);
 test_params(show_configs, result, [2 1], [2 3]);
 
-%test_params(show_configs, result, [1 5], [2 5]);
-%test_params(show_configs, result, [5 1], [2 5]);
+test_params(show_configs, result, [1 5], [2 5]);
+test_params(show_configs, result, [5 1], [2 5]);
 
-f=z-1
+plot_scatter = 0;
+if plot_scatter == 1
 
 scheduling_cfgs = unique(configs(:,end),'rows');
 
@@ -184,8 +194,6 @@ ylim([0 max(result(:,3))*1.05]);
 
 saveas(h1, 'txscheduling.png' ,'png');
 saveas(h1, 'txscheduling.eps' ,'epsc');
-
-f=z-1;
 
 h1 = figure;
 
@@ -272,8 +280,7 @@ grid on;
 saveas(h1, 'col.png' ,'png');
 saveas(h1, 'col.eps' ,'epsc');
 
-plot_scatter = 0;
-if plot_scatter == 1
+
 
 for c=1:size(config_wo_delay,1)
   h1 = figure;

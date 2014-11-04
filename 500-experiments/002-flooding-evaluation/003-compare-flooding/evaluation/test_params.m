@@ -1,4 +1,4 @@
-function test_params(show_config, result, params, show_param)
+function figurehandle = test_params(show_config, result, params, show_param)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 plot_cols = ['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y'];
@@ -20,7 +20,7 @@ for rc=1:size(show_cfgs,1)
   show_cfgs_labels = union(show_cfgs_labels, strcat( params_name(params(1)),' (',num2str(show_cfgs(rc,1)),')  - ',params_name(params(2)),' (',num2str(show_cfgs(rc,2)), ')' ), 'stable');
 end
 
-h1 = figure;
+figurehandle = figure;
 
 sum_size=0;
 
@@ -60,8 +60,8 @@ ylim([min_y*0.95 max_y*1.05]);
 pngfile=char(strcat(show_param_filestr(show_param(1)),'_vs_', show_param_filestr(show_param(2)),'.png'));
 epsfile=char(strcat(show_param_filestr(show_param(1)),'_vs_', show_param_filestr(show_param(2)),'.png'));
 
-saveas(h1, pngfile, 'png');
-saveas(h1, epsfile, 'epsc');
+saveas(figurehandle, pngfile, 'png');
+saveas(figurehandle, epsfile, 'epsc');
 
 end
 
