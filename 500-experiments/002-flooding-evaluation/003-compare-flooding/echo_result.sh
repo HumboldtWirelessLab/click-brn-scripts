@@ -2,6 +2,7 @@
 
 for i in 1_MBit*; do echo -n "$i: "; 
   cat $i/evaluation/flooding_info/floodingstats.csv;
+ # cat $i/flooding.click.eth0 | grep OverlayFlooding;
  # cat $i/evaluation/flow_info/flowtime.mat;
 done
 

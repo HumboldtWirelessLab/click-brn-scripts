@@ -117,4 +117,9 @@ Script(
 );
 #endif
 
+Script(
+  wait 100,
+  read lt.links,
+  read device_wifi/link_stat.bcast_stats
+);
 #include "flooding_script.click"

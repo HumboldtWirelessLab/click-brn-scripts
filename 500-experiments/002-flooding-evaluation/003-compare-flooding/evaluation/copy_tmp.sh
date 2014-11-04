@@ -6,9 +6,10 @@ TMPFILECOUNT=`cat $NODETABLE | awk '{print $8}' | grep "/tmp/" | wc -l`
 
 #echo $TMPFILECOUNT
 
-echo -n "" > $NODETABLE.tmp
 
 if [ $TMPFILECOUNT -ne 0 ]; then
+
+  echo -n "" > $NODETABLE.tmp
 
   while read line; do
     NODE=`echo $line | awk '{print $1}'`
