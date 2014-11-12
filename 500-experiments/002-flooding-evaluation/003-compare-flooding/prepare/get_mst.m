@@ -6,8 +6,8 @@ function [ ] = get_mst( pdr_path, output_path, mode, s )
 %   mode - Genutzter Modus zum erhalten eines ungerichteten Graphen (0 - max,
 %   1 - min, 2 - mean)
 
-    H = load(pdr_path);
- 
+    H = load(pdr_path,'-ASCII');
+
     switch mode
       case 0
         H=max(H,H');

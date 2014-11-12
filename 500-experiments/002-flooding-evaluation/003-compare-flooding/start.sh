@@ -37,13 +37,17 @@ else
   MIN_PLACEMENT=1
 fi
 
+if [ "x$NONODES" = "x" ]; then
+  NONODES=100
+fi
+
 if [ "x$SIM" = "x1" ]; then
   NODESFILE=nodes.sim
 
   if [ "x$GRID" = "x1" ]; then
     echo -n "" > $NODESFILE
-    for i in `seq 1 100`; do
-      echo "sk$i" >> $NODESFILE
+    for i in `seq 1 $NONODES`; do
+      echo "node$i" >> $NODESFILE
     done
     MAX_PLACEMENT=1
   else
@@ -73,8 +77,8 @@ FLOWTIMESPACE=10
 INTERVAL=500
 #DURATION=15
 #DURATION_MS=15000
-DURATION=6
-DURATION_MS=6000
+DURATION=10
+let DURATION_MS=DURATION*1000
 
 echo -n "" > flooding.ctl
 
@@ -82,7 +86,7 @@ for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT`; do
    if [ "x$SIM" = "x" ]; then
      MAC=`cat nodes.mac | grep $n | awk '{print $3}'`
    else
-     mac_raw=`echo $n | sed "s#sk##g"`
+     mac_raw=`echo $n | sed "s#node##g"`
      m1=`expr $mac_raw / 256`
      m2=`expr $mac_raw % 256`
      m1h=$(echo "obase=16; $m1" | bc)
@@ -314,6 +318,11 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
          echo "SEED=$repetition" >> flooding.des
 
+         if [ ! -f placement.txt ]; then
+           echo "miss placementfile"
+           exit 0;
+         fi
+
          if [ "x$SIM" = "x" ]; then
            RUNMODE=$CURRENTRUNMODE run_measurement.sh flooding.des $MEASUREMENTDIR
 
@@ -327,6 +336,10 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
          else
            PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
+         fi
+
+         if [ ! -f placement.txt ]; then
+           echo "miss placementfile after prepare"
          fi
 
          if [ "x$SIM" = "x" ]; then
@@ -372,6 +385,8 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
         echo "BO_STRATEGY=$bos" >> $MEASUREMENTDIR/params
         echo "RS_STRATEGY=$rs" >> $MEASUREMENTDIR/params
         echo "FLOODING_TX_SCHEDULING=$fl_txsched" >> $MEASUREMENTDIR/params
+
+        #cp placement.txt $MEASUREMENTDIR/$
 
        fi
 

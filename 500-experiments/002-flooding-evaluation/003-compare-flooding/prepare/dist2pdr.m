@@ -1,9 +1,9 @@
 function [ ] = dist2pdr(pos_path, output_path)
 
     a=sortrows(load(pos_path),1);
-    
+
     dist=zeros(size(a,1),size(a,1));
-    
+
     for i=1:size(a,1)
       for j=i:size(a,1)
         if ( i ~= j )
