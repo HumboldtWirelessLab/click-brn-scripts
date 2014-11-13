@@ -91,10 +91,10 @@ NODES=`cat $RESULTDIR/nodes.mac | awk '{print $3}'`
 
 echo "Create linkgraph (Threshold: $THRESHOLD)"
 
-if [ ! -f $EVALUATIONSDIR/graph.txt ]; then
+if [ ! -f $EVALUATIONSDIR/graph.mat ]; then
 
   (cd $MATDIR; matwrapper "try,metric2graph('$EVALUATIONSDIR/linksmetric.mat','$EVALUATIONSDIR/graph.csv',$THRESHOLD),catch,exit(1),end,exit(0)" 1> /dev/null)
-  cat $EVALUATIONSDIR/graph.csv | sed "s#,# #g" > $EVALUATIONSDIR/graph.txt
+  cat $EVALUATIONSDIR/graph.csv | sed "s#,# #g" > $EVALUATIONSDIR/graph.mat
 
 fi
 
@@ -104,7 +104,7 @@ fi
 
 echo "Count part"
 
-(cd $DIR; matwrapper "try,cnt_partitions('$EVALUATIONSDIR/graph.txt','$EVALUATIONSDIR/cnt_partitions.csv'),catch,exit(1),end,exit(0)" 1> /dev/null)
+(cd $DIR; matwrapper "try,cnt_partitions('$EVALUATIONSDIR/graph.mat','$EVALUATIONSDIR/cnt_partitions.csv'),catch,exit(1),end,exit(0)" 1> /dev/null)
 
 if [ $? -ne 0 ]; then
   echo "Ohh, matlab error."
