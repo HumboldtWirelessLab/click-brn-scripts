@@ -28,10 +28,6 @@ fi
 MAX_THREADS=20
 NUM=0
 
-if [ ! -f placement.txt ]; then
-  cat placements_npart.dat | grep -e "^1 " | sed -e "s#^1 ##g" > placement.txt
-fi
-
 echo -n "" > $DIR/evaluation_finish
 
 for i in `ls -d *MBit*`; do
@@ -60,4 +56,4 @@ while [ $LINES -ne $NUM ]; do
   LINES=`cat $DIR/evaluation_finish | wc -l`
 done
 
-rm -f $DIR/evaluation_finish placement.txt
+rm -f $DIR/evaluation_finish
