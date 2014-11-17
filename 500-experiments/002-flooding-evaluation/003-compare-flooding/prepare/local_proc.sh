@@ -39,7 +39,7 @@ STARTNODE=1
 
 let GRAPH=OVERLAYGRAPH/4
 
-cat $RESULTDIR/placementfile.plm | NAME2NUM=1 human_readable.sh $RESULTDIR/nodes.mac > $RESULTDIR/placementfile_mst.plm
+cat $NODEPLACEMENTFILE | NAME2NUM=1 human_readable.sh $RESULTDIR/nodes.mac > $RESULTDIR/placementfile_mst.plm
 
 (cd $DIR; matwrapper.sh "try,dist2pdr('$RESULTDIR/placementfile_mst.plm','$RESULTDIR/dist.csv'),catch,exit(1),end,exit(0)")
 sed 's#,# #g' $RESULTDIR/dist.csv > $RESULTDIR/dist.mat

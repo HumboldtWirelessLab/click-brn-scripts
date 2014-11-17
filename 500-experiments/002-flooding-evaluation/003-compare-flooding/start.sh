@@ -318,7 +318,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
          echo "SEED=$repetition" >> flooding.des
 
-         if [ ! -f placement.txt ]; then
+         if [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
            echo "miss placementfile"
            exit 0;
          fi
@@ -338,7 +338,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
          fi
 
-         if [ ! -f placement.txt ]; then
+         if  [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
            echo "miss placementfile after prepare"
          fi
 

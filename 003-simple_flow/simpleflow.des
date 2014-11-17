@@ -10,15 +10,15 @@ NODEPLACEMENTFILE=placement.default
 NODETABLE=simpleflow.mes
 NODEPLACEMENT=string
 NODEPLACEMENTOPTS="relative"
-FIELDSIZE=30
+FIELDSIZE=10
 #RXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATIONSDIR=WORKDIR
-EVALUATION="embrace_xml evaluation/eval.sh"
+EVALUATIONSDIR=WORKDIR/evaluation
+EVALUATION="flow_info evaluation/eval.sh"
 
 GPS=no
 NOTICE=no
