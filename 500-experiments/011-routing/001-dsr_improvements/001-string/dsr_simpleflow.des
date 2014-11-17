@@ -17,7 +17,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
-EVALUATION="evaluation/eval.sh grep_xml linkstat_graph"
+EVALUATION="evaluation/eval.sh grep_xml network_info_viz"
 
 GPS=no
 NOTICE=no
