@@ -19,7 +19,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
-EVALUATION="evaluation/get_links.sh"
+EVALUATION="network_info_viz network_info_cluster"
 
 GPS=no
 NOTICE=no
