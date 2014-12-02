@@ -126,7 +126,7 @@ echo "  read flooding/unicfl.stats," >> flooding_script.click
 echo "  read sf.stats," >> flooding_script.click
 #echo "  read setrtscts.stats," >> flooding_script.click
 #echo "  read rate_flooding.stats," >> flooding_script.click
-#echo "  read device_wifi/wifidevice/cst.stats" >> flooding_script.click
+echo "  read device_wifi/wifidevice/cst.stats" >> flooding_script.click
 
 echo ");" >> flooding_script.click
 
@@ -241,7 +241,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
                  fi
                  MEASUREMENTDIR="$MEASUREMENTDIR""_p_"${OVERLAY_ARRAY[$OVERLAYINDEX]}
 
-                 echo "#define FLOODING_DEBUG 4" >> flooding_config.h
+                 echo "#define FLOODING_DEBUG 2" >> flooding_config.h
                  echo "#define FLOODING_STRATEGY 4" >> flooding_config.h
                  let OVERLAYGRAPH=${OVERLAY_ARRAY[$OVERLAYINDEX]}/4
                  let OVERLAYCONFIG=${OVERLAY_ARRAY[$OVERLAYINDEX]}%4
