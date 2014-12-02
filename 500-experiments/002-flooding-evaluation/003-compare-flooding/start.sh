@@ -241,7 +241,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
                  fi
                  MEASUREMENTDIR="$MEASUREMENTDIR""_p_"${OVERLAY_ARRAY[$OVERLAYINDEX]}
 
-                 echo "#define FLOODING_DEBUG 4" >> flooding_config.h
+                 echo "#define FLOODING_DEBUG 2" >> flooding_config.h
                  echo "#define FLOODING_STRATEGY 4" >> flooding_config.h
                  let OVERLAYGRAPH=${OVERLAY_ARRAY[$OVERLAYINDEX]}/4
                  let OVERLAYCONFIG=${OVERLAY_ARRAY[$OVERLAYINDEX]}%4
