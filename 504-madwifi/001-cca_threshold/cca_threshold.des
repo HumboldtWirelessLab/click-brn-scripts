@@ -1,6 +1,6 @@
 NAME=cca_treshold
 SIMULATOR=ns2
-RADIO=shadowing11b
+RADIO=shadowing
 FORGEINNODES=no
 
 TIME=60

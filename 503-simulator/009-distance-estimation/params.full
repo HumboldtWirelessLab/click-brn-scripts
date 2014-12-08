@@ -1,2 +1,2 @@
 VAR_RXRANGE=`seq 10 10 300`
-VAR_RADIO="tworayground shadowing shadowing11b  tworayground01b  tworayground11b  tworayground54g"
+VAR_RADIO="tworayground shadowing"

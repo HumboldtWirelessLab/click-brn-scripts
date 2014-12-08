@@ -38,7 +38,7 @@ else
 fi
 
 if [ "x$SIM" = "x1" ]; then
-  CHANNEL_MODEL="shadowing11b tworayground01b"
+  CHANNEL_MODEL="shadowing tworayground"
 else
   CHANNEL_MODEL="real"
 fi
