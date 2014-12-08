@@ -1,7 +1,7 @@
 NAME=overlay_flooding
 SIMULATOR=ns2
 RADIO=shadowing
-#RADIO=tworayground01b
+#RADIO=tworayground
 FORGEINNODES=no
 NAME2MAC=yes
 

@@ -1,15 +1,14 @@
 #!/bin/sh
 
 . $CONFIGFILE
+. $RESULTDIR/../config
 
 RECEIVER=`cat $NODETABLE | grep -v "#" | grep receiver.click | awk '{print $1}' | head -n 1`
 DEVICE=`cat $NODETABLE | grep -v "#" | grep receiver.click | awk '{print $2}' | head -n 1`
 
-#ls -lisa $RESULTDIR/$RECEIVER.$DEVICE.raw.dump
-#echo "$RESULTDIR/$RECEIVER.$DEVICE.raw.dump"
-
 if [ -f $RESULTDIR/$RECEIVER.$DEVICE.raw.dump ]; then
-  PACKETS=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | wc -l`
+  fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | awk -v RANGE=$VAR_RXRANGE -v RADIO=$VAR_RADIO '{print RADIO" "RANGE" "$2" "$3" "$5" "$6}' | sed -e "s#Mb##g" -e "s#/# #g" -e "s#:##g" > $RESULTDIR/result.dat
+  PACKETS=`cat $RESULTDIR/result.dat | wc -l`
 else
   echo "No Dumpfile"
   PACKETS=0

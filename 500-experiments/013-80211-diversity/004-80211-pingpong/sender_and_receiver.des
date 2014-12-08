@@ -1,7 +1,7 @@
 NAME=80211n_diversity
 SIMULATOR=ns2
-#RADIO=shadowing11b
-RADIO=tworayground01b
+#RADIO=shadowing
+RADIO=tworayground
 FORGEINNODES=no
 
 TIME=150

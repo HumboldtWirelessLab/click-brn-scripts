@@ -1,7 +1,7 @@
 NAME=backoff
 SIMULATOR=ns2
-#RADIO=shadowing11b
-RADIO=tworayground01b
+#RADIO=shadowing
+RADIO=tworayground
 FORGEINNODES=no
 
 TIME=7000
