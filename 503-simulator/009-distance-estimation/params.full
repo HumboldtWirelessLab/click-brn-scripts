@@ -1,2 +1,2 @@
-VAR_RXRANGE=`seq 10 10 300`
-VAR_RADIO="tworayground shadowing"
+VAR_RXRANGE=`seq 25 25 500`
+VAR_RADIO="tworayground shadowing ricean nakagami"
