@@ -1,7 +1,5 @@
 NAME=simple_flow
-SIMULATOR=ns2
 RADIO=shadowing
-FORGEINNODES=no
 
 TIME=180
 

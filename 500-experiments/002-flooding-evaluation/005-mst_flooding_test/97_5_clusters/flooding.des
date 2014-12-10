@@ -1,8 +1,6 @@
 NAME=mstflooding
-SIMULATOR=ns2
 RADIO=shadowing
 #RADIO=tworayground
-FORGEINNODES=no
 NAME2MAC=yes
 
 TIME=1300

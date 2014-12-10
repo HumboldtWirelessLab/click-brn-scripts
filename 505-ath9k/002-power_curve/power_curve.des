@@ -1,8 +1,6 @@
 NAME=power_curve
-SIMULATOR=ns2
 #RADIO=shadowing
 RADIO=tworayground
-FORGEINNODES=no
 
 TIME=25
 

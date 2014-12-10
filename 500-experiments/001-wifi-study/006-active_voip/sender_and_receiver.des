@@ -1,7 +1,5 @@
 NAME=active_voip
-SIMULATOR=ns2
 RADIO=shadowing
-FORGEINNODES=no
 
 TIME=300
 

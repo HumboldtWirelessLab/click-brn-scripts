@@ -1,8 +1,6 @@
 NAME=channelload
-SIMULATOR=ns2
 RADIO=shadowing
 #RADIO=tworayground
-FORGEINNODES=no
 
 TIME=3600
 #TIME=605

@@ -1,7 +1,5 @@
 NAME=receiver
-SIMULATOR=ns2
 RADIO=shadowing
-FORGEINNODES=no
 
 TIME=3
 

@@ -1,8 +1,6 @@
 NAME=testbed_long_run
-SIMULATOR=ns2
 RADIO=shadowing
 #RADIO=tworayground
-FORGEINNODES=no
 
 TIME=6000000
 

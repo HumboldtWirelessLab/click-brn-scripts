@@ -1,7 +1,5 @@
 NAME=campus_network
-SIMULATOR=ns2
 RADIO=shadowing
-FORGEINNODES=no
 
 TIME=600000
 

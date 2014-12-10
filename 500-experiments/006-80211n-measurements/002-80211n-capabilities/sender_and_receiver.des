@@ -1,8 +1,6 @@
 NAME=80211n_capabilities
-SIMULATOR=ns2
 #RADIO=shadowing
 RADIO=tworayground
-FORGEINNODES=no
 
 TIME=51
 

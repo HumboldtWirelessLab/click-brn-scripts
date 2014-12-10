@@ -1,7 +1,5 @@
 NAME=rts_cts
-SIMULATOR=ns2
 RADIO=shadowing
-FORGEINNODES=no
 
 TIME=60
 

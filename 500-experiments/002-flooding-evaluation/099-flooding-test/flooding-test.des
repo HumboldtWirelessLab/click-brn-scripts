@@ -1,8 +1,6 @@
 NAME=flooding_test
-SIMULATOR=ns2
 RADIO=shadowing
 #RADIO=tworayground
-FORGEINNODES=no
 
 TIME=5000000
 
