@@ -19,7 +19,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 Idle()
-  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 25 15 0 4500 true 1 0", DEBUG 4)  //multi receivers: FLOW "deviceaddress 00:00:00:00:00:01,FF:FF:FF:FF:FF:FF 12 1500 0 ...."
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 25 15 0 4500 true 1 0", DEBUG 2)  //multi receivers: FLOW "deviceaddress 00:00:00:00:00:01,FF:FF:FF:FF:FF:FF 12 1500 0 ...."
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTimestamp()
@@ -74,7 +74,7 @@ filter_tx[1]
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
-  write wifidevice/tosq.test,
+//  write wifidevice/tosq.test,
   wait 3,
   write wifidevice/rawdev/pullstats.reset 0,
   wait 1,
