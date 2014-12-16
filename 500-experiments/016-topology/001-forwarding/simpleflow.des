@@ -6,7 +6,6 @@ FORGEINNODES=no
 
 TIME=500
 
-NODEPLACEMENTFILE=placement.default
 NODETABLE=simpleflow.mes
 NODEPLACEMENT=grid
 NODEPLACEMENTOPTS="relative"
