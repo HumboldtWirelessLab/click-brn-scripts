@@ -2,7 +2,7 @@
 
 RESULTDIR=$1
 
-ALGSEDARG="-e s#shadowing11b#2#g -e s#tworayground01b#3#g -e s#tworayground11b#4#g -e s#tworayground54g#5#g -e s#tworayground#0#g -e s#shadowing#1#g "
+ALGSEDARG="-e s#tworayground#0#g -e s#shadowing#1#g "
 
 #echo -n "" > result_dist.dat
 

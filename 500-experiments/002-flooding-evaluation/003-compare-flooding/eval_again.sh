@@ -28,16 +28,12 @@ fi
 MAX_THREADS=20
 NUM=0
 
-if [ ! -f placement.txt ]; then
-  cat placements_npart.dat | grep -e "^1 " | sed -e "s#^1 ##g" > placement.txt
-fi
-
 echo -n "" > $DIR/evaluation_finish
 
 for i in `ls -d *MBit*`; do
 
   #ADDEVALUATION="evaluation/eval.sh flooding_info flow_info evaluation/eval_post.sh"
-  (cd $i/; PREEVALUATION="$PREEVALUATION" ADDEVALUATION="$ADDEVALUATION" /bin/bash ./eval_again.sh; echo $NUM >> $DIR/evaluation_finish ) &
+  (cd $i/; PREEVALUATION="$PREEVALUATION" ADDEVALUATION="$ADDEVALUATION" eval_again.sh; echo $NUM >> $DIR/evaluation_finish ) &
 
   let NUM=NUM+1
 
@@ -60,4 +56,4 @@ while [ $LINES -ne $NUM ]; do
   LINES=`cat $DIR/evaluation_finish | wc -l`
 done
 
-rm -f $DIR/evaluation_finish placement.txt
+rm -f $DIR/evaluation_finish

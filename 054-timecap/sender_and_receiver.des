@@ -1,8 +1,6 @@
 NAME=timecap
-SIMULATOR=ns2
 RADIO=shadowing
 #RADIO=tworayground
-FORGEINNODES=no
 
 #DISABLE_NAM=1
 #DISABLE_TR=1

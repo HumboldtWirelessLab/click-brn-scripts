@@ -37,13 +37,17 @@ else
   MIN_PLACEMENT=1
 fi
 
+if [ "x$NONODES" = "x" ]; then
+  NONODES=100
+fi
+
 if [ "x$SIM" = "x1" ]; then
   NODESFILE=nodes.sim
 
   if [ "x$GRID" = "x1" ]; then
     echo -n "" > $NODESFILE
-    for i in `seq 1 100`; do
-      echo "sk$i" >> $NODESFILE
+    for i in `seq 1 $NONODES`; do
+      echo "node$i" >> $NODESFILE
     done
     MAX_PLACEMENT=1
   else
@@ -70,9 +74,11 @@ echo "Placementfile: $PLACEMENTFILE MAXPL: $MAX_PLACEMENT START: $START LIMIT: $
 
 FLOWTIME=110
 FLOWTIMESPACE=10
-INTERVAL=1500
-DURATION=15
-DURATION_MS=15000
+INTERVAL=500
+#DURATION=15
+#DURATION_MS=15000
+DURATION=10
+let DURATION_MS=DURATION*1000
 
 echo -n "" > flooding.ctl
 
@@ -80,7 +86,7 @@ for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT`; do
    if [ "x$SIM" = "x" ]; then
      MAC=`cat nodes.mac | grep $n | awk '{print $3}'`
    else
-     mac_raw=`echo $n | sed "s#sk##g"`
+     mac_raw=`echo $n | sed "s#node##g"`
      m1=`expr $mac_raw / 256`
      m2=`expr $mac_raw % 256`
      m1h=$(echo "obase=16; $m1" | bc)
@@ -118,8 +124,8 @@ echo "  read flooding/fl.stats," >> flooding_script.click
 echo "  read flooding/fl_database.forward_table," >> flooding_script.click
 echo "  read flooding/unicfl.stats," >> flooding_script.click
 echo "  read sf.stats," >> flooding_script.click
-echo "  read setrtscts.stats," >> flooding_script.click
-echo "  read rate_flooding.stats," >> flooding_script.click
+#echo "  read setrtscts.stats," >> flooding_script.click
+#echo "  read rate_flooding.stats," >> flooding_script.click
 echo "  read device_wifi/wifidevice/cst.stats" >> flooding_script.click
 
 echo ");" >> flooding_script.click
@@ -221,16 +227,48 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
                   MEASUREMENTDIR="$MEASUREMENTDIR""_p_"${PROB_ARRAY[$PROBINDEX]}
                   #echo "#define FLOODING_DEBUG 2" > flooding_config.h
                   echo "#define PROBABILITYFLOODING_FWDPROBALILITY ${PROB_ARRAY[$PROBINDEX]}" >> flooding_config.h
-                  echo "#define PRO_FL" >> flooding_config.h
+                  echo "#define FLOODING_STRATEGY 2" >> flooding_config.h
                   ;;
          "mpr")
                  echo "#define MPR_STATS" > flooding_config.h
-                 echo "#define MPR_FL" >> flooding_config.h
+                 echo "#define FLOODING_STRATEGY 3" >> flooding_config.h
                  ;;
 
          "mst")
-                 echo "#define MST_FL" > flooding_config.h
-                 echo "#define FLOODING_DEBUG 4" >> flooding_config.h
+                 echo "" > flooding_config.h
+                 if [ "x$OVERLAYINDEX" = "x" ]; then
+                    OVERLAYINDEX=0
+                 fi
+                 MEASUREMENTDIR="$MEASUREMENTDIR""_p_"${OVERLAY_ARRAY[$OVERLAYINDEX]}
+
+                 echo "#define FLOODING_DEBUG 2" >> flooding_config.h
+                 echo "#define FLOODING_STRATEGY 4" >> flooding_config.h
+                 let OVERLAYGRAPH=${OVERLAY_ARRAY[$OVERLAYINDEX]}/4
+                 let OVERLAYCONFIG=${OVERLAY_ARRAY[$OVERLAYINDEX]}%4
+
+                 let OVERLAYCFG_OPP=OVERLAYCONFIG%2
+
+                 let OVERLAYCONFIG=OVERLAYCONFIG/2
+                 let OVERLAYCFG_PARRESP=OVERLAYCONFIG%2
+
+                 if [ $OVERLAYGRAPH = 0 ]; then
+                   echo "#define OVERLAYFLOODING_FILENAME mst.mat" >> flooding_config.h
+                 elif [ $OVERLAYGRAPH = 1 ]; then
+                   echo "#define OVERLAYFLOODING_FILENAME dijkstra.mat" >> flooding_config.h
+                 fi
+
+                 if [ $OVERLAYCFG_OPP = 0 ]; then
+                   echo "#define OVERLAYFLOODING_OPPORTUNISTIC false" >> flooding_config.h
+                 else
+                   echo "#define OVERLAYFLOODING_OPPORTUNISTIC true" >> flooding_config.h
+                 fi
+
+                 if [ $OVERLAYCFG_PARRESP = 0 ]; then
+                   echo "#define OVERLAYFLOODING_RESPONSABLE4PARENTS false" >> flooding_config.h
+                 else
+                   echo "#define OVERLAYFLOODING_RESPONSABLE4PARENTS true" >> flooding_config.h
+                 fi
+
                  ;;
 
        esac
@@ -280,6 +318,11 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
          echo "SEED=$repetition" >> flooding.des
 
+         if [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
+           echo "miss placementfile"
+           exit 0;
+         fi
+
          if [ "x$SIM" = "x" ]; then
            RUNMODE=$CURRENTRUNMODE run_measurement.sh flooding.des $MEASUREMENTDIR
 
@@ -295,6 +338,10 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
          fi
 
+         if  [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
+           echo "miss placementfile after prepare"
+         fi
+
          if [ "x$SIM" = "x" ]; then
            echo "SIM=0" > $MEASUREMENTDIR/params
          else
@@ -307,6 +354,12 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
           echo "FWDPROBALILITY=-1" >> $MEASUREMENTDIR/params
         else
           echo "FWDPROBALILITY=${PROB_ARRAY[$PROBINDEX]}" >> $MEASUREMENTDIR/params
+        fi
+
+        if [ "x$OVERLAYINDEX" = "x" ]; then
+          echo "OVERLAYGRAPH=-1" >> $MEASUREMENTDIR/params
+        else
+          echo "OVERLAYGRAPH=${OVERLAY_ARRAY[$OVERLAYINDEX]}" >> $MEASUREMENTDIR/params
         fi
 
         echo "UNICASTSTRATEGY=$flunic" >> $MEASUREMENTDIR/params
@@ -333,6 +386,8 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
         echo "RS_STRATEGY=$rs" >> $MEASUREMENTDIR/params
         echo "FLOODING_TX_SCHEDULING=$fl_txsched" >> $MEASUREMENTDIR/params
 
+        #cp placement.txt $MEASUREMENTDIR/$
+
        fi
 
      done #repetition
@@ -342,18 +397,23 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
              DONE_ALL_FOR_ALG=1
              ;;
         "probability")
-              let PROBINDEX=PROBINDEX+1;
+             let PROBINDEX=PROBINDEX+1;
 
-              if [ $PROBINDEX -ge $PROB_ARRAY_SIZE ]; then
-                DONE_ALL_FOR_ALG=1
-                PROBINDEX=""
-              fi
-              ;;
+             if [ $PROBINDEX -ge $PROB_ARRAY_SIZE ]; then
+               DONE_ALL_FOR_ALG=1
+               PROBINDEX=""
+             fi
+             ;;
         "mpr")
              DONE_ALL_FOR_ALG=1
              ;;
         "mst")
-             DONE_ALL_FOR_ALG=1
+             let OVERLAYINDEX=OVERLAYINDEX+1;
+
+             if [ $OVERLAYINDEX -ge $OVERLAY_ARRAY_SIZE ]; then
+               DONE_ALL_FOR_ALG=1
+               OVERLAYINDEX=""
+             fi
              ;;
       esac
 

@@ -1,8 +1,6 @@
 NAME=80211n_coverage
-SIMULATOR=ns2
-#RADIO=shadowing11b
-RADIO=tworayground01b
-FORGEINNODES=no
+#RADIO=shadowing
+RADIO=tworayground
 
 TIME=310
 

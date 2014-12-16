@@ -56,7 +56,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-flooding::BROADCASTFLOODING(ID id, LT lt);
+flooding::BROADCASTFLOODING(ID id, LT lt, LINKSTAT device_wifi/link_stat);
 routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);

@@ -1,8 +1,6 @@
 NAME=simpleflooding
-SIMULATOR=ns2
 RADIO=shadowing
-#RADIO=tworayground01b
-FORGEINNODES=no
+#RADIO=tworayground
 NAME2MAC=yes
 
 #DISABLE_NAM=1
@@ -14,15 +12,14 @@ NODEPLACEMENTFILE=placement.txt
 NODETABLE=flooding.mes
 NODEPLACEMENT=file
 NODEPLACEMENTOPTS="relative"
-FIELDSIZE=RXRANGE
+FIELDSIZE=MAXRXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
-#EVALUATION="evaluation/copy_tmp.sh status_compression"
-EVALUATION="evaluation/copy_tmp.sh flooding_info flow_info evaluation/collision.sh compression_config status_compression evaluation/eval_post.sh"
+EVALUATION="evaluation/copy_tmp.sh network_info flooding_info flow_info channelstats_xml compression_config status_compression evaluation/eval_post.sh"
 
 GPS=no
 NOTICE=no
@@ -30,3 +27,7 @@ LOS=no
 
 CONTROLSOCKET=yes
 CONTROLFILE=flooding.ctl
+
+USE_SINGLE_CLICKFILE=1
+
+LOCALPROCESS=prepare/local_proc.sh

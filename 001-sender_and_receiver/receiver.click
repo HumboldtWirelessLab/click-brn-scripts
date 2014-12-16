@@ -3,6 +3,7 @@
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
+#define FOREIGNRXSTATS
 #define RAWDUMP
 //#define RAWDUMPSNAPLEN 100
 

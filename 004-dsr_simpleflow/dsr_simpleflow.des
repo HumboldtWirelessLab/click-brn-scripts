@@ -1,8 +1,6 @@
 NAME=dsr_simpleflow
-SIMULATOR=ns2
 RADIO=shadowing
 #RADIO=tworayground
-FORGEINNODES=no
 
 TIME=131
 

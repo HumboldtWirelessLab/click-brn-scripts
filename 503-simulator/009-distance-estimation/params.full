@@ -1,2 +1,5 @@
-VAR_RXRANGE=`seq 10 10 300`
-VAR_RADIO="tworayground shadowing shadowing11b  tworayground01b  tworayground11b  tworayground54g"
+VAR_RXRANGE=`seq 25 25 500`
+VAR_RADIO="shadowing"
+
+EXCLUSION_1="[ VAR_RXRANGE -eq 150 ]"
+CONSTRAINT_1="[ VAR_RXRANGE -lt 350 ] && [ 'VAR_RADIO' = 'shadowing' ]"

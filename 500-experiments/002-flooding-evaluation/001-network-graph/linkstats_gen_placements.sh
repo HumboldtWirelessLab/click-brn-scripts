@@ -26,9 +26,11 @@ fi
 
 for i in `seq 1 $NOPLM`; do
   if [ ! -e $i ]; then
-    run_sim.sh ns linkstat_plm.des $i
+    PREPARE_ONLY=1 run_sim.sh ns linkstat_plm.des $i
   fi
 done
+
+run_para_sim.sh
 
 NO_NODES=`cat 1/nodes.mac | wc -l`
 

@@ -2,9 +2,14 @@
 
 RESULTDIR=$1
 
-ALGSEDARG="-e s#shadowing11b#2#g -e s#tworayground01b#3#g -e s#tworayground11b#4#g -e s#tworayground54g#5#g -e s#tworayground#0#g -e s#shadowing#1#g "
+if [ "x$RESULTDIR" = "x" ]; then
+  RESULTDIR=$PWD
+fi
 
-#echo -n "" > result_dist.dat
+ALGSEDARG="-e s#tworayground#0#g -e s#shadowing#1#g -e s#ricean#2#g -e s#nakagami#3#g"
+
+echo -n "" > result_dist.dat
+echo -n "" > result.dat
 
 for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print $NF}')`; do
   if [ -e $RESULTDIR/$d/params ]; then
@@ -14,8 +19,9 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
     SIMID=`echo $d | sed -e "s#_# #g" | awk '{print $2}'`
     RADIOID=`echo $VAR_RADIO | sed $ALGSEDARG`
 
-    echo "$SIMID $RADIOID $VAR_RXRANGE $PACKETS"
+    echo "$SIMID $RADIOID $VAR_RXRANGE $VAR_FADING $VAR_PL_EXP $VAR_STD_DB $VAR_INIT_STD_DB $VAR_RICEAN_MAXV $VAR_RICEAN_K $PACKETS" >> result_dist.dat
 
+    cat $RESULTDIR/$d/1/result.dat | sed $ALGSEDARG >> result.dat
   fi
 
 done

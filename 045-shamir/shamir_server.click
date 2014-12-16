@@ -1,6 +1,8 @@
 #define LINKSTAT_ENABLE
 //#define DEBUG_DSR
 
+#define DISABLE_FLOODING_LINKTABLE
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 

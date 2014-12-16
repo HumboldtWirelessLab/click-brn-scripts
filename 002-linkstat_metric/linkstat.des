@@ -1,7 +1,10 @@
 NAME=linkchannelstat
-SIMULATOR=ns2
+
+#RADIO=tworayground
 RADIO=shadowing
-FORGEINNODES=no
+#RADIO=freespace
+#RADIO=nakagami
+
 
 DISABLE_TRACE=1
 
@@ -10,6 +13,7 @@ TIME=60
 NODEPLACEMENTFILE=placement.default
 NODETABLE=linkstat.mes
 NODEPLACEMENT=grid
+#NODEPLACEMENT=random
 #NODEPLACEMENT=npart
 NODEPLACEMENTOPTS="relative"
 FIELDSIZE=MAXRXRANGE
@@ -18,7 +22,7 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="network_info evaluation/eval.sh"
+EVALUATION="network_info_viz network_info_cluster evaluation/eval.sh"
 #EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR/evaluation
 

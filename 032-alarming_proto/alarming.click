@@ -28,7 +28,7 @@ af::AlarmingForwarder(NODEID id, ALARMINGSTATE as, RSSI_DELAY true, DEBUG 2);
 asrc::AlarmingSource(ALARMINGSTATE as);
 art::AlarmingRetransmit(NODEID id, ALARMINGSTATE as);
 
-bc::BROADCAST(ID id, LT lt);
+bc::BROADCAST(ID id, LT lt, LINKSTAT device_wifi/link_stat);
 
 asrc
 //  -> Print("ALARM")

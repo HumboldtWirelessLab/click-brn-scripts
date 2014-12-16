@@ -1,7 +1,5 @@
 NAME=passive_sc
-SIMULATOR=ns2
-RADIO=shadowing11b
-FORGEINNODES=no
+RADIO=shadowing
 
 TIME=864000
 #TIME=60

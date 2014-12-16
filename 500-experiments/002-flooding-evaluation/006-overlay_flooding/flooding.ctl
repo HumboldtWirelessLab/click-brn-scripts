@@ -1,5 +1,5 @@
 #TIME NODE(S)   DEVICE  MODE    ELEMENT HANDLER  VALUE
-100    sk1 DEV0    write   sf      add_flow sk1:eth FF-FF-FF-FF-FF-FF 1000 100 0 11000 true
+100    node1 DEV0    write   sf      add_flow sk1:eth FF-FF-FF-FF-FF-FF 1000 100 0 11000 true
 220    ALL DEV0    read   flooding/fl stats
 220    ALL DEV0    read   flooding/fl forward_table
 220    ALL DEV0    read   flooding/fl_passive_ack stats

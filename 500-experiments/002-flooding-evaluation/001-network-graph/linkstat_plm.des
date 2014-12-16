@@ -1,7 +1,5 @@
 NAME=linkchannelstat_plm
-SIMULATOR=ns2
 RADIO=shadowing
-FORGEINNODES=no
 
 TIME=310
 
@@ -9,19 +7,25 @@ USE_SINGLE_CLICKFILE=1
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=linkstat_plm.mes
-#NODEPLACEMENT=npart
+NODEPLACEMENT=npart
+FIELDSIZE=RXRANGE
+
+#NODEPLACEMENT=random
 #NODEPLACEMENTOPTS="relative"
-NODEPLACEMENT=multibox_placement.sh
+#FIELDSIZE=13
+
+#NODEPLACEMENT=multibox_placement.sh
 #"X=xlen Y=ylen B=no_boxes L=len_between_boxes LN=no_nodes_on_bridge $0"
 #NODEPLACEMENTOPTS="400 200 5 330 5"
-NODEPLACEMENTOPTS="750 500 5 350 5"
-FIELDSIZE=RXRANGE
+#NODEPLACEMENTOPTS="750 500 5 350 5"
+
+#FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-#EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression evaluation/eval.sh linkstat_graph network_info evaluation/drop_nsfiles.sh"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression evaluation/eval.sh network_info_viz evaluation/drop_nsfiles.sh"
 EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR/evaluation
 

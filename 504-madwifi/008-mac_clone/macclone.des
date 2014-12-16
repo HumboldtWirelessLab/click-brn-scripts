@@ -1,7 +1,5 @@
 NAME=macclone
-SIMULATOR=ns2
-RADIO=shadowing11b
-FORGEINNODES=no
+RADIO=shadowing
 
 TIME=60
 
