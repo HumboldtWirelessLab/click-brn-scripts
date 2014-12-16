@@ -19,7 +19,7 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
     SIMID=`echo $d | sed -e "s#_# #g" | awk '{print $2}'`
     RADIOID=`echo $VAR_RADIO | sed $ALGSEDARG`
 
-    echo "$SIMID $RADIOID $VAR_RXRANGE $PACKETS" >> result_dist.dat
+    echo "$SIMID $RADIOID $VAR_RXRANGE $VAR_FADING $VAR_PL_EXP $VAR_STD_DB $VAR_INIT_STD_DB $VAR_RICEAN_MAXV $VAR_RICEAN_K $PACKETS" >> result_dist.dat
 
     cat $RESULTDIR/$d/1/result.dat | sed $ALGSEDARG >> result.dat
   fi
