@@ -1,5 +1,0 @@
-VAR_RXRANGE=`seq 25 25 500`
-VAR_RADIO="shadowing"
-
-EXCLUSION_1="[ VAR_RXRANGE -eq 150 ]"
-CONSTRAINT_1="[ VAR_RXRANGE -lt 350 ] && [ 'VAR_RADIO' = 'shadowing' ]"

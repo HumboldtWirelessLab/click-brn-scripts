@@ -6,7 +6,7 @@ if [ "x$RESULTDIR" = "x" ]; then
   RESULTDIR=$PWD
 fi
 
-ALGSEDARG="-e s#tworayground#0#g -e s#shadowing#1#g -e s#ricean#2#g -e s#nakagami#3#g"
+ALGSEDARG="-e s#none#0#g -e s#default#1#g-e s#tworayground#2#g -e s#shadowing#3#g -e s#ricean#4#g -e s#nakagami#5#g"
 
 echo -n "" > result_dist.dat
 echo -n "" > result.dat
