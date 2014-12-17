@@ -18,12 +18,16 @@ case "$SIGN" in
       ;;
 esac
 
-LINKS_PATH=${RESULTDIR}/links.csv
+LINKS_PATH=${RESULTDIR}/links_filtered.csv
 ETXLIMIT=10
 
+
 cd ${RESULTDIR}
-../../common_evaluation/calc_articulation_points.R ${LINKS_PATH} ${ETXLIMIT} > ${RESULTDIR}/theoretical_articulation_points.csv
-../../common_evaluation/calc_bridges.R ${LINKS_PATH} ${ETXLIMIT} > ${RESULTDIR}/theoretical_bridges.csv
+
+../../common_evaluation/filter_links.py -f ${RESULTDIR}/links_raw.csv -e ${ETXLIMIT} > ${LINKS_PATH}
+
+../../common_evaluation/calc_articulation_points.R ${LINKS_PATH} > ${RESULTDIR}/theoretical_articulation_points.csv
+../../common_evaluation/calc_bridges.R ${LINKS_PATH} > ${RESULTDIR}/theoretical_bridges.csv
 ../../common_evaluation/calc_f1_measure.R
 
 echo "Done"

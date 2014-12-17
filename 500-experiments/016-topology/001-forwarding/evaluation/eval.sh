@@ -34,7 +34,7 @@ fi
 #
 PRE_LINKS_PATH=${RESULTDIR}/links_extract.xml
 LINKS_PATH=${RESULTDIR}/links.csv
-xsltproc -o ${PRE_LINKS_PATH} ${DIR}/../../common_evaluation/extract_dibadawn_links.xslt ${RESULTDIR}/measurement.xml 
+${DIR}/../../common_evaluation/extract_dibadawn_links.py -f ${RESULTDIR}/measurement.xml  > ${PRE_LINKS_PATH}
 xsltproc -o ${LINKS_PATH} ${DIR}/../../common_evaluation/dibadawn_links_to_csv.xslt ${PRE_LINKS_PATH}
 if [ "$?" -ne 0 ]
 then

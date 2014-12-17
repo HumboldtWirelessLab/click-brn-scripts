@@ -1,2 +1,2 @@
 #NODE		DEVICE	MODULSDIR					 MODOPTIONS WIFICONFIG			CLICKMODDIR	CLICKSCRIPT			CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
-random:91	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel		-		simpleflow.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
+group:placementfile.plm	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel		-		simpleflow.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-

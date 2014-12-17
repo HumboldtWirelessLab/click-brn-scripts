@@ -36,25 +36,14 @@ do
 	OPWD=$(pwd)
 	cd ../../../../helper/src/Npart
 	NUM_OF_NODES=175
-	RXRANGE=370  ./gen_topo.sh ${NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
+	RXRANGE=400  ./gen_topo.sh ${NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
 	RESULT=$?
 	cd ${OPWD}
 	cat /tmp/${PLACEMENT_PATH} | awk -F " " '{print "sk"NR,$2,$3,$4}' > ${PLACEMENT_PATH}
-	
-	if [ "${RESULT}" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
-	fi
-	
-	#
-	# Update mes
-	#
-	echo "update .mes file..."
 	NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
 	echo "  new node count: ${NODE_COUNT}"
-	sed -i "s/:[0-9]*/:${NODE_COUNT}/" simpleflow.mes
-	if [ "$?" -ne 0 ] 
+	
+	if [ "${RESULT}" -ne 0 ] 
 	then
 		echo "result: failed"
 		exit -1
@@ -91,7 +80,7 @@ do
 		#
 		# Remove large files
 		#
-		rm -rf ${RESULT}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
+		rm -rf ${SIM_RESULT_DIR}/*.{nam,tr,eth0,log,xml,sh,pdf,ns2,tcp,stats}
 
 		#
 		# Copy
