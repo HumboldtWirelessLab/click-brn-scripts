@@ -104,6 +104,14 @@ for cfg=1:size(configs,1)
       title(config_str);
       saveas(h1, char(strcat(config_str,'_time_vsa_snr.eps')),'epsc');
       %saveas(h1, strcat(config_str,'_time_vs_snr.png'),'png');
+
+      h1=figure;
+      hist(dist_data([1:1000],SNR)); 
+      xlabel('SNR');
+      ylabel('#');
+      title(config_str);
+      saveas(h1, char(strcat(config_str,'_snr_hist.eps')),'epsc');
+      %saveas(h1, strcat(config_str,'_time_vs_snr.png'),'png');
     end
   end
 
@@ -133,6 +141,7 @@ for cfg=1:size(configs,1)
     title(config_str);
     saveas(h1, char(strcat(config_str,'_snr_vs_pdr.eps')),'epsc');
     %saveas(h1, strcat(config_str,'_snr_vs_pdr.png'),'png');
+
     close all;
   end
 
