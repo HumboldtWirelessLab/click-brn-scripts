@@ -22,3 +22,4 @@ EXCLUSION_6="[ 'VAR_FADING' = 'ricean' ] && [ 'VAR_RICEAN_K' = '0.0' ]"
 EXCLUSION_7="[ 'VAR_FADING' != 'ricean' ] && [ 'VAR_RICEAN_MAXV' != '0.0' ]"
 EXCLUSION_8="[ 'VAR_FADING' != 'ricean' ] && [ 'VAR_RICEAN_K' != '0.0' ]"
 
+EXCLUSION_9="[ 'VAR_RADIO' = 'shadowing' ] && [ 'VAR_PL_EXP' = '0.0' ]"

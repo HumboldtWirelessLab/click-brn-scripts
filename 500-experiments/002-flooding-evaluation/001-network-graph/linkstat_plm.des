@@ -1,5 +1,8 @@
 NAME=linkchannelstat_plm
-RADIO=shadowing
+#RADIO=shadowing
+
+RADIO=tworayground
+RADIO_OPTIONS="FADING=ricean PATHLOSS_EXP=0 SHADOWING_STD_DB=0 SHADOWING_INIT_STD_DB=0 SHADOWING_PATHLOSS_MODEL=default RICEAN_MAX_VELOCITY=2.5 RICEAN_K=6"
 
 TIME=310
 
@@ -7,12 +10,13 @@ USE_SINGLE_CLICKFILE=1
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=linkstat_plm.mes
-NODEPLACEMENT=npart
-FIELDSIZE=RXRANGE
 
-#NODEPLACEMENT=random
-#NODEPLACEMENTOPTS="relative"
-#FIELDSIZE=13
+#NODEPLACEMENT=npart
+#FIELDSIZE=RXRANGE
+
+NODEPLACEMENT=random
+NODEPLACEMENTOPTS="relative"
+FIELDSIZE=13
 
 #NODEPLACEMENT=multibox_placement.sh
 #"X=xlen Y=ylen B=no_boxes L=len_between_boxes LN=no_nodes_on_bridge $0"
