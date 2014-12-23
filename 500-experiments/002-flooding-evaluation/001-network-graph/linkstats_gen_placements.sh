@@ -18,6 +18,8 @@ case "$SIGN" in
       ;;
 esac
 
+. ./linkstat_plm.des
+
 NOPLM=1
 
 if [ "x$1" != "x" ]; then
@@ -41,10 +43,10 @@ rm -f placements_adjmat*.dat
 
 for i in `seq 1 $NOPLM`; do
 
-  NOCLUSTER=`cat $i/evaluation/network_info/cnt_partitions.csv | tail -n 1 | sed "s#,# #g" | awk '{print $1}'`
+  NOCLUSTER=`cat $i/evaluation/network_info/clustersize.csv | tail -n 1 | sed "s#,# #g" | awk '{print $1}'`
 
   if [ $NOCLUSTER -eq 1 ]; then
-    cat $i/placementfile.plm | awk -v NUM=$NUM '{print NUM" "$0}' >> placements.dat
+    cat $i/$NODEPLACEMENTFILE | awk -v NUM=$NUM '{print NUM" "$0}' >> placements.dat
     #for g in `(cd $i/evaluation/network_info; ls graph_psr_*)`; do
     #  r=`echo $g | sed "s#_# #g" | awk '{print $3}'`
     #  s=`echo $g | sed "s#_# #g" | awk '{print $4}'`
