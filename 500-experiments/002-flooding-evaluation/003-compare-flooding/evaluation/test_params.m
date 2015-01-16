@@ -1,10 +1,10 @@
 function figurehandle = test_params(show_config, result, params, show_param)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-plot_cols = ['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y'];
+plot_cols = ['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'m';'k';'b';'c';'y'];
 plot_sign = ['*';'+';'o';'x';'<';'s';'d';'>';'^'];
 
-params_name={'uc','uc presel','uc reject','uc peer','max_paretries','unicstrategy','macretries','piggyback','forceresp','delay','assign','abort','fix cs','scheduling'};
+config_info
 
 show_param_str = {'config', '#Packet' , 'Avg. delay (ms)' , '#Max Delay per Hop' , 'Reach'};
 show_param_filestr = {'config', 'cntpacket' , 'avgdelay' , 'maxdelayperhop', 'reach' };
@@ -41,7 +41,19 @@ for sc=1:size(show_cfgs,1)
     
     sum_size=sum_size+size(r);
 
-    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(2)+1),plot_sign(cur_sc(1)+1)); %end
+    col_index = cur_sc(2)+2;
+    
+    if ( col_index > 32 )
+        col_index = 1;
+    end
+    
+    sign_index = cur_sc(1)+2;
+    
+    if ( sign_index > 8 )
+        sign_index = 1;
+    end
+    
+    scatter(r(:,1),r(:,2),20,plot_cols(col_index),plot_sign(sign_index)); %end
 
     hold on;
 end
@@ -52,7 +64,7 @@ title(strcat(show_param_str(show_param(1)),' vs. ', show_param_str(show_param(2)
 xlabel(show_param_str(show_param(1)));
 ylabel(show_param_str(show_param(2)));
 
-legend(findobj(gca,'Tag','Box'),show_cfgs_labels,'location', 'southwest');
+legend(findobj(gca,'Tag','Box'),show_cfgs_labels,'location', 'northeast');
 grid on;
 xlim([min_x*0.95 max_x*1.05]);
 ylim([min_y*0.95 max_y*1.05]);
