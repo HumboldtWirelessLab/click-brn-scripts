@@ -2,8 +2,8 @@
 %basedir='20141014b-gridrand/';
 %basedir='20141015-small/';
 %basedir='20141015-big/';
-basedir='20150110/';
-%basedir='';
+%basedir='20150110/';
+basedir='';
   
 if (~exist('basedir'))
   basedir='20140912/';
@@ -34,23 +34,19 @@ REACH=2;
 CNT_TX_PKT=8;
 COL=10;
 
-CFG_INDEX=params_index;
+CFG_INDEX=params_index;                               % alle relevanten spalten in der config
 
-CFG_WO_DELAY_INDEX=CFG_INDEX(CFG_INDEX(:)~=MAXDELAY);
+CFG_WO_DELAY_INDEX=CFG_INDEX(CFG_INDEX(:)~=MAXDELAY); % alle relevanten spalten in der config ohne delay
 
-CFG_WO_DELAY_INDEX_IN_INDEX=[1:size(CFG_INDEX,2)];
-CFG_WO_DELAY_INDEX_IN_INDEX=CFG_WO_DELAY_INDEX_IN_INDEX(CFG_INDEX(:)~=MAXDELAY);
+configs=unique(index(:,CFG_INDEX),'rows');
+configs=[configs'; [1:size(configs,1)]]';             %add index at the end 
 
-params=unique(index(:,CFG_INDEX),'rows');
+config_wo_delay=unique(index(:,CFG_WO_DELAY_INDEX),'rows')
 
-configs = params;
+%CFG_INDEX
+%CFG_WO_DELAY_INDEX
 
 size(summary)
-size(configs)
-
-configs=[configs'; [1:size(configs,1)]]'; %add index at the end 
-config_wo_delay=unique(configs(:,CFG_WO_DELAY_INDEX_IN_INDEX),'rows');
-
 size(configs)
 size(config_wo_delay)
 
@@ -66,9 +62,9 @@ if (~exist('result'))
 
   for sc=1:size(configs,1)
     cur_sc=configs(sc,1:end-1);
-    c_inds=unique(index(ismember(index(:,CFG_INDEX),cur_sc,'rows'),CONFIGID));
+    c_inds=unique(index(ismember(index(:,CFG_INDEX),cur_sc,'rows'),CONFIGID)); %config id in orig file
 
-    size(c_inds);
+    %size(c_inds)
     %size(times)
 
     for c=1:size(c_inds,1)
@@ -78,7 +74,8 @@ if (~exist('result'))
         md=index(i,MAXDELAY);
         r=summary(i,REACH);
 
-        result=[result; [sc p t md r]];
+        %result=[result; [sc p t md r]];
+        result=[result; [configs(sc,end) p t md r]];
     end
 
   end
@@ -119,10 +116,13 @@ size(result)
 % P L O T T E N
 plotall=0;
 if ( plotall == 1)
-  for i = 2:CONFIG_TXSCHEDULING
-    test_params(configs, result, [i CONFIG_UNICASTSTRATEGY], [RESULT_PKT_CNT RESULT_TIMES]);
+  for i = 1:CONFIG_TXSCHEDULING
+    %test_params(configs, result, [i CONFIG_UNICASTSTRATEGY], [RESULT_PKT_CNT RESULT_TIMES]);
+    test_params(configs, result, [i CONFIG_UNICASTSTRATEGY], [RESULT_PKT_CNT RESULT_REACH]);
   end
 end
+
+%f=g+1
 
 plotold=1;
 if ( plotold == 1)
@@ -140,32 +140,68 @@ if ( plotold == 1)
   %show_configs=configs(configs(:,CONFIG_UNICASTSTRATEGY) == 4,:);
   %test_params(show_configs, result, [CONFIG_FLOODING_NET_RETRIES CONFIG_MACRETRIES], [RESULT_PKT_CNT RESULT_TIMES]);
   
-  show_configs=configs
-  show_configs=show_configs(configs(:,CONFIG_UNICASTSTRATEGY) == 7,:);
+  %show_configs=configs
+  %show_configs=show_configs(configs(:,CONFIG_UNICASTSTRATEGY) == 7,:);
   %show_configs=show_configs(show_configs(:,CONFIG_UNICAST_PRESELECTION_STRATEGY) == 2,:);
-  show_configs=show_configs(show_configs(:,CONFIG_UNICAST_REJECTONEMPTYCS) == 1,:);
-  show_configs=show_configs(show_configs(:,CONFIG_TXSCHEDULING) == 4,:);
+  %show_configs=show_configs(show_configs(:,CONFIG_UNICAST_REJECTONEMPTYCS) == 1,:);
+  %show_configs=show_configs(show_configs(:,CONFIG_TXSCHEDULING) == 4,:);
 
+  show_configs=configs
+  show_configs=show_configs(configs(:,CONFIG_UNICASTSTRATEGY) ~= 0,:);
+  show_configs=show_configs(show_configs(:,CONFIG_UNICAST_PRESELECTION_STRATEGY) ~= 0,:);
+  show_configs=show_configs(show_configs(:,CONFIG_FLOODING_NET_RETRIES) == 5,:);
+  show_configs=show_configs(show_configs(:,CONFIG_UNICASTSTRATEGY) == 7,:); 
+  show_configs=show_configs(show_configs(:,CONFIG_UNICAST_PRESELECTION_STRATEGY) == 2,:);
+  show_configs=show_configs(show_configs(:,CONFIG_TXSCHEDULING) == 0,:);    %TODO: warum hat 4 so ein hohes delay?
+  show_configs=show_configs(show_configs(:,CONFIG_UNICAST_UCASTPEERMETRIC) == 0,:);
+   
+  test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_TIMES]);
+  test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_REACH]);
+  
+  show_configs=configs
+  show_configs=show_configs(configs(:,CONFIG_UNICASTSTRATEGY) == 0,:);
+  show_configs=show_configs(show_configs(:,CONFIG_TXSCHEDULING) == 0,:);    %TODO: warum hat 4 so ein hohes delay?
+  show_configs=show_configs(show_configs(:,CONFIG_FLOODING_NET_RETRIES) == 3,:);
+  
+  test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_TIMES]);
+  test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_REACH]);
+  
   size(show_configs)
+  
+  show_configs
   
   search_for_best = 1;
   if (search_for_best == 1)
-      for i = 2:CONFIG_TXSCHEDULING
-        test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_TIMES]);
+      for i = 1:CONFIG_TXSCHEDULING
+        if ( size(unique(show_configs(:,i)),1) ~= 1)
+          test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_TIMES]);
+          test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_REACH]);
+        end
       end
 
-      show_configs_1=show_configs(show_configs(:,CONFIG_UNICAST_PRESELECTION_STRATEGY) == 2,:);
-      test_params(show_configs_1, result, [CONFIG_MACRETRIES CONFIG_FLOODING_NET_RETRIES], [RESULT_PKT_CNT RESULT_TIMES]);
+      legend_params = [CONFIG_UNICASTSTRATEGY CONFIG_UNICAST_UCASTPEERMETRIC];
+           
+      show_configs_1=show_configs(show_configs(:,CONFIG_UNICAST_UCASTPEERMETRIC) == 0,:);
+      test_params(show_configs_1, result, legend_params, [RESULT_PKT_CNT RESULT_TIMES]);
       %xlim([1500 2500]);
-      test_params(show_configs_1, result, [CONFIG_MACRETRIES CONFIG_FLOODING_NET_RETRIES], [RESULT_PKT_CNT RESULT_REACH]);
+      test_params(show_configs_1, result, legend_params, [RESULT_PKT_CNT RESULT_REACH]);
+      %xlim([1500 2500]);
+      
+      show_configs_2=show_configs(show_configs(:,CONFIG_UNICAST_UCASTPEERMETRIC) == 3,:);
+      test_params(show_configs_2, result, legend_params, [RESULT_PKT_CNT RESULT_TIMES]);
+      %xlim([1500 2500]);
+      test_params(show_configs_2, result, legend_params, [RESULT_PKT_CNT RESULT_REACH]);
       %xlim([1500 2500]);
 
-      show_configs_2=show_configs(show_configs(:,CONFIG_UNICAST_PRESELECTION_STRATEGY) ~= 2,:);
-      test_params(show_configs_2, result, [CONFIG_MACRETRIES CONFIG_FLOODING_NET_RETRIES], [RESULT_PKT_CNT RESULT_TIMES]);
+      f=g+1
+      
+      show_configs_3=show_configs(show_configs(:,CONFIG_FLOODING_NET_RETRIES) == 5,:);
+      test_params(show_configs_3, result, legend_params, [RESULT_PKT_CNT RESULT_TIMES]);
       %xlim([1500 2500]);
-      test_params(show_configs_2, result, [CONFIG_MACRETRIES CONFIG_FLOODING_NET_RETRIES], [RESULT_PKT_CNT RESULT_REACH]);
+      test_params(show_configs_3, result, legend_params, [RESULT_PKT_CNT RESULT_REACH]);
       %xlim([1500 2500]);
 
+      
       f=g+1
   end
 end

@@ -9,10 +9,10 @@ config_info
 show_param_str = {'config', '#Packet' , 'Avg. delay (ms)' , '#Max Delay per Hop' , 'Reach'};
 show_param_filestr = {'config', 'cntpacket' , 'avgdelay' , 'maxdelayperhop', 'reach' };
 
-show_cfgs = unique(show_config(:,params),'rows')
+show_cfgs = unique(show_config(:,params),'rows');
 
-%size(show_cfgs)
-%size(show_config)
+size(show_cfgs)
+size(show_config)
 
 show_cfgs_labels = {};
 
@@ -30,9 +30,12 @@ min_x = max(result(:,show_param(1)));
 min_y = max(result(:,show_param(2)));
 
 for sc=1:size(show_cfgs,1)
-    cur_sc=show_cfgs(sc,:);
+    cur_sc=show_cfgs(sc,:)
     
-    r=result(show_config(ismember(show_config(:,params),cur_sc,'rows'),end),show_param);
+    config_ids = show_config(ismember(show_config(:,params),cur_sc,'rows'),end)
+    %ismember(result(:,1),config_ids,'rows')
+    
+    r=result(ismember(result(:,1),config_ids,'rows'),show_param);
     
     max_x = max([max_x max(r(:,1))]);
     max_y = max([max_y max(r(:,2))]);

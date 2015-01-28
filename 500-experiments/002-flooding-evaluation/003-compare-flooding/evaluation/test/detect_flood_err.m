@@ -37,14 +37,14 @@ for n=1:size(nodes)
     missed_ids=find(z(:) == 0);
     for mi = size(missed_ids,1)
       node
-      missed_id = missed_ids(mi);
+      missed_id = missed_ids(mi)-1
       %resp = a(find((a(:,11)==missed_ids(mi)) & (a(:,15)==1)),2)
       %ack = a(find((a(:,11)==missed_ids(mi)) & (a(:,1)==node) & ((a(:,17)~=0) | a(:,18)~=0)),:)
       
       %disp('This nodes have the node as lastnode with this id:');
       %disp('     NODE       SENT      RESP  FOREIGN_RESP  RX_ACK      RX_COUNT     TIME    LASTNODE      FIN_RESP');
       
-      has_as_last_node = a(find((a(:,ID)==missed_id) & (a(:,LASTNODE)==node)),[NODE SENT RESP FOREIGN_RESP RX_ACK RX_COUNT TIME LASTNODE FIN_RESP]);
+      has_as_last_node = a(find((a(:,ID)==missed_id) & (a(:,LASTNODE)==node)),[NODE SENT RESP FOREIGN_RESP RX_ACK RX_COUNT TIME LASTNODE FIN_RESP])
       
       % reverse
       %for mi_rev = 1:size(has_as_last_node,1)
