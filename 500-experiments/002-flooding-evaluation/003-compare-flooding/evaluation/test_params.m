@@ -4,6 +4,7 @@ function figurehandle = test_params(show_config, result, params, show_param)
 plot_cols = ['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'m';'k';'b';'c';'y'];
 plot_sign = ['*';'+';'o';'x';'<';'s';'d';'>';'^'];
 
+%load config and cor. vars
 config_info
 
 show_param_str = {'config', '#Packet' , 'Avg. delay (ms)' , '#Max Delay per Hop' , 'Reach'};
@@ -11,8 +12,8 @@ show_param_filestr = {'config', 'cntpacket' , 'avgdelay' , 'maxdelayperhop', 're
 
 show_cfgs = unique(show_config(:,params),'rows');
 
-size(show_cfgs)
-size(show_config)
+size(show_cfgs);
+size(show_config);
 
 show_cfgs_labels = {};
 
@@ -30,9 +31,9 @@ min_x = max(result(:,show_param(1)));
 min_y = max(result(:,show_param(2)));
 
 for sc=1:size(show_cfgs,1)
-    cur_sc=show_cfgs(sc,:)
+    cur_sc=show_cfgs(sc,:);
     
-    config_ids = show_config(ismember(show_config(:,params),cur_sc,'rows'),end)
+    config_ids = show_config(ismember(show_config(:,params),cur_sc,'rows'),end);
     %ismember(result(:,1),config_ids,'rows')
     
     r=result(ismember(result(:,1),config_ids,'rows'),show_param);

@@ -31,6 +31,7 @@ RTSCTS_MIXED=24;
 BO_STRATEGY=25;
 RS_STRATEGY=26;
 TXSCHEDULING=27; %INFO 5
+OVERLAY=28;
 
 
 CONFIGID=1;
@@ -53,12 +54,12 @@ params_index=[ params_index ALGORITHMID EXTRAINFO  MACRETRIES NBMETRIC PIGGYBACK
 %                              11   12      13       14         15
 params_index=[ params_index FRESP USEASS MAXDELAY TXABORT TXSCHEDULING];
 
-%                             16    17
-params_index=[ params_index FIXCS E2E_RETRIES];
+%                             16    17            18
+params_index=[ params_index FIXCS E2E_RETRIES OVERLAY];
 
 
-p_id_name = { 'UNICASTSTRATEGY','UNICAST_PRESELECTION_STRATEGY','UNICAST_REJECTONEMPTYCS','UNICAST_UCASTPEERMETRIC','FLOODING_NET_RETRIES','ALGORITHMID','EXTRAINFO','MACRETRIES','NBMETRIC','PIGGYBACK','FRESP','USEASS','MAXDELAY','TXABORT','TXSCHEDULING','FIXCS','E2E_RETRIES'};
-params_name={ 'uc',             'uc presel',                    'uc reject',              'uc peer',                'max paretries',       'algorithm','extrainfo','macretries','nbmetric','piggyback','forceresp','assign','delay','abort','scheduling','fix cs','e2e'};
+p_id_name = { 'UNICASTSTRATEGY','UNICAST_PRESELECTION_STRATEGY','UNICAST_REJECTONEMPTYCS','UNICAST_UCASTPEERMETRIC','FLOODING_NET_RETRIES','ALGORITHMID','EXTRAINFO','MACRETRIES','NBMETRIC','PIGGYBACK','FRESP','USEASS','MAXDELAY','TXABORT','TXSCHEDULING','FIXCS','E2E_RETRIES','OVERLAY'};
+params_name={ 'uc',             'uc presel',                    'uc reject',              'uc peer',                'max paretries',       'algorithm','extrainfo','macretries','nbmetric','piggyback','forceresp','assign','delay','abort','scheduling','fix cs','e2e','overlay'};
 
 
 CONFIG_UNICASTSTRATEGY=1;
@@ -81,5 +82,6 @@ CONFIG_TXSCHEDULING=15;
 
 CONFIG_FIXCS=16;
 CONFIG_E2E_RETRIES=17;
+CONFIG_OVERLAY=18;
 
 
