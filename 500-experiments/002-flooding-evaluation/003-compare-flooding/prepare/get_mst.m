@@ -21,6 +21,8 @@ function [ ] = get_mst( pdr_path, output_path, mode, s )
     max_edge = max(max(H));
     edgedel = max_edge + 1;
 
+    edgedel = 0;
+
     H(find(H(:) == 0)) = edgedel;  
 
     H_mst = zeros(nonodes,nonodes) + edgedel; %max value but it is like delete the edge;
@@ -33,41 +35,44 @@ function [ ] = get_mst( pdr_path, output_path, mode, s )
 
     ac_node = s;
 
-    in_mst = [];
+    in_mst = [ac_node];
 
     P = [];
 
     while ( size(in_mst,2) ~= nonodes )
 
-      in_mst = [ in_mst ac_node ];
-
       %copy node and links to mst
       H_mst(ac_node,:) = H(ac_node,:);
       H_mst(:,ac_node) = H(:,ac_node);
+
+      H_mst(ac_node,in_mst) = edgedel;
+      H_mst(in_mst,ac_node) = edgedel;
 
       %delete node in orig. graph
       H(ac_node,:) = nodesrow;
       H(:,ac_node) = nodescol;
 
-      m = min(find(H_mst(:) == min(min(H_mst)))) - 1; %we have to start with 0
+      m = min(find(H_mst(:) == max(max(H_mst))))
+      ac_node = ceil(m/nonodes)  %we have to start with 0
 
-      ac_node = ceil(m/nonodes);
+      find(in_mst(:) == ac_node)
+      size(find(in_mst(:) == ac_node))
+      size(find(in_mst(:) == ac_node),1)
 
-      if size(find(in_mst(:) == ac_node),1) ~= 0
+      if (size(find(in_mst(:) == ac_node),1) == 1)
         con_node = ac_node;
-        ac_node = mod(m, nonodes) + 1;               % matlab start with index 1
+        ac_node = mod(m-1, nonodes)+1;               % matlab start with index 1
       else
-        con_node = mod(m, nonodes) + 1;               % matlab start with index 1
+        con_node = mod(m-1, nonodes)+1;               % matlab start with index 1
       end
 
-      if ( ac_node ~= 0 )
-        P = [ P ; [ con_node ac_node ]];
-        %ac_node
-      end
+      P = [ P ; [ con_node ac_node ]];
+      in_mst = [ in_mst ac_node ];
 
     end
 
     P
+    size(P)
     csvwrite(output_path, P);
 end
 

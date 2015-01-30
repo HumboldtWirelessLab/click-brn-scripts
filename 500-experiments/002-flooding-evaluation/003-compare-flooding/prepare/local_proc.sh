@@ -39,10 +39,19 @@ STARTNODE=1
 
 let GRAPH=OVERLAYGRAPH/4
 
-cat $NODEPLACEMENTFILE | NAME2NUM=1 human_readable.sh $RESULTDIR/nodes.mac > $RESULTDIR/placementfile_mst.plm
+cp -r $DIR/linkstats $RESULTDIR/
+cp $NODEPLACEMENTFILE $RESULTDIR/linkstats/placement.txt
+cat $DESFILE | grep "RADIO" >> $RESULTDIR/linkstats/linkstat.des
 
-(cd $DIR; matwrapper.sh "try,dist2pdr('$RESULTDIR/placementfile_mst.plm','$RESULTDIR/dist.csv'),catch,exit(1),end,exit(0)")
-sed 's#,# #g' $RESULTDIR/dist.csv > $RESULTDIR/dist.mat
+(cd $RESULTDIR/linkstats; run_sim.sh)
+cp $RESULTDIR/linkstats/1/evaluation/network_info/graph_psr_1_200.mat $RESULTDIR/dist.mat
+
+###################################################### O L D ##################################################################
+#cat $NODEPLACEMENTFILE | NAME2NUM=1 human_readable.sh $RESULTDIR/nodes.mac > $RESULTDIR/placementfile_mst.plm
+#
+#(cd $DIR; matwrapper.sh "try,dist2pdr('$RESULTDIR/placementfile_mst.plm','$RESULTDIR/dist.csv'),catch,exit(1),end,exit(0)")
+#sed 's#,# #g' $RESULTDIR/dist.csv > $RESULTDIR/dist.mat
+###############################################################################################################################
 
 if [ $GRAPH -eq 0 ]; then
   (cd $DIR; matwrapper.sh "try,get_mst('$RESULTDIR/dist.mat','$RESULTDIR/mst.csv',0,$STARTNODE),catch,exit(1),end,exit(0)" 1> /dev/null)

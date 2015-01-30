@@ -1,0 +1,15 @@
+floodstats('20150110/result_flooding_info_index.dat','20150110/result_flooding.dat')
+ * verschiedene Auswertungen: erreichbarkeit, anzahl pakete
+ * TODO: time auswerten
+
+
+floodstats_info: gesamt infos
+
+force: simuliert das Flooding mittels psr-datei
+
+flowtime: details zum timing
+
+test_params: different scatterplot to find a relationsship between params
+unic_reject_and_pa_retires: 
+
+exportfig.m,flooding_caption.m,xticklabel_rotate.m : helper

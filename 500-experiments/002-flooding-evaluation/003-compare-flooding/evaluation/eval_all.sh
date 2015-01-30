@@ -31,21 +31,21 @@ for d in `(cd $RESULTDIR; ls -d 1_MBi*)`; do
 
     INFO="$INFO $MACRETRIES $FLOODING_MAXNBMETRIC $FLOODING_LASTNODES_PP $BCAST2UNIC_FORCERESPONSIBILITY $BCAST2UNIC_USEASSIGNINFO"
     INFO="$INFO $BCAST_RNDDELAYQUEUE_MAXDELAY $SEED $BCAST_ENABLE_ABORT_TX $BCAST2UNIC_FIXCS $BCAST_E2E_RETRIES $RTSCTS_STRATEGY"
-    INFO="$INFO $RTSCTS_MIXEDSTRATEGY $BO_STRATEGY $RS_STRATEGY $FLOODING_TX_SCHEDULING"
+    INFO="$INFO $RTSCTS_MIXEDSTRATEGY $BO_STRATEGY $RS_STRATEGY $FLOODING_TX_SCHEDULING $OVERLAYGRAPH"
 
     INFO=`echo "$INFO" | sed -e "s#true#1#g" | sed -e "s#false#0#g"`
 
     echo "$INFOINDEX $INFO" >> result_flooding_info_index.dat
 
-    if [ -e $RESULTDIR/$d/evaluation/channelstats/simstats_summary.csv ]; then
+    if [ -e $RESULTDIR/$d/evaluation/channelstats/simstats_summary.mat ]; then
         #            COLLISIONEN RTS CTS DATA BCAST UNIC ACK
-        EXTRA_DATA=`awk -F, '{print $14" "$2" "$3" "$4" "$5" "$6" "$7}' $RESULTDIR/$d/evaluation/channelstats/simstats_summary.csv`
+        EXTRA_DATA=`awk '{print $14" "$2" "$3" "$4" "$5" "$6" "$7}' $RESULTDIR/$d/evaluation/channelstats/simstats_summary.mat`
     else
         EXTRA_DATA="0 0 0 0 0 0 0"
     fi
 
-    if [ -f $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv ]; then
-      cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv | sed "s#,# #g" | awk -v I="$INFOINDEX" -v EXDAT="$EXTRA_DATA" '{print I" "$3" "$10" "$2" "$1" "$7" "$9" "$6" "$5" "EXDAT }' >> result_flooding.dat
+    if [ -f $RESULTDIR/$d/evaluation/flooding_info/floodingstats.mat ]; then
+      cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.mat | awk -v I="$INFOINDEX" -v EXDAT="$EXTRA_DATA" '{print I" "$3" "$10" "$2" "$1" "$7" "$9" "$6" "$5" "EXDAT }' >> result_flooding.dat
     fi
 
     # node node node psize 0 0 0 0 0 pcount value fwd sent 0 0 0 0 0 fwd_done fwd_succ time
