@@ -4,26 +4,33 @@
 
 #include "flooding.config"
 
+#define PRIO_QUEUE
 //#define RAWDUMP
 #define BRNFEEDBACK
 #define ROUTING_TXFEEDBACK
 #define FOREIGNRXSTATS
-#define BCAST2UNIC_PDRCONFIG "101 5 115"
 
 #define CST cst
-#define CERR
-#define COOPCST
-#define COOPCST_STRING "device_wifi/cocst"
 
-#define PRIO_QUEUE
 #define LINKPROBE_PERIOD                                         2000
 #define LINKPROBE_TAU                                          100000
-#define LINKPROBE_PROBES                                       "2 100 24"
+//#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000" -- old version
+//#define LINKPROBE_PROBES                                       "2 100" -- old version
 //#define LINKPROBE_PROBES                   "2 200 24 2 200 23 11 200 24 11 200 23"
+#define LINKPROBE_PROBES                                       "2 100 24"
 #define DISABLE_LP_POWER
 
+//#define PRO_FL
+//#define MPR_FL
+//#define MST_FL
+#define OVL_FL
 #define FLOODING_STRATEGY 1
-//#define OVERLAYFLOODING_FILENAME "../97_overlays_new/limit90mac"
+//#define OVERLAYFLOODING_FILENAME "../62_overlays_new/62_4_cluster_5_75_5000"
+#define OVERLAYFLOODING_FILENAME "../62_overlays_new/limit_80mac2"
+//#define CIR_OVL
+//#define CIRCLE_DATA 62_overlays_new/limit_80
+//#define MST_BD
+//#define MST_PRE
 //#define GG_GRAPH
 //#define GG_THRESHOLD 0
 
@@ -35,14 +42,6 @@
 //#ifndef BCAST_ENABLE_ABORT_TX
 #define BCAST_ENABLE_ABORT_TX 3
 //#endif
-
-#ifndef RTSCTS_STRATEGY
-#define RTSCTS_STRATEGY 0
-#endif
-
-#ifndef RS_STRATEGY
-#define RS_STRATEGY 0
-#endif
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
