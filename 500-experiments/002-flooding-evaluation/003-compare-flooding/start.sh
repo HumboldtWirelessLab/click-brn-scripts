@@ -255,6 +255,8 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
                    echo "#define OVERLAYFLOODING_FILENAME mst.mat" >> flooding_config.h
                  elif [ $OVERLAYGRAPH = 1 ]; then
                    echo "#define OVERLAYFLOODING_FILENAME dijkstra.mat" >> flooding_config.h
+                 elif [ $OVERLAYGRAPH = 2 ]; then
+                   echo "#define OVERLAYFLOODING_FILENAME circle.mat" >> flooding_config.h
                  fi
 
                  if [ $OVERLAYCFG_OPP = 0 ]; then

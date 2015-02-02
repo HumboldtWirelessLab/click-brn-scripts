@@ -53,13 +53,20 @@ cp $RESULTDIR/linkstats/1/evaluation/network_info/graph_psr_1_200.mat $RESULTDIR
 #sed 's#,# #g' $RESULTDIR/dist.csv > $RESULTDIR/dist.mat
 ###############################################################################################################################
 
-if [ $GRAPH -eq 0 ]; then
-  (cd $DIR; matwrapper.sh "try,get_mst('$RESULTDIR/dist.mat','$RESULTDIR/mst.csv',0,$STARTNODE),catch,exit(1),end,exit(0)" 1> /dev/null)
-  sed 's#,# #g' $RESULTDIR/mst.csv | NUM2MAC=1 human_readable.sh $RESULTDIR/nodes.mac > $RESULTDIR/mst.mat
-else
-  (cd $DIR; matwrapper.sh "try,get_dijkstra('$RESULTDIR/dist.mat','$RESULTDIR/dijkstra.csv',0,$STARTNODE),catch,exit(1),end,exit(0)" 1> /dev/null)
-  sed 's#,# #g' $RESULTDIR/dijkstra.csv | NUM2MAC=1 human_readable.sh $RESULTDIR/nodes.mac | sort -u > $RESULTDIR/dijkstra.mat
-fi
+case "$GRAPH" in
+  "0")
+    (cd $DIR; matwrapper.sh "try,get_mst('$RESULTDIR/dist.mat','$RESULTDIR/mst.csv',0,$STARTNODE),catch,exit(1),end,exit(0)" 1> /dev/null)
+    sed 's#,# #g' $RESULTDIR/mst.csv | NUM2MAC=1 human_readable.sh $RESULTDIR/nodes.mac > $RESULTDIR/mst.mat
+    ;;
+  "1")
+    (cd $DIR; matwrapper.sh "try,get_dijkstra('$RESULTDIR/dist.mat','$RESULTDIR/dijkstra.csv',0,$STARTNODE),catch,exit(1),end,exit(0)" 1> /dev/null)
+    sed 's#,# #g' $RESULTDIR/dijkstra.csv | NUM2MAC=1 human_readable.sh $RESULTDIR/nodes.mac | sort -u > $RESULTDIR/dijkstra.mat
+    ;;
+  "2")
+    (cd $DIR; matwrapper.sh "try,circle_ovl('$RESULTDIR/dist.mat','$RESULTDIR/circle.csv',20),catch,exit(1),end,exit(0)" 1> /dev/null)
+    sed 's#,# #g' $RESULTDIR/circle.csv | NUM2MAC=1 human_readable.sh $RESULTDIR/nodes.mac | sort -u > $RESULTDIR/circle.mat
+    ;;
+esac
 
 fi
 
