@@ -68,7 +68,8 @@ title(strcat(show_param_str(show_param(1)),' vs. ', show_param_str(show_param(2)
 xlabel(show_param_str(show_param(1)));
 ylabel(show_param_str(show_param(2)));
 
-legend(findobj(gca,'Tag','Box'),show_cfgs_labels,'location', 'northeast');
+%legend(findobj(gca,'Tag','Box'),show_cfgs_labels,'location', 'northeast');
+legend(findobj(gca,'Tag','Box'),show_cfgs_labels,'location', 'southeast');
 grid on;
 xlim([min_x*0.95 max_x*1.05]);
 ylim([min_y*0.95 max_y*1.05]);
