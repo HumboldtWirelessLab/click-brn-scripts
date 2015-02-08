@@ -5,7 +5,9 @@
 #
 #for i in `ls -d 1_MBit*`; do echo $i; cat $i/evaluation/flooding_info/floodingstats.csv | awk -F, '{print $6" "$2}'; done
 
-NUM_CPUS=`cat /proc/cpuinfo | grep processor | wc -l`
+if [ "x$NUM_CPUS" = "x" ]; then
+  NUM_CPUS=`cat /proc/cpuinfo | grep processor | wc -l`
+fi
 
 if [ "x$MAINCONFIG" != "x" ]; then
   . $MAINCONFIG
@@ -358,7 +360,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
            PREPARE_CNT=`ls prepare_status/ | wc -w`
            while [ $PREPARE_CNT -gt $NUM_CPUS ]; do
-             sleep 0.5
+             sleep 0.1
              PREPARE_CNT=`ls prepare_status/ | wc -w`
            done
          fi
