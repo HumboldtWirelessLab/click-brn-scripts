@@ -1,3 +1,8 @@
 #NODE           DEVICE  MODULSDIR                                               MODOPTIONS WIFICONFIG   CLICKMODDIR     CLICKSCRIPT     CLICKLOGFILE                    APPLICATION     APPLICATIONLOGFILE
 wgt23           DEV0    BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION        -          monitor      -               simpleflow.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
 wgt25           DEV0    BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION        -          monitor      -               simpleflow.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wgt201           DEV0    BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION        -          monitor      -               simpleflow.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wgt29           DEV0    BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION        -          monitor      -               simpleflow.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wgt81           DEV0    BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION        -          monitor      -               simpleflow.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+wgt63           DEV0    BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION        -          monitor      -               simpleflow.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+
