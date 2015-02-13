@@ -1,8 +1,6 @@
 NAME=receiver
-SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
-FORGEINNODES=no
+RADIO=shadowing
+#RADIO=tworayground
 
 TIME=20
 

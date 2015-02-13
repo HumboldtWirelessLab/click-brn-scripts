@@ -36,30 +36,19 @@ do
 	OPWD=$(pwd)
 	cd ../../../../helper/src/Npart
 	NUM_OF_NODES=175
-	RXRANGE=370  ./gen_topo.sh ${NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
+	RXRANGE=400  ./gen_topo.sh ${NUM_OF_NODES}  2>/dev/null > /tmp/${PLACEMENT_PATH}
 	RESULT=$?
 	cd ${OPWD}
 	cat /tmp/${PLACEMENT_PATH} | awk -F " " '{print "sk"NR,$2,$3,$4}' > ${PLACEMENT_PATH}
+	NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
+	echo "  new node count: ${NODE_COUNT}"
 	
 	if [ "${RESULT}" -ne 0 ] 
 	then
 		echo "result: failed"
 		exit -1
 	fi
-	
-	#
-	# Update mes
-	#
-	echo "update .mes file..."
-	NODE_COUNT=$(wc -l ${PLACEMENT_PATH} | awk -F " " '{ print $1}')
-	echo "  new node count: ${NODE_COUNT}"
-	sed -i "s/:[0-9]*/:${NODE_COUNT}/" simpleflow.mes
-	if [ "$?" -ne 0 ] 
-	then
-		echo "result: failed"
-		exit -1
-	fi
-	
+		
 	
 	for TRAVERSALTIME in $(seq ${TRAVERSALTIME_MIN} ${TRAVERSALTIME_STEP} ${TRAVERSALTIME_MAX})
 	do

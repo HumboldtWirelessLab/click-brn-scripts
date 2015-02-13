@@ -5,6 +5,10 @@
 #
 #for i in `ls -d 1_MBit*`; do echo $i; cat $i/evaluation/flooding_info/floodingstats.csv | awk -F, '{print $6" "$2}'; done
 
+if [ "x$NUM_CPUS" = "x" ]; then
+  NUM_CPUS=`cat /proc/cpuinfo | grep processor | wc -l`
+fi
+
 if [ "x$MAINCONFIG" != "x" ]; then
   . $MAINCONFIG
 fi
@@ -37,13 +41,17 @@ else
   MIN_PLACEMENT=1
 fi
 
+if [ "x$NONODES" = "x" ]; then
+  NONODES=100
+fi
+
 if [ "x$SIM" = "x1" ]; then
   NODESFILE=nodes.sim
 
   if [ "x$GRID" = "x1" ]; then
     echo -n "" > $NODESFILE
-    for i in `seq 1 100`; do
-      echo "sk$i" >> $NODESFILE
+    for i in `seq 1 $NONODES`; do
+      echo "node$i" >> $NODESFILE
     done
     MAX_PLACEMENT=1
   else
@@ -70,9 +78,11 @@ echo "Placementfile: $PLACEMENTFILE MAXPL: $MAX_PLACEMENT START: $START LIMIT: $
 
 FLOWTIME=110
 FLOWTIMESPACE=10
-INTERVAL=1500
-DURATION=15
-DURATION_MS=15000
+INTERVAL=1000
+#DURATION=15
+#DURATION_MS=15000
+DURATION=10
+let DURATION_MS=DURATION*INTERVAL
 
 echo -n "" > flooding.ctl
 
@@ -80,7 +90,7 @@ for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT`; do
    if [ "x$SIM" = "x" ]; then
      MAC=`cat nodes.mac | grep $n | awk '{print $3}'`
    else
-     mac_raw=`echo $n | sed "s#sk##g"`
+     mac_raw=`echo $n | sed "s#node##g"`
      m1=`expr $mac_raw / 256`
      m2=`expr $mac_raw % 256`
      m1h=$(echo "obase=16; $m1" | bc)
@@ -118,14 +128,18 @@ echo "  read flooding/fl.stats," >> flooding_script.click
 echo "  read flooding/fl_database.forward_table," >> flooding_script.click
 echo "  read flooding/unicfl.stats," >> flooding_script.click
 echo "  read sf.stats," >> flooding_script.click
-echo "  read setrtscts.stats," >> flooding_script.click
-echo "  read rate_flooding.stats," >> flooding_script.click
+#echo "  read setrtscts.stats," >> flooding_script.click
+#echo "  read rate_flooding.stats," >> flooding_script.click
 echo "  read device_wifi/wifidevice/cst.stats" >> flooding_script.click
 
 echo ");" >> flooding_script.click
 
 
 let FLOWTIME=FLOWTIME+1
+
+rm -rf prepare_status
+mkdir prepare_status
+PREPARE_NUM=1
 
 for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
@@ -209,58 +223,97 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
        MEASUREMENTDIR="$DATARATE""_MBit_"$NUM"_plm_"$pl"_"$al"_"$flunic"_"$flunic_pres"_"$flunic_reject"_"$flunic_peer"_"$fl_pa_ret"_"$fl_mac_ret"_"$fl_nb_met"_"$fl_piggy"_"$fl_forceresp"_"$fl_useassign"_"$fl_maxdelay"_"$fl_abort_tx"_"$flunic_fixcs"_"$fl_e2e"_"$rtscts"_"$rtscts_mixed"_"$bos"_"$rs"_"$fl_txsched
 
+       rm -f flooding_config.h
+       exec 3<>flooding_config.h
+
        case "$al" in
          "simple")
-                 echo "" > flooding_config.h
+                 echo "" >&3
                  ;;
          "probability")
-                  echo "" > flooding_config.h
+                  echo "" >&3
                   if [ "x$PROBINDEX" = "x" ]; then
                     PROBINDEX=0
                   fi
                   MEASUREMENTDIR="$MEASUREMENTDIR""_p_"${PROB_ARRAY[$PROBINDEX]}
                   #echo "#define FLOODING_DEBUG 2" > flooding_config.h
-                  echo "#define PROBABILITYFLOODING_FWDPROBALILITY ${PROB_ARRAY[$PROBINDEX]}" >> flooding_config.h
-                  echo "#define PRO_FL" >> flooding_config.h
+                  echo "#define PROBABILITYFLOODING_FWDPROBALILITY ${PROB_ARRAY[$PROBINDEX]}" >&3
+                  echo "#define FLOODING_STRATEGY 2" >&3
                   ;;
          "mpr")
-                 echo "#define MPR_STATS" > flooding_config.h
-                 echo "#define MPR_FL" >> flooding_config.h
+                 echo "#define MPR_STATS" >&3
+                 echo "#define FLOODING_STRATEGY 3" >&3
                  ;;
 
          "mst")
-                 echo "#define MST_FL" > flooding_config.h
-                 echo "#define FLOODING_DEBUG 4" >> flooding_config.h
+                 echo "" > flooding_config.h
+                 if [ "x$OVERLAYINDEX" = "x" ]; then
+                    OVERLAYINDEX=0
+                 fi
+                 MEASUREMENTDIR="$MEASUREMENTDIR""_p_"${OVERLAY_ARRAY[$OVERLAYINDEX]}
+
+                 echo "#define FLOODING_DEBUG 2" >&3
+                 echo "#define FLOODING_STRATEGY 4" >&3
+                 let OVERLAYGRAPH=${OVERLAY_ARRAY[$OVERLAYINDEX]}/4
+                 let OVERLAYCONFIG=${OVERLAY_ARRAY[$OVERLAYINDEX]}%4
+
+                 let OVERLAYCFG_OPP=OVERLAYCONFIG%2
+
+                 let OVERLAYCONFIG=OVERLAYCONFIG/2
+                 let OVERLAYCFG_PARRESP=OVERLAYCONFIG%2
+
+                 if [ $OVERLAYGRAPH = 0 ]; then
+                   echo "#define OVERLAYFLOODING_FILENAME mst.mat" >&3
+                 elif [ $OVERLAYGRAPH = 1 ]; then
+                   echo "#define OVERLAYFLOODING_FILENAME dijkstra.mat" >&3
+                 elif [ $OVERLAYGRAPH = 2 ]; then
+                   echo "#define OVERLAYFLOODING_FILENAME circle.mat" >&3
+                 fi
+
+                 if [ $OVERLAYCFG_OPP = 0 ]; then
+                   echo "#define OVERLAYFLOODING_OPPORTUNISTIC false" >&3
+                 else
+                   echo "#define OVERLAYFLOODING_OPPORTUNISTIC true" >&3
+                 fi
+
+                 if [ $OVERLAYCFG_PARRESP = 0 ]; then
+                   echo "#define OVERLAYFLOODING_RESPONSABLE4PARENTS false" >&3
+                 else
+                   echo "#define OVERLAYFLOODING_RESPONSABLE4PARENTS true" >&3
+                 fi
+
                  ;;
 
        esac
 
        MEASUREMENTDIR="$MEASUREMENTDIR""_unicast_"$flunic"_"$repetition
 
-       echo "#define BCAST2UNIC" >> flooding_config.h
-       echo "#define BCAST2UNIC_STRATEGY $flunic" >> flooding_config.h
-       echo "#define BCAST2UNIC_PRESELECTION_STRATEGY $flunic_pres" >> flooding_config.h
-       echo "#define BCAST2UNIC_REJECTONEMPTYCS $flunic_reject" >> flooding_config.h
-       echo "#define BCAST2UNIC_UCASTPEERMETRIC $flunic_peer" >> flooding_config.h
-       echo "#define FLOODING_PASSIVE_ACK_RETRIES $fl_pa_ret" >> flooding_config.h
-       echo "#define DEFAULT_DATATRIES $fl_mac_ret" >> flooding_config.h
-       echo "#define FLOODING_MAXNBMETRIC $fl_nb_met" >> flooding_config.h
-       echo "#define FLOODING_LASTNODES_PP $fl_piggy" >> flooding_config.h
-       echo "#define BCAST2UNIC_FORCERESPONSIBILITY $fl_forceresp" >> flooding_config.h
-       echo "#define BCAST2UNIC_USEASSIGNINFO $fl_useassign" >> flooding_config.h
-       echo "#define BCAST_RNDDELAYQUEUE_MAXDELAY $fl_maxdelay" >> flooding_config.h
-       echo "#define BCAST_ENABLE_ABORT_TX $fl_abort_tx" >> flooding_config.h
-       echo "#define BCAST2UNIC_FIXCS $flunic_fixcs" >> flooding_config.h
-       echo "#define BCAST_E2E_RETRIES $fl_e2e" >> flooding_config.h
-       echo "#define RTSCTS_STRATEGY $rtscts" >> flooding_config.h
-       echo "#define RTSCTS_MIXEDSTRATEGY $rtscts_mixed" >> flooding_config.h
-       echo "#define TOS2QUEUEMAPPER_STRATEGY $bos" >> flooding_config.h
-       echo "#define RS_STRATEGY $rs" >> flooding_config.h
-       echo "#define FLOODING_TX_SCHEDULING $fl_txsched" >> flooding_config.h
+       echo "#define BCAST2UNIC" >&3
+       echo "#define BCAST2UNIC_STRATEGY $flunic" >&3
+       echo "#define BCAST2UNIC_PRESELECTION_STRATEGY $flunic_pres" >&3
+       echo "#define BCAST2UNIC_REJECTONEMPTYCS $flunic_reject" >&3
+       echo "#define BCAST2UNIC_UCASTPEERMETRIC $flunic_peer" >&3
+       echo "#define FLOODING_PASSIVE_ACK_RETRIES $fl_pa_ret" >&3
+       echo "#define DEFAULT_DATATRIES $fl_mac_ret" >&3
+       echo "#define FLOODING_MAXNBMETRIC $fl_nb_met" >&3
+       echo "#define FLOODING_LASTNODES_PP $fl_piggy" >&3
+       echo "#define BCAST2UNIC_FORCERESPONSIBILITY $fl_forceresp" >&3
+       echo "#define BCAST2UNIC_USEASSIGNINFO $fl_useassign" >&3
+       echo "#define BCAST_RNDDELAYQUEUE_MAXDELAY $fl_maxdelay" >&3
+       echo "#define BCAST_ENABLE_ABORT_TX $fl_abort_tx" >&3
+       echo "#define BCAST2UNIC_FIXCS $flunic_fixcs" >&3
+       echo "#define BCAST_E2E_RETRIES $fl_e2e" >&3
+       echo "#define RTSCTS_STRATEGY $rtscts" >&3
+       echo "#define RTSCTS_MIXEDSTRATEGY $rtscts_mixed" >&3
+       echo "#define TOS2QUEUEMAPPER_STRATEGY $bos" >&3
+       echo "#define RS_STRATEGY $rs" >&3
+       echo "#define FLOODING_TX_SCHEDULING $fl_txsched" >&3
 
        if [ "x$flunic" = "x0" ]; then
-         echo "#define BCAST_FPA_ABORTONFINISH false" >> flooding_config.h
+         echo "#define BCAST_FPA_ABORTONFINISH false" >&3
        fi
+
+       exec 3>&-
 
        echo "$NUM $al $PROBINDEX $NUM $LIMIT $flunic $flunic_pres $flunic_reject $flunic_peer $fl_pa_ret $fl_mac_ret $fl_nb_met $fl_piggy $fl_forceresp $fl_useassign $fl_maxdelay $fl_abort_tx $flunic_fixcs $fl_e2e $rtscts $rtscts_mixed $bos $rs $fl_txsched $repetition"
 
@@ -280,6 +333,11 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
          echo "SEED=$repetition" >> flooding.des
 
+         if [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
+           echo "miss placementfile"
+           exit 0;
+         fi
+
          if [ "x$SIM" = "x" ]; then
            RUNMODE=$CURRENTRUNMODE run_measurement.sh flooding.des $MEASUREMENTDIR
 
@@ -292,46 +350,73 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            fi
 
          else
-           PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
+           #PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
+           mkdir $MEASUREMENTDIR
+           mv flooding.des flooding.mes flooding_config.h $MEASUREMENTDIR
+           cp placement.txt flooding.click flooding_sender.click monitor.b.channel nodes.sim flooding_script.click flooding.ctl $MEASUREMENTDIR
+           (touch prepare_status/$PREPARE_NUM; cd $MEASUREMENTDIR; NOSUBDIR=1 PREPARE_ONLY=1 run_sim.sh ns flooding.des; cd ..; rm prepare_status/$PREPARE_NUM) &
+
+           let PREPARE_NUM=PREPARE_NUM+1
+
+           PREPARE_CNT=`ls prepare_status/ | wc -w`
+           while [ $PREPARE_CNT -gt $NUM_CPUS ]; do
+             sleep 0.1
+             PREPARE_CNT=`ls prepare_status/ | wc -w`
+           done
          fi
 
+         if  [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
+           echo "miss placementfile after prepare"
+         fi
+
+         rm -f $MEASUREMENTDIR/params
+         exec 3<>$MEASUREMENTDIR/params
+
          if [ "x$SIM" = "x" ]; then
-           echo "SIM=0" > $MEASUREMENTDIR/params
+           echo "SIM=0" >&3
          else
-           echo "SIM=1" > $MEASUREMENTDIR/params
+           echo "SIM=1" >&3
         fi
 
-        echo "ALGORITHM=$al" >> $MEASUREMENTDIR/params
+        echo "ALGORITHM=$al" >&3
 
         if [ "x$PROBINDEX" = "x" ]; then
-          echo "FWDPROBALILITY=-1" >> $MEASUREMENTDIR/params
+          echo "FWDPROBALILITY=-1" >&3
         else
-          echo "FWDPROBALILITY=${PROB_ARRAY[$PROBINDEX]}" >> $MEASUREMENTDIR/params
+          echo "FWDPROBALILITY=${PROB_ARRAY[$PROBINDEX]}" >&3
         fi
 
-        echo "UNICASTSTRATEGY=$flunic" >> $MEASUREMENTDIR/params
-        echo "PLACEMENT=$pl" >> $MEASUREMENTDIR/params
-        echo "UNICAST_PRESELECTION_STRATEGY=$flunic_pres" >> $MEASUREMENTDIR/params
-        echo "UNICAST_REJECTONEMPTYCS=$flunic_reject" >> $MEASUREMENTDIR/params
-        echo "UNICAST_UCASTPEERMETRIC=$flunic_peer" >> $MEASUREMENTDIR/params
-        echo "FLOODING_PASSIVE_ACK_RETRIES=$fl_pa_ret" >> $MEASUREMENTDIR/params
-        echo "MACRETRIES=$fl_mac_ret" >> $MEASUREMENTDIR/params
-        echo "FLOODING_MAXNBMETRIC=$fl_nb_met" >> $MEASUREMENTDIR/params
-        echo "FLOODING_LASTNODES_PP=$fl_piggy" >> $MEASUREMENTDIR/params
-        echo "SEED=$repetition" >> $MEASUREMENTDIR/params
-        echo "NUM=$NUM" >> $MEASUREMENTDIR/params
-        echo "REPETITION=$repetition" >> $MEASUREMENTDIR/params
-        echo "BCAST2UNIC_FORCERESPONSIBILITY=$fl_forceresp" >> $MEASUREMENTDIR/params
-        echo "BCAST2UNIC_USEASSIGNINFO=$fl_useassign" >> $MEASUREMENTDIR/params
-        echo "BCAST_RNDDELAYQUEUE_MAXDELAY=$fl_maxdelay" >> $MEASUREMENTDIR/params
-        echo "BCAST_ENABLE_ABORT_TX=$fl_abort_tx" >> $MEASUREMENTDIR/params
-        echo "BCAST2UNIC_FIXCS=$flunic_fixcs" >> $MEASUREMENTDIR/params
-        echo "BCAST_E2E_RETRIES=$fl_e2e" >> $MEASUREMENTDIR/params
-        echo "RTSCTS_STRATEGY=$rtscts" >> $MEASUREMENTDIR/params
-        echo "RTSCTS_MIXEDSTRATEGY=$rtscts_mixed" >> $MEASUREMENTDIR/params
-        echo "BO_STRATEGY=$bos" >> $MEASUREMENTDIR/params
-        echo "RS_STRATEGY=$rs" >> $MEASUREMENTDIR/params
-        echo "FLOODING_TX_SCHEDULING=$fl_txsched" >> $MEASUREMENTDIR/params
+        if [ "x$OVERLAYINDEX" = "x" ]; then
+          echo "OVERLAYGRAPH=-1" >&3
+        else
+          echo "OVERLAYGRAPH=${OVERLAY_ARRAY[$OVERLAYINDEX]}" >&3
+        fi
+
+        echo "UNICASTSTRATEGY=$flunic" >&3
+        echo "PLACEMENT=$pl" >&3
+        echo "UNICAST_PRESELECTION_STRATEGY=$flunic_pres" >&3
+        echo "UNICAST_REJECTONEMPTYCS=$flunic_reject" >&3
+        echo "UNICAST_UCASTPEERMETRIC=$flunic_peer" >&3
+        echo "FLOODING_PASSIVE_ACK_RETRIES=$fl_pa_ret" >&3
+        echo "MACRETRIES=$fl_mac_ret" >&3
+        echo "FLOODING_MAXNBMETRIC=$fl_nb_met" >&3
+        echo "FLOODING_LASTNODES_PP=$fl_piggy" >&3
+        echo "SEED=$repetition" >&3
+        echo "NUM=$NUM" >&3
+        echo "REPETITION=$repetition" >&3
+        echo "BCAST2UNIC_FORCERESPONSIBILITY=$fl_forceresp" >&3
+        echo "BCAST2UNIC_USEASSIGNINFO=$fl_useassign" >&3
+        echo "BCAST_RNDDELAYQUEUE_MAXDELAY=$fl_maxdelay" >&3
+        echo "BCAST_ENABLE_ABORT_TX=$fl_abort_tx" >&3
+        echo "BCAST2UNIC_FIXCS=$flunic_fixcs" >&3
+        echo "BCAST_E2E_RETRIES=$fl_e2e" >&3
+        echo "RTSCTS_STRATEGY=$rtscts" >&3
+        echo "RTSCTS_MIXEDSTRATEGY=$rtscts_mixed" >&3
+        echo "BO_STRATEGY=$bos" >&3
+        echo "RS_STRATEGY=$rs" >&3
+        echo "FLOODING_TX_SCHEDULING=$fl_txsched" >&3
+
+        exec 3>&-
 
        fi
 
@@ -342,18 +427,23 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
              DONE_ALL_FOR_ALG=1
              ;;
         "probability")
-              let PROBINDEX=PROBINDEX+1;
+             let PROBINDEX=PROBINDEX+1;
 
-              if [ $PROBINDEX -ge $PROB_ARRAY_SIZE ]; then
-                DONE_ALL_FOR_ALG=1
-                PROBINDEX=""
-              fi
-              ;;
+             if [ $PROBINDEX -ge $PROB_ARRAY_SIZE ]; then
+               DONE_ALL_FOR_ALG=1
+               PROBINDEX=""
+             fi
+             ;;
         "mpr")
              DONE_ALL_FOR_ALG=1
              ;;
         "mst")
-             DONE_ALL_FOR_ALG=1
+             let OVERLAYINDEX=OVERLAYINDEX+1;
+
+             if [ $OVERLAYINDEX -ge $OVERLAY_ARRAY_SIZE ]; then
+               DONE_ALL_FOR_ALG=1
+               OVERLAYINDEX=""
+             fi
              ;;
       esac
 
@@ -385,6 +475,14 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
  done
  let NUM=NUM+1
 done
+
+PREPARE_CNT=`ls prepare_status/ | wc -w`
+while [ $PREPARE_CNT -gt 0 ]; do
+ sleep 0.5
+ PREPARE_CNT=`ls prepare_status/ | wc -w`
+done
+
+rm -rf prepare_status
 
 rm -f flooding_config.h placement.txt nodes.sim flooding.des flooding.mes flooding.ctl flooding_script.click
 

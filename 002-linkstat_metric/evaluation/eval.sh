@@ -1,7 +1,8 @@
 #!/bin/sh
 
-GOOD_LINKS=`cat $RESULTDIR/measurement.log | grep "<link from=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $3" "$5" "$7}' | sort -u | awk '{print $3}' | grep -e "[0-9][0-9][0-9]" | wc -l`
-#cat $RESULTDIR/measurement.log | grep "<link from=" | sed 's#"# #g' | sed "s#=# #g" | awk '{print $3" "$5" "$7}'
+. $CONFIGFILE
+
+GOOD_LINKS=`grep -v " 0$" $EVALUATIONSDIR/network_info/linksmetric.mat  | wc -l`
 
 echo -n "$GOOD_LINKS good links."
 

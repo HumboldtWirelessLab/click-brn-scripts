@@ -1,8 +1,6 @@
 NAME=mstflooding
-SIMULATOR=ns2
-RADIO=shadowing11b
-#RADIO=tworayground01b
-FORGEINNODES=no
+RADIO=shadowing
+#RADIO=tworayground
 NAME2MAC=yes
 
 TIME=1300
@@ -21,7 +19,7 @@ LOGFILE=measurement.log
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
 #EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh flooding_info flow_info"
-EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/get_txtraces.sh evaluation/eval.sh linkstat_graph network_info flooding_info flow_info"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/get_txtraces.sh evaluation/eval.sh network_info_viz flooding_info flow_info"
 #EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression"
 #EVALUATION="embrace_xml"
 

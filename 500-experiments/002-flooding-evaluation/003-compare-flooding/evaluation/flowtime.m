@@ -1,9 +1,20 @@
-%basedir='20140912/';
-basedir='';
+addpath('filter/')
+
+%basedir='20141014/';
+%basedir='20141014b-gridrand/';
+%basedir='20141015-small/';
+%basedir='20141015-big/';
+%basedir='20150128/';
+basedir='20150208/';
+%basedir='';
   
 if (~exist('basedir'))
   basedir='20140912/';
 end
+
+clear filterhandle
+filterhandle=@unicast_filter
+functions(filterhandle)
 
 if (~exist('index'))
   index=load(strcat(basedir,'result_flooding_info_index.dat'),'-ASCII');
@@ -11,19 +22,13 @@ if (~exist('index'))
   times=load(strcat(basedir,'result_flowtime.dat'),'-ASCII');
 end
 
-plot_cols=['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y'];
-plot_sign=['*';'+';'o';'x'];
-scheduling_schemes_str = {'neighbours cnt','max delay','prio'};
+plot_cols=['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y'];
+plot_sign=['*';'+';'o';'x';'.';'-'];
+scheduling_schemes_str = {'neighbours cnt','maxdelay','prio'};
+show_param_filestr = {'config', 'cntpacket' , 'avgdelay' , 'maxdelayperhop', 'reach' };
 
-INDEX=1;
-
-%index
-UNIC=4;
-MAXPARETRIES=9;
-MAXMACRETRIES=13;
-MAXDELAY=18;
-ABORTTX=20;
-SCHEDULING=27;
+%load config vars
+config_info
 
 %flowtime
 AVG_TIME=6;
@@ -32,219 +37,186 @@ MAX_TIME=8;
 AVG_TIME_PER_HOP=9;
 
 %sum
-REACH=2
+REACH=2;
 CNT_TX_PKT=8;
-COL=10
+COL=10;
 
-configs=unique(index(:,[UNIC MAXPARETRIES MAXMACRETRIES MAXDELAY ABORTTX SCHEDULING]),'rows')
+CFG_INDEX=params_index;                               % alle relevanten spalten in der config
 
-configs=configs(configs(:,5) == 31,:)
-%configs=configs(configs(:,4) == 150,:)
-%configs=configs(configs(:,6) == 3,:)
+configs=unique(index(:,CFG_INDEX),'rows');
+configs=[configs'; [1:size(configs,1)]]';             %add index at the end 
 
-wo_delay=unique(configs(:,[1 2 3 5 6]),'rows');
+%CFG_INDEX
 
-unicast_config=unique(configs(:,[1 2 3 5 6]),'rows');
-    
-result=[];
-scheme_labels = {};
+size(summary)
+size(configs)
 
-for sc=1:size(configs,1)
-    cur_sc=configs(sc,:);
-    c_inds=unique(index(ismember(index(:,[UNIC MAXPARETRIES MAXMACRETRIES MAXDELAY ABORTTX SCHEDULING]),cur_sc,'rows'),INDEX));
+RESULT_CONFIG=1;
+RESULT_PKT_CNT=2;
+RESULT_TIMES=3;
+RESULT_MAXDELAY=4;
+RESULT_REACH=5;
+
+if (~exist('result'))
+  result=[];
+  scheme_labels = {};
+
+  for sc=1:size(configs,1)
+    cur_sc=configs(sc,1:end-1);
+    c_inds=unique(index(ismember(index(:,CFG_INDEX),cur_sc,'rows'),CONFIGID)); %config id in orig file
 
     %size(c_inds)
     %size(times)
 
     for c=1:size(c_inds,1)
-        t=times(find(index(:,INDEX)==c_inds(c)),AVG_TIME);
-        p=summary(find(index(:,INDEX)==c_inds(c)),CNT_TX_PKT);
-        md=index(find(index(:,INDEX)==c_inds(c)),MAXDELAY);
+        i=find(index(:,CONFIGID)==c_inds(c));
+        t=times(i,AVG_TIME);
+        p=summary(i,CNT_TX_PKT);
+        md=index(i,MAXDELAY);
+        r=summary(i,REACH);
 
-        result=[result; [sc p t md]];
+        %result=[result; [sc p t md r]];
+        result=[result; [configs(sc,end) p t md r]];
     end
 
+  end
 end
 
-reach_res=[];
-pkt_res=[];
-col_res=[]
+if (~exist('reach_res'))
+  results_per_config = size(index,1) / size(configs,1);
+  
+  reach_res=zeros(results_per_config,size(configs,1));
+  pkt_res=zeros(results_per_config,size(configs,1));
+  col_res=zeros(results_per_config,size(configs,1));
 
-cur_r=zeros(1,size(unicast_config,1));
-cur_p=zeros(1,size(unicast_config,1));
-cur_c=zeros(1,size(unicast_config,1));
+  cur_r=zeros(1,results_per_config);
+  cur_p=zeros(1,results_per_config);
+  cur_c=zeros(1,results_per_config);
 
-for uc=1:size(unicast_config,1)
-    cur_uc=unicast_config(uc,:);
-    c_inds=unique(index(ismember(index(:,[UNIC MAXPARETRIES MAXMACRETRIES ABORTTX SCHEDULING]),cur_uc,'rows'),INDEX));
+  for uc=1:size(configs,1)
+    cur_uc=configs(uc,1:end-1);
+    c_inds=unique(index(ismember(index(:,CFG_INDEX),cur_uc,'rows'),CONFIGID));
 
+    %size(c_inds)
+
+    cur_r(:)=nan;
+    cur_p(:)=nan;
+    cur_c(:)=nan;
+    
     for c=1:size(c_inds,1)
-        cur_r(:)=nan;
-        cur_p(:)=nan;
-        cur_c(:)=nan;
-        cur_r(uc)=summary(find(index(:,INDEX)==c_inds(c)),REACH);
-        cur_p(uc)=summary(find(index(:,INDEX)==c_inds(c)),CNT_TX_PKT);
-        cur_c(uc)=summary(find(index(:,INDEX)==c_inds(c)),COL);
 
-        reach_res=[reach_res; cur_r];
-        pkt_res=[pkt_res; cur_p];
-        col_res=[pkt_res; cur_c];
+        i=find(index(:,CONFIGID)==c_inds(c));
+
+        cur_r(c) = summary(i,REACH);
+        cur_p(c) = summary(i,CNT_TX_PKT);
+        cur_c(c) = summary(i,COL);
     end
 
+    reach_res(:,configs(uc,end)) = cur_r;
+    pkt_res(:,configs(uc,end)) = cur_p;
+    col_res(:,configs(uc,end)) = cur_c;
+  end
 end
 
 %result
+%size(result)
 
-scheduling_cfgs = sort(unique(index(:,SCHEDULING),'rows'));
-
-for sc=1:size(scheduling_cfgs,1)
-  scheme_labels = union(scheme_labels, scheduling_schemes_str(scheduling_cfgs(sc)), 'stable');
+% P L O T T E N
+plotall=0;
+if ( plotall == 1)
+  for i = 1:CONFIG_OVERLAY
+    %test_params(configs, result, [i CONFIG_UNICASTSTRATEGY], [RESULT_PKT_CNT RESULT_TIMES]);
+    test_params(configs, result, [i CONFIG_UNICASTSTRATEGY], [RESULT_PKT_CNT RESULT_REACH]);
+  end
 end
 
-h1 = figure;
+%f=g+1
 
-for sc=1:size(configs,1)
-    cur_sc=configs(sc,:);
+plotold=1;
+if ( plotold == 1)
+  
+  show_configs=configs;
 
-    r=result(find(result(:,1) == sc),[2 3]);
+  filterhandle()
+  
+  search_for_best = 1;
+  if (search_for_best == 1)
+      check_all_best = 1;
+      if (check_all_best == 1)
+        for i = 1:CONFIG_OVERLAY
+        %for i = CONFIG_UNICASTSTRATEGY:CONFIG_UNICASTSTRATEGY
+          if ( size(unique(show_configs(:,i)),1) ~= 1)
+            test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_TIMES]);
+            test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_REACH]);
+          end
+        end
+      end
 
-    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(end)));
+      %f=g+1
+   
+      legend_params = [CONFIG_UNICASTSTRATEGY CONFIG_TXABORT];
+   
+      show_configs_1=show_configs(show_configs(:,CONFIG_USEASS) ~= 0,:);
 
-    hold on;
+      show_configs_2=show_configs(show_configs(:,CONFIG_USEASS) == 0,:);
+
+      test_params(show_configs_1, result, legend_params, [RESULT_PKT_CNT RESULT_TIMES]);
+      test_params(show_configs_1, result, legend_params, [RESULT_PKT_CNT RESULT_REACH]);
+     
+      test_params(show_configs_2, result, legend_params, [RESULT_PKT_CNT RESULT_TIMES]);
+      test_params(show_configs_2, result, legend_params, [RESULT_PKT_CNT RESULT_REACH]);
+
+  else
+      legend_params = [CONFIG_UNICASTSTRATEGY CONFIG_FLOODING_NET_RETRIES];
+      test_params(show_configs, result, legend_params, [RESULT_PKT_CNT RESULT_TIMES]);
+      test_params(show_configs, result, legend_params, [RESULT_PKT_CNT RESULT_REACH]);
+  end
 end
-
-title('Packet count vs avg delay');
-xlabel('#Packet');
-ylabel('Avg. delay (ms)');
-legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'southwest');
-grid on;
-xlim([0 max(result(:,2))*1.05]);
-ylim([0 max(result(:,3))*1.05]);
-
-saveas(h1, 'txscheduling.png' ,'png');
-saveas(h1, 'txscheduling.eps' ,'epsc');
-
-h1 = figure;
-
-for sc=1:size(configs,1)
-    cur_sc=configs(sc,:);
-
-    r=result(find(result(:,1) == sc),[4 2]);
-
-    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(end)));
-
-    hold on;
-end
-
-title('max delay vs #pkts');
-xlabel('#Max Delay per Hop');
-ylabel('#Packets');
-legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'southwest');
-grid on;
-xlim([0 max(result(:,4))*1.05]);
-ylim([0 max(result(:,2))*1.05]);
-
-saveas(h1, 'maxdelay_vs_pkt.png' ,'png');
-saveas(h1, 'maxdelay_vs_pkt.eps' ,'epsc');
-
-h1 = figure;
-
-for sc=1:size(configs,1)
-    cur_sc=configs(sc,:);
-
-    r=result(find(result(:,1) == sc),[4 3]);
-
-    scatter(r(:,1),r(:,2),20,plot_cols(cur_sc(end)));
-
-    hold on;
-end
-
-title('max delay vs avg delay');
-xlabel('#Max Delay per Hop');
-ylabel('Delay');
-legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'northwest');
-grid on;
-xlim([0 max(result(:,4))*1.05]);
-ylim([0 max(result(:,3))*1.05]);
-
-saveas(h1, 'maxdelay_vs_delay.png' ,'png');
-saveas(h1, 'maxdelay_vs_delay.eps' ,'epsc');
-
-h1 = figure;
-
-boxplot(reach_res,[1:size(unicast_config,1)]);
-
-title('scheme vs reach');
-xlabel('scheme');
-ylabel('reach');
-%legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'southwest');
-grid on;
-
-saveas(h1, 'reach.png' ,'png');
-saveas(h1, 'reach.eps' ,'epsc');
-
-h1 = figure;
-
-boxplot(pkt_res,[1:size(unicast_config,1)]);
-
-title('scheme vs pkt');
-xlabel('scheme');
-ylabel('#pkts');
-%legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'southwest');
-grid on;
-
-saveas(h1, 'pkt.png' ,'png');
-saveas(h1, 'pkt.eps' ,'epsc');
-
-h1 = figure;
-
-boxplot(col_res,[1:size(unicast_config,1)]);
-
-title('scheme vs colisions');
-xlabel('scheme');
-ylabel('#pcols');
-%legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'southwest');
-grid on;
-
-saveas(h1, 'col.png' ,'png');
-saveas(h1, 'col.eps' ,'epsc');
 
 plot_scatter = 0;
 if plot_scatter == 1
 
-for c=1:size(wo_delay,1)
-  h1 = figure;
+    h1 = figure;
+    
+    show_reach_res = reach_res(:,show_configs(:,end));
+    boxplot(show_reach_res,show_configs(:,end));
 
-  next_configs=unique(configs(ismember(configs(:,[1 2 3 5 6]),wo_delay(c,:),'rows'),:),'rows');
-  delays=sort(next_configs(:,4));
+    title('scheme vs reach');
+    xlabel('scheme');
+    ylabel('reach');
+    %legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'southwest');
+    grid on;
 
-  delay_labels = {};
-  for sc=1:size(delays,1)
-    delay_labels = union(delay_labels, num2str(delays(sc)), 'stable');
-  end
+    saveas(h1, 'reach.png' ,'png');
+    saveas(h1, 'reach.eps' ,'epsc');
 
-  for dc=1:size(delays,1)
+    h1 = figure;
 
-    n_cfg = next_configs(find(next_configs(:,4) == delays(dc)),:);
+    show_pkt_res = pkt_res(:,show_configs(:,end));
+    boxplot(show_pkt_res,show_configs(:,end));
 
-    n_cfg_index = find(ismember(configs(:,:),n_cfg,'rows') == 1);
+    title('scheme vs pkt');
+    xlabel('scheme');
+    ylabel('#pkts');
+    %legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'southwest');
+    grid on;
 
-    r=result(find(result(:,1) == n_cfg_index),[2 3]);
+    saveas(h1, 'pkt.png' ,'png');
+    saveas(h1, 'pkt.eps' ,'epsc');
 
-    scatter(r(:,1),r(:,2),20,plot_cols(floor(dc/size(plot_sign,1))+1),plot_sign(mod(dc,size(plot_sign,1))+1));
+    h1 = figure;
 
-    hold on;
-  end
+    show_col_res = col_res(:,show_configs(:,end));
+    boxplot(show_col_res,show_configs(:,end));
 
-  title('Packet count vs avg delay');
-  xlabel('#Packet');
-  ylabel('Avg. delay (ms)');
-  legend(findobj(gca,'Tag','Box'),delay_labels,'location', 'southwest');
-  grid on;
-  xlim([0 max(result(:,2))*1.05]);
-  ylim([0 max(result(:,3))*1.05]);
+    title('scheme vs colisions');
+    xlabel('scheme');
+    ylabel('#pcols');
+    %legend(findobj(gca,'Tag','Box'),scheme_labels,'location', 'southwest');
+    grid on;
 
-  saveas(h1, strcat('config_',num2str(c),'.png') ,'png');
-  saveas(h1, strcat('config_',num2str(c),'.eps') ,'epsc');
+    saveas(h1, 'col.png' ,'png');
+    saveas(h1, 'col.eps' ,'epsc');
+
 end
-end
+

@@ -1,7 +1,5 @@
 NAME=receiver
-SIMULATOR=ns2
-RADIO=tworayground01b
-FORGEINNODES=no
+RADIO=tworayground
 
 TIME=5
 

@@ -4,42 +4,45 @@
 
 #include "flooding.config"
 
-#define PRIO_QUEUE
 //#define RAWDUMP
 #define BRNFEEDBACK
 #define ROUTING_TXFEEDBACK
 #define FOREIGNRXSTATS
+#define BCAST2UNIC_PDRCONFIG "101 5 115"
 
 #define CST cst
+#define CERR
+#define COOPCST
+#define COOPCST_STRING "device_wifi/cocst"
 
+#define PRIO_QUEUE
 #define LINKPROBE_PERIOD                                         2000
 #define LINKPROBE_TAU                                          100000
-//#define LINKPROBE_PROBES "2 100 2 1000 12 100 12 1000 22 100 22 1000" -- old version
-//#define LINKPROBE_PROBES                                       "2 100" -- old version
-//#define LINKPROBE_PROBES                   "2 200 24 2 200 23 11 200 24 11 200 23"
 #define LINKPROBE_PROBES                                       "2 100 24"
+//#define LINKPROBE_PROBES                   "2 200 24 2 200 23 11 200 24 11 200 23"
 #define DISABLE_LP_POWER
 
-//#define PRO_FL
-//#define MPR_FL
-//#define MST_FL
-#define OVL_FL
-#define FLOODING_STRATEGY 4
-//#define CIR_OVL
-//#define CIRCLE_DATA circles/circles1_1
-//#define MST_BD
-//#define MST_PRE
+#define FLOODING_STRATEGY 1
+//#define OVERLAYFLOODING_FILENAME "../97_overlays_new/limit90mac"
 //#define GG_GRAPH
 //#define GG_THRESHOLD 0
 
-#define RN_GRAPH
-#define RN_THRESHOLD 0
+//#define RN_GRAPH
+//#define RN_THRESHOLD 0
 
 //#define DISBALE_BCASTWIFIDUPS
 
 //#ifndef BCAST_ENABLE_ABORT_TX
 #define BCAST_ENABLE_ABORT_TX 3
 //#endif
+
+#ifndef RTSCTS_STRATEGY
+#define RTSCTS_STRATEGY 0
+#endif
+
+#ifndef RS_STRATEGY
+#define RS_STRATEGY 0
+#endif
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
@@ -56,7 +59,7 @@ lt::Brn2LinkTable(NODEIDENTITY id, STALE 500);
 
 device_wifi::WIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless, ETHERADDRESS deviceaddress, LT lt);
 
-flooding::BROADCASTFLOODING(ID id, LT lt);
+flooding::BROADCASTFLOODING(ID id, LT lt, LINKSTAT device_wifi/link_stat);
 routing::ROUTING(ID id, ETHERADDRESS deviceaddress, LT lt, METRIC device_wifi/etx_metric, LINKSTAT device_wifi/link_stat);
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
@@ -150,7 +153,7 @@ routing[4]
 Script(
   wait 100,
   wait 5,
-//  read lt.links,
+  read lt.links,
   read device_wifi/link_stat.bcast_stats,
 //  read device_wifi/wifidevice/cst.stats,
   wait 10,

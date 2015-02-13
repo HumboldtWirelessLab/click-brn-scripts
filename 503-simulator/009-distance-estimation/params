@@ -1,2 +1,25 @@
-VAR_RXRANGE=`seq 50 5 350`
-VAR_RADIO="tworayground shadowing"
+VAR_RXRANGE=`seq 50 5 500`
+VAR_RADIO="tworayground shadowing nakagami"
+
+VAR_FADING="none ricean"
+
+VAR_PL_EXP="0.0 1.0 2.0 2.7 4.0"
+VAR_STD_DB="0.0 2.0 4.0"
+VAR_INIT_STD_DB="0.0 2.0"
+
+VAR_RICEAN_MAXV="0.0 2.5 15"
+VAR_RICEAN_K="0.0 1 6"
+
+EXCLUSION_1="[ 'VAR_RADIO' = 'nakagami' ] && [ 'VAR_FADING' != 'none' ]"
+
+EXCLUSION_2="[ 'VAR_RADIO' != 'shadowing' ] && [ 'VAR_PL_EXP' != '0.0' ]"
+EXCLUSION_3="[ 'VAR_RADIO' != 'shadowing' ] && [ 'VAR_STD_DB' != '0.0' ]"
+EXCLUSION_4="[ 'VAR_RADIO' != 'shadowing' ] && [ 'VAR_INIT_STD_DB' != '0.0' ]"
+
+EXCLUSION_5="[ 'VAR_FADING' = 'ricean' ] && [ 'VAR_RICEAN_MAXV' = '0.0' ]"
+EXCLUSION_6="[ 'VAR_FADING' = 'ricean' ] && [ 'VAR_RICEAN_K' = '0.0' ]"
+
+EXCLUSION_7="[ 'VAR_FADING' != 'ricean' ] && [ 'VAR_RICEAN_MAXV' != '0.0' ]"
+EXCLUSION_8="[ 'VAR_FADING' != 'ricean' ] && [ 'VAR_RICEAN_K' != '0.0' ]"
+
+EXCLUSION_9="[ 'VAR_RADIO' = 'shadowing' ] && [ 'VAR_PL_EXP' = '0.0' ]"

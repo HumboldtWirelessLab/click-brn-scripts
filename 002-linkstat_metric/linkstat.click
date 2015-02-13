@@ -2,6 +2,11 @@
 
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
+#define COOPCST
+
+#define COOPCST_STRING device_wifi/cocst
+
+#define CERR
 
 #define LINKPROBE_PERIOD   1000
 #define LINKPROBE_TAU      50000
@@ -55,5 +60,6 @@ Script(
   read device_wifi/link_stat.bcast_stats,
   read device_wifi/wifidevice/cst.stats,
   read device_wifi/cocst.stats,
+  read device_wifi/wifidevice/hnd.stats,
 //  read hnd.stats
 );

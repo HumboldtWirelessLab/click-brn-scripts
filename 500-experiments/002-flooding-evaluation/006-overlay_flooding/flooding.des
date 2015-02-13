@@ -1,14 +1,14 @@
 NAME=overlay_flooding
-SIMULATOR=ns2
 RADIO=shadowing
-#RADIO=tworayground01b
-FORGEINNODES=no
+#RADIO=tworayground
 NAME2MAC=yes
 
 TIME=222
 
-NODEPLACEMENTFILE=62_4_cluster.plm
+NODEPLACEMENTFILE=97_5_cluster.plm
+#NODEPLACEMENTFILE=grid25.plm
 NODETABLE=flooding.mes
+#NODEPLACEMENT=grid
 NODEPLACEMENT=file
 NODEPLACEMENTOPTS="relative"
 FIELDSIZE=MAXRXRANGE
@@ -20,7 +20,7 @@ LOGFILE=measurement.log
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
 #EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh flooding_info flow_info"
-EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/get_txtraces.sh evaluation/eval.sh linkstat_graph network_info flooding_info flow_info"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/get_txtraces.sh evaluation/eval.sh network_info network_info_xml network_info_calc flooding_info_calc flow_info"
 #EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression"
 #EVALUATION="embrace_xml"
 

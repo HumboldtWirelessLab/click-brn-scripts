@@ -36,7 +36,7 @@ RECEIVER_TR=receiver.tr
 MEASUREMENT_LOG=measurement.log
 
 # PARSING "$RESULTDIR/$PARAMSFILE" is starting here
-CHANNEL_MODEL=`echo $CHANNEL_MODEL | sed -e "s#real#0#g" -e "s#shadowing11b#1#g" -e "s#tworayground01b#2#g"`
+CHANNEL_MODEL=`echo $CHANNEL_MODEL | sed -e "s#real#0#g" -e "s#shadowing#1#g" -e "s#tworayground#2#g"`
 PKT_TARGET=`echo $TARGET | sed -e "s#USE_BROADCAST#0#g" -e "s#USE_UNICAST#1#g"`
 if [ "x$CHANNEL_MODEL" = "x" ]; then
   CHANNEL_MODEL="-1"

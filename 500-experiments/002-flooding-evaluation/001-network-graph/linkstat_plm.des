@@ -1,7 +1,8 @@
 NAME=linkchannelstat_plm
-SIMULATOR=ns2
-RADIO=shadowing
-FORGEINNODES=no
+#RADIO=shadowing
+
+RADIO=tworayground
+RADIO_OPTIONS="FADING=ricean PATHLOSS_EXP=0 SHADOWING_STD_DB=0 SHADOWING_INIT_STD_DB=0 SHADOWING_PATHLOSS_MODEL=default RICEAN_MAX_VELOCITY=2.5 RICEAN_K=6"
 
 TIME=310
 
@@ -9,20 +10,29 @@ USE_SINGLE_CLICKFILE=1
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=linkstat_plm.mes
+
 #NODEPLACEMENT=npart
-#NODEPLACEMENTOPTS="relative"
-NODEPLACEMENT=multibox_placement.sh
+#FIELDSIZE=RXRANGE
+
+NODEPLACEMENT=random
+NODEPLACEMENTOPTS="relative"
+#FIELDSIZE=13
+FIELDSIZE=17
+
+#NODEPLACEMENT=multibox_placement.sh
 #"X=xlen Y=ylen B=no_boxes L=len_between_boxes LN=no_nodes_on_bridge $0"
 #NODEPLACEMENTOPTS="400 200 5 330 5"
-NODEPLACEMENTOPTS="750 500 5 350 5"
-FIELDSIZE=RXRANGE
+#NODEPLACEMENTOPTS="750 500 5 350 5"
+
+#FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-#EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression evaluation/eval.sh linkstat_graph network_info evaluation/drop_nsfiles.sh"
-EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression evaluation/eval.sh network_info_viz evaluation/drop_nsfiles.sh"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml network_info_cluster evaluation/eval.sh"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml network_info_cluster evaluation/eval.sh status_compression evaluation/drop_nsfiles.sh"
 EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no

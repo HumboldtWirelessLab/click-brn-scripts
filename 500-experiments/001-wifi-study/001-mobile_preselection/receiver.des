@@ -1,7 +1,5 @@
 NAME=mobile_measurement
-SIMULATOR=ns2
-RADIO=shadowing11b
-FORGEINNODES=no
+RADIO=shadowing
 
 TIME=3600
 

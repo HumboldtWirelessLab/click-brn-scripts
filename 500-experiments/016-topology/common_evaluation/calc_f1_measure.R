@@ -15,6 +15,7 @@ pr_unique_br_file_path = "bridges_unique_per_search.csv"
 pr_ap_path             = "articulation_points.csv"
 result_file_path       = "result.csv"
 links_file_path        = "links_filtered.csv"
+etx_threshold_path 	   = "etx_threshold.csv"
 
 
 #
@@ -27,6 +28,7 @@ theo_br = as.matrix(read.csv(file = theo_br_file_path))
 theo_ap = as.matrix(read.csv(file = theo_ap_path))
 num_of_runs = as.integer(read.csv(file = runs_file_path))
 num_of_measure = as.integer(read.csv(file = runs_measure_file_path))
+etx_threshold = as.integer(read.csv(file = etx_threshold_path))
 links = as.matrix(read.csv(file = links_file_path))
 g = graph.data.frame(links, directed = FALSE)
 
@@ -36,9 +38,9 @@ g = graph.data.frame(links, directed = FALSE)
 #
 ap_tp = sum(pr_ap %in% theo_ap)
 ap_fp = nrow(pr_ap) - ap_tp
-ap_tp_fn = num_of_runs * nrow(theo_ap);
+ap_tp_fn = num_of_measure * nrow(theo_ap);
 ap_fn = ap_tp_fn - ap_tp
-ap_fp_tn = (length(V(g)) - nrow(theo_ap)) * num_of_runs
+ap_fp_tn = (length(V(g)) - nrow(theo_ap)) * num_of_measure
 ap_tn = ap_fp_tn - ap_fp
 
 ap_precision = ap_tp / (ap_tp + ap_fp)
@@ -70,9 +72,9 @@ pr_br = interaction(pr_unique_br[,1], pr_unique_br[,2])
 
 br_unique_tp    = sum(pr_br %in% theo_br_fwd) + sum(pr_br %in% theo_br_rev)
 br_unique_fp    = length(pr_br) - br_unique_tp
-br_unique_tp_fn = num_of_runs * nrow(theo_br);
+br_unique_tp_fn = num_of_measure * nrow(theo_br);
 br_unique_fn    = br_unique_tp_fn - br_unique_tp
-br_unique_fp_tn = num_of_runs * (length(E(g)) - nrow(theo_br))
+br_unique_fp_tn = num_of_measure * (length(E(g)) - nrow(theo_br))
 br_unique_tn    = br_unique_fp_tn - br_unique_fp
 
 br_unique_precision = br_unique_tp / (br_unique_tp + br_unique_fp)
@@ -165,18 +167,20 @@ result = rbind(result, c("br_class_falsenegative", br_class_falsenegative))
 result = rbind(result, c("br_class_accuracy", br_class_accuracy))
 result = rbind(result, c("br_class_f_measure", br_class_f_measure))
 
-
 result = rbind(result, c("num_edges", length(E(g))))
 result = rbind(result, c("num_vertexes", length(V(g))))
 result = rbind(result, c("num_theo_br_per_measure", nrow(theo_br)))
 result = rbind(result, c("num_theo_ap_per_measure", nrow(theo_ap)))
 result = rbind(result, c("num_theo_br", nrow(theo_br) * num_of_measure))
 result = rbind(result, c("num_theo_ap", nrow(theo_ap) * num_of_measure))
+result = rbind(result, c("probability_theo_br", round(nrow(theo_br) / length(V(g)), 3) ))
+result = rbind(result, c("probability_theo_ap", round(nrow(theo_ap) / length(E(g)), 3) ))
 result = rbind(result, c("num_all_pr_br", nrow(pr_all_br)))
 result = rbind(result, c("num_unique_pr_br", nrow(pr_unique_br)))
 result = rbind(result, c("num_pr_ap", nrow(pr_ap)))
 result = rbind(result, c("num_runs", num_of_runs))
 result = rbind(result, c("num_measure", num_of_measure))
+result = rbind(result, c("etx_threshold", etx_threshold))
 
 
 #

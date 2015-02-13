@@ -1,8 +1,6 @@
 NAME=simpleflow
-SIMULATOR=ns2
 RADIO=shadowing
-#RADIO=tworayground01b
-FORGEINNODES=no
+#RADIO=tworayground
 
 TIME=11000
 

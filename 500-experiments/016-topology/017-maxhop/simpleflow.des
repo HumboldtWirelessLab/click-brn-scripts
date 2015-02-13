@@ -1,7 +1,5 @@
 NAME=simpleflow
-SIMULATOR=ns2
 RADIO=shadowing
-FORGEINNODES=no
 
 TIME=600
 
@@ -16,11 +14,10 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATION="embrace_xml ../common_evaluation/eval.sh evaluation/eval.sh"
+EVALUATION="embrace_xml ../common_evaluation/eval.sh"
 
 GPS=no
 NOTICE=no
 LOS=no
 
 CONTROLSOCKET=yes
-CONTROLFILE=simpleflow.ctl

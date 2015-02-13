@@ -3,7 +3,7 @@
 M=`cat cs_range | awk '{print $2}' | sort -nu`
 R=`cat cs_range | awk '{print $3}' | sort -nu`
 
-declare -a radiomodels=('tworayground' 'shadowing' 'shadowing11b' 'tworayground01b' 'tworayground11b' 'tworayground54g');
+declare -a radiomodels=('tworayground' 'shadowing');
 
 
 for m in $M; do

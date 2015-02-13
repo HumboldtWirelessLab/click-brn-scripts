@@ -1,55 +1,15 @@
 function floodstats(configfilename, datafilename)
 
-CONFIGID=1;
-NUM=2;
-SIM=3;
-UNICASTSTRATEGY=4;
-PLACEMENT=5;
-UNICAST_PRESELECTION_STRATEGY=6;
-UNICAST_REJECTONEMPTYCS=7;
-UNICAST_UCASTPEERMETRIC=8;
-FLOODING_NET_RETRIES=9;
-ALGORITHMID=10; %INFO 1
-
-EXTRAINFO=11;
-UNICASTSTRATEG=12; %INFO 2
-
-MACRETRIES=13;
-NBMETRIC=14;
-PIGGYBACK=15;
-FRESP=16;
-USEASS=17; %INFO 3
-
-MAXDELAY=18;
-SEED=19;
-TXABORT=20;
-FIXCS=21;
-E2E_RETRIES=22;
-RTSCTS=23; %INFO 4
-
-RTSCTS_MIXED=24;
-BO_STRATEGY=25;
-RS_STRATEGY=26;
-TXSCHEDULING=27; %INFO 5
-
-
-CONFIGID=1;
-REACH=12;
-SOURCE_NEW=13
-RECEIVED_NEW=14;
-NO_NODES=15;
-FORWARD=16;
-FORWARD_NEW=17;
-SENT=18;
-RECEIVED=19;
-COLLISIONS=20;
+config_info
 
 plot = 1;
-s1 = 3;
-s2 = 18;
 
-data=load(filename);
-size(data)
+config_data=load(configfilename);
+size(config_data)
+
+%params_index
+      
+params=unique(config_data(:,params_index),'rows');
 
 % UNICASTSTRATEGY
 % UNICAST_PRESELECTION_STRATEGY
@@ -60,26 +20,61 @@ size(data)
 % EXTRAINFO (Algo, e.g. probab)
 % MACRETRIES
 % NBMETRIC
+% PIGGYBACK
+% FRESP
+% USEASS
+% MAXDELAY
+% TXABORT
+% TXSCHEDULING
 
-data=[ data';zeros(1,size(data,1)) ]';
-%                       1                           2                       3                         4                       5                6        7          8         9         10      11     12        13     14
-params=unique(data(:,[UNICASTSTRATEGY UNICAST_PRESELECTION_STRATEGY UNICAST_REJECTONEMPTYCS UNICAST_UCASTPEERMETRIC FLOODING_NET_RETRIES ALGORITHMID EXTRAINFO  MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY TXABORT]),'rows')
+config_data=[ config_data';zeros(1,size(config_data,1)) ]';
 
-params
-%get wanted params
-params=params(find(params(:,13) == 5),:)
-params=params(find(params(:,13) == 5),:);                                             %maxdelay
-params=params(find((params(:,10) == 0) | (params(:,10) == 10)) ,:);                    %piggybag
-params=params(find((params(:,8) == 0) | (params(:,8) == 1) | (params(:,8) == 3) | (params(:,8) == 5)) ,:);  %MAC_retries
-params=params(find((params(:,5) == 0)) ,:);
-params=params(find((params(:,3) ~= 0) | (params(:,1) == 0)) ,:);
+all_delays=unique(config_data(:,[MAXDELAY]));
 
-
-%params=params(find((params(:,2) == 0)) ,:);
-%params=params(find((params(:,4) == 0)) ,:);
-
-params
+%params
 %size(params)
+%size(all_delays)
+%unique(params(:,13))
+
+show_all_params = 1
+
+if show_all_params == 1
+  for r = 1:size(params,2)
+    p_id_num = r  
+    p_id_name(r)
+    unique(params(:,r))
+  end
+end
+
+
+%get wanted params
+params=params(find((params(:,1) == 0) | (params(:,1) == 7)) ,:);                       %reject option
+
+%params=params(find((params(:,2) == 0)) ,:);                                           %preselection
+
+params=params(find((params(:,3) ~= 0) | (params(:,1) == 0)) ,:);                       %reject option
+%size(params)
+params=params(find((params(:,1) == 0) | (params(:,4) == 1)) ,:);                       %peer metric                                      
+%size(params)
+params=params(find((params(:,1) == 0) | (params(:,5) == 2)) ,:);                       %net retries
+%size(params)
+params=params(find((params(:,1) == 0) | (params(:,8) == 0) | (params(:,8) == 4) | (params(:,8) == 7)) ,:);  %MAC_retries
+%size(params)
+params=params(find((params(:,10) == 0) | (params(:,10) == 20)) ,:);                    %piggybag
+%size(params)
+params=params(find((params(:,13) == 10) | (params(:,13) == 20) | (params(:,13) == 50) | (params(:,13) == 100) | (params(:,13) == 150)),:);                                             %maxdelay
+
+params=params(find((params(:,15) == 4)),:);                                            %txscheduling
+
+
+params
+size(params)
+
+%load data
+data=load(datafilename);
+%size(data)
+
+%index in result matrix
 
 RESULT_REACH=2;
 RESULT_SENT=3;
@@ -97,9 +92,12 @@ max_src_pkt=max(data(:,SOURCE_NEW));
 
 for r = 1:size(params,1)
     
-    p=params(r,:);
-       
-    p_data=data(strmatch(p,data(:,[3 5 6 7 8 9 10 MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY TXABORT])),:);
+    p = params(r,:);
+    %p_ids = config_data(strmatch(p,config_data(:,params_index)),CONFIGID)
+    p_ids = strmatch(p,config_data(:,params_index));
+    
+    %TODO: search for config-ids instead og using them as index
+    p_data=data(p_ids,:);
     %size(p_data)
 
     result(r,1)=r;
@@ -121,18 +119,19 @@ for r = 1:size(params,1)
 
 end
 
-size(result,1)
-size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
+show_params = [1:15];
+%show_params = [1 2 3 4 5 8 9 10];
 
-%s1 = size(result,1)/size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
-%s2 = size(unique(params(:,[1 2 3 4 5 8 9 10]),'rows'),1)
+%size(result,1)
+%size(unique(params(:,show_params),'rows'),1)
+
+s1 = size(result,1)/size(unique(params(:,show_params),'rows'),1);
+s2 = size(unique(params(:,show_params),'rows'),1);
 
 %s1 = 3;
 %s2 = 6;
-size(result)
-%result
-
-result(:,[1 RESULT_REACH])
+%size(result)
+result
 
 reach=reshape(result(:,RESULT_REACH), s1, s2);
 h=figure();

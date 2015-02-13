@@ -1,8 +1,7 @@
 NAME=simpleflooding
-SIMULATOR=ns2
-RADIO=shadowing
-#RADIO=tworayground01b
-FORGEINNODES=no
+#RADIO=shadowing
+RADIO=tworayground
+RADIO_OPTIONS="FADING=ricean PATHLOSS_EXP=0 SHADOWING_STD_DB=0 SHADOWING_INIT_STD_DB=0 SHADOWING_PATHLOSS_MODEL=default RICEAN_MAX_VELOCITY=2.5 RICEAN_K=6
 NAME2MAC=yes
 
 DISABLE_TRACE=1
@@ -11,7 +10,8 @@ TIME=FLOWTIME
 
 NODEPLACEMENTFILE=placement.txt
 NODETABLE=flooding.mes
-NODEPLACEMENT=grid
+NODEPLACEMENT=gridrand
+#NODEPLACEMENT=random
 NODEPLACEMENTOPTS="relative"
 FIELDSIZE=MAXRXRANGE
 
@@ -20,7 +20,8 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
-EVALUATION="evaluation/copy_tmp.sh flooding_info_xml channelstats_xml flow_info evaluation/eval_post.sh"
+EVALUATION="evaluation/copy_tmp.sh network_info flooding_info channelstats_xml flow_info"
+# evaluation/eval_post.sh"
 
 GPS=no
 NOTICE=no
@@ -30,3 +31,5 @@ CONTROLSOCKET=yes
 CONTROLFILE=flooding.ctl
 
 USE_SINGLE_CLICKFILE=1
+
+LOCALPROCESS=prepare/local_proc.sh
