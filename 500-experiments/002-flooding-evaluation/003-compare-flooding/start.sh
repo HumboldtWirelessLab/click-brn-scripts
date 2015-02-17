@@ -55,9 +55,9 @@ if [ "x$SIM" = "x1" ]; then
     done
     MAX_PLACEMENT=1
   else
-    cat $PLACEMENTFILE | awk '{print $2}' | sort -u | sort -n > $NODESFILE
+    bzcat $PLACEMENTFILE | awk '{print $2}' | sort -u | sort -n > $NODESFILE
     if [ "x$MAX_PLACEMENT" = "x" ]; then
-      MAX_PLACEMENT=`cat $PLACEMENTFILE | awk '{print $1}' | sort -u | sort -n | tail -n 1`
+      MAX_PLACEMENT=`bzcat $PLACEMENTFILE | awk '{print $1}' | sort -u | sort -n | tail -n 1`
     fi
   fi
 else
@@ -145,7 +145,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
    if [ "x$SIM" = "x1" ]; then
      if [ "x$GRID" = "x" ]; then
-       cat $PLACEMENTFILE | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
+       bzcat $PLACEMENTFILE | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
        cat placement.txt | awk '{print $1}' > nodes.sim
      fi
    fi
@@ -376,7 +376,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            echo "SIM=0" >&3
          else
            echo "SIM=1" >&3
-        fi
+          fi
 
         echo "ALGORITHM=$al" >&3
 
@@ -445,11 +445,13 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
                OVERLAYINDEX=""
              fi
              ;;
+          *)
+            echo "Unknown floodalg"
+            exit -1;
+            ;;
       esac
 
-
       done
-
     done
     if [ -f ./finish ]; then
       exit
