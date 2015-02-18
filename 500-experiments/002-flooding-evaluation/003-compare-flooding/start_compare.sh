@@ -56,7 +56,7 @@ if  [ -e /mnt/data/flooding/ ]; then
   tar cfv /mnt/data/flooding/$1.tar $1
   rm -rf $1
 else
-  rm -rf 1_MBit_*
+  echo 1_MBit_* | xargs rm -rf
 fi
 
 exit 0
