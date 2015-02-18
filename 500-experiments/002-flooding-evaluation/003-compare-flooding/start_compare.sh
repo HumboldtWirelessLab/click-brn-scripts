@@ -5,6 +5,14 @@ if [ "x$1" = "x" ]; then
   exit 0
 fi
 
+if [ $# -gt 1 ]; then
+
+  for i in $@; do
+    $0 $i
+  done
+
+fi
+
 MAINCONFIG=config/main.conf
 
 case "$1" in
@@ -26,6 +34,9 @@ case "$1" in
   "mpr")
     CONFIG=config/sim_mpr.conf
     ;;
+  "mst")
+    CONFIG=config/sim_mst.conf
+    ;;
   *)
     echo "Unknown option: $1"
     exit 0
@@ -34,9 +45,10 @@ esac
 
 CONFIG=$CONFIG MAINCONFIG=$MAINCONFIG ./start.sh
 
-(cd evaluation; ./eval_all.sh ..)
+DATESTRING=`date +%Y%m%d`
+DIRSTRING=$DATESTRING-$1
 
-(cd evaluation; mv result_flooding.dat result_flooding.dat.$1; mv result_flooding_info.dat result_flooding_info.dat.$1)
+(cd evaluation; ./eval_all.sh ..; mkdir $DIRSTRING; mv *.dat $DIRSTRING)
 
 if  [ -e /mnt/data/flooding/ ]; then
   mkdir $1
