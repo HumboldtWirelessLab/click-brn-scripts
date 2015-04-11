@@ -32,7 +32,7 @@ for f in $DUMP_FILES; do
 
   echo -n "$NODEPRE ($SENDER ($SENDERMAC) -> $RECEIVER): "
   # eval pdr
-  pdr=`expr $pkt_recv \* 100 / \( $TIME \* 10 \)`
+  pdr=`expr $pkt_recv \* 100 / \( 100 \)`
   if [ $pdr -gt 50 ]; then
     echo "PDR seems okay (PDR=$pdr/100)."
     let OK=OK+1

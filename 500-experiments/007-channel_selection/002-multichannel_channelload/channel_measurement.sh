@@ -1,13 +1,14 @@
 #!/bin/sh
 
-CHANNEL="1 2 3 4 5 6 7 8 9 10 11 36 40 44 48 52 56 60 64"
-#CHANNEL="1 36"
+CHANNEL="1 2 3 4 5 6 7 8 9 10 11"
+#"36 40 44 48 52 56 60 64"
+#CHANNEL="1 2"
 
 MEASUREMENT_NUM=1
 
 NEXT_RUNMODE=REBOOT
 
-for rep in `seq 5`; do
+for rep in `seq 10`; do
 
 for p_c in $CHANNEL; do
 
@@ -17,11 +18,11 @@ for p_c in $CHANNEL; do
     echo "CHANNEL=$p_c" >> monitor.cfg
 
     if [ $p_c -gt 13 ]; then
-      cat sender_and_receiver.mes.tmpl | sed "s#DEVPARAMS#wlan1#g" > sender_and_receiver.mes
-      USEDDEV="wlan1"
+      cat sender_and_receiver.mes.tmpl | sed "s#DEVPARAMS#DEV1#g" > sender_and_receiver.mes
+      USEDDEV="1"
     else
-      cat sender_and_receiver.mes.tmpl | sed "s#DEVPARAMS#wlan0#g" > sender_and_receiver.mes
-      USEDDEV="wlan0"
+      cat sender_and_receiver.mes.tmpl | sed "s#DEVPARAMS#DEV0#g" > sender_and_receiver.mes
+      USEDDEV="0"
     fi
 
     #TESTONLY=1 RUNMODE=REBOOT run_measurement.sh sender_and_receiver.des $MEASUREMENT_NUM

@@ -2,7 +2,7 @@ NAME=receiver
 RADIO=shadowing
 #RADIO=tworayground
 
-TIME=40
+TIME=35
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=sender_and_receiver.mes
