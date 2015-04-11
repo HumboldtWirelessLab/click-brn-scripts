@@ -2,13 +2,13 @@ NAME=80211n_coverage
 #RADIO=shadowing
 RADIO=tworayground
 
-TIME=1300
+TIME=130
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=sender_and_receiver.mes
 NODEPLACEMENT=string
 #NODEPLACEMENT=grid
-FIELDSIZE=30
+FIELDSIZE=1000
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log
