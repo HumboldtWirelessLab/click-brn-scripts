@@ -29,7 +29,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
-#if WIFITYPE == 8103
+#if WIFITYPE == 803
 rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22 24 36 48 72 96 108);
 #else
 rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22 24 36 48 72 96 108);
