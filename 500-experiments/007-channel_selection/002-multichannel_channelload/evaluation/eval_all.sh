@@ -42,29 +42,29 @@ esac
 NUM=1
 
 
-echo -n "" > $RESULTDIR/channelload.mat
-echo -n "" > $RESULTDIR/neighbourstats.mat
+echo -n "" > $RESULTDIR/channelload.csv
+echo -n "" > $RESULTDIR/neighbourstats.csv
 
 while [ -e $RESULTDIR/$NUM ]; do
 
-  if [ ! -e $RESULTDIR/$NUM/channelload.mat ]; then
+  if [ ! -e $RESULTDIR/$NUM/channelload.csv ]; then
     $DIR/eval.sh $RESULTDIR/$NUM
   fi
 
-  if [ ! -e $RESULTDIR/$NUM/neighbourstats.mat ]; then
+  if [ ! -e $RESULTDIR/$NUM/neighbourstats.csv ]; then
     $DIR/eval.sh $RESULTDIR/$NUM
   fi
 
   $DIR/eval.sh $RESULTDIR/$NUM
 
-  cat $RESULTDIR/$NUM/channelload.mat >> $RESULTDIR/channelload.mat
-  cat $RESULTDIR/$NUM/neighbourstats.mat | grep -v "FF-FF-FF-FF-FF-FF" >> $RESULTDIR/neighbourstats.mat
+  cat $RESULTDIR/$NUM/channelload.csv >> $RESULTDIR/channelload.csv
+  cat $RESULTDIR/$NUM/neighbourstats.csv | grep -v "FF-FF-FF-FF-FF-FF" >> $RESULTDIR/neighbourstats.csv
 
   let NUM=NUM+1
 
 done
 
-cat $RESULTDIR/neighbourstats.mat | sed "s#,# #g" | awk '{print $7}' | sort -u | awk '{print NR" "$1}' > $RESULTDIR/neighbournodes.txt
+cat $RESULTDIR/neighbourstats.csv | sed "s#,# #g" | awk '{print $7}' | sort -u | awk '{print NR" "$1}' > $RESULTDIR/neighbournodes.mat
 
 NODEMAC_SEDARG="-e s#foobar#barfoo#g"
 
@@ -75,9 +75,7 @@ while read line; do
   NODEMAC=`echo $line | awk '{print $2}'`
   NODEID=`expr $NODEID + $NODECOUNT`
   NODEMAC_SEDARG="$NODEMAC_SEDARG -e s#$NODEMAC#$NODEID#g"
-done < $RESULTDIR/neighbournodes.txt
+done < $RESULTDIR/neighbournodes.csv
 
-cat $RESULTDIR/neighbourstats.mat | sed $NODEMAC_SEDARG > $RESULTDIR/neighbourstats.mat.fin
-mv $RESULTDIR/neighbourstats.mat.fin $RESULTDIR/neighbourstats.mat
-
-	
+cat $RESULTDIR/neighbourstats.csv | sed $NODEMAC_SEDARG > $RESULTDIR/neighbourstats.csv.fin
+mv $RESULTDIR/neighbourstats.csv.fin $RESULTDIR/neighbourstats.csv
