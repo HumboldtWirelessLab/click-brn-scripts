@@ -9,6 +9,12 @@ NEXT_RUNMODE=REBOOT
 
 for rep in `seq 5`; do
 
+REPTIME_DAY=`date +"%j"`
+REPTIME_DAY_OF_WEEK=`date +"%u"`
+REPTIME_HOUR=`date +"%H"`
+REPTIME_MINUTE=`date +"%M"`
+
+
 for p_c in $CHANNEL; do
 
   if [ ! -e MEASUREMENT_NUM ]; then
@@ -34,6 +40,10 @@ for p_c in $CHANNEL; do
       echo "DEV=$USEDDEV" >> $MEASUREMENT_NUM/params
       echo "NUM=$MEASUREMENT_NUM" >> $MEASUREMENT_NUM/params
       echo "REP=$rep" >> $MEASUREMENT_NUM/params
+      echo "REPTIME_DAY=$REPTIME_DAY" >> $MEASUREMENT_NUM/params
+      echo "REPTIME_HOUR=$REPTIME_HOUR" >> $MEASUREMENT_NUM/params
+      echo "REPTIME_MINUTE=$REPTIME_MINUTE" >> $MEASUREMENT_NUM/params
+      echo "REPTIME_DAY_OF_WEEK=$REPTIME_DAY_OF_WEEK" >> $MEASUREMENT_NUM/params
     fi
 
     MEASUREMENT_NUM=`expr $MEASUREMENT_NUM + 1`
