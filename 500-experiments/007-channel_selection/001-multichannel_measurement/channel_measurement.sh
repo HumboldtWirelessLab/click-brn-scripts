@@ -1,11 +1,15 @@
 #!/bin/sh
 
-#CHANNEL="1 2 3 4 5 6 7 8 9 10 11 12 13"
-CHANNEL="1 2"
+CHANNEL="1 2 3 4 5 6 7 8 9 10 11"
+#CHANNEL="1 2"
+
+REPETITIONS=15
 
 MEASUREMENT_NUM=1
 
-for p_c in $CHANNEL; do
+for r in `seq $REPETITIONS`; do
+
+ for p_c in $CHANNEL; do
 
   if [ ! -e MEASUREMENT_NUM ]; then
 
@@ -19,6 +23,8 @@ for p_c in $CHANNEL; do
     fi
 
     echo "CHANNEL=$p_c" > $MEASUREMENT_NUM/params
+    echo "REPETITION=$r" >> $MEASUREMENT_NUM/params
+    echo "NUM=$MEASUREMENT_NUM" >> $MEASUREMENT_NUM/params
 
     MEASUREMENT_NUM=`expr $MEASUREMENT_NUM + 1`
 
@@ -28,4 +34,5 @@ for p_c in $CHANNEL; do
 
   fi
 
+ done
 done

@@ -35,7 +35,7 @@ rs_rr::BrnRoundRobinRate();
 ratesel::SetTXPowerRate( RATESELECTIONS "rs_rr", STRATEGY 6, RT rates);
 
 Idle()
--> sf::BRN2SimpleFlow(FLOW "deviceaddress FF:FF:FF:FF:FF:FF 50 100 0 120000 true 1 0", DEBUG 2)
+-> sf::BRN2SimpleFlow(FLOW "deviceaddress FF:FF:FF:FF:FF:FF 100 100 0 120000 true 1 0", DEBUG 2)
 -> BRN2EtherEncap(USEANNO true)
 -> WifiEncap(0x00, 0:0:0:0:0:0)
 -> [0]ratesel[0]
