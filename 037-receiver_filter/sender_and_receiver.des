@@ -17,7 +17,6 @@ RESULTDIR=WORKDIR
 EVALUATION="tmp_rawdump_copy evaluation/eval.sh dump_compression status_compression"
 #EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
-EVALUATIONSDIRPOSTFIX=_evaluation
 
 GPS=no
 NOTICE=no

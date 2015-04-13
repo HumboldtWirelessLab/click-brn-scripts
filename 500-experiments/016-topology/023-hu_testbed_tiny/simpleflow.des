@@ -16,7 +16,6 @@ RESULTDIR=WORKDIR
 
 EVALUATION="embrace_xml ../common_evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
-EVALUATIONSDIRPOSTFIX=_evaluation
 
 
 

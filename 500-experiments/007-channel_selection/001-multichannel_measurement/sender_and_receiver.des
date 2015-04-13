@@ -2,6 +2,8 @@ NAME=80211n_coverage
 #RADIO=shadowing
 RADIO=tworayground
 
+DISABLE_TRACE=1
+
 TIME=130
 
 NODEPLACEMENTFILE=placement.default
@@ -14,8 +16,8 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATIONSDIR=WORKDIR
-EVALUATIONSDIRPOSTFIX=_evaluation
+EVALUATION="evaluation/eval.sh"
+EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no
 NOTICE=no

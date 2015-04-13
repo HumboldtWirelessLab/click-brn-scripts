@@ -15,7 +15,6 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATIONSDIRPOSTFIX=_evaluation
 EVALUATION="evaluation/eval.sh embrace_xml dump_compression status_compression"
 
 GPS=no
