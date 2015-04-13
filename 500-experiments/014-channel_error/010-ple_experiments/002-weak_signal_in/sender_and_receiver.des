@@ -20,7 +20,6 @@ LOGFILE=measurement.log
 RESULTDIR=WORKDIR
 EVALUATION="embrace_xml evaluation/eval.sh dump_compression status_compression"
 EVALUATIONSDIR=WORKDIR
-EVALUATIONSDIRPOSTFIX=_evaluation
 
 GPS=no
 NOTICE=no
