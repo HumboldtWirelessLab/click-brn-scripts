@@ -12,13 +12,14 @@ for p_c in $CHANNEL; do
     cp monitor.cfg.tmpl monitor.cfg
     echo "CHANNEL=$p_c" >> monitor.cfg
 
-    if [ "x$SIM" = "x" ]; then
-      RUNMODE=REBOOT run_measurement.sh sender_and_receiver.des $MEASUREMENT_NUM
-    else
-      run_sim.sh ns sender_and_receiver.des $MEASUREMENT_NUM
-    fi
-
+    mkdir -p $MEASUREMENT_NUM
     echo "CHANNEL=$p_c" > $MEASUREMENT_NUM/params
+
+    if [ "x$SIM" = "x" ]; then
+      FORCE_DIR=keep RUNMODE=REBOOT run_measurement.sh sender_and_receiver.des $MEASUREMENT_NUM
+    else
+      FORCE_DIR=keep run_sim.sh ns sender_and_receiver.des $MEASUREMENT_NUM
+    fi
 
     MEASUREMENT_NUM=`expr $MEASUREMENT_NUM + 1`
 
