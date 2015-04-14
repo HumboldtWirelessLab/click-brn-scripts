@@ -1,7 +1,7 @@
 #!/bin/sh
 
 OUT=result.txt
-echo "CHANNEL TIME BITRATE SNR NOISE SRC DST SEQ" > $OUT
+echo "CHANNEL TIME BITRATE SNR NOISE SRC DST SEQ REP NUM" > $OUT
 
 for i in `ls $1`; do
   #echo $i

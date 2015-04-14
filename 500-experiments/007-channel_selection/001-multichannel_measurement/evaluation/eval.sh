@@ -40,7 +40,7 @@ if [ -f $RESULTDIR/params ]; then
   for d in `ls -d $RESULTDIR/*raw.dump`; do
     DUMP="$d"
     NODENAME=`basename $DUMP | sed "s#\.# #g" | awk '{print $1}' | NAME2NUM=1 human_readable.sh $RESULTDIR/nodes.mac`
-    fromdump.sh $DUMP | grep "[[:space:]]$SEARCHSIZE |" | grep "OKPacket:" | grep "00-00-00-00-00-00" | grep "data nods FF-FF-FF-FF-FF-FF" | sed -e "s#Mb##g" -e "s#+##" -e "s#/# #g" -e "s#:##g" | awk -v NN=$NODENAME -v ID=$CHANNEL '{print ID" "$2" "$5" "$6" "$7" "$12" "NN" "$15}' | MAC2NUM=1 human_readable.sh $RESULTDIR/nodes.mac >> $OUT
+    fromdump.sh $DUMP | grep "[[:space:]]$SEARCHSIZE |" | grep "OKPacket:" | grep "00-00-00-00-00-00" | grep "data nods FF-FF-FF-FF-FF-FF" | sed -e "s#Mb##g" -e "s#+##" -e "s#/# #g" -e "s#:##g" | awk -v NN=$NODENAME -v ID=$CHANNEL -v REPETITION=$REPETITION -v NUM=$NUM '{print ID" "$2" "$5" "$6" "$7" "$12" "NN" "$15" "REPETITION" "NUM}' | MAC2NUM=1 human_readable.sh $RESULTDIR/nodes.mac >> $OUT
     #echo "$DUMP"
   done
 fi
