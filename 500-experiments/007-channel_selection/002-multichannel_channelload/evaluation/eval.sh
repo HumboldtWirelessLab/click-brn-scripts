@@ -50,25 +50,24 @@ echo $NODEMAC_SEDARG
 
 . $RESULTDIR/params
 
-echo -n "" > $RESULTDIR/channelload.mat
-echo -n "" > $RESULTDIR/neighbourstats.mat
+echo -n "" > $RESULTDIR/channelload.csv
+echo -n "" > $RESULTDIR/neighbourstats.csv
 
 for n in `cat $1/sender_and_receiver.mes.real | awk '{print $8}'` ; do
 
   echo "<channelstatsexp channel=\"$CHANNEL\" dev=\"$DEV\" num=\"$NUM\" rep=\"$REP\" >" > $RESULTDIR/result.xml
-  
+
   FILENAME=`basename $n`
   cat $RESULTDIR/$FILENAME | grep "^[[:space:]]*<" >> $RESULTDIR/result.xml
-    
+
   echo "</channelstatsexp>" >> $RESULTDIR/result.xml
 
-  xsltproc $DIR/channelload.xslt $RESULTDIR/result.xml | sed $NODEMAC_SEDARG >> $RESULTDIR/channelload.mat
+  xsltproc $DIR/channelload.xslt $RESULTDIR/result.xml | sed $NODEMAC_SEDARG >> $RESULTDIR/channelload.csv
 
-  xsltproc $DIR/neighbourstats.xslt $RESULTDIR/result.xml | sed $NODEMAC_SEDARG >> $RESULTDIR/neighbourstats.mat
+  xsltproc $DIR/neighbourstats.xslt $RESULTDIR/result.xml | sed $NODEMAC_SEDARG >> $RESULTDIR/neighbourstats.csv
   #> $RESULTDIR/$FILENAME.neighbourstats.xml
 
   rm -f $RESULTDIR/result.xml $RESULTDIR/$FILENAME.neighbourstats.xml
 done
+
 exit 0
-
-

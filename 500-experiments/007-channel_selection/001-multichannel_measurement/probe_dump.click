@@ -4,13 +4,13 @@
 
 #define CST cst
 
-#if WIFITYPE == 802
+#if WIFITYPE == 803
 
-//#if NODEDEVICE == "wlan0"
+#if DEVICENUMBER == 0
 #define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:11.0/stats/channel_utility"
-//#else
-//#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
-//#endif
+#else
+#define CST_PROCFILE "/sys/devices/pci0000\:00/0000\:00\:12.0/stats/channel_utility"
+#endif
 
 #else
 
@@ -29,78 +29,18 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
+rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22 24 36 48 72 96 108);
+rs_rr::BrnRoundRobinRate();
 
-wifioutq::NotifierQueue(1000)
-  -> wifidevice
-  -> Discard;
+ratesel::SetTXPowerRate( RATESELECTIONS "rs_rr", STRATEGY 6, RT rates);
 
-ps::BRN2PacketSource(SIZE 50, INTERVAL 100, MAXSEQ 500000, BURST 1, PACKETCOUNT 12000, ACTIVE false)
-  -> EtherEncap(0x8086, deviceaddress, ff-ff-ff-ff-ff-ff)
-  -> WifiEncap(0x00, 0:0:0:0:0:0)
-  -> rrs::RoundRobinSwitch();
+Idle()
+-> sf::BRN2SimpleFlow(FLOW "deviceaddress FF:FF:FF:FF:FF:FF 100 100 0 120000 true 1 0", DEBUG 2)
+-> BRN2EtherEncap(USEANNO true)
+-> WifiEncap(0x00, 0:0:0:0:0:0)
+-> [0]ratesel[0]
+-> NotifierQueue(1000)
+-> wifidevice
+-> Discard;
 
-/* R A T E S */
-
-/* 80211b */
-
-  rrs[0]
-  -> SetTXRates( RATE0 2, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[1]
-  -> SetTXRates( RATE0 4, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[2]
-  -> SetTXRates( RATE0 11, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[3]
-  -> SetTXRates( RATE0 22, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-/* 80211ag */
-
-  rrs[4]
-  -> SetTXRates( RATE0 12, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[5]
-  -> SetTXRates( RATE0 18, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[6]
-  -> SetTXRates( RATE0 24, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[7]
-  -> SetTXRates( RATE0 36, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[8]
-  -> SetTXRates( RATE0 48, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[9]
-  -> SetTXRates( RATE0 72, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[10]
-  -> SetTXRates( RATE0 96, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-  rrs[11]
-  -> SetTXRates( RATE0 108, TRIES0 1, MCS0 false )
-  -> wifioutq;
-
-Script(
-  wait 1,
-  write ps.active true
-);
-
-Script(
-  wait 10,
-  read wifidevice/cst.stats_xml,
-  loop
-);
-
+sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);

@@ -18,7 +18,6 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
-EVALUATIONSDIRPOSTFIX=_evaluation
 EVALUATION=""
 #EVALUATION="evaluation/eval.sh"
 
