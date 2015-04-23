@@ -17,7 +17,7 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="evaluation/eval.sh dump_compression"
+EVALUATION="evaluation/eval.sh compression_dump"
 EVALUATIONSDIR=WORKDIR
 
 GPS=no

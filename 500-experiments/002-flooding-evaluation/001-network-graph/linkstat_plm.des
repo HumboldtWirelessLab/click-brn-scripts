@@ -30,9 +30,9 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-#EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression evaluation/eval.sh network_info_viz evaluation/drop_nsfiles.sh"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml compression_status evaluation/eval.sh network_info_viz evaluation/drop_nsfiles.sh"
 #EVALUATION="evaluation/copy_tmp.sh embrace_xml network_info_cluster evaluation/eval.sh"
-EVALUATION="evaluation/copy_tmp.sh embrace_xml network_info_cluster evaluation/eval.sh status_compression evaluation/drop_nsfiles.sh"
+EVALUATION="evaluation/copy_tmp.sh embrace_xml network_info_cluster evaluation/eval.sh compression_status evaluation/drop_nsfiles.sh"
 EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no

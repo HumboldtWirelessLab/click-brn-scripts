@@ -18,7 +18,7 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="embrace_xml evaluation/eval.sh dump_compression status_compression"
+EVALUATION="embrace_xml evaluation/eval.sh compression_dump compression_status"
 #EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
 
