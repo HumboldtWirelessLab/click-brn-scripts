@@ -3,9 +3,11 @@
 CHANNEL="1 2 3 4 5 6 7 8 9 10 11"
 #CHANNEL="1 2"
 
-REPETITIONS=15
+REPETITIONS=5
 
 MEASUREMENT_NUM=1
+
+PSIZE=100
 
 for r in `seq $REPETITIONS`; do
 
@@ -20,6 +22,8 @@ for r in `seq $REPETITIONS`; do
     echo "CHANNEL=$p_c" > $MEASUREMENT_NUM/params
     echo "REPETITION=$r" >> $MEASUREMENT_NUM/params
     echo "NUM=$MEASUREMENT_NUM" >> $MEASUREMENT_NUM/params
+    let FINPS=PSIZE+32
+    echo "PACKETSIZE=$FINPS" >> $MEASUREMENT_NUM/params
 
     if [ "x$SIM" = "x" ]; then
       FORCE_DIR=keep RUNMODE=REBOOT run_measurement.sh sender_and_receiver.des $MEASUREMENT_NUM

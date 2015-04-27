@@ -19,7 +19,7 @@ if [ "x$SIMULATOR" = "x" ]; then
 fi
 
 if [ "x$LIMIT" = "x" ]; then
-  LIMIT=3
+  LIMIT=5
 fi
 
 if [ "x$START" = "x" ]; then
