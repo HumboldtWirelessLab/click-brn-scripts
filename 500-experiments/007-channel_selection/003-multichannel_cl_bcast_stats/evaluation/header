@@ -1,0 +1,5 @@
+1. neighbourstats
+receivernode channel measurementnum repetitioncounter channelstats_id channelstats_time neighbouraddr avg_rssi pkt_cnt rx_bytes duration
+
+2. channelstats
+node channel num rep id time hwbusy hwrx hwtx busy rx tx avg_noise rx crc_rx noerr_rx phy_rx
