@@ -61,7 +61,9 @@ if [ "x$SIM" = "x1" ]; then
     fi
   fi
 else
-  NODESFILE=nodes.measurement
+  if [ "x$NODESFILE" = "x" ]; then
+    NODESFILE=nodes.measurement
+  fi
   MAX_PLACEMENT=1
 fi
 
@@ -86,9 +88,9 @@ let DURATION_MS=DURATION*INTERVAL
 
 echo -n "" > flooding.ctl
 
-for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT`; do
-   if [ "x$SIM" = "x" ]; then
-     MAC=`cat nodes.mac | grep $n | awk '{print $3}'`
+for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT | awk '{print $1}'`; do
+   if [ "x$SIM" != "x1" ]; then
+     MAC=`cat nodes.testbed | grep $n | awk '{print $3}'`
    else
      mac_raw=`echo $n | sed "s#node##g"`
      m1=`expr $mac_raw / 256`
@@ -333,12 +335,14 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
          echo "SEED=$repetition" >> flooding.des
 
-         if [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
+         if [ "x$GRID" = "x" ] && [ ! -f placement.txt ] && [ "x$SIM" = "x1" ]; then
            echo "miss placementfile"
            exit 0;
          fi
 
-         if [ "x$SIM" = "x" ]; then
+         if [ "x$SIM" != "x1" ]; then
+           #mkdir $MEASUREMENTDIR
+           #mv flooding.ctl $MEASUREMENTDIR
            RUNMODE=$CURRENTRUNMODE run_measurement.sh flooding.des $MEASUREMENTDIR
 
            CURRENTRUNMODE=CLICK
@@ -350,7 +354,6 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            fi
 
          else
-           #PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
            mkdir $MEASUREMENTDIR
            mv flooding.des flooding.mes flooding_config.h $MEASUREMENTDIR
            cp placement.txt flooding.click flooding_sender.click monitor.b.channel nodes.sim flooding_script.click flooding.ctl $MEASUREMENTDIR
@@ -365,7 +368,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            done
          fi
 
-         if  [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
+         if  [ "x$GRID" = "x" ] && [ ! -f placement.txt ] && [ "x$SIM" = "x1" ]; then
            echo "miss placementfile after prepare"
          fi
 
