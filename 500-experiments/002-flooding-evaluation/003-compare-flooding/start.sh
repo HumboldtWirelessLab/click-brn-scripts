@@ -72,7 +72,8 @@ if [ "x$LIMIT" = "x" ]; then
   let NO_NODES=NODES-1
 fi
 
-CURRENTRUNMODE=REBOOT
+CURRENTRUNMODE=CLICK
+#REBOOT
 
 RUNMODE_RESET_COUNT=0
 
@@ -86,7 +87,9 @@ INTERVAL=1000
 DURATION=10
 let DURATION_MS=DURATION*INTERVAL
 
+
 echo -n "" > flooding.ctl
+echo -n "" > flooding_sender_script.click
 
 for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT | awk '{print $1}'`; do
    if [ "x$SIM" != "x1" ]; then
@@ -107,7 +110,11 @@ for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT | awk '{print $1}'`; do
      MAC="00-00-00-00-$m1h-$m2h"
    fi
 
-   echo "$FLOWTIME $n DEV0 write sf add_flow $MAC FF-FF-FF-FF-FF-FF $INTERVAL 100 0 $DURATION_MS true" >> flooding.ctl
+   if [ "x$SIM" = "x1" ]; then
+     echo "$FLOWTIME $n DEV0 write sf add_flow $MAC FF-FF-FF-FF-FF-FF $INTERVAL 100 0 $DURATION_MS true" >> flooding.ctl
+   else
+     echo "Script(wait $FLOWTIME, write sf.add_flow $MAC FF-FF-FF-FF-FF-FF $INTERVAL 100 0 $DURATION_MS true);" >> flooding_sender_script.click
+   fi
 
    let FLOWTIME=FLOWTIME+DURATION
    let FLOWTIME=FLOWTIME+FLOWTIMESPACE
@@ -321,8 +328,9 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
        if [ ! -e $MEASUREMENTDIR ]; then
 
-         if [ "x$SIM" = "x" ]; then
-           cat flooding.mes.tmpl | sed "s#LOGDIR#/tmp#g" | sed "s#NODES#nodes.measurement#g" > flooding.mes
+         if [ "x$SIM" != "x1" ]; then
+           #cat flooding.mes.tmpl | sed "s#LOGDIR#/tmp#g" | sed "s#NODES#$NODESFILE#g" > flooding.mes
+           cat flooding.mes.tmpl | sed "s#NODES#$NODESFILE#g" > flooding.mes
          else
            cat flooding.mes.tmpl | sed "s#NODES#nodes.sim#g" > flooding.mes
          fi
@@ -344,6 +352,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            #mkdir $MEASUREMENTDIR
            #mv flooding.ctl $MEASUREMENTDIR
            RUNMODE=$CURRENTRUNMODE run_measurement.sh flooding.des $MEASUREMENTDIR
+           cp flooding.click flooding_sender.click monitor.b.channel flooding_script.click flooding_sender_script.click $MEASUREMENTDIR
 
            CURRENTRUNMODE=CLICK
            let RUNMODE_RESET_COUNT=RUNMODE_RESET_COUNT+1
@@ -356,7 +365,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
          else
            mkdir $MEASUREMENTDIR
            mv flooding.des flooding.mes flooding_config.h $MEASUREMENTDIR
-           cp placement.txt flooding.click flooding_sender.click monitor.b.channel nodes.sim flooding_script.click flooding.ctl $MEASUREMENTDIR
+           cp placement.txt flooding.click flooding_sender.click monitor.b.channel nodes.sim flooding_script.click flooding.ctl flooding_sender_script.click  $MEASUREMENTDIR
            (touch prepare_status/$PREPARE_NUM; cd $MEASUREMENTDIR; NOSUBDIR=1 PREPARE_ONLY=1 run_sim.sh ns flooding.des; cd ..; rm prepare_status/$PREPARE_NUM) &
 
            let PREPARE_NUM=PREPARE_NUM+1
@@ -489,7 +498,7 @@ done
 
 rm -rf prepare_status
 
-rm -f flooding_config.h placement.txt nodes.sim flooding.des flooding.mes flooding.ctl flooding_script.click
+rm -f flooding_config.h placement.txt nodes.sim flooding.des flooding.mes flooding.ctl flooding_script.click flooding_sender_script.click
 
 if [ "x$SIM" = "x1" ]; then
   run_para_sim.sh
