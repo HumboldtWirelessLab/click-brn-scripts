@@ -144,7 +144,7 @@ echo "  read device_wifi/wifidevice/cst.stats" >> flooding_script.click
 echo ");" >> flooding_script.click
 
 
-let FLOWTIME=FLOWTIME+1
+let FLOWTIME=FLOWTIME+10
 
 rm -rf prepare_status
 mkdir prepare_status
