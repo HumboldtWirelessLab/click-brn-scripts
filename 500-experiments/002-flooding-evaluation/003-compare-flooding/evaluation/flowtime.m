@@ -5,7 +5,7 @@ addpath('filter/')
 %basedir='20141015-small/';
 %basedir='20141015-big/';
 %basedir='20150128/';
-basedir='20150208/';
+basedir='20150208b/';
 %basedir='';
   
 if (~exist('basedir'))
@@ -13,7 +13,7 @@ if (~exist('basedir'))
 end
 
 clear filterhandle
-filterhandle=@unicast_filter
+filterhandle=@mpr_filter
 functions(filterhandle)
 
 if (~exist('index'))
@@ -139,14 +139,14 @@ if ( plotold == 1)
 
   filterhandle()
   
-  search_for_best = 1;
+  search_for_best = 0+;
   if (search_for_best == 1)
       check_all_best = 1;
       if (check_all_best == 1)
         for i = 1:CONFIG_OVERLAY
-        %for i = CONFIG_UNICASTSTRATEGY:CONFIG_UNICASTSTRATEGY
+        %for i = CONFIG_MAXDELAY:CONFIG_MAXDELAY
           if ( size(unique(show_configs(:,i)),1) ~= 1)
-            test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_TIMES]);
+            %test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_TIMES]);
             test_params(show_configs, result, [CONFIG_UNICASTSTRATEGY i], [RESULT_PKT_CNT RESULT_REACH]);
           end
         end
@@ -156,9 +156,9 @@ if ( plotold == 1)
    
       legend_params = [CONFIG_UNICASTSTRATEGY CONFIG_TXABORT];
    
-      show_configs_1=show_configs(show_configs(:,CONFIG_USEASS) ~= 0,:);
+      show_configs_1=show_configs(show_configs(:,CONFIG_NBMETRIC) == 400,:);
 
-      show_configs_2=show_configs(show_configs(:,CONFIG_USEASS) == 0,:);
+      show_configs_2=show_configs(show_configs(:,CONFIG_NBMETRIC) == 8000,:);
 
       test_params(show_configs_1, result, legend_params, [RESULT_PKT_CNT RESULT_TIMES]);
       test_params(show_configs_1, result, legend_params, [RESULT_PKT_CNT RESULT_REACH]);

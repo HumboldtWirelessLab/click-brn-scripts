@@ -1,5 +1,7 @@
 size(show_configs)
 
+show_configs=show_configs(show_configs(:,CONFIG_ALGORITHMID) == 4,:);
+
 show_configs=show_configs(show_configs(:,CONFIG_FLOODING_NET_RETRIES) == 3,:);
 
 %remove random and take worst .... use "take best" finally

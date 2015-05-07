@@ -30,5 +30,5 @@ Script(
 //  read brnrates.rates,
 //  read rs.rates,
   read sd.psr,
-  stop
+//  stop
 );

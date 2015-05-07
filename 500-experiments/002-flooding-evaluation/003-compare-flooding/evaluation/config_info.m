@@ -54,7 +54,7 @@ params_index=[ params_index ALGORITHMID EXTRAINFO  MACRETRIES NBMETRIC PIGGYBACK
 %                              11   12      13       14         15
 params_index=[ params_index FRESP USEASS MAXDELAY TXABORT TXSCHEDULING];
 
-%                             16    17            18
+%                             16    17            18    
 params_index=[ params_index FIXCS E2E_RETRIES OVERLAY];
 
 

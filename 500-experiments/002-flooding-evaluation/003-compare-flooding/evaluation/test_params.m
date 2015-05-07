@@ -1,7 +1,7 @@
 function figurehandle = test_params(show_config, result, params, show_param)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-plot_cols = ['r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'b';'k';'m';'c';'g';'y';'r';'m';'k';'b';'c';'y';'r';'m';'k';'b';'c';'y'];
+plot_cols = ['r';'b';'k';'m';'c';'g';'y';'r';'b';'k';'m';'c';'g';'y';'r';'b';'k';'m';'c';'g';'y';'r';'b';'k';'m';'c';'g';'y';];
 plot_sign = ['*';'+';'o';'x';'<';'s';'d';'>';'^'];
 
 %load config and cor. vars
@@ -47,14 +47,14 @@ for sc=1:size(show_cfgs,1)
 
     col_index = cur_sc(2)+2;
     
-    if ( col_index > 32 )
-        col_index = 1;
+    if ( col_index > size(plot_cols,1) )
+        col_index = mod(col_index,size(plot_cols,1)) + 1;
     end
-    
+ 
     sign_index = cur_sc(1)+2;
     
-    if ( sign_index > 8 )
-        sign_index = 1;
+    if ( sign_index > size(plot_sign,1) )
+        sign_index = mod(sign_index,size(plot_sign,1)) + 1
     end
     
     scatter(r(:,1),r(:,2),20,plot_cols(col_index),plot_sign(sign_index)); %end

@@ -229,6 +229,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
        case "$al" in
          "simple")
                  echo "" >&3
+                 echo "#define FLOODING_STRATEGY 1" >&3
                  ;;
          "probability")
                   echo "" >&3
