@@ -14,6 +14,5 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="evaluation/eval.sh dump_compression status_compression"
+EVALUATION="evaluation/eval.sh compression_dump compression_status"
 EVALUATIONSDIR=WORKDIR/evaluation
-EVALUATIONSDIRPOSTFIX=_evaluation

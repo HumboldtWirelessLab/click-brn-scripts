@@ -5,5 +5,7 @@ sk110		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	
 sk111		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
 wgt51		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
 wgt24		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
-seismo180	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
-seismo156	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#wgt31		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#wgt33		DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#seismo180	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               receiver.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+#seismo156	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               sender.click    LOGDIR/NODENAME.NODEDEVICE.log  -               -

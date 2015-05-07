@@ -5,7 +5,7 @@ RADIO=shadowing
 #DISABLE_NAM=1
 #DISABLE_TR=1
 
-TIME=5
+TIME=6
 
 NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=sender_and_receiver.mes
@@ -21,10 +21,9 @@ LOGDIR=WORKDIR
 LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
-EVALUATION="evaluation/eval.sh dump_compression status_compression"
+EVALUATION="evaluation/eval.sh compression_dump compression_status"
 #EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
-EVALUATIONSDIRPOSTFIX=_evaluation
 
 GPS=no
 NOTICE=no

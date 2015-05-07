@@ -9,14 +9,15 @@
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
 
+rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22);
+
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", WIRELESSCONFIG "rates", DEBUG 4);
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22);
 
 rs_madwifi::BrnMadwifiRate();
 rs::BrnAutoRateFallback();
@@ -72,8 +73,8 @@ filter_tx[1]
   -> discard;
 
 Script(
-  write rates.insert 00-00-00-00-00-01  2 4 11 12 18 22,
-  write rates.insert 00-00-00-00-00-02  2 4 11 12 18 22,
+  write rates.insert 00-00-00-00-00-01 2 4 11 12 18 22,
+  write rates.insert 00-00-00-00-00-02 2 4 11 12 18 22,
   wait 1,
   read rates.rates,
   read ratesel.info
@@ -82,12 +83,10 @@ Script(
 
 Script(
   write sf.add_flow 00:00:00:00:00:02 00:00:00:00:00:01 12 1500 0 5000 true 1 0,
-  //write sf.add_flow 00:00:00:00:00:02 00:00:00:00:00:01 VAR_RATE VAR_PSIZE 0 5000 true 1 0,
-// wait 1,
-//   read wifioutq.notifier_state,
   wait 5,
   read sys_info.systeminfo,
   read id.version,
   read wireless.deviceinfo,
-  read wifidevice/cst.stats
+  read wifidevice/cst.stats,
+  read rates.rates
 );

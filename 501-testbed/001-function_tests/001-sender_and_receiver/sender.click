@@ -1,5 +1,8 @@
 #define DEBUGLEVEL 2
 
+#define RAWDUMP
+#define BRNFEEDBACK
+
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
@@ -11,11 +14,13 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 1460, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE true)
-  -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
+Idle()
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress FF:FF:FF:FF:FF:FF 500 1460 0 50000 true 1 0", DEBUG 4)  //VAR_RATE VAR_PSIZE
+//  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 06:0B:6B:09:ED:73 500 1460 0 50000 true 1 0", DEBUG 4)  //VAR_RATE VAR_PSIZE
+  -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> BRN2PrintWifi("Sender", TIMESTAMP true)
-  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> SetTXRate(RATE 2, TRIES 1)
   -> SetTXPower(13)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice

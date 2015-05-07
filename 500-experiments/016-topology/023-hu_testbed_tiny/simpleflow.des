@@ -14,9 +14,8 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 
-EVALUATION="evaluation/embrace_xml_measurement.sh evaluation/eval.sh"
+EVALUATION="embrace_xml ../common_evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
-EVALUATIONSDIRPOSTFIX=_evaluation
 
 
 

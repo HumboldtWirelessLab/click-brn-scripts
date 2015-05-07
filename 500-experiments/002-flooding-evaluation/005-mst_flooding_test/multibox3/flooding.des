@@ -20,7 +20,7 @@ RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR/evaluation
 #EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/eval.sh flooding_info flow_info"
 EVALUATION="evaluation/copy_tmp.sh embrace_xml evaluation/get_txtraces.sh evaluation/eval.sh network_info_viz flooding_info flow_info"
-#EVALUATION="evaluation/copy_tmp.sh embrace_xml status_compression"
+#EVALUATION="evaluation/copy_tmp.sh embrace_xml compression_status"
 #EVALUATION="embrace_xml"
 
 GPS=no

@@ -175,9 +175,11 @@ case "$s" in
         #SENDER="seismo158"
         SENDER="seismo151"
         RECEIVER="foobar103 commander105"
-        PASSIVERECEIVER="seismo176 seismo162 seismo158"
+        PASSIVERECEIVER=""
+        #PASSIVERECEIVER="seismo176 seismo162 seismo158"
         #seismo151 seismo158
-        TXINTERVAL=12
+        #TXINTERVAL=12
+        TXINTERVAL=25
         PKTSIZE=2200
         TXBURST=1
         DISRUPTER=""

@@ -15,9 +15,8 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 
-EVALUATION="tmp_rawdump_copy evaluation/eval.sh"
+EVALUATION="rawdump_tmp_copy evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
-EVALUATIONSDIRPOSTFIX=_evaluation
 
 GPS=no
 NOTICE=no

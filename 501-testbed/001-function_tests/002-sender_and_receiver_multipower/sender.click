@@ -11,12 +11,20 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-ps::BRN2PacketSource(SIZE 1460, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE true)
+rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22);
+
+fr::BrnFixRate( RATE0 2, TRIES0 1);
+
+ratesel::SetTXPowerRate( RATESELECTIONS "fr", STRATEGY 1, RT rates);
+
+  Idle()
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress FF:FF:FF:FF:FF:FF 100 100 0 30000 true 1 0", DEBUG 4)  //VAR_RATE VAR_PSIZE
+  -> BRN2EtherEncap(USEANNO true)
   -> EtherEncap(0x8086, deviceaddress, ff:ff:ff:ff:ff:ff)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> BRN2PrintWifi("Sender", TIMESTAMP true)
-  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
-  -> setpower::BrnSetTXPower(13)
+  -> [0]ratesel[0]
+  -> SetTXPower(32)
   -> wifioutq::NotifierQueue(1000)
   -> wifidevice
   -> filter_tx :: FilterTX()
@@ -59,10 +67,10 @@ filter_tx[1]
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
+  write wireless.power 20,
   wait 10,
-  write setpower.systempower NODEDEVICE 15,
+  write wireless.power 12,
   wait 10,
-  write setpower.systempower NODEDEVICE 10,
-  wait 10,
-  write setpower.systempower NODEDEVICE 5
+  write wireless.power 4,
+  wait 10
 );

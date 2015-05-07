@@ -55,13 +55,15 @@ if [ "x$SIM" = "x1" ]; then
     done
     MAX_PLACEMENT=1
   else
-    cat $PLACEMENTFILE | awk '{print $2}' | sort -u | sort -n > $NODESFILE
+    bzcat $PLACEMENTFILE | awk '{print $2}' | sort -u | sort -n > $NODESFILE
     if [ "x$MAX_PLACEMENT" = "x" ]; then
-      MAX_PLACEMENT=`cat $PLACEMENTFILE | awk '{print $1}' | sort -u | sort -n | tail -n 1`
+      MAX_PLACEMENT=`bzcat $PLACEMENTFILE | awk '{print $1}' | sort -u | sort -n | tail -n 1`
     fi
   fi
 else
-  NODESFILE=nodes.measurement
+  if [ "x$NODESFILE" = "x" ]; then
+    NODESFILE=nodes.measurement
+  fi
   MAX_PLACEMENT=1
 fi
 
@@ -70,7 +72,8 @@ if [ "x$LIMIT" = "x" ]; then
   let NO_NODES=NODES-1
 fi
 
-CURRENTRUNMODE=REBOOT
+CURRENTRUNMODE=CLICK
+#REBOOT
 
 RUNMODE_RESET_COUNT=0
 
@@ -84,11 +87,13 @@ INTERVAL=1000
 DURATION=10
 let DURATION_MS=DURATION*INTERVAL
 
-echo -n "" > flooding.ctl
 
-for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT`; do
-   if [ "x$SIM" = "x" ]; then
-     MAC=`cat nodes.mac | grep $n | awk '{print $3}'`
+echo -n "" > flooding.ctl
+echo -n "" > flooding_sender_script.click
+
+for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT | awk '{print $1}'`; do
+   if [ "x$SIM" != "x1" ]; then
+     MAC=`cat nodes.testbed | grep $n | awk '{print $3}'`
    else
      mac_raw=`echo $n | sed "s#node##g"`
      m1=`expr $mac_raw / 256`
@@ -105,7 +110,11 @@ for n in `cat $NODESFILE | grep -v "#" | head -n $LIMIT`; do
      MAC="00-00-00-00-$m1h-$m2h"
    fi
 
-   echo "$FLOWTIME $n DEV0 write sf add_flow $MAC FF-FF-FF-FF-FF-FF $INTERVAL 100 0 $DURATION_MS true" >> flooding.ctl
+   if [ "x$SIM" = "x1" ]; then
+     echo "$FLOWTIME $n DEV0 write sf add_flow $MAC FF-FF-FF-FF-FF-FF $INTERVAL 100 0 $DURATION_MS true" >> flooding.ctl
+   else
+     echo "Script(wait $FLOWTIME, write sf.add_flow $MAC FF-FF-FF-FF-FF-FF $INTERVAL 100 0 $DURATION_MS true);" >> flooding_sender_script.click
+   fi
 
    let FLOWTIME=FLOWTIME+DURATION
    let FLOWTIME=FLOWTIME+FLOWTIMESPACE
@@ -135,7 +144,7 @@ echo "  read device_wifi/wifidevice/cst.stats" >> flooding_script.click
 echo ");" >> flooding_script.click
 
 
-let FLOWTIME=FLOWTIME+1
+let FLOWTIME=FLOWTIME+10
 
 rm -rf prepare_status
 mkdir prepare_status
@@ -145,7 +154,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
    if [ "x$SIM" = "x1" ]; then
      if [ "x$GRID" = "x" ]; then
-       cat $PLACEMENTFILE | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
+       bzcat $PLACEMENTFILE | grep -e "^$pl " | sed -e "s#^$pl ##g" > placement.txt
        cat placement.txt | awk '{print $1}' > nodes.sim
      fi
    fi
@@ -320,8 +329,9 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
        if [ ! -e $MEASUREMENTDIR ]; then
 
-         if [ "x$SIM" = "x" ]; then
-           cat flooding.mes.tmpl | sed "s#LOGDIR#/tmp#g" | sed "s#NODES#nodes.measurement#g" > flooding.mes
+         if [ "x$SIM" != "x1" ]; then
+           #cat flooding.mes.tmpl | sed "s#LOGDIR#/tmp#g" | sed "s#NODES#$NODESFILE#g" > flooding.mes
+           cat flooding.mes.tmpl | sed "s#NODES#$NODESFILE#g" > flooding.mes
          else
            cat flooding.mes.tmpl | sed "s#NODES#nodes.sim#g" > flooding.mes
          fi
@@ -334,13 +344,16 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
 
          echo "SEED=$repetition" >> flooding.des
 
-         if [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
+         if [ "x$GRID" = "x" ] && [ ! -f placement.txt ] && [ "x$SIM" = "x1" ]; then
            echo "miss placementfile"
            exit 0;
          fi
 
-         if [ "x$SIM" = "x" ]; then
+         if [ "x$SIM" != "x1" ]; then
+           #mkdir $MEASUREMENTDIR
+           #mv flooding.ctl $MEASUREMENTDIR
            RUNMODE=$CURRENTRUNMODE run_measurement.sh flooding.des $MEASUREMENTDIR
+           cp flooding.click flooding_sender.click monitor.b.channel flooding_script.click flooding_sender_script.click $MEASUREMENTDIR
 
            CURRENTRUNMODE=CLICK
            let RUNMODE_RESET_COUNT=RUNMODE_RESET_COUNT+1
@@ -351,10 +364,9 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            fi
 
          else
-           #PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
            mkdir $MEASUREMENTDIR
            mv flooding.des flooding.mes flooding_config.h $MEASUREMENTDIR
-           cp placement.txt flooding.click flooding_sender.click monitor.b.channel nodes.sim flooding_script.click flooding.ctl $MEASUREMENTDIR
+           cp placement.txt flooding.click flooding_sender.click monitor.b.channel nodes.sim flooding_script.click flooding.ctl flooding_sender_script.click  $MEASUREMENTDIR
            (touch prepare_status/$PREPARE_NUM; cd $MEASUREMENTDIR; NOSUBDIR=1 PREPARE_ONLY=1 run_sim.sh ns flooding.des; cd ..; rm prepare_status/$PREPARE_NUM) &
 
            let PREPARE_NUM=PREPARE_NUM+1
@@ -366,7 +378,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            done
          fi
 
-         if  [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then
+         if  [ "x$GRID" = "x" ] && [ ! -f placement.txt ] && [ "x$SIM" = "x1" ]; then
            echo "miss placementfile after prepare"
          fi
 
@@ -377,7 +389,7 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            echo "SIM=0" >&3
          else
            echo "SIM=1" >&3
-        fi
+          fi
 
         echo "ALGORITHM=$al" >&3
 
@@ -446,11 +458,13 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
                OVERLAYINDEX=""
              fi
              ;;
+          *)
+            echo "Unknown floodalg"
+            exit -1;
+            ;;
       esac
 
-
       done
-
     done
     if [ -f ./finish ]; then
       exit
@@ -485,7 +499,7 @@ done
 
 rm -rf prepare_status
 
-rm -f flooding_config.h placement.txt nodes.sim flooding.des flooding.mes flooding.ctl flooding_script.click
+rm -f flooding_config.h placement.txt nodes.sim flooding.des flooding.mes flooding.ctl flooding_script.click flooding_sender_script.click
 
 if [ "x$SIM" = "x1" ]; then
   run_para_sim.sh
