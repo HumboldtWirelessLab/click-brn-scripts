@@ -3,33 +3,29 @@
 #define CST cst
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
+//#define USE_RTS_CTS
+
 #define RAWDUMP
 
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
 
-rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22);
-
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", WIRELESSCONFIG "rates", DEBUG 4);
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-
-rs_madwifi::BrnMadwifiRate();
-rs::BrnAutoRateFallback();
-
-ratesel::SetTXPowerRate( RATESELECTIONS "rs rs_madwifi", STRATEGY 4, RT rates);
-
 Idle()
-  -> sf::BRN2SimpleFlow(DEBUG 2)
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:02 10 1500 0 10000 true 1 0", DEBUG 2)
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
-  -> [0]ratesel[0]
-  -> SetTXPower(24)
+  -> SetTimestamp()
+  -> SetTXRates(RATE0 2, TRIES0 1, TRIES1 0, TRIES2 0, TRIES3 0)
+  -> SetTXPower(VAR_POWER)
+  -> SetRTS(false)
   -> wifioutq::NotifierQueue(10)
   -> SetTimestamp()
   -> BRN2PrintWifi("Sender (NODENAME)", TIMESTAMP true)
@@ -69,24 +65,9 @@ error_clf[7]
 
 filter_tx[1]
   -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
-  -> [1]ratesel[1]
   -> discard;
 
 Script(
-  write rates.insert 00-00-00-00-00-01 2 4 11 12 18 22,
-  write rates.insert 00-00-00-00-00-02 2 4 11 12 18 22,
-  wait 1,
-  read rates.rates,
-  read ratesel.info
-);
-
-
-Script(
-  write sf.add_flow 00:00:00:00:00:02 00:00:00:00:00:01 12 1500 0 5000 true 1 0,
-  wait 5,
-  read sys_info.systeminfo,
-  read id.version,
-  read wireless.deviceinfo,
-  read wifidevice/cst.stats,
-  read rates.rates
+  wait 11,
+  read sf.stats
 );

@@ -16,7 +16,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 EVALUATIONSDIR=WORKDIR
-EVALUATION="tmp_rawdump_copy"
+EVALUATION="rawdump_tmp_copy"
 
 GPS=no
 NOTICE=no
