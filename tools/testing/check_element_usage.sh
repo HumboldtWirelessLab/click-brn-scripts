@@ -1,9 +1,19 @@
 #!/bin/bash
 
-GREPARG=`find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|'`
+if [ "x$MODE" = "xSIMULATION" ]; then
+  GREPARG=`find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver/" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|'`
+else
+  GREPARG=`find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|'`
+fi
+
 GREPARG="\"$GREPARG-foo\""
 
-SEDARG=`find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|' | sed "s#|#\\\\\\\\|#g"`
+if [ "x$MODE" = "xSIMULATION" ]; then
+  SEDARG=`find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver/" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|' | sed "s#|#\\\\\\\\|#g"`
+else
+  SEDARG=`find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|' | sed "s#|#\\\\\\\\|#g"`
+fi
+
 SEDARG="s#\($SEDARG-foo\)# \1 #g"
 
 #echo $SEDARG

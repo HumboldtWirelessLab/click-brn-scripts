@@ -14,9 +14,7 @@ else
     ENABLE_LATEX=1
 fi
 
-if [ "x$SIMULATOR" = "x" ]; then
-  SIMULATOR=ns
-fi
+SIMULATOR=none
 
 if [ "x$LIMIT" = "x" ]; then
   LIMIT=5

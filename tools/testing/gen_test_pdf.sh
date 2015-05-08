@@ -110,7 +110,7 @@ while [ $i -le $LIMIT ]; do
       echo "\subsection{Result}" >> $TESTBED_TEX
   fi
 
-  FULLMEASUREMENT=1 $DIR/check_element_usage.sh $WORKDIR/$MEASUREMENTNUM > element_info/used_element_$NUM
+  MODE=$MODE FULLMEASUREMENT=1 $DIR/check_element_usage.sh $WORKDIR/$MEASUREMENTNUM > element_info/used_element_$NUM
   cat element_info/used_element_$NUM >> element_info/used_element_all
 
   if [ $RESULT -ne 0 ]; then
@@ -190,7 +190,11 @@ if [ $LATEX -eq 1 ]; then
 
     echo -e -n "\n\n\\subsection{Element Info}" >> $SUMMARY_TEX
     echo -n "Number of Elements: " >> $SUMMARY_TEX
-    find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | sort -u | wc -l >> $SUMMARY_TEX
+    if [ "x$MODE" = "xSIMULATION" ]; then
+      find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | sort -u | wc -l >> $SUMMARY_TEX
+    else
+      find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | sort -u | wc -l >> $SUMMARY_TEX
+    fi
     echo -n -e "\n\nNumber of Used Elements: " >> $SUMMARY_TEX
     cat element_info/used_element_all | sort -u | wc -l >> $SUMMARY_TEX
 
@@ -199,14 +203,21 @@ if [ $LATEX -eq 1 ]; then
     #echo $GREPARG
 
     echo -n -e "\n\nNumber of Unused Elements: " >> $SUMMARY_TEX
-    find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | wc -l >> $SUMMARY_TEX
-
+    if [ "x$MODE" = "xSIMULATION" ]; then
+      find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | wc -l >> $SUMMARY_TEX
+    else
+      find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | wc -l >> $SUMMARY_TEX
+    fi
     echo -e -n "\n\n\\subsection{Used Elements}\\\\begin{flushleft}\\\\begin{sloppypar}\\\\nohyphens{" >> $SUMMARY_TEX
     cat element_info/used_element_all | sort -u | tr '\n' ',' | sed -e "s#,\$#}#g" | sed -e "s#,#}, \\\\nohyphens{#g" | sed -e "s#_##g" >> $SUMMARY_TEX
     echo -e -n "\\\\end{sloppypar}\\\\end{flushleft}" >> $SUMMARY_TEX
 
     echo -e -n "\n\n\\subsection{Unused Elements}\\\\begin{flushleft}\\\\begin{sloppypar}\\\\nohyphens{" >> $SUMMARY_TEX
-    find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | sort | tr '\n' ',' | sed -e "s#,\$#}#g" | sed -e "s#,#}, \\\\nohyphens{#g" | sed -e "s#_##g" >> $SUMMARY_TEX
+    if [ "x$MODE" = "xSIMULATION" ]; then
+      find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | sort | tr '\n' ',' | sed -e "s#,\$#}#g" | sed -e "s#,#}, \\\\nohyphens{#g" | sed -e "s#_##g" >> $SUMMARY_TEX
+    else
+      find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | sort | tr '\n' ',' | sed -e "s#,\$#}#g" | sed -e "s#,#}, \\\\nohyphens{#g" | sed -e "s#_##g" >> $SUMMARY_TEX
+    fi
     echo -e -n "\\\\end{sloppypar}\\\\end{flushleft}" >> $SUMMARY_TEX
 
 
