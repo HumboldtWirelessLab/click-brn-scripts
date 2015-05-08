@@ -20,9 +20,12 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 
 rs_madwifi::BrnMadwifiRate();
-rs::BrnAutoRateFallback();
+rs_arf::BrnAutoRateFallback();
+rs_fix::BrnFixRate();
+rs_rr::BrnRoundRobinRate();
+rs_minstrel::BrnMinstrelRate();
 
-ratesel::SetTXPowerRate( RATESELECTIONS "rs rs_madwifi", STRATEGY 4, RT rates);
+ratesel::SetTXPowerRate( RATESELECTIONS "rs_arf rs_madwifi rs_fix rs_rr rs_minstrel", STRATEGY 4, RT rates);
 
 Idle()
   -> sf::BRN2SimpleFlow(DEBUG 2)
