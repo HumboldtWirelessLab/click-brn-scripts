@@ -15,7 +15,7 @@ wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICE
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
-client_lwip::LwIP(IP 192.168.1.2, GATEWAY 192.168.1.1, NETMASK 255.255.255.0, DSTIP 192.168.2.2, DSTPORT 12345, DEBUG 4)
+client_lwip::LwIP(IP 192.168.1.2, GATEWAY 192.168.1.1, NETMASK 255.255.255.0, DEBUG 3)
 
 
   wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
@@ -46,3 +46,8 @@ client_lwip::LwIP(IP 192.168.1.2, GATEWAY 192.168.1.1, NETMASK 255.255.255.0, DS
   -> wifidevice;
 
 Idle() -> [1]client_lwip[1] -> Discard();
+
+Script(
+  wait 1,
+  write client_lwip.add_flow 192.168.2.2 12345 30000,
+);
