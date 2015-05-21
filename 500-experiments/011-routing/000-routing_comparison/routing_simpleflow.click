@@ -55,7 +55,7 @@ brn_clf[2]
 routing[0]
   -> toMeAfterRouting::BRN2ToThisNode(NODEIDENTITY id);
 
-routing[1] -> SetEtherAddr(SRC deviceaddress) -> routing_cnt::Counter() -> [0]device_wifi;
+routing[1] -> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false) -> routing_cnt::Counter() -> [0]device_wifi;
 
 toMeAfterRouting[0]
   -> Label_brnether; 

@@ -171,7 +171,7 @@ dsr[0]
   
 dsr[1] 
 	//-> Print("[MOBISEC_NODE NODENAME]: DSR[1]-out", TIMESTAMP true)
-	-> SetEtherAddr(SRC deviceaddress)
+	-> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false)
 	//-> Print("[MOBISEC_NODE NODENAME]: DSR-Ether-OUT",100, TIMESTAMP true)
 	-> [0]wifidev_ap;
 

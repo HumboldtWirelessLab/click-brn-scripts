@@ -11,7 +11,7 @@
 #include "device/rawwifidev.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", DEBUG 4);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
@@ -56,6 +56,7 @@ filter_tx[1]
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
+/*
 Script(
  wait 5,
  read sys_info.systeminfo,
@@ -63,3 +64,4 @@ Script(
  read error_clf.stats,
  read wifidevice/cst.stats
 );
+*/

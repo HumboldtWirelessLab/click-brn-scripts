@@ -66,7 +66,7 @@ dhtrouting[1]
 -> [0]device_wifi;
 
 routing[0] -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-routing[1] -> SetEtherAddr(SRC deviceaddress)/*-> Print("DSR-Ether-OUT")*/ -> [0]device_wifi;
+routing[1] -> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false) -> [0]device_wifi;
 
 toMeAfterDsr[0] -> /*Print("DSR-out: For ME",100) ->*/ Label_brnether; 
 toMeAfterDsr[1] -> /*Print("DSR-out: Broadcast") ->*/ Discard;

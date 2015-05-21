@@ -95,7 +95,7 @@ dsr[0]
   
 dsr[1] 
 	//-> Print("[MOBISEC_SRV] DSR[1]-out")
-	-> SetEtherAddr(SRC deviceaddress)
+	-> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false)
 	//-> Print("[MOBISEC_SRV] DSR-Ether-OUT")
 	-> [0]wifidev_ap;
 	

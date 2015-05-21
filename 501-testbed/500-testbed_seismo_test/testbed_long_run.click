@@ -150,7 +150,7 @@ brn_clf[4] -> Discard;
 //dht[1] -> [0]device_wifi;
 
 routing[0] -> toMeAfterRouting::BRN2ToThisNode(NODEIDENTITY id);
-routing[1] -> SetEtherAddr(SRC deviceaddress) -> [0]device_wifi;
+routing[1] -> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false) -> [0]device_wifi;
 
 toMeAfterRouting[0] -> /*Print("Routing-out: For ME",100) ->*/ Label_brnether; 
 toMeAfterRouting[1] -> /*Print("Routing-out: Broadcast") ->*/ Discard;

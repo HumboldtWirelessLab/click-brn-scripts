@@ -81,7 +81,7 @@ dht[1]
 -> [0]device_wifi;
 
 dsr[0] -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-dsr[1] -> SetEtherAddr(SRC deviceaddress) -> [0]device_wifi;
+dsr[1] -> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false) -> [0]device_wifi;
 
 toMeAfterDsr[0] ->  Label_brnether; 
 toMeAfterDsr[1] ->  Discard;

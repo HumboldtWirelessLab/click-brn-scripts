@@ -88,8 +88,8 @@ device_wifi[5] //foreign and no brn
 
 dsr[0]
   -> toMeAfterDsr::BRN2ToThisNode(NODEIDENTITY id);
-  
-dsr[1] -> SetEtherAddr(SRC deviceaddress) -> [0]device_wifi;
+
+dsr[1] -> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false) -> [0]device_wifi;
 
 toMeAfterDsr[0] 
   //-> Print("DSR-out: For ME",100)

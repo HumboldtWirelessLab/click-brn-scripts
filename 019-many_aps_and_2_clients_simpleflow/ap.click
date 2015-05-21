@@ -48,7 +48,7 @@ dsr[0]
 
 dsr[1]
   //-> Print("DSR[1]-out")
-  -> SetEtherAddr(SRC deviceaddress)
+  -> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false)
   //-> Print("DSR-Ether-OUT")
   -> [0]device_wifi;
 
