@@ -56,11 +56,15 @@ device_wifi[3]
 Idle -> [1]device_wifi;
 Idle -> [0]device_wifi;
 
-//ch::BrnCompoundHandler(HANDLER rate.rate);
+ch::BrnCompoundHandler(HANDLER rate.rate);
+push_handler::BrnPushHandler(HANDLER ch.read, PERIOD 500)
+-> SetTimestamp()
+-> Print("PushHandler", TIMESTAMP true)
+-> Discard;
 
 Script(
  wait 16,
  read rate.rate,
  read device_wifi/wifidevice/cst.stats,
-// read ch.read
+ read ch.read
  );
