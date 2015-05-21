@@ -191,7 +191,7 @@ if [ $LATEX -eq 1 ]; then
     echo -e -n "\n\n\\subsection{Element Info}" >> $SUMMARY_TEX
     echo -n "Number of Elements: " >> $SUMMARY_TEX
     if [ "x$MODE" = "xSIMULATION" ]; then
-      find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | sort -u | wc -l >> $SUMMARY_TEX
+      find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver" | grep -v "routing/aodv" | grep -v "routing/olsr" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | sort -u | wc -l >> $SUMMARY_TEX
     else
       find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | sort -u | wc -l >> $SUMMARY_TEX
     fi
@@ -204,7 +204,7 @@ if [ $LATEX -eq 1 ]; then
 
     echo -n -e "\n\nNumber of Unused Elements: " >> $SUMMARY_TEX
     if [ "x$MODE" = "xSIMULATION" ]; then
-      find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | wc -l >> $SUMMARY_TEX
+      find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver" | grep -v "routing/aodv" | grep -v "routing/olsr" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | wc -l >> $SUMMARY_TEX
     else
       find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | wc -l >> $SUMMARY_TEX
     fi
@@ -214,7 +214,7 @@ if [ $LATEX -eq 1 ]; then
 
     echo -e -n "\n\n\\subsection{Unused Elements}\\\\begin{flushleft}\\\\begin{sloppypar}\\\\nohyphens{" >> $SUMMARY_TEX
     if [ "x$MODE" = "xSIMULATION" ]; then
-      find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | sort | tr '\n' ',' | sed -e "s#,\$#}#g" | sed -e "s#,#}, \\\\nohyphens{#g" | sed -e "s#_##g" >> $SUMMARY_TEX
+      find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver" | grep -v "routing/aodv" | grep -v "routing/olsr" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | sort | tr '\n' ',' | sed -e "s#,\$#}#g" | sed -e "s#,#}, \\\\nohyphens{#g" | sed -e "s#_##g" >> $SUMMARY_TEX
     else
       find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | egrep -v $GREPARG | sort | tr '\n' ',' | sed -e "s#,\$#}#g" | sed -e "s#,#}, \\\\nohyphens{#g" | sed -e "s#_##g" >> $SUMMARY_TEX
     fi

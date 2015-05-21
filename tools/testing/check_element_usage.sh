@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "x$MODE" = "xSIMULATION" ]; then
-  GREPARG=`find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver/" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|'`
+  GREPARG=`find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver/" | grep -v "routing/aodv/" | grep -v "routing/olsr/" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|'`
 else
   GREPARG=`find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|'`
 fi
@@ -9,7 +9,7 @@ fi
 GREPARG="\"$GREPARG-foo\""
 
 if [ "x$MODE" = "xSIMULATION" ]; then
-  SEDARG=`find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver/" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|' | sed "s#|#\\\\\\\\|#g"`
+  SEDARG=`find $CLICKPATH/elements/brn -iname *.cc | grep -v "wifi/driver/" | grep -v "routing/aodv/" | grep -v "routing/olsr/" | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|' | sed "s#|#\\\\\\\\|#g"`
 else
   SEDARG=`find $CLICKPATH/elements/brn -iname *.cc | xargs cat | grep EXPORT | sed "s#\(EXPORT_ELEMENT(\|)\|;\)##g" | tr '\n' '|' | sed "s#|#\\\\\\\\|#g"`
 fi
