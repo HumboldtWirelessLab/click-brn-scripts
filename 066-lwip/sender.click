@@ -26,12 +26,12 @@ client_lwip::LwIP(IP 192.168.1.2, GATEWAY 192.168.1.1, NETMASK 255.255.255.0, DE
 
   -> BRN2EtherDecap()
   -> td::ToDump("sender.dump", ENCAP IP)
-  -> Print("SERVER in")
+  -> Print("CLIENT in")
   -> client_lwip
-  -> Print("SERVER out")
+  -> Print("CLIENT out")
   -> CheckIPHeader()
   -> SetTimestamp()
-  -> IPPrint("SERVER->CLIENT", ACTIVE true)
+  -> IPPrint("CLIENT->SERVER", ACTIVE true)
 
   -> EtherEncap(0x0800, 0:0:0:0:0:2, 0:0:0:0:0:1)
 
