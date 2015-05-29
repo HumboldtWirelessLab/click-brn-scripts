@@ -76,7 +76,7 @@ Idle
 -> rpc::RPC(TCC tcc, DHTSTORAGE dht/dhtstorage/dhtstorage, DEBUG 4)
 -> Discard;
 
-#if NODEID == 1
+#if NODENUM == 1
 
 Script(
   wait 100,
@@ -113,7 +113,7 @@ Script(
 );
 #endif
 
-#if NODEID == 32
+#if NODENUM == 32
 
 Script(
   wait 130,
@@ -124,7 +124,7 @@ Script(
 
 #endif
 
-#if NODEID == 64
+#if NODENUM == 64
 
 Script(
   wait 135,
