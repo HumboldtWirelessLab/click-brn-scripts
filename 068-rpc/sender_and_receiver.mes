@@ -1,2 +1,2 @@
 #NODE		DEVICE	MODULSDIR						MODOPTIONS WIFICONFIG	CLICKMODDIR	CLICKSCRIPT	CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
-random:64	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               dht_rpc.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
+random:16	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION	-          monitor	-               dht_rpc.click  LOGDIR/NODENAME.NODEDEVICE.log  -               -
