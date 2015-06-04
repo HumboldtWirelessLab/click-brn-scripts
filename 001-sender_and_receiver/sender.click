@@ -12,14 +12,14 @@
 #include "device/rawwifidev.click"
 
 BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
+wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", DEBUG 4);
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 Idle()
-  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 25 15 0 4500 true 1 0", DEBUG 2)  //multi receivers: FLOW "deviceaddress 00:00:00:00:00:01,FF:FF:FF:FF:FF:FF 12 1500 0 ...."
+  -> sf::BRN2SimpleFlow(FLOW "deviceaddress 00:00:00:00:00:01 10 100 0 4500 true 1 0", DEBUG 2)  //multi receivers: FLOW "deviceaddress 00:00:00:00:00:01,FF:FF:FF:FF:FF:FF 12 1500 0 ...."
   -> BRN2EtherEncap(USEANNO true)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTimestamp()

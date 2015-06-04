@@ -22,6 +22,7 @@ Idle
   -> WifiDecap()
   -> BRN2EtherDecap()
   -> BRN2Decap()
+  -> Print("OKFrag (NODENAME)", TIMESTAMP true)
   -> PacketDefragmentation(DEBUG 4)
   -> Print("OKPacket (NODENAME)", TIMESTAMP true)
   -> BRN2EtherDecap()

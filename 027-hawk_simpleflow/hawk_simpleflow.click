@@ -71,8 +71,8 @@ dht[1]
 
 brn_clf[3]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(ROUTINGPEEK routing/routing_peek,LT lt, DEBUG 0)
--> BRN2EtherEncap()
+-> sf::BRN2SimpleFlow(ROUTINGPEEK routing/routing_peek, LINKTABLE lt, DEBUG 0)
+-> BRN2EtherEncap(USEANNO true)
 -> [0]routing;
 
 routing[0] /* -> Print("NODENAME:Try to send")*/ -> [0]device_wifi;

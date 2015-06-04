@@ -2,22 +2,18 @@
 
 . $CONFIGFILE
 
-RECEIVER=`cat $NODETABLE | grep -v "#" | grep receiver.click | awk '{print $1}' | head -n 1`
-DEVICE=`cat $NODETABLE | grep -v "#" | grep receiver.click | awk '{print $2}' | head -n 1`
-
-#ls -lisa $RESULTDIR/$RECEIVER.$DEVICE.raw.dump
-#echo "$RESULTDIR/$RECEIVER.$DEVICE.raw.dump"
-
-if [ -f $RESULTDIR/$RECEIVER.$DEVICE.raw.dump ]; then
-  PACKETS=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | wc -l`
+if [ -f $RESULTDIR/measurement.log ]; then
+  PACKETS=`cat $RESULTDIR/measurement.log | grep "OKPacket" | wc -l`
+  FRAGMENTS=`cat $RESULTDIR/measurement.log | grep "OKFrag" | wc -l`
 else
-  echo "No Dumpfile"
+  echo "No measurement.log"
   PACKETS=0
+  FRAGMENTS=0
 fi
 
-echo "$PACKETS packets received"
+echo "$PACKETS packets and $FRAGMENTS fragments received"
 
-if [ $PACKETS -gt 290 ]; then
+if [ $FRAGMENTS -gt $PACKETS ]; then
   exit 0
 else
   exit 2
