@@ -22,9 +22,12 @@ PACKETS=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | w
 PACKETS_1=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | grep $MAC_1 | wc -l`
 PACKETS_2=`fromdump.sh $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | grep "OKPacket" | grep $MAC_2 | wc -l`
 
-echo "$PACKETS packets received. Sender 1: $PACKETS_1 Sender 2: $PACKETS_2"
+let DUMPSIZE=PACKETS*1500
+REALDUMPSIZE=`wc -c $RESULTDIR/$RECEIVER.$DEVICE.raw.dump | awk '{print $1}'`
 
-if [ $PACKETS -gt 100 ]; then
+echo "$PACKETS packets received. Sender 1: $PACKETS_1 Sender 2: $PACKETS_2. $DUMPSIZE vs $REALDUMPSIZE"
+
+if [ $REALDUMPSIZE -lt $DUMPSIZE ]; then
   exit 0
 else
   exit 2

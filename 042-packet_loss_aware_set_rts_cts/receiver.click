@@ -18,7 +18,7 @@ id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 Idle
   -> wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless)
   -> filter_tx :: FilterTX()
-//  -> BRN2PrintWifi("OKPacket (NODENAME)", TIMESTAMP true)
+  -> BRN2PrintWifi("OKPacket (NODENAME)", TIMESTAMP true)
   -> discard::Discard;
 
 filter_tx[1]

@@ -8,7 +8,7 @@ elementclass COMPRESSIONFILTER{ |
     input[0]
     -> pc
     -> [0]output;
-    
+
     pc[1]
     -> [0]output;
 }

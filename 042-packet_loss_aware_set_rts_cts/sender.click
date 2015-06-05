@@ -40,7 +40,7 @@ filter_tx[1]
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 
 Script(
-  write sf.add_flow 00:00:00:00:00:02 00:00:00:00:00:01 12 1500 0 5000 true 1 0,
+  write sf.add_flow deviceaddress 00:00:00:00:00:02 12 1500 0 5000 true 1 0,
   wait 5,
   read wifidevice/pli.print,
   read wifidevice/ple.stats
