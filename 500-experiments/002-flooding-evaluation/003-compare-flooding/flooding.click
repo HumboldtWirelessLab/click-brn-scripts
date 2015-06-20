@@ -74,7 +74,7 @@ Idle -> [1]device_wifi;
 brn_clf[0]
 //-> Print("rx")
   -> BRN2Decap()
-  -> sf::BRN2SimpleFlow(HEADROOM 192, ROUTINGPEEK flooding/routing_peek, LT lt, DEBUG 2)
+  -> sf::BRN2SimpleFlow(HEADROOM 192, ROUTINGPEEK flooding/routing_peek, LINKTABLE lt, DEBUG 2)
   -> BRN2EtherEncap(USEANNO true)
   -> [0]flooding;
 
