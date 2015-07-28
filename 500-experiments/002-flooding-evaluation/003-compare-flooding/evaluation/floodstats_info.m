@@ -2,7 +2,7 @@
 
 if (~exist('basedir'))
   basedir=''
-  %basedir='/mnt/data/flooding/20131130/'
+  basedir='20131130/'
 else
   basedir
 end
