@@ -14,7 +14,7 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
     SIMID=`echo $d | sed -e "s#_# #g" | awk '{print $2}'`
     RADIOID=`echo $VAR_RADIO | sed $ALGSEDARG`
 
-    echo "$SIMID $RADIOID $VAR_RXRANGE $PACKETS"
+    echo "$SIMID, $RADIOID, $VAR_RXRANGE, $PACKETS"
 
   fi
 
