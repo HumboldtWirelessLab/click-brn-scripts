@@ -1,9 +1,11 @@
 #define DEBUGLEVEL 2
 
 #define PRIO_QUEUE
-//#define RAWDUMP
+#define RAWDUMP
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define ENABLE_DSR_DEBUG
+
+//#define TOS2QUEUEMAPPER_STRATEGY 2
 
 #define BRNFEEDBACK
 

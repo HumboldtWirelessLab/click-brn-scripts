@@ -22,7 +22,7 @@ NODEPLACEMENT=string
 #NODEPLACEMENT=file
 NODEPLACEMENTOPTS="relative"
 #FIELDSIZE=40
-FIELDSIZE=280
+FIELDSIZE=140
 #FIELDSIZE=RXRANGE
 
 LOGDIR=WORKDIR
@@ -30,8 +30,8 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 #EVALUATION="evaluation/eval.sh compression_dump compression_status compression_config"
-EVALUATION="evaluation/eval.sh"
-EVALUATIONSDIR=WORKDIR
+EVALUATION="embrace_xml evaluation/eval.sh"
+EVALUATIONSDIR=WORKDIR/evaluation
 
 GPS=no
 NOTICE=no

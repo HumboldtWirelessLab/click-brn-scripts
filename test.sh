@@ -19,7 +19,7 @@ if [ "x$SIMULATOR" = "x" ]; then
 fi
 
 if [ "x$LIMIT" = "x" ]; then
-  LIMIT=68
+  LIMIT=`ls -d 0* | tail -n 1 |awk -F- '{print $1}' | sed -e "s#^0*##g"`
 fi
 
 if [ "x$START" = "x" ]; then

@@ -53,7 +53,7 @@ ff[1]
 
 brn_clf[1]
 -> BRN2Decap()
--> sf::BRN2SimpleFlow(HEADROOM 192, ROUTINGPEEK routing/routing/routing_peek, DEBUG DEBUGLEVEL)
+-> sf::BRN2SimpleFlow(HEADROOM 192, ROUTINGPEEK routing/routing/routing_peek, LINKTABLE lt, DEBUG DEBUGLEVEL)
 -> SetTimestamp()
 -> BRN2EtherEncap(USEANNO true, DEBUG DEBUGLEVEL)
 -> [0]routing;
@@ -75,7 +75,7 @@ device_wifi[2]
 Script(
 wait 130,
 read routing/routing_pkt_cnt.read,
-read routing/routing_byte_cnt.read
+//read routing/routing_byte_cnt.read
 );
 
 #include "script.click"

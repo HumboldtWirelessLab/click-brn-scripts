@@ -335,7 +335,25 @@ for pl in `seq $MIN_PLACEMENT $MAX_PLACEMENT`; do
            fi
 
          else
+
            PREPARE_ONLY=1 run_sim.sh ns flooding.des $MEASUREMENTDIR
+
+#           mkdir $MEASUREMENTDIR
+#           mv flooding.des flooding.mes flooding_config.h $MEASUREMENTDIR
+#           if [ -f placement.txt ]; then
+#             cp placement.txt $MEASUREMENTDIR
+#           fi
+#           cp flooding.click flooding_sender.click monitor.b.channel nodes.sim flooding_script.click flooding.ctl flooding_sender_script.click $MEASUREMENTDIR
+#           (touch prepare_status/$PREPARE_NUM; cd $MEASUREMENTDIR; NOSUBDIR=1 PREPARE_ONLY=1 run_sim.sh ns flooding.des; cd ..; rm prepare_status/$PREPARE_NUM) &
+#
+#           let PREPARE_NUM=PREPARE_NUM+1
+#
+#           PREPARE_CNT=`ls prepare_status/ | wc -w`
+#           while [ $PREPARE_CNT -gt $NUM_CPUS ]; do
+#             sleep 0.1
+#             PREPARE_CNT=`ls prepare_status/ | wc -w`
+#           done
+
          fi
 
          if  [ "x$GRID" = "x" ] && [ ! -f placement.txt ]; then

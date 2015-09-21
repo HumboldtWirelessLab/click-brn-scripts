@@ -5,20 +5,22 @@ TTQM_STRATEGY=4;
 RATE=5;
 TARGET=6;
 CHANNELMODEL=7;
+
 QUEUEMAPPING=8;
 MACBOSCHEME=9;
 FIXEDBO=10;
 
-%NODE=11;
-%BACKOFF=12;
-%BOUSAGE=13;
-%BOEXP=14;
-%LASTUSE=15;
+NODE=11;
+BACKOFF=12;
+BOUSAGE=13;
+BOEXP=14;
+LASTUSE=15;
 PKTS_OVERALL=11; %16
 
 COLLISIONS=62; %67
 
 cm_string={'real';'shadowing';'2ray'};
+
 target_string={'bcast';'ucast'};
 tqm_string={ 'off';'on'};
 

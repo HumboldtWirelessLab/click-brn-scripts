@@ -2,13 +2,13 @@ NAME=dartflow
 RADIO=shadowing
 #RADIO=tworayground
 
-TIME=202
+TIME=1100
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=dart_simpleflow.mes
 NODEPLACEMENT=grid
 NODEPLACEMENTOPTS="relative"
-FIELDSIZE=RXRANGE
+FIELDSIZE=MAXRXRANGE
 
 LOGDIR=WORKDIR
 LOGFILE=measurement.log

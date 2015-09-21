@@ -17,7 +17,7 @@ fi
 
 echo "$PACKETS packets received"
 
-if [ $PACKETS -gt 290 ]; then
+if [ $PACKETS -gt 60 ]; then
   exit 0
 else
   exit 2

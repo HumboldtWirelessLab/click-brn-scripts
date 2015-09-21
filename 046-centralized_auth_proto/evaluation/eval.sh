@@ -1,7 +1,9 @@
 #!/bin/sh
 
+echo "No valid evaluation"
+exit 0
 
-total=
+total=2
 RES=`cat $RESULTDIR/measurement.log | grep "READY TO JOIN BACKBONE" | wc -l`
 
 

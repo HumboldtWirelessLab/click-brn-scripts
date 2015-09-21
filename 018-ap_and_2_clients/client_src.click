@@ -20,7 +20,7 @@ infra_client
   -> BRN2Decap()
   -> sf::BRN2SimpleFlow(DEBUG 4)
   -> Print("src tx", TIMESTAMP true)
-  -> BRN2EtherEncap()
+  -> BRN2EtherEncap(USEANNO true)
   -> infra_client;
  
   brn_ether_clf[1]

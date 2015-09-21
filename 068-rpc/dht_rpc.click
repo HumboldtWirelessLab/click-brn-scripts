@@ -40,9 +40,10 @@ sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);
 device_wifi
 -> Label_brnether::Null()
 -> BRN2EtherDecap()
--> brn_clf::Classifier(    0/BRN_PORT_ROUTING,  //BrnDSR
+-> brn_clf::Classifier(    0/BRN_PORT_ROUTING,     //BrnDSR
                            0/BRN_PORT_DHTROUTING,  //DHT-Routing
-                           0/BRN_PORT_DHTSTORAGE ); //DHT-Storage
+                           0/BRN_PORT_DHTSTORAGE,  //DHT-Storage
+                           0/BRN_PORT_RPC);       //RPC
 
 device_wifi[1] -> Label_brnether;
 device_wifi[2] -> Discard;
@@ -66,31 +67,38 @@ brn_clf[2] -> [1]dht;
 dht[0] -> [0]device_wifi;
 dht[1] -> [0]routing;
 
+tcc::TCC(DEBUG 2)
 
-Idle()
--> tcc::TCC()
--> discard::Discard;
-
-
-Idle
+brn_clf[3]
+-> Print("RPC", TIMESTAMP true)
+-> BRN2Decap()
 -> rpc::RPC(TCC tcc, DHTSTORAGE dht/dhtstorage/dhtstorage, DEBUG 4)
--> Discard;
+-> BRN2EtherEncap(USEANNO true, PUSHHEADER true, DEBUG 4)
+-> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false)
+-> Print("RPC out", 100, TIMESTAMP true)
+-> SetTimestamp()
+-> [0]routing;
 
 #if NODENUM == 1
 
 Script(
   wait 100,
-  write tcc.add int incr int,
+  write tcc.add int incr int int,
   write tcc.compile
 
-               int incr(int i) {
-                 return (i+1);
+               int incr(int i@ int j) {
+                 return (i+j);
                }
 
             ,
-  write tcc.call incr 5,
+  write tcc.call incr 5 5,
   read  tcc.result,
-  write rpc.call incr 10,
+  write rpc.call incr 10 5,
+  wait  1,
+  read  rpc.result,
+  read  ff.drops,
+  write rpc.call incr 00-00-00-00-00-0F:ff.drops 3,
+  wait  1,
   read  rpc.result,
   write tcc.code
 
@@ -113,24 +121,24 @@ Script(
 );
 #endif
 
-#if NODENUM == 32
+#if NODENUM == 8
 
 Script(
   wait 130,
-  write rpc.call incr 7,
+  write rpc.call incr 00-00-00-00-00-01:rpc.result 4,
   wait 1,
-  read  tcc.result,
+  read  rpc.result,
 );
 
 #endif
 
-#if NODENUM == 64
+#if NODENUM == 16
 
 Script(
   wait 135,
-  write rpc.call incr 111,
+  write rpc.call incr 00-00-00-00-00-08:rpc.result 00-00-00-00-00-01:rpc.result,
   wait 1,
-  read  tcc.result,
+  read  rpc.result,
 );
 
 #endif

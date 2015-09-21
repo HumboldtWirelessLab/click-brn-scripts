@@ -22,13 +22,18 @@ Idle()
   -> WMMWifiEncap(0x00, 0:0:0:0:0:0, 57, 16)
   //-> WifiEncap(0x00, 0:0:0:0:0:0)
   -> SetTimestamp()
-  -> SetTXRate(RATE 2, TRIES 1)
+  -> SetTXRate(RATE 2, TRIES 3)
   -> SetTXPower(24)
   -> wifioutq::NotifierQueue(10)
   -> SetTimestamp()
   -> BRN2PrintWifi("Sender (NODENAME)", TIMESTAMP true)
   -> wifidevice
-  -> BRN2PrintWifi("TXFeedback", TIMESTAMP true)
+  -> filter_tx :: FilterTX()
+  -> Print("Sender (NODENAME) RX", TIMESTAMP true)
+  -> Discard;
+
+  filter_tx[1]
+  -> BRN2PrintWifi("TXFeedback (S)", TIMESTAMP true)
   -> discard::Discard;
 
 sys_info::SystemInfo(NODEIDENTITY id, CPUTIMERINTERVAL 1000);

@@ -2,19 +2,18 @@
 
 . $CONFIGFILE
 
-RECEIVER=`cat $NODETABLE | grep -v "#" | grep receiver.click | awk '{print $1}' | head -n 1`
-DEVICE=`cat $NODETABLE | grep -v "#" | grep receiver.click | awk '{print $2}' | head -n 1`
 
 if [ -f $RESULTDIR/measurement.log ]; then
-  PACKETS=`cat $RESULTDIR/measurement.log | grep "OKPacket" | wc -l`
+  PACKETS_02=`cat $RESULTDIR/measurement.log | grep "OKPacket" | grep 00-00-02 | wc -l`
+  PACKETS_03=`cat $RESULTDIR/measurement.log | grep "OKPacket" | grep 00-00-03 | wc -l`
 else
   echo "No logfile"
   PACKETS=0
 fi
 
-echo "$PACKETS packets received"
+echo "$PACKETS_02 packets received from 02 and $PACKETS_03 packets received from 03."
 
-if [ $PACKETS -gt 290 ]; then
+if [ $PACKETS_02 -eq 0 ]; then
   exit 0
 else
   exit 2

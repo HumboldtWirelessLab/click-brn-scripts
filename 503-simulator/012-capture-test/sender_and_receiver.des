@@ -1,7 +1,7 @@
 NAME=receiver
-#RADIO=VAR_RADIO
+RADIO=VAR_RADIO
 #RADIO=tworayground
-RADIO=shadowing
+#RADIO=shadowing
 
 #DISABLE_NAM=1
 #DISABLE_TR=1

@@ -1,1 +1,2 @@
-VAR_POWER=`seq 1 1 24`
+VAR_POWER=`seq 1 1 2`
+VAR_RADIO="tworayground"
