@@ -12,8 +12,6 @@
 //#define WIFIDEV_LINKSTAT_DEBUG
 //#define RAWDUMP
 
-#define PDR_LINKTABLE pdr_lt
-
 #define BRNFEEDBACK
 
 #define CST cst
@@ -133,15 +131,13 @@ Script(
 Script(
   wait 100,
   read lt.links,
-//read ett_lt.links,
+//  read ett_lt.links,
   read pdr_lt.links,
   read device_wifi/link_stat.bcast_stats
 );
 
-/*Script(
+Script(
   wait 120,
   read flooding/fl_linktable.links
  );
-*/
-
 #include "flooding_script.click"

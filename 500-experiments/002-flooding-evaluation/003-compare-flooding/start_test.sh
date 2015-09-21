@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "x$1" = "xlocal" ]; then
-  SIM=1 DATARATE=1 LIMIT=1 GRID=1 CONFIG=./config/test/small.conf NONODES=100 ./start.sh
+  SIM=1 DATARATE=1 LIMIT=1 GRID=1 CONFIG=./simsetrc_small_local NONODES=100 ./start.sh
 else
 
   if [ "x$PLACEMENTFILE" = "x" ]; then

@@ -11,10 +11,9 @@ echo -n "" > result_flooding_info_index.dat
 
 INFOINDEX=0
 
-COUNT_ALL=`(cd $RESULTDIR;echo 1_MBit* | wc -w)`
-
-for d in `(cd $RESULTDIR; echo 1_MBit*)`; do
+for d in `(cd $RESULTDIR; ls -d 1_MBi*)`; do
   if [ -e $RESULTDIR/$d/params ]; then
+    echo "$INFOINDEX"
 
     #( cd $RESULTDIR/$d/; sh ./eval_again.sh)
 
@@ -32,21 +31,21 @@ for d in `(cd $RESULTDIR; echo 1_MBit*)`; do
 
     INFO="$INFO $MACRETRIES $FLOODING_MAXNBMETRIC $FLOODING_LASTNODES_PP $BCAST2UNIC_FORCERESPONSIBILITY $BCAST2UNIC_USEASSIGNINFO"
     INFO="$INFO $BCAST_RNDDELAYQUEUE_MAXDELAY $SEED $BCAST_ENABLE_ABORT_TX $BCAST2UNIC_FIXCS $BCAST_E2E_RETRIES $RTSCTS_STRATEGY"
-    INFO="$INFO $RTSCTS_MIXEDSTRATEGY $BO_STRATEGY $RS_STRATEGY $FLOODING_TX_SCHEDULING $OVERLAYGRAPH"
+    INFO="$INFO $RTSCTS_MIXEDSTRATEGY $BO_STRATEGY $RS_STRATEGY $FLOODING_TX_SCHEDULING"
 
     INFO=`echo "$INFO" | sed -e "s#true#1#g" | sed -e "s#false#0#g"`
 
     echo "$INFOINDEX $INFO" >> result_flooding_info_index.dat
 
-    if [ -e $RESULTDIR/$d/evaluation/channelstats/simstats_summary.mat ]; then
+    if [ -e $RESULTDIR/$d/evaluation/channelstats/simstats_summary.csv ]; then
         #            COLLISIONEN RTS CTS DATA BCAST UNIC ACK
-        EXTRA_DATA=`awk '{print $14" "$2" "$3" "$4" "$5" "$6" "$7}' $RESULTDIR/$d/evaluation/channelstats/simstats_summary.mat`
+        EXTRA_DATA=`awk -F, '{print $14" "$2" "$3" "$4" "$5" "$6" "$7}' $RESULTDIR/$d/evaluation/channelstats/simstats_summary.csv`
     else
         EXTRA_DATA="0 0 0 0 0 0 0"
     fi
 
-    if [ -f $RESULTDIR/$d/evaluation/flooding_info/floodingstats.mat ]; then
-      cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.mat | awk -v I="$INFOINDEX" -v EXDAT="$EXTRA_DATA" '{print I" "$3" "$10" "$2" "$1" "$7" "$9" "$6" "$5" "EXDAT }' >> result_flooding.dat
+    if [ -f $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv ]; then
+      cat $RESULTDIR/$d/evaluation/flooding_info/floodingstats.csv | sed "s#,# #g" | awk -v I="$INFOINDEX" -v EXDAT="$EXTRA_DATA" '{print I" "$3" "$10" "$2" "$1" "$7" "$9" "$6" "$5" "EXDAT }' >> result_flooding.dat
     fi
 
     # node node node psize 0 0 0 0 0 pcount value fwd sent 0 0 0 0 0 fwd_done fwd_succ time
@@ -72,11 +71,7 @@ for d in `(cd $RESULTDIR; echo 1_MBit*)`; do
 
   let INFOINDEX=INFOINDEX+1
 
-  echo -n -e "Eval $INFOINDEX of $COUNT_ALL         \033[1G"
-
 done
-
-echo "Finished $INFOINDEX of $COUNT_ALL"
 
 echo "SIMID SIM UNICASTSTRATEGY PLACEMENT UNICAST_PRESELECTION_STRATEGY UNICAST_REJECTONEMPTYCS UNICAST_UCASTPEERMETRIC FLOODING_PASSIVE_ACK_RETRIES ALG FWDPROBALILITY UNICASTSTRATEGY PDR NOSRC RECVNEW NONODE FWDS FWDNEW SENT RECV COLLISIONEN MACRETRIES FLOODING_MAXNBMETRIC FLOODING_LASTNODES_PP BCAST2UNIC_FORCERESPONSIBILITY BCAST2UNIC_USEASSIGNINFO BCAST_RNDDELAYQUEUE_MAXDELAY SEED BCAST2UNIC_TXABORT BCAST2UNIC_FIXCS BCAST_E2E_RETRIES RTSCTS_STRATEGY RTSCTS_MIXEDSTRATEGY BO_STRATEGY RS_STRATEGY RTS CTS BCAST UNIC ACK" > result_flooding_xls.dat
 cat result_flooding.dat >> result_flooding_xls.dat

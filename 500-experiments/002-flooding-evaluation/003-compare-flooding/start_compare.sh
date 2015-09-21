@@ -5,43 +5,26 @@ if [ "x$1" = "x" ]; then
   exit 0
 fi
 
-if [ $# -gt 1 ]; then
-
-  for i in $@; do
-    $0 $i
-  done
-
-fi
-
-if [ "x$SIM" = "x0" ]; then
-  MODE=tb
-else
-  MODE=sim
-fi
-
-MAINCONFIG=config/$MODE\_main.conf
+MAINCONFIG=config/main.conf
 
 case "$1" in
   "e2e")
-    CONFIG=config/$MODE\_e2e.conf
+    CONFIG=config/sim_e2e.conf
     ;;
   "simple")
-    CONFIG=config/$MODE\_simple.conf
+    CONFIG=config/sim_simple.conf
     ;;
   "unicast")
-    CONFIG=config/$MODE\_unicast.conf
+    CONFIG=config/sim_unicast.conf
     ;;
   "rtscst")
-    CONFIG=config/$MODE\_unicast_rtscts.conf
+    CONFIG=config/sim_unicast_rtscts.conf
     ;;
   "prob")
-    CONFIG=config/$MODE\_prob.conf
+    CONFIG=config/sim_prob.conf
     ;;
   "mpr")
-    CONFIG=config/$MODE\_mpr.conf
-    ;;
-  "mst")
-    CONFIG=config/$MODE\_mst.conf
+    CONFIG=config/sim_mpr.conf
     ;;
   *)
     echo "Unknown option: $1"
@@ -51,18 +34,17 @@ esac
 
 CONFIG=$CONFIG MAINCONFIG=$MAINCONFIG ./start.sh
 
-DATESTRING=`date +%Y%m%d`
-DIRSTRING=$DATESTRING-$1
+(cd evaluation; ./eval_all.sh ..)
 
-(cd evaluation; ./eval_all.sh ..; mkdir $DIRSTRING; mv *.dat $DIRSTRING)
+(cd evaluation; mv result_flooding.dat result_flooding.dat.$1; mv result_flooding_info.dat result_flooding_info.dat.$1)
 
 if  [ -e /mnt/data/flooding/ ]; then
   mkdir $1
   mv 1_MBit_* $1
   tar cfv /mnt/data/flooding/$1.tar $1
   rm -rf $1
-#else
-#  echo 1_MBit_* | xargs rm -rf
+else
+  rm -rf 1_MBit_*
 fi
 
 exit 0
