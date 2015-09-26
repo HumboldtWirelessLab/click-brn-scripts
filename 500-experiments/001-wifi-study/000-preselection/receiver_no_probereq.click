@@ -1,6 +1,6 @@
 gps::GPS();
 
-BRNAddressInfo(my_wlan ath0:eth);
+AddressInfo(my_wlan ath0:eth);
 
 //ath0 FromDevice(ath0, PROMISC true, OUTBOUND true)
 //ath0  -> GPSEncap(GPS gps)

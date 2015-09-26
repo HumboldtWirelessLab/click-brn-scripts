@@ -2,8 +2,8 @@
 
 #include "brn/helper.inc"
 
-BRNAddressInfo(my_wlan NODEDEVICE:eth);
-BRNAddressInfo(my_wlan_2 ath1:eth);
+AddressInfo(my_wlan NODEDEVICE:eth);
+AddressInfo(my_wlan_2 ath1:eth);
 
 FROMRAWDEVICE(NODEDEVICE)
  -> tdraw :: ToDump("RESULTDIR/NODENAME.NODEDEVICE.dump");

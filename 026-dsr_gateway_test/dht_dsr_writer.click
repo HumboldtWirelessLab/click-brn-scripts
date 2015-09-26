@@ -11,8 +11,8 @@
 #include "routing/dsr.click"
 #include "services/gateway.click"
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-BRNAddressInfo(serviceaddress 00:00:00:01:23:45);
+AddressInfo(deviceaddress NODEDEVICE:eth);
+AddressInfo(serviceaddress 00:00:00:01:23:45);
 
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", MASTERDEVICE true, SERVICEDEVICE false);
 service::BRN2Device(DEVICENAME "service", ETHERADDRESS serviceaddress, DEVICETYPE "VIRTUAL", MASTERDEVICE false, SERVICEDEVICE true);

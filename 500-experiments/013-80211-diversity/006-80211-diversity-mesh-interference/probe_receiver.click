@@ -40,7 +40,7 @@ elementclass COMPRESSIONFILTER{ |
 #include "brn/brn.click"
 #include "device/rawwifidev.click"
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+AddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);

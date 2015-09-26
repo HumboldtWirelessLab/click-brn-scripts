@@ -1,8 +1,8 @@
 #include "dht/storage/dht_storage.click"
 
-BRNAddressInfo(my_ip eth0:ip);
-BRNAddressInfo(server_eth 00-01-02-03-04-05);
-BRNAddressInfo(server_ip 192.168.100.1);
+AddressInfo(my_ip eth0:ip);
+AddressInfo(server_eth 00-01-02-03-04-05);
+AddressInfo(server_ip 192.168.100.1);
 
 
 arp_tab :: ARPTable();

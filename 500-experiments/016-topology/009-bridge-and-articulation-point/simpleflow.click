@@ -17,7 +17,7 @@
 #define LINKPROBE_PERIOD   1000
 #define LINKPROBE_TAU      50000
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+AddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);

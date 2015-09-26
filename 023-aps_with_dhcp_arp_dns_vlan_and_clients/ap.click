@@ -11,7 +11,7 @@
 #include "dht/storage/dht_storage.click"
 #include "routing/dsr.click"
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+AddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);

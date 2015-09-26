@@ -1,9 +1,9 @@
 gps::GPS();
 
-//ath0 BRNAddressInfo(my_ath0 ath0:eth);
-//ath1 BRNAddressInfo(my_ath1 ath1:eth);
-//wlan2 BRNAddressInfo(my_wlan2 wlan2:eth);
-//wlan3 BRNAddressInfo(my_wlan3 wlan3:eth);
+//ath0 AddressInfo(my_ath0 ath0:eth);
+//ath1 AddressInfo(my_ath1 ath1:eth);
+//wlan2 AddressInfo(my_wlan2 wlan2:eth);
+//wlan3 AddressInfo(my_wlan3 wlan3:eth);
 
 rates :: AvailableRates(DEFAULT 2 4 11 22)
 wifiinfo :: WirelessInfo(SSID "");

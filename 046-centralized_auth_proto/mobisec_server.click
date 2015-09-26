@@ -10,7 +10,7 @@
 #include "wifidev_ap.click"
 #include "routing/dsr.click"
 
-BRNAddressInfo(deviceaddress eth0:eth);
+AddressInfo(deviceaddress eth0:eth);
 wireless		:: BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 id				:: BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 rawdevice		:: RAWWIFIDEV(DEVNAME "eth0", DEVICE wireless);

@@ -3,7 +3,7 @@
 #include "brn/brn.click"
 #include "device/wifidev_client.click"
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+AddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 infra_client :: WIFIDEV_CLIENT( DEVICENAME "NODEDEVICE", DEVICE wireless, ETHERADDRESS deviceaddress, SSID "brn", ACTIVESCAN false);

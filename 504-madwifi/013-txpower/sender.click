@@ -1,4 +1,4 @@
-BRNAddressInfo(my_wlan NODEDEVICE:eth);
+AddressInfo(my_wlan NODEDEVICE:eth);
 
 BRN2PacketSource(SIZE 150, INTERVAL 100, MAXSEQ 500000, BURST 1, ACTIVE true)
  -> EtherEncap(0x8088, my_wlan, FF-FF-FF-FF-FF-FF)

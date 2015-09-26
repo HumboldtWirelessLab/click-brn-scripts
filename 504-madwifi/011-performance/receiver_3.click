@@ -5,7 +5,7 @@
 #include "brn/brn.click"
 #include "device/wifidev.click"
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+AddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 
 wifidev::WIFIDEV(DEVNAME "NODEDEVICE", DEVICE wireless);

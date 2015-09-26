@@ -11,7 +11,7 @@
 
 rates::BrnAvailableRates(DEFAULT 2 4 11 12 18 22);
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+AddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS", WIRELESSCONFIG "rates", DEBUG 4);
 
 wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);

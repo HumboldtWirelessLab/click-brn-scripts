@@ -1,5 +1,5 @@
 AddressInfo(server_ip 192.168.0.1);
-BRNAddressInfo(server2_eth eth0:eth);
+AddressInfo(server2_eth eth0:eth);
 AddressInfo(server_eth 00:00:00:00:00:01);
 AddressInfo(client_eth 00:00:00:00:00:02);
 

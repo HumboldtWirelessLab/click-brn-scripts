@@ -1,10 +1,10 @@
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
-BRNAddressInfo(deviceip 192.168.100.1);
-BRNAddressInfo(backbone_ip eth0:ip);
-BRNAddressInfo(backbone_eth eth0:eth);
-BRNAddressInfo(gateway_ip 192.168.3.1);
-BRNAddressInfo(server_eth 00-01-02-03-04-05);
-BRNAddressInfo(server_ip 192.168.100.1);
+AddressInfo(deviceaddress NODEDEVICE:eth);
+AddressInfo(deviceip 192.168.100.1);
+AddressInfo(backbone_ip eth0:ip);
+AddressInfo(backbone_eth eth0:eth);
+AddressInfo(gateway_ip 192.168.3.1);
+AddressInfo(server_eth 00-01-02-03-04-05);
+AddressInfo(server_ip 192.168.100.1);
 
 #define CST cst
 

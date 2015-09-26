@@ -2,7 +2,7 @@ gps::GPS();
 
 #define CST_PROCFILE "/proc/net/madwifi/NODEDEVICE/channel_utility"
 
-BRNAddressInfo(deviceaddress NODEDEVICE:eth);
+AddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 

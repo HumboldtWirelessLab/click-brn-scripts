@@ -25,7 +25,7 @@
 
 
 // Device info elements
-BRNAddressInfo(deviceaddress eth0:eth);
+AddressInfo(deviceaddress eth0:eth);
 wireless		:: BRN2Device(DEVICENAME "eth0", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");
 rawdevice		:: RAWWIFIDEV(DEVNAME "eth0", DEVICE wireless);
 id				:: BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);

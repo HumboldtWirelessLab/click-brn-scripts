@@ -1,4 +1,4 @@
-BRNAddressInfo(my_wlan NODEDEVICE:eth);
+AddressInfo(my_wlan NODEDEVICE:eth);
 
 //AddressInfo(dst 10.0.0.1 06-0F-B5-0B-A8-92); //wgt76
 AddressInfo(dst 10.0.0.1 06-0B-6B-09-F2-94); //sk111

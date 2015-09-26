@@ -1,4 +1,4 @@
-BRNAddressInfo(my_wlan NODEDEVICE:eth);
+AddressInfo(my_wlan NODEDEVICE:eth);
 
 FROMRAWDEVICE(NODEDEVICE)
   -> ct::Counter()
