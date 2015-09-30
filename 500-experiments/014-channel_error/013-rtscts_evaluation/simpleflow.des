@@ -1,0 +1,29 @@
+NAME=simpleflow
+#RADIO=shadowing
+RADIO=tworayground
+
+TIME=17
+
+NODEPLACEMENTFILE=placement.default
+NODETABLE=simpleflow.mes
+NODEPLACEMENT=string
+NODEPLACEMENTOPTS="relative"
+FIELDSIZE=RXRANGE
+
+LOGDIR=WORKDIR
+LOGFILE=measurement.log
+
+RESULTDIR=WORKDIR
+EVALUATIONSDIR=WORKDIR/evaluation
+EVALUATION="embrace_xml evaluation/eval.sh"
+
+GPS=no
+NOTICE=no
+LOS=no
+
+CONTROLSOCKET=yes
+CONTROLFILE=simpleflow.ctl
+
+if [ -f $PWD/seed ]; then
+ . $PWD/seed
+fi

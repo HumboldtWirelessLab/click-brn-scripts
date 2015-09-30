@@ -1,0 +1,20 @@
+1. tap0
+Tools: tunctl (apt-get install uml-utilities)
+Interface config:
+File: /etc/network/interfaces
+
+auto tap0
+iface tap0 inet static
+address 192.168.10.1
+netmask 255.255.255.0
+pre-up /usr/sbin/tunctl -u 1000 -t tap0
+post-down /usr/sbin/tunctl -d tap0
+
+Start interface: ifup tap0
+Stop interface: ifdown tap0
+
+(autostart after reboot)
+
+2. Click
+start as root (1. Terminal) : click tap0.click
+ping virtual host (2. Terminal) : ping 192.168.10.2

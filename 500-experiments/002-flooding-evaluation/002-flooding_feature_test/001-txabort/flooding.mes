@@ -1,0 +1,3 @@
+#NODE			DEVICE	MODULSDIR					 MODOPTIONS WIFICONFIG		CLICKMODDIR	CLICKSCRIPT			CLICKLOGFILE			APPLICATION	APPLICATIONLOGFILE
+group:4nodes.plm:1	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		flooding_sender.click		LOGDIR/NODENAME.NODEDEVICE.log	-		-
+group:4nodes.plm:3	DEV0	BASEDIR/nodes/lib/modules/NODEARCH/KERNELVERSION -	    monitor.b.channel	-		flooding.click			LOGDIR/NODENAME.NODEDEVICE.log	-		-
