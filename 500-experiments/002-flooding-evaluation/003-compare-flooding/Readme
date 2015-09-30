@@ -1,0 +1,7 @@
+config
+echo_result.sh
+eval_again.sh
+
+start_compare.sh
+start.sh
+start_test.sh
