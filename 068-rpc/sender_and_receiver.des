@@ -5,7 +5,7 @@ RADIO=shadowing
 #DISABLE_NAM=1
 #DISABLE_TR=1
 
-TIME=260
+TIME=135
 
 NODEPLACEMENTFILE=placementfile.plm
 NODETABLE=sender_and_receiver.mes

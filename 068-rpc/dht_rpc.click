@@ -72,7 +72,7 @@ tcc::TCC(DEBUG 2)
 brn_clf[3]
 -> Print("RPC", TIMESTAMP true)
 -> BRN2Decap()
--> rpc::RPC(TCC tcc, DHTSTORAGE dht/dhtstorage/dhtstorage, DEBUG 4)
+-> rpc::RPC(NODEIDENTITY id, TCC tcc, DHTSTORAGE dht/dhtstorage/dhtstorage, DEBUG 4)
 -> BRN2EtherEncap(USEANNO true, PUSHHEADER true, DEBUG 4)
 -> BRN2EtherEncap(SRC deviceaddress, PUSHHEADER false)
 -> Print("RPC out", 100, TIMESTAMP true)
@@ -124,10 +124,19 @@ Script(
 #if NODENUM == 8
 
 Script(
-  wait 130,
-  write rpc.call incr 00-00-00-00-00-01:rpc.result 4,
+  wait 110,
+  write rpc.call incr 3 4,
   wait 1,
   read  rpc.result,
+
+  wait  1,
+  write rpc.call incr ff.drops 4,
+  read  rpc.result,
+
+  wait  3,
+  write rpc.call incr 00-00-00-00-00-01:rpc.result 4,
+  wait  1,
+  read  rpc.result
 );
 
 #endif
@@ -135,10 +144,28 @@ Script(
 #if NODENUM == 16
 
 Script(
-  wait 135,
+  wait 120,
   write rpc.call incr 00-00-00-00-00-08:rpc.result 00-00-00-00-00-01:rpc.result,
   wait 1,
-  read  rpc.result,
+  read  rpc.result
+);
+
+Script(
+  wait 125,
+  write rpc.remote_call 00-00-00-00-00-01 incr 00-00-00-00-00-08:rpc.result 00-00-00-00-00-01:rpc.result,
+  wait 1,
+  read  rpc.result
+);
+Script(
+  wait 130,
+  write rpc.remote_call 00-00-00-00-00-01 incr 00-00-00-00-00-08:rpc.result 00-00-00-00-00-01:rpc.result,
+  wait 1,
+  read  rpc.result
 );
 
 #endif
+
+Script(
+  wait 135,
+  read rpc.stats
+);
