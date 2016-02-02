@@ -26,8 +26,14 @@ seismo::Seismo(GPS gps, PRINT false, RECORD true, SHORTTAGS true, DATAFILEPREFIX
 
 longshortavg::SeismoDetectionLongShortAvg(LONGAVG 4000, SHORTAVG 100, RATIOTHRESHOLD 400, NORMALIZE 100, MAXALARM 15, ALARMTIMEDIST 550, DEBUG 2);
 cooperative::SeismoDetectionCooperative(ALGORITHMS longshortavg, MERGERANGE 1000, DEBUG 3);
-seismoreport::SeismoReporting(SEISMO seismo, ALGORITHMS "longshortavg cooperative", INTERVAL 100, DEBUG 3);
 
+#define TEST_FFT
+#ifdef TEST_FFT
+sdetectifft::SeismoDetectionIFFT(BLOCK_SIZE 100, CHANNEL 0, RATIOTHRESHOLD 14000, DEBUG 2);
+seismoreport::SeismoReporting(SEISMO seismo, ALGORITHMS "longshortavg sdetectifft cooperative", INTERVAL 100, DEBUG 3);
+#else
+seismoreport::SeismoReporting(SEISMO seismo, ALGORITHMS "longshortavg cooperative", INTERVAL 100, DEBUG 3);
+#endif
 
 Idle -> [1]seismo;
 Idle -> [0]seismo;
@@ -59,7 +65,10 @@ Idle -> [1]device_wifi;
 Script(
   wait 30,
   //  wait 4,
+  read seismoreport.alarm,
   read longshortavg.stats,
-  read cooperative.stats
+  read sdetectifft.stats,
+  read cooperative.stats,
+  read seismo.channelinfo
 );
 

@@ -2,7 +2,7 @@ NAME=seismo
 RADIO=shadowing
 #RADIO=tworayground
 
-TIME=31
+TIME=181
 
 NODEPLACEMENTFILE=placement.default
 NODETABLE=seismo.mes
