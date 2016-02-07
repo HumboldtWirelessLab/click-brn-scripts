@@ -65,7 +65,7 @@ if [ $LATEX -eq 1 ]; then
 
     echo "\begin{table}[h]" >> $SUMMARY_TEX
     echo "\centering" >> $SUMMARY_TEX
-    if [ "x$VALGRIND" = "x1" ]; then
+    if [ "x$VALGRIND" = "x1" ] && [ "x$VALGRINDXML" = "x0" ]; then
       echo "\begin{tabular}{p{.35\textwidth}p{.15\textwidth}p{.15\textwidth}p{.15\textwidth}p{.10\textwidth}}" >> $SUMMARY_TEX
       echo "\colheadbegin \textbf{Scenario} & \textbf{$MODESTRING} & \textbf{Evaluation} & \textbf{Memory Leak} & \textbf{Time}" >> $SUMMARY_TEX
     else
@@ -149,7 +149,7 @@ while [ $i -le $LIMIT ]; do
         fi
     fi
 
-    if [ "x$VALGRIND" = "x1" ]; then
+    if [ "x$VALGRIND" = "x1" ] && [ "x$VALGRINDXML" = "x0" ]; then
       LEAKBYTES=`(cd $WORKDIR/$MEASUREMENTNUM/; cat valgrind.log | grep -A 4 "LEAK SUMMARY" | grep "definitely lost" | awk '{print $4}' | sed "s#,##g" )`
       if [ $LEAKBYTES -eq 0 ]; then
         MEMORYLEAK=NO
@@ -166,17 +166,18 @@ while [ $i -le $LIMIT ]; do
     TIMESTATS="00:00.00"
   fi
 
+  if [ "x$VALGRINDXML" = "x1" ]; then
+    mv $WORKDIR/$MEASUREMENTNUM/valgrind.xml $WORKDIR/../$NUM-valgrind.xml
+  fi
   (cd $WORKDIR; rm -rf $MEASUREMENTNUM/)
 
-
-
-if [ "x$VALGRIND" = "x1" ]; then
-  echo "$NAME & $SIM & $EVO & $MEMORYLEAK & $TIMESTATS \\\\" >> $SUMMARY_TEX
-  LINEEND=5
-else
-  echo "$NAME & $SIM & $EVO & $TIMESTATS \\\\" >> $SUMMARY_TEX
-  LINEEND=4
-fi
+  if [ "x$VALGRIND" = "x1" ] && [ "x$VALGRINDXML" = "x0" ]; then
+    echo "$NAME & $SIM & $EVO & $MEMORYLEAK & $TIMESTATS \\\\" >> $SUMMARY_TEX
+    LINEEND=5
+  else
+    echo "$NAME & $SIM & $EVO & $TIMESTATS \\\\" >> $SUMMARY_TEX
+    LINEEND=4
+  fi
   echo "\cline{1-$LINEEND}" >> $SUMMARY_TEX
 
   i=`expr $i + 1`
