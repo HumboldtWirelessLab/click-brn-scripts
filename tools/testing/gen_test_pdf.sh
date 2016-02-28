@@ -108,10 +108,10 @@ while [ $i -le $LIMIT ]; do
 
   if [ $LATEX -eq 1 ]; then
       echo "\subsection{Result}" >> $TESTBED_TEX
-  fi
 
-  MODE=$MODE FULLMEASUREMENT=1 $DIR/check_element_usage.sh $WORKDIR/$MEASUREMENTNUM > element_info/used_element_$NUM
-  cat element_info/used_element_$NUM >> element_info/used_element_all
+      MODE=$MODE FULLMEASUREMENT=1 $DIR/check_element_usage.sh $WORKDIR/$MEASUREMENTNUM > element_info/used_element_$NUM
+      cat element_info/used_element_$NUM >> element_info/used_element_all
+  fi
 
   if [ $RESULT -ne 0 ]; then
     if [ $RESULT -eq 1 ]; then
