@@ -78,6 +78,8 @@ if [ $LATEX -eq 1 ]; then
     mkdir -p element_info
 fi
 
+rm -f 0*-*.xml
+
 while [ $i -le $LIMIT ]; do
   MEASUREMENTNUM=$RANDOM
   if [ "x$MEASUREMENTNUM" = "x" ]; then
