@@ -42,13 +42,13 @@ device_wifi[3]
   -> ff::FilterFailures()
   -> BRN2EtherDecap()
   -> Classifier( 0/BRN_PORT_ROUTING )
-  -> Print("NODENAME: Success")
+  -> Print("NODENAME: Success", 22)
   -> [4]routing;
 
 ff[1]
   -> BRN2EtherDecap()
   -> Classifier( 0/BRN_PORT_ROUTING )
-  -> Print("NODENAME: TX Failed")
+  -> Print("NODENAME: TX Failed", 22)
   -> [2]routing;
 
 brn_clf[1]
