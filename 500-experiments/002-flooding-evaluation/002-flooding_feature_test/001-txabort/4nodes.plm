@@ -1,4 +1,4 @@
 node1 0 30
-node2 30 0
-node3 30 60
-node4 60 30
+node2 120 0
+node3 120 60
+node4 240 30

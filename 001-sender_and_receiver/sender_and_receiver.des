@@ -30,7 +30,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 #EVALUATION="evaluation/eval.sh compression_dump compression_status compression_config"
-EVALUATION="evaluation/eval.sh"
+EVALUATION="evaluation/eval.sh cuneiform"
 EVALUATIONSDIR=WORKDIR
 
 GPS=no

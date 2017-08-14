@@ -55,6 +55,7 @@ Idle
 */
 Script(
   read device_wifi/link_stat.probes,
+  read wireless.deviceinfo,
   wait 50,
   read lt.links,
   read device_wifi/link_stat.bcast_stats,

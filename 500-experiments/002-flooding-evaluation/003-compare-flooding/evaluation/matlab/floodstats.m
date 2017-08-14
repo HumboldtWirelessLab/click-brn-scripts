@@ -1,38 +1,17 @@
 function floodstats(configfilename, datafilename)
 
-CONFIGID=1;
-NUM=2;
-SIM=3;
-UNICASTSTRATEGY=4;
-PLACEMENT=5;
-UNICAST_PRESELECTION_STRATEGY=6;
-UNICAST_REJECTONEMPTYCS=7;
-UNICAST_UCASTPEERMETRIC=8;
-FLOODING_NET_RETRIES=9;
-ALGORITHMID=10; %INFO 1
+load_params;
 
-EXTRAINFO=11;
-UNICASTSTRATEG=12; %INFO 2
+%result_flooding_info.dat
 
-MACRETRIES=13;
-NBMETRIC=14;
-PIGGYBACK=15;
-FRESP=16;
-USEASS=17; %INFO 3
-
-MAXDELAY=18;
-SEED=19;
-TXABORT=20;
-FIXCS=21;
-E2E_RETRIES=22;
-RTSCTS=23; %INFO 4
-
-RTSCTS_MIXED=24;
-BO_STRATEGY=25;
-RS_STRATEGY=26;
-TXSCHEDULING=27; %INFO 5
-
-
+INDEX COUNT SUM_RX_NEW RX_PROB SOURCE
+    RX SENT FWD PASSIVE FWD_NEW
+    SRC_NEW PASSIVE RX_ACK LL_REJECT PASS_ACKED_DEST
+    PASS_NOACKED_DST PASS_FORCE_DST FIN FIN_SRC FIN_DST
+    FIN_PIGGY RESP_PIGGY FIN_PASS_SRC FIN_PASS_DST TXABORT
+    TXABORT_ERR (alles_aus_floodingsmallstats.mat)
+    
+    
 CONFIGID=1;
 REACH=12;
 SOURCE_NEW=13
@@ -48,7 +27,7 @@ plot = 1;
 s1 = 3;
 s2 = 18;
 
-data=load(filename);
+data=load(configfilename);
 size(data)
 
 % UNICASTSTRATEGY
@@ -68,12 +47,11 @@ params=unique(data(:,[UNICASTSTRATEGY UNICAST_PRESELECTION_STRATEGY UNICAST_REJE
 params
 %get wanted params
 params=params(find(params(:,13) == 5),:)
-params=params(find(params(:,13) == 5),:);                                             %maxdelay
+params=params(find(params(:,13) == 5),:);                                              %maxdelay
 params=params(find((params(:,10) == 0) | (params(:,10) == 10)) ,:);                    %piggybag
 params=params(find((params(:,8) == 0) | (params(:,8) == 1) | (params(:,8) == 3) | (params(:,8) == 5)) ,:);  %MAC_retries
 params=params(find((params(:,5) == 0)) ,:);
 params=params(find((params(:,3) ~= 0) | (params(:,1) == 0)) ,:);
-
 
 %params=params(find((params(:,2) == 0)) ,:);
 %params=params(find((params(:,4) == 0)) ,:);

@@ -12,7 +12,7 @@ wifidevice::RAWWIFIDEV(DEVNAME NODEDEVICE, DEVICE wireless);
 id::BRN2NodeIdentity(NAME NODENAME, DEVICES wireless);
 
 Idle()
-  -> sf::BRN2SimpleFlow(DEBUG 4)
+  -> sf::BRN2SimpleFlow(DEBUG 2)
   -> EtherEncap(0x8086, deviceaddress, 00:00:00:00:00:01)
   -> WifiEncap(0x00, 0:0:0:0:0:0)
   //-> SetTimestamp()

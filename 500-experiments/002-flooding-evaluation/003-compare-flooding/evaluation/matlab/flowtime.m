@@ -1,7 +1,8 @@
 %basedir='20141014/';
 %basedir='20141014b-gridrand/';
 %basedir='20141015-small/';
-basedir='20141015-big/';
+%basedir='../results/20150930/';
+basedir='../';
 %basedir='';
   
 if (~exist('basedir'))
@@ -19,30 +20,33 @@ plot_sign=['*';'+';'o';'x';'.';'-'];
 scheduling_schemes_str = {'neighbours cnt','max delay','prio'};
 show_param_filestr = {'config', 'cntpacket' , 'avgdelay' , 'maxdelayperhop', 'reach' };
 
+load_params;
 
 INDEX=1;
 
 
 %index
-UNIC=4;
-PLACEMENT=5;
-UNIC_PRESELECTION=6;
-UNIC_REJECT=7;
-UNIC_PEERMET=8;
-MAXPARETRIES=9;
+%UNIC=4;
+%PLACEMENT=5;
+%UNIC_PRESELECTION=6;
+%UNIC_REJECT=7;
+%UNIC_PEERMET=8;
+%MAXPARETRIES=9;
 
-UNIC_STRATEGY=12;
-MAXMACRETRIES=13;
-PIGGYBACK=15;
-FORCE_RESP=16;
-USE_ASSIGN=17;
-MAXDELAY=18;
+%UNIC_STRATEGY=12;
+%MAXMACRETRIES=13;
+%PIGGYBACK=15;
+%FORCE_RESP=16;
+%USE_ASSIGN=17;
+%MAXDELAY=18;
 
-ABORTTX=20;
-FIX_CAND_SET=21;
-SCHEDULING=27;
+%ABORTTX=20;
+%FIX_CAND_SET=21;
+%SCHEDULING=27;
 
 %flowtime
+
+
 AVG_TIME=6;
 MIN_TIME=7;
 MAX_TIME=8;
@@ -55,14 +59,17 @@ COL=10;
 
 %size(index)
 
-CFG_INDEX=[UNIC UNIC_PRESELECTION UNIC_REJECT UNIC_PEERMET MAXPARETRIES UNIC_STRATEGY MAXMACRETRIES PIGGYBACK FORCE_RESP MAXDELAY USE_ASSIGN ABORTTX FIX_CAND_SET SCHEDULING]
+params=[UNICASTSTRATEGY UNICAST_PRESELECTION_STRATEGY UNICAST_REJECTONEMPTYCS UNICAST_UCASTPEERMETRIC FLOODING_NET_RETRIES ALGORITHMID EXTRAINFO  MACRETRIES NBMETRIC PIGGYBACK FRESP USEASS MAXDELAY TXABORT FIXCS E2E_RETRIES ];
+
+CFG_INDEX=params;
+%CFG_INDEX=[UNIC UNIC_PRESELECTION UNIC_REJECT UNIC_PEERMET MAXPARETRIES UNIC_STRATEGY MAXMACRETRIES PIGGYBACK FORCE_RESP MAXDELAY USE_ASSIGN ABORTTX FIX_CAND_SET SCHEDULING]
 
 CFG_WO_DELAY_INDEX=CFG_INDEX(CFG_INDEX(:)~=MAXDELAY);
 
 CFG_WO_DELAY_INDEX_IN_INDEX=[1:size(CFG_INDEX,2)];
 CFG_WO_DELAY_INDEX_IN_INDEX=CFG_WO_DELAY_INDEX_IN_INDEX(CFG_INDEX(:)~=MAXDELAY);
 
-configs=unique(index(:,CFG_INDEX),'rows')
+configs=unique(index(:,CFG_INDEX),'rows');
 configs=[configs'; [1:size(configs,1)]]'; %add index at the end 
 
 config_wo_delay=unique(configs(:,CFG_WO_DELAY_INDEX_IN_INDEX),'rows');
@@ -150,7 +157,7 @@ if ( plotold == 1)
 end
 
 show_configs=configs(configs(:,3) == 1,:);
-show_configs=show_configs(show_configs(:,14) == 3,:) % prio scheduling
+show_configs=show_configs(show_configs(:,14) == 3,:);% prio scheduling
 
 test_params(show_configs, result, [4 9], [2 3]);     % peermetric vs fix cand set
 

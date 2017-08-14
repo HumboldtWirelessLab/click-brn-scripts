@@ -28,6 +28,7 @@ prop_filename = strcat(basedir,'result_flooding_info.dat.unicast');
 mpr_filename = strcat(basedir,'result_flooding_info.dat.mpr');
 prob_filename = strcat(basedir,'result_flooding_info.dat.prob');
 
+load_params;
 
 NUM=1;
 

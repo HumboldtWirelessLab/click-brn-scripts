@@ -1,0 +1,22 @@
+result_flooding_info_index.dat
+  - index file: maps configuration of single id
+
+result_flooding_info.dat
+  - detailierte Informationen
+  - was jeder ueber jedes fluten weiss
+    * zeitpunkt
+    * #sents
+    * ...
+
+result_flooding.dat
+  - summary per ID
+    * reach
+    * no packets
+    * ...
+
+result_flooding_xls.dat
+  - xls-version of result_flooding.dat
+
+
+result_flowtime.dat
+  - flowtime summary per config(index)
