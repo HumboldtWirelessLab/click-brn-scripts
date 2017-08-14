@@ -97,7 +97,7 @@ while [ $i -le $LIMIT ]; do
 
 
   if [ "x$MODE" = "xSIMULATION" ]; then
-    (cd $WORKDIR; VALGRINDOPTION="$VALGRINDOPTION" VALGRIND=$VALGRIND VALGRINDXML=$VALGRINDXML NOSUPP=$NOSUPP EVAL_LOG_OUT=3 run_sim.sh $SIMULATOR $DESCRIPTIONFILE $MEASUREMENTNUM) 1> /dev/null 3>> $TESTBED
+    (cd $WORKDIR; VALGRINDOPTION="$VALGRINDOPTION" VALGRIND=$VALGRIND VALGRINDXML=$VALGRINDXML NOSUPP=$NOSUPP EVAL_LOG_OUT=3 DELAYEVALUATION=$DELAYEVALUATION run_sim.sh $SIMULATOR $DESCRIPTIONFILE $MEASUREMENTNUM) 1> /dev/null 3>> $TESTBED
     RESULT=$?
   else
     if [ "x$MODE" = "xMEASUREMENT" ]; then
@@ -133,7 +133,7 @@ while [ $i -le $LIMIT ]; do
     SIM="OK"
     EVO="OK"
 
-    if [ $LATEX -eq 1 ]; then
+    if [ $LATEX -eq 1 ] && [ "x$DELAYEVALUATION" = "x" ]; then
         #IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$|eps$"`
         IMGS=`ls $WORKDIR/$MEASUREMENTNUM/evaluation/ | egrep "png$|jpg$"`
         IMG_COUNT=`echo $IMGS | wc -w`

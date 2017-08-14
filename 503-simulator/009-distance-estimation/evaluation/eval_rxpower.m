@@ -102,7 +102,7 @@ for cfg=1:size(configs,1)
       xlabel('Time (s)');
       ylabel('SNR');
       title(config_str);
-      saveas(h1, char(strcat(config_str,'_time_vsa_snr.eps')),'epsc');
+      saveas(h1, char(strcat(config_str,'_time_vs_snr.eps')),'epsc');
       %saveas(h1, strcat(config_str,'_time_vs_snr.png'),'png');
 
       h1=figure;

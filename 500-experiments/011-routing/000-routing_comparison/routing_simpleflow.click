@@ -7,9 +7,11 @@
 
 #define BRNFEEDBACK
 
+#include "routing_simpleflow.inc"
 #include "brn/helper.inc"
 #include "brn/brn.click"
 #include "device/wifidev_linkstat.click"
+#include "routing/routing.click"
 
 AddressInfo(deviceaddress NODEDEVICE:eth);
 wireless::BRN2Device(DEVICENAME "NODEDEVICE", ETHERADDRESS deviceaddress, DEVICETYPE "WIRELESS");

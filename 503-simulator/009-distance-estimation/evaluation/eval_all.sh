@@ -17,7 +17,7 @@ for d in `(cd $RESULTDIR; ls -l | grep "^d" | grep -v "evaluation" | awk '{print
     . $RESULTDIR/$d/config
     . $RESULTDIR/$d/1/result
 
-    SIMID=`echo $d | sed -e "s#_# #g" | awk '{print $2}'`
+    SIMID=`echo $d | awk -F_ '{print $2}'`
     RADIOID=`echo $VAR_RADIO | sed $ALGSEDARG`
 
     echo "$SIMID $PACKETS" | sed $ALGSEDARG >> result_dist.dat
