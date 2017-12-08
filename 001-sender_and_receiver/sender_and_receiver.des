@@ -1,4 +1,4 @@
-NAME=receiver
+NAME=sender_and_receiver
 
 RADIO=shadowing
 #RADIO=tworayground
@@ -30,7 +30,7 @@ LOGFILE=measurement.log
 
 RESULTDIR=WORKDIR
 #EVALUATION="evaluation/eval.sh compression_dump compression_status compression_config"
-EVALUATION="evaluation/eval.sh cuneiform"
+EVALUATION="evaluation/eval.sh"
 EVALUATIONSDIR=WORKDIR
 
 GPS=no

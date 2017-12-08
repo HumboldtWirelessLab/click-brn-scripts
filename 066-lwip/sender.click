@@ -25,6 +25,11 @@ client_lwip::LwIP(IP 192.168.1.2, GATEWAY 192.168.1.1, NETMASK 255.255.255.0, DE
   -> WifiDecap()
 
   -> BRN2EtherDecap()
+
+  -> SetCRC32()
+  -> rbe2::RandomBitErrors(0.002)
+  -> ccrc::CheckCRC32()
+
   -> td::ToDump("sender.dump", ENCAP IP)
   -> Print("CLIENT in")
   -> client_lwip
